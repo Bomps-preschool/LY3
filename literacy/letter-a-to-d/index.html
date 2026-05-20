@@ -3,12 +3,11 @@
 
 <head>
 
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 
 <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-/>
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Letters Aa to Dd</title>
 
@@ -18,88 +17,54 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
-
-  user-select:none;
-  -webkit-user-select:none;
 }
 
 html,
 body{
   width:100%;
   min-height:100%;
-
-  overflow:hidden;
-
   font-family:Arial,sans-serif;
-
   background:#fff7ef;
-
-  -webkit-tap-highlight-color:transparent;
-
-  touch-action:manipulation;
-
-  overscroll-behavior:none;
+  overflow-x:hidden;
 }
 
-body{
-  position:fixed;
-  inset:0;
-}
-
-/* =========================
-   SPLASH
-========================= */
+/* SPLASH */
 
 #splash{
   position:fixed;
   inset:0;
-
   background:white;
-
   z-index:9999;
 
   display:flex;
   flex-direction:column;
-
   justify-content:center;
   align-items:center;
 }
 
 #splash img{
-  width:260px;
+  width:240px;
   max-width:80%;
-
   object-fit:contain;
 }
 
 #startBtn{
-  margin-top:28px;
-
-  padding:14px 30px;
-
+  margin-top:25px;
+  padding:14px 28px;
   border:none;
-  border-radius:24px;
-
+  border-radius:22px;
   background:#7fb77e;
-
   color:white;
-
   font-size:22px;
-  font-weight:bold;
-
   cursor:pointer;
 }
 
-/* =========================
-   GAME
-========================= */
+/* GAME */
 
 #game{
   display:none;
-
-  width:100vw;
-  height:100vh;
-
+  width:100%;
+  min-height:100vh;
   padding:10px;
 
   background:
@@ -111,83 +76,69 @@ body{
 
 .header{
   text-align:center;
-  height:65px;
+  margin-bottom:10px;
 }
 
 .header h1{
-  font-size:28px;
+  font-size:30px;
   color:#5b4b8a;
 }
 
 .header p{
-  font-size:15px;
   color:#555;
+  margin-top:5px;
 }
 
 .main{
-  height:calc(100vh - 90px);
-
   display:grid;
-
   grid-template-columns:28% 72%;
-
   gap:12px;
 }
 
-/* =========================
-   LEFT PANEL
-========================= */
+/* LEFT */
 
 .left{
   background:white;
-
   border-radius:20px;
+
+  padding:14px;
 
   box-shadow:
   0 5px 15px rgba(0,0,0,.12);
 
-  padding:14px;
-
   display:flex;
   flex-direction:column;
-
   justify-content:center;
   align-items:center;
-
   text-align:center;
 }
 
 .left h2{
-  font-size:21px;
   color:#4a6484;
-
   margin-bottom:10px;
 }
 
 #soundBtn{
-  width:120px;
-  height:120px;
+  width:110px;
+  height:110px;
 
   border:none;
   border-radius:50%;
 
   background:#ffd27f;
 
-  font-size:52px;
-
+  font-size:50px;
   cursor:pointer;
 }
 
 #soundText{
   margin:10px 0;
-
-  font-size:15px;
   color:#555;
 }
 
 #answerBox{
   width:100%;
-  height:110px;
+  height:100px;
 
   border:
   4px dashed #bdbdbd;
@@ -198,12 +149,10 @@ body{
   justify-content:center;
   align-items:center;
 
-  background:#fafafa;
-
   font-size:24px;
   font-weight:bold;
 
-  color:#555;
+  background:#fafafa;
 }
 
 #answerBox.correct{
@@ -216,13 +165,10 @@ body{
   background:#fff0f0;
 }
 
-/* =========================
-   OPTIONS
-========================= */
+/* OPTIONS */
 
 .options{
   display:grid;
-
   grid-template-columns:
   repeat(3,1fr);
 
@@ -231,72 +177,56 @@ body{
 
 .card{
   background:white;
-
   border-radius:20px;
+
+  padding:12px;
 
   box-shadow:
   0 5px 15px rgba(0,0,0,.12);
 
-  padding:10px;
+  cursor:pointer;
 
   display:flex;
   flex-direction:column;
-
   justify-content:center;
   align-items:center;
 
-  cursor:pointer;
-
-  transition:transform .15s ease;
+  transition:.2s;
 }
 
-.card:active{
-  transform:scale(.98);
+.card:hover{
+  transform:scale(1.02);
 }
 
 .card img{
   width:100%;
-
   max-width:220px;
-  max-height:190px;
-
+  max-height:200px;
   object-fit:contain;
 }
 
 .card div{
   margin-top:10px;
-
   font-size:22px;
   font-weight:bold;
-
-  color:#333;
-
-  text-align:center;
 }
 
-/* =========================
-   COMPLETE
-========================= */
+/* COMPLETE */
 
 #complete{
   display:none;
 
   width:100%;
-  height:100%;
-
-  flex-direction:column;
+  min-height:80vh;
 
   justify-content:center;
   align-items:center;
-
-  text-align:center;
+  flex-direction:column;
 }
 
 #complete h2{
   font-size:48px;
   color:#5b4b8a;
-
-  margin-bottom:18px;
 }
 
 #complete button{
@@ -308,91 +238,32 @@ body{
   border-radius:22px;
 
   background:#7fb77e;
-
   color:white;
 
   font-size:22px;
-  font-weight:bold;
-
   cursor:pointer;
 }
 
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE */
 
 @media(max-width:768px){
 
-  #game{
-    padding:7px;
-  }
+.main{
+  grid-template-columns:1fr;
+}
 
-  .header{
-    height:55px;
-  }
+.options{
+  grid-template-columns:
+  repeat(2,1fr);
+}
 
-  .header h1{
-    font-size:22px;
-  }
+.card img{
+  max-height:120px;
+}
 
-  .header p{
-    font-size:12px;
-  }
-
-  .main{
-    height:calc(100vh - 80px);
-
-    grid-template-columns:1fr;
-    grid-template-rows:36% 64%;
-  }
-
-  .left{
-    padding:8px;
-  }
-
-  .left h2{
-    font-size:16px;
-    margin-bottom:5px;
-  }
-
-  #soundBtn{
-    width:75px;
-    height:75px;
-
-    font-size:34px;
-  }
-
-  #soundText{
-    font-size:12px;
-    margin:5px 0;
-  }
-
-  #answerBox{
-    height:58px;
-    font-size:17px;
-  }
-
-  .options{
-    gap:6px;
-  }
-
-  .card{
-    padding:6px;
-    border-radius:14px;
-  }
-
-  .card img{
-    max-height:95px;
-  }
-
-  .card div{
-    font-size:13px;
-    margin-top:4px;
-  }
-
-  #complete h2{
-    font-size:34px;
-  }
+.header h1{
+  font-size:24px;
+}
 
 }
 
@@ -402,256 +273,234 @@ body{
 
 <body>
 
-<!-- =========================
-     SPLASH
-========================= -->
+<!-- SPLASH -->
 
 <div id="splash">
 
-  <img
-    src="./assets/innovine-logo.png"
-    alt="Innovine Logo"
-  >
+<img
+src="./assets/innovine-logo.png"
+alt="Innovine Logo"
+>
 
-  <button id="startBtn">
-    Tap to Start
-  </button>
+<button id="startBtn">
+Tap to Start
+</button>
 
 </div>
 
-<!-- =========================
-     GAME
-========================= -->
+<!-- GAME -->
 
 <div id="game">
 
-  <div class="header">
+<div class="header">
 
-    <h1>
-      Letters Aa to Dd
-    </h1>
+<h1>
+Letters Aa to Dd
+</h1>
 
-    <p>
-      Listen to the sound and choose the correct picture.
-    </p>
-
-  </div>
-
-  <div id="gameContent">
-
-    <div class="main">
-
-      <!-- LEFT -->
-
-      <div class="left">
-
-        <h2>
-          Listen to the Letter Sound
-        </h2>
-
-        <button id="soundBtn">
-          🔊
-        </button>
-
-        <div id="soundText">
-          Tap the speaker to hear the sound.
-        </div>
-
-        <div id="answerBox">
-          Tap Picture
-        </div>
-
-      </div>
-
-      <!-- RIGHT -->
-
-      <div
-        class="options"
-        id="options"
-      ></div>
-
-    </div>
-
-  </div>
-
-  <!-- COMPLETE -->
-
-  <div id="complete">
-
-    <h2>
-      Great Job! 🎉
-    </h2>
-
-    <button onclick="restartGame()">
-      Play Again
-    </button>
-
-  </div>
+<p>
+Listen to the sound and choose the correct picture.
+</p>
 
 </div>
 
-<!-- =========================
-     AUDIO
-========================= -->
+<div id="gameContent">
 
-<audio id="letterAudio" preload="auto"></audio>
+<div class="main">
 
-<audio
-  id="correctAudio"
-  preload="auto"
->
-  <source src="./assets/claps.mp3" type="audio/mpeg">
+<!-- LEFT -->
+
+<div class="left">
+
+<h2>
+Listen to the Letter Sound
+</h2>
+
+<button id="soundBtn">
+🔊
+</button>
+
+<div id="soundText">
+Tap speaker to hear sound.
+</div>
+
+<div id="answerBox">
+Tap Picture
+</div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div
+class="options"
+id="options"
+></div>
+
+</div>
+
+</div>
+
+<!-- COMPLETE -->
+
+<div id="complete">
+
+<h2>
+Great Job! 🎉
+</h2>
+
+<button onclick="restartGame()">
+Play Again
+</button>
+
+</div>
+
+</div>
+
+<!-- AUDIO -->
+
+<audio id="letterAudio"></audio>
+
+<audio id="correctAudio">
+<source src="./assets/claps.mp3">
 </audio>
 
-<audio
-  id="wrongAudio"
-  preload="auto"
->
-  <source src="./assets/wrong.mp3" type="audio/mpeg">
+<audio id="wrongAudio">
+<source src="./assets/wrong.mp3">
 </audio>
 
-<!-- =========================
-     CONFETTI
-========================= -->
+<!-- CONFETTI -->
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <script>
 
-/* =========================
-   GAME DATA
-========================= */
+/* DATA */
 
 const gameData = [
 
-  {
-    sound:"./assets/letter-a-sound.mp3",
+{
+sound:"./assets/letter-a-sound.mp3",
+correct:"alligator",
 
-    correct:"alligator",
+options:[
 
-    options:[
+{
+name:"Cap",
+image:"./assets/cap.png",
+value:"cap"
+},
 
-      {
-        name:"Cap",
-        image:"./assets/cap.png",
-        value:"cap"
-      },
+{
+name:"Alligator",
+image:"./assets/alligator.png",
+value:"alligator"
+},
 
-      {
-        name:"Alligator",
-        image:"./assets/alligator.png",
-        value:"alligator"
-      },
+{
+name:"Zip",
+image:"./assets/zip.png",
+value:"zip"
+}
 
-      {
-        name:"Zip",
-        image:"./assets/zip.png",
-        value:"zip"
-      }
+]
 
-    ]
-  },
+},
 
-  {
-    sound:"./assets/letter-b-sound.mp3",
+{
+sound:"./assets/letter-b-sound.mp3",
+correct:"bird",
 
-    correct:"bird",
+options:[
 
-    options:[
+{
+name:"Bird",
+image:"./assets/bird.png",
+value:"bird"
+},
 
-      {
-        name:"Bird",
-        image:"./assets/bird.png",
-        value:"bird"
-      },
+{
+name:"Dog",
+image:"./assets/dog.png",
+value:"dog"
+},
 
-      {
-        name:"Dog",
-        image:"./assets/dog.png",
-        value:"dog"
-      },
+{
+name:"Flower",
+image:"./assets/flower.png",
+value:"flower"
+}
 
-      {
-        name:"Flower",
-        image:"./assets/flower.png",
-        value:"flower"
-      }
+]
 
-    ]
-  },
+},
 
-  {
-    sound:"./assets/letter-c-sound.mp3",
+{
+sound:"./assets/letter-c-sound.mp3",
+correct:"carrot",
 
-    correct:"carrot",
+options:[
 
-    options:[
+{
+name:"Dinosaur",
+image:"./assets/dinosaur.png",
+value:"dinosaur"
+},
 
-      {
-        name:"Dinosaur",
-        image:"./assets/dinosaur.png",
-        value:"dinosaur"
-      },
+{
+name:"Frog",
+image:"./assets/frog.png",
+value:"frog"
+},
 
-      {
-        name:"Frog",
-        image:"./assets/frog.png",
-        value:"frog"
-      },
+{
+name:"Carrot",
+image:"./assets/carrot.png",
+value:"carrot"
+}
 
-      {
-        name:"Carrot",
-        image:"./assets/carrot.png",
-        value:"carrot"
-      }
+]
 
-    ]
-  },
+},
 
-  {
-    sound:"./assets/letter-d-sound.mp3",
+{
+sound:"./assets/letter-d-sound.mp3",
+correct:"dice",
 
-    correct:"dice",
+options:[
 
-    options:[
+{
+name:"Jelly",
+image:"./assets/jelly.png",
+value:"jelly"
+},
 
-      {
-        name:"Jelly",
-        image:"./assets/jelly.png",
-        value:"jelly"
-      },
+{
+name:"Dice",
+image:"./assets/dice.png",
+value:"dice"
+},
 
-      {
-        name:"Dice",
-        image:"./assets/dice.png",
-        value:"dice"
-      },
+{
+name:"Gun",
+image:"./assets/gun.png",
+value:"gun"
+}
 
-      {
-        name:"Gun",
-        image:"./assets/gun.png",
-        value:"gun"
-      }
+]
 
-    ]
-  }
+}
 
 ];
 
-/* =========================
-   VARIABLES
-========================= */
+/* VARIABLES */
 
 let current = 0;
 
 let questions =
 shuffle([...gameData]);
 
-let gameStarted = false;
-
-/* =========================
-   ELEMENTS
-========================= */
+/* ELEMENTS */
 
 const splash =
 document.getElementById("splash");
@@ -665,12 +514,6 @@ document.getElementById("options");
 const answerBox =
 document.getElementById("answerBox");
 
-const complete =
-document.getElementById("complete");
-
-const gameContent =
-document.getElementById("gameContent");
-
 const soundBtn =
 document.getElementById("soundBtn");
 
@@ -683,430 +526,238 @@ document.getElementById("correctAudio");
 const wrongAudio =
 document.getElementById("wrongAudio");
 
-/* =========================
-   PRELOAD IMAGES
-========================= */
+/* PRELOAD */
 
 function preloadAssets(){
 
-  gameData.forEach(item => {
+gameData.forEach(item => {
 
-    item.options.forEach(opt => {
+item.options.forEach(opt => {
 
-      const img = new Image();
+const img = new Image();
 
-      img.src = opt.image;
+img.src = opt.image;
 
-    });
+});
 
-  });
+});
 
 }
 
 preloadAssets();
 
-/* =========================
-   START GAME
-========================= */
+/* START */
 
-document.getElementById(
-  "startBtn"
-).addEventListener(
-  "click",
-  startGame,
-  { passive:true }
-);
-
-document.getElementById(
-  "startBtn"
-).addEventListener(
-  "touchstart",
-  startGame,
-  { passive:true }
+document
+.getElementById("startBtn")
+.addEventListener(
+"click",
+startGame
 );
 
 function startGame(){
 
-  if(gameStarted) return;
+splash.style.display =
+"none";
 
-  gameStarted = true;
+game.style.display =
+"block";
 
-  splash.style.display =
-  "none";
-
-  game.style.display =
-  "block";
-
-  unlockAllAudio();
-
-  setTimeout(() => {
-
-    loadQuestion();
-
-  }, 200);
+loadQuestion();
 
 }
 
-/* =========================
-   AUDIO UNLOCK
-========================= */
-
-function unlockAllAudio(){
-
-  const audioList = [
-
-    letterAudio,
-    correctAudio,
-    wrongAudio
-
-  ];
-
-  audioList.forEach(audio => {
-
-    audio.volume = 0;
-
-    const promise =
-    audio.play();
-
-    if(promise !== undefined){
-
-      promise.then(() => {
-
-        audio.pause();
-
-        audio.currentTime = 0;
-
-        audio.volume = 1;
-
-      })
-      .catch(() => {});
-
-    }
-
-  });
-
-}
-
-/* =========================
-   SHUFFLE
-========================= */
+/* SHUFFLE */
 
 function shuffle(arr){
 
-  return arr.sort(
-    () => Math.random() - 0.5
-  );
+return arr.sort(
+() => Math.random() - 0.5
+);
 
 }
 
-/* =========================
-   LOAD QUESTION
-========================= */
+/* LOAD QUESTION */
 
 function loadQuestion(){
 
-  answerBox.className = "";
+answerBox.className = "";
 
-  answerBox.innerText =
-  "Tap Picture";
+answerBox.innerText =
+"Tap Picture";
 
-  optionsBox.innerHTML = "";
+optionsBox.innerHTML = "";
 
-  const q =
-  questions[current];
+const q =
+questions[current];
 
-  letterAudio.src =
-  q.sound;
+shuffle(
+[...q.options]
+).forEach(opt => {
 
-  letterAudio.load();
+const card =
+document.createElement("div");
 
-  setTimeout(() => {
+card.className =
+"card";
 
-    playLetterSound();
+const img =
+document.createElement("img");
 
-  }, 300);
+img.src =
+opt.image;
 
-  shuffle(
-    [...q.options]
-  ).forEach(opt => {
+img.loading =
+"eager";
 
-    const card =
-    document.createElement("div");
+img.decoding =
+"sync";
 
-    card.className =
-    "card";
+const label =
+document.createElement("div");
 
-    const img =
-    document.createElement("img");
+label.innerText =
+opt.name;
 
-    img.src =
-    opt.image;
+card.appendChild(img);
 
-    img.alt =
-    opt.name;
+card.appendChild(label);
 
-    img.loading = "eager";
+card.onclick =
+() => checkAnswer(opt.value);
 
-    /* FAST IMAGE DISPLAY FIX */
-    img.decoding = "sync";
+optionsBox.appendChild(card);
 
-    const label =
-    document.createElement("div");
+});
 
-    label.innerText =
-    opt.name;
-
-    card.appendChild(img);
-
-    card.appendChild(label);
-
-    card.addEventListener(
-      "click",
-      function(){
-
-        checkAnswer(
-          opt.value
-        );
-
-      },
-      { passive:true }
-    );
-
-    optionsBox.appendChild(card);
-
-  });
+playLetterSound();
 
 }
 
-/* =========================
-   PLAY LETTER SOUND
-========================= */
+/* PLAY SOUND */
 
 function playLetterSound(){
 
-  const q =
-  questions[current];
+const q =
+questions[current];
 
-  try{
+letterAudio.src =
+q.sound;
 
-    letterAudio.pause();
-
-    letterAudio.currentTime = 0;
-
-  }catch(e){}
-
-  letterAudio.src =
-  q.sound;
-
-  letterAudio.load();
-
-  const playPromise =
-  letterAudio.play();
-
-  if(playPromise !== undefined){
-
-    playPromise
-    .then(() => {
-
-      document.getElementById(
-        "soundText"
-      ).innerText =
-      "Listening...";
-
-    })
-    .catch(() => {
-
-      document.getElementById(
-        "soundText"
-      ).innerText =
-      "Tap speaker to hear sound.";
-
-    });
-
-  }
+letterAudio.play()
+.catch(() => {});
 
 }
 
-soundBtn.addEventListener(
-  "click",
-  playLetterSound,
-  { passive:true }
-);
+soundBtn.onclick =
+playLetterSound;
 
-/* =========================
-   CHECK ANSWER
-========================= */
+/* CHECK */
 
 function checkAnswer(value){
 
-  const correct =
-  questions[current].correct;
+const correct =
+questions[current].correct;
 
-  if(value === correct){
+if(value === correct){
 
-    answerBox.className =
-    "correct";
+answerBox.className =
+"correct";
 
-    answerBox.innerText =
-    "Correct!";
+answerBox.innerText =
+"Correct!";
 
-    correctAudio.currentTime = 0;
+correctAudio.play();
 
-    correctAudio.play()
-    .catch(() => {});
+setTimeout(() => {
 
-    setTimeout(() => {
+current++;
 
-      current++;
+if(
+current <
+questions.length
+){
 
-      if(
-        current <
-        questions.length
-      ){
-
-        loadQuestion();
-
-      }
-
-      else{
-
-        finishGame();
-
-      }
-
-    }, 1200);
-
-  }
-
-  else{
-
-    answerBox.className =
-    "wrong";
-
-    answerBox.innerText =
-    "Try Again";
-
-    wrongAudio.currentTime = 0;
-
-    wrongAudio.play()
-    .catch(() => {});
-
-    setTimeout(() => {
-
-      answerBox.className = "";
-
-      answerBox.innerText =
-      "Tap Picture";
-
-    }, 900);
-
-  }
+loadQuestion();
 
 }
 
-/* =========================
-   FINISH GAME
-========================= */
+else{
+
+finishGame();
+
+}
+
+}, 1200);
+
+}
+
+else{
+
+answerBox.className =
+"wrong";
+
+answerBox.innerText =
+"Try Again";
+
+wrongAudio.play();
+
+setTimeout(() => {
+
+answerBox.className = "";
+
+answerBox.innerText =
+"Tap Picture";
+
+}, 900);
+
+}
+
+}
+
+/* FINISH */
 
 function finishGame(){
 
-  gameContent.style.display =
-  "none";
+document
+.getElementById("gameContent")
+.style.display =
+"none";
 
-  complete.style.display =
-  "flex";
+document
+.getElementById("complete")
+.style.display =
+"flex";
 
-  startConfetti();
+confetti({
+particleCount:200,
+spread:100
+});
 
 }
 
-/* =========================
-   PLAY AGAIN
-========================= */
+/* RESTART */
 
 function restartGame(){
 
-  current = 0;
+current = 0;
 
-  questions =
-  shuffle([...gameData]);
+questions =
+shuffle([...gameData]);
 
-  complete.style.display =
-  "none";
+document
+.getElementById("complete")
+.style.display =
+"none";
 
-  gameContent.style.display =
-  "block";
+document
+.getElementById("gameContent")
+.style.display =
+"block";
 
-  loadQuestion();
-
-}
-
-/* =========================
-   CONFETTI
-========================= */
-
-function startConfetti(){
-
-  const duration =
-  4000;
-
-  const end =
-  Date.now() + duration;
-
-  (function frame(){
-
-    confetti({
-
-      particleCount:4,
-
-      angle:60,
-
-      spread:60,
-
-      origin:{ x:0 }
-
-    });
-
-    confetti({
-
-      particleCount:4,
-
-      angle:120,
-
-      spread:60,
-
-      origin:{ x:1 }
-
-    });
-
-    if(Date.now() < end){
-
-      requestAnimationFrame(
-        frame
-      );
-
-    }
-
-  })();
+loadQuestion();
 
 }
-
-/* =========================
-   ORIENTATION FIX
-========================= */
-
-window.addEventListener(
-  "orientationchange",
-  function(){
-
-    setTimeout(() => {
-
-      window.scrollTo(0,0);
-
-    }, 200);
-
-  }
-);
 
 </script>
 
