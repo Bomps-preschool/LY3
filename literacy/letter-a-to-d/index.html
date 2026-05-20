@@ -394,7 +394,7 @@ body{
 <div id="splashScreen">
 
   <img
-    src="assets/innovine logo.png"
+    src="assets/innovine-logo.png"
     alt="Innovine Logo"
   >
 
@@ -523,7 +523,7 @@ preload="auto"
 ></audio>
 
 <!-- =========================
-     CONFETTI LIBRARY
+     CONFETTI
 ========================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -816,6 +816,12 @@ function loadQuestion(){
 
   optionsPanel.innerHTML = "";
 
+  setTimeout(() => {
+
+    playLetterSound();
+
+  }, 500);
+
   const shuffledOptions =
   shuffleArray(data.options);
 
@@ -896,31 +902,24 @@ function playLetterSound(){
 
   letterSound.load();
 
-  letterSound.play().catch(() => {});
+  setTimeout(() => {
+
+    const playPromise =
+    letterSound.play();
+
+    if(playPromise !== undefined){
+
+      playPromise.catch(() => {});
+
+    }
+
+  }, 300);
 
 }
 
 playSoundBtn.addEventListener(
 "click",
 playLetterSound
-);
-
-// =========================
-// AUTO PLAY SOUND
-// =========================
-
-document.body.addEventListener(
-"click",
-function startAudio(){
-
-  playLetterSound();
-
-  document.body.removeEventListener(
-    "click",
-    startAudio
-  );
-
-}
 );
 
 // =========================
@@ -1050,12 +1049,6 @@ nextBtn.addEventListener(
 
     loadQuestion();
 
-    setTimeout(() => {
-
-      playLetterSound();
-
-    }, 500);
-
   }
 
   else{
@@ -1093,12 +1086,6 @@ playAgainBtn.addEventListener(
   "block";
 
   loadQuestion();
-
-  setTimeout(() => {
-
-    playLetterSound();
-
-  }, 500);
 
 }
 );
