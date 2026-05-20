@@ -19,15 +19,30 @@
   box-sizing:border-box;
   user-select:none;
   -webkit-user-select:none;
-  -webkit-tap-highlight-color:transparent;
 }
 
 html,body{
   width:100%;
   height:100%;
-  overflow:hidden;
   font-family:Arial,sans-serif;
-  background:#fff7ef;
+  overflow:hidden;
+
+  /* LETTER BACKGROUND */
+  background:
+  url("./assets/letters-background.png")
+  center center / cover no-repeat fixed;
+
+  position:relative;
+}
+
+/* LIGHT OVERLAY */
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,0.88);
+  z-index:-1;
 }
 
 /* =========================
@@ -37,7 +52,15 @@ html,body{
 #splash{
   position:fixed;
   inset:0;
-  background:white;
+
+  background:
+  linear-gradient(
+    rgba(255,255,255,0.92),
+    rgba(255,255,255,0.92)
+  ),
+  url("./assets/letters-background.png")
+  center center / cover no-repeat;
+
   z-index:9999;
 
   display:flex;
@@ -47,15 +70,14 @@ html,body{
 }
 
 #splash img{
-  width:240px;
+  width:230px;
   max-width:75%;
-  object-fit:contain;
 }
 
 #startBtn{
   margin-top:25px;
 
-  padding:14px 30px;
+  padding:14px 34px;
 
   border:none;
   border-radius:24px;
@@ -81,17 +103,11 @@ html,body{
   height:100vh;
 
   padding:10px;
-
-  background:
-  linear-gradient(
-    #fff7ef,
-    #eef5ff
-  );
 }
 
 .header{
   text-align:center;
-  height:65px;
+  height:62px;
 }
 
 .header h1{
@@ -100,7 +116,7 @@ html,body{
 }
 
 .header p{
-  font-size:15px;
+  font-size:14px;
   color:#555;
 }
 
@@ -115,88 +131,90 @@ html,body{
 
   grid-template-columns:28% 72%;
 
-  gap:12px;
+  gap:10px;
 }
 
 /* =========================
    LEFT PANEL
 ========================= */
 
-.left{
+.left,
+.card{
   background:white;
 
-  border-radius:22px;
-
-  padding:14px;
+  border-radius:20px;
 
   box-shadow:
   0 5px 15px rgba(0,0,0,.12);
+}
+
+.left{
+  padding:12px;
 
   display:flex;
   flex-direction:column;
 
-  justify-content:center;
   align-items:center;
+  justify-content:center;
 
   text-align:center;
 }
 
 .left h2{
-  font-size:22px;
+  font-size:20px;
   color:#4a6484;
+
   margin-bottom:12px;
 }
 
 #soundBtn{
-  width:120px;
-  height:120px;
+  width:110px;
+  height:110px;
 
   border:none;
   border-radius:50%;
 
   background:#ffd27f;
 
-  font-size:54px;
+  font-size:50px;
 
   cursor:pointer;
 }
 
 #soundText{
-  margin-top:12px;
-
-  font-size:15px;
+  font-size:14px;
   color:#555;
+
+  margin:10px 0;
 }
 
 #answerBox{
-  margin-top:20px;
-
   width:100%;
-  height:110px;
+  height:105px;
 
-  border-radius:20px;
+  border:4px dashed #bbb;
 
-  border:4px dashed #bdbdbd;
+  border-radius:18px;
 
   display:flex;
   justify-content:center;
   align-items:center;
 
-  background:#fafafa;
-
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
 
   color:#555;
+
+  background:#fafafa;
 }
 
 #answerBox.correct{
-  border-color:#66bb6a;
+  border-color:#5fbf6a;
   background:#effff0;
 }
 
 #answerBox.wrong{
-  border-color:#ef5350;
+  border-color:#e57373;
   background:#fff0f0;
 }
 
@@ -210,18 +228,11 @@ html,body{
   grid-template-columns:
   repeat(3,1fr);
 
-  gap:12px;
+  gap:10px;
 }
 
 .card{
-  background:white;
-
-  border-radius:22px;
-
-  padding:12px;
-
-  box-shadow:
-  0 5px 15px rgba(0,0,0,.12);
+  padding:10px;
 
   display:flex;
   flex-direction:column;
@@ -231,8 +242,11 @@ html,body{
 
   cursor:pointer;
 
-  transition:
-  transform .15s ease;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:scale(1.02);
 }
 
 .card:active{
@@ -242,18 +256,16 @@ html,body{
 .card img{
   width:100%;
 
-  max-width:220px;
-  max-height:210px;
+  max-width:210px;
+  max-height:190px;
 
   object-fit:contain;
-
-  loading:eager;
 }
 
 .card div{
-  margin-top:10px;
+  margin-top:8px;
 
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
 
   color:#333;
@@ -268,34 +280,29 @@ html,body{
 #complete{
   display:none;
 
-  height:100%;
-
   text-align:center;
 
-  justify-content:center;
-  align-items:center;
-
-  flex-direction:column;
+  padding-top:120px;
 }
 
 #complete h2{
-  font-size:48px;
+  font-size:42px;
   color:#5b4b8a;
 }
 
-#playAgainBtn{
-  margin-top:25px;
+#complete button{
+  margin-top:20px;
 
-  padding:14px 34px;
+  padding:12px 30px;
 
   border:none;
-  border-radius:24px;
+  border-radius:20px;
 
   background:#7fb77e;
 
   color:white;
 
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
 
   cursor:pointer;
@@ -324,9 +331,10 @@ html,body{
   }
 
   .main{
-    height:calc(100vh - 80px);
+    height:calc(100vh - 85px);
 
     grid-template-columns:1fr;
+
     grid-template-rows:38% 62%;
   }
 
@@ -336,58 +344,51 @@ html,body{
 
   .left h2{
     font-size:16px;
-    margin-bottom:6px;
+    margin-bottom:5px;
   }
 
   #soundBtn{
-    width:75px;
-    height:75px;
+    width:70px;
+    height:70px;
 
-    font-size:36px;
+    font-size:34px;
   }
 
   #soundText{
     font-size:12px;
-    margin-top:5px;
+    margin:5px 0;
   }
 
   #answerBox{
-    margin-top:10px;
-
     height:55px;
-
     font-size:17px;
   }
 
   .options{
+    grid-template-columns:
+    repeat(3,1fr);
+
     gap:6px;
   }
 
   .card{
-    padding:6px;
+    padding:5px;
     border-radius:14px;
   }
 
   .card img{
-    max-height:95px;
+    max-height:90px;
   }
 
   .card div{
-    margin-top:3px;
     font-size:13px;
-  }
-
-  #complete h2{
-    font-size:34px;
-  }
-
-  #playAgainBtn{
-    font-size:18px;
+    margin-top:3px;
   }
 
 }
 
 </style>
+
 </head>
 
 <body>
@@ -422,7 +423,7 @@ html,body{
     </h1>
 
     <p>
-      Listen to the sound and choose the correct picture.
+      Tap the sound and choose the correct picture.
     </p>
 
   </div>
@@ -472,7 +473,7 @@ html,body{
       Great Job! 🎉
     </h2>
 
-    <button id="playAgainBtn">
+    <button onclick="restartGame()">
       Play Again
     </button>
 
@@ -484,30 +485,78 @@ html,body{
      AUDIO
 ========================= -->
 
-<audio
-  id="letterAudio"
-  preload="auto"
-></audio>
+<audio id="letterAudio" preload="auto"></audio>
 
 <audio
   id="correctAudio"
-  src="./assets/claps.mp3"
   preload="auto"
+  src="./assets/claps.mp3"
 ></audio>
 
 <audio
   id="wrongAudio"
-  src="./assets/wrong.mp3"
   preload="auto"
+  src="./assets/wrong.mp3"
 ></audio>
 
 <!-- =========================
-     CONFETTI
+     SCRIPT
 ========================= -->
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
 <script>
+
+/* =========================
+   PRELOAD IMAGES
+========================= */
+
+const preloadImages = [
+
+  "./assets/alligator.png",
+  "./assets/bird.png",
+  "./assets/cap.png",
+  "./assets/carrot.png",
+  "./assets/dinosaur.png",
+  "./assets/dice.png",
+  "./assets/dog.png",
+  "./assets/flower.png",
+  "./assets/frog.png",
+  "./assets/gun.png",
+  "./assets/jelly.png",
+  "./assets/zip.png",
+  "./assets/innovine-logo.png",
+  "./assets/letters-background.png"
+
+];
+
+preloadImages.forEach(src => {
+
+  const img = new Image();
+  img.src = src;
+
+});
+
+/* =========================
+   PRELOAD AUDIO
+========================= */
+
+const preloadAudio = [
+
+  "./assets/letter-a-sound.mp3",
+  "./assets/letter-b-sound.mp3",
+  "./assets/letter-c-sound.mp3",
+  "./assets/letter-d-sound.mp3",
+  "./assets/claps.mp3",
+  "./assets/wrong.mp3"
+
+];
+
+preloadAudio.forEach(src => {
+
+  const audio = new Audio();
+  audio.src = src;
+  audio.preload = "auto";
+
+});
 
 /* =========================
    GAME DATA
@@ -516,7 +565,9 @@ html,body{
 const gameData = [
 
   {
-    sound:"./assets/letter-a-sound.mp3",
+
+    sound:
+    "./assets/letter-a-sound.mp3",
 
     correct:"alligator",
 
@@ -541,10 +592,13 @@ const gameData = [
       }
 
     ]
+
   },
 
   {
-    sound:"./assets/letter-b-sound.mp3",
+
+    sound:
+    "./assets/letter-b-sound.mp3",
 
     correct:"bird",
 
@@ -569,10 +623,13 @@ const gameData = [
       }
 
     ]
+
   },
 
   {
-    sound:"./assets/letter-c-sound.mp3",
+
+    sound:
+    "./assets/letter-c-sound.mp3",
 
     correct:"carrot",
 
@@ -597,10 +654,13 @@ const gameData = [
       }
 
     ]
+
   },
 
   {
-    sound:"./assets/letter-d-sound.mp3",
+
+    sound:
+    "./assets/letter-d-sound.mp3",
 
     correct:"dice",
 
@@ -625,9 +685,19 @@ const gameData = [
       }
 
     ]
+
   }
 
 ];
+
+/* =========================
+   VARIABLES
+========================= */
+
+let current = 0;
+
+let questions =
+shuffle([...gameData]);
 
 /* =========================
    ELEMENTS
@@ -651,9 +721,6 @@ document.getElementById("complete");
 const gameContent =
 document.getElementById("gameContent");
 
-const playAgainBtn =
-document.getElementById("playAgainBtn");
-
 const letterAudio =
 document.getElementById("letterAudio");
 
@@ -664,72 +731,25 @@ const wrongAudio =
 document.getElementById("wrongAudio");
 
 /* =========================
-   VARIABLES
-========================= */
-
-let current = 0;
-
-let questions =
-shuffle([...gameData]);
-
-/* =========================
-   PRELOAD
-========================= */
-
-function preloadAssets(){
-
-  gameData.forEach(item => {
-
-    /* IMAGES */
-
-    item.options.forEach(opt => {
-
-      const img = new Image();
-
-      img.src = opt.image;
-
-      img.loading = "eager";
-
-      img.decoding = "sync";
-
-    });
-
-    /* LETTER AUDIO */
-
-    const audio = new Audio();
-
-    audio.src = item.sound;
-
-    audio.preload = "auto";
-
-  });
-
-  correctAudio.load();
-
-  wrongAudio.load();
-
-}
-
-preloadAssets();
-
-/* =========================
-   START GAME
+   START BUTTON
 ========================= */
 
 document
 .getElementById("startBtn")
 .onclick = function(){
 
-  splash.style.display = "none";
+  splash.style.display =
+  "none";
 
-  game.style.display = "block";
+  game.style.display =
+  "block";
 
   loadQuestion();
 
 };
 
 /* =========================
-   PLAY SOUND BUTTON
+   SOUND BUTTON
 ========================= */
 
 document
@@ -765,22 +785,25 @@ function loadQuestion(){
 
   optionsBox.innerHTML = "";
 
-  optionsBox.style.visibility =
-  "hidden";
+  const q =
+  questions[current];
 
-  const q = questions[current];
+  /* LOAD AUDIO */
 
-  /* PRELOAD CURRENT SOUND */
-
-  letterAudio.pause();
-
-  letterAudio.currentTime = 0;
-
-  letterAudio.src = q.sound;
+  letterAudio.src =
+  q.sound;
 
   letterAudio.load();
 
-  /* RANDOMISE OPTIONS */
+  /* AUTO PLAY */
+
+  setTimeout(() => {
+
+    playLetterSound();
+
+  }, 300);
+
+  /* LOAD OPTIONS */
 
   shuffle([...q.options])
   .forEach(opt => {
@@ -788,52 +811,42 @@ function loadQuestion(){
     const card =
     document.createElement("div");
 
-    card.className = "card";
+    card.className =
+    "card";
 
     const img =
     document.createElement("img");
 
-    img.src = opt.image;
-
-    img.alt = opt.name;
+    img.src =
+    opt.image;
 
     img.loading = "eager";
 
-    img.decoding = "sync";
+    img.alt =
+    opt.name;
 
     const label =
     document.createElement("div");
 
-    label.innerText = opt.name;
+    label.innerText =
+    opt.name;
 
     card.appendChild(img);
 
     card.appendChild(label);
 
-    card.onclick = function(){
+    card.onclick =
+    function(){
 
-      checkAnswer(opt.value);
+      checkAnswer(
+        opt.value
+      );
 
     };
 
     optionsBox.appendChild(card);
 
   });
-
-  requestAnimationFrame(() => {
-
-    optionsBox.style.visibility =
-    "visible";
-
-  });
-
-  /* AUTO PLAY LETTER SOUND */
-
-  setTimeout(() => {
-
-    playLetterSound();
-
-  }, 200);
 
 }
 
@@ -843,20 +856,30 @@ function loadQuestion(){
 
 function playLetterSound(){
 
-  const q = questions[current];
+  const q =
+  questions[current];
 
   letterAudio.pause();
 
   letterAudio.currentTime = 0;
 
-  letterAudio.src = q.sound;
+  letterAudio.src =
+  q.sound;
+
+  letterAudio.load();
 
   const playPromise =
   letterAudio.play();
 
   if(playPromise !== undefined){
 
-    playPromise.catch(() => {});
+    playPromise.catch(() => {
+
+      console.log(
+        "Audio blocked until user interaction."
+      );
+
+    });
 
   }
 
@@ -881,7 +904,10 @@ function checkAnswer(value){
 
     correctAudio.currentTime = 0;
 
-    correctAudio.play().catch(() => {});
+    correctAudio.play()
+    .catch(()=>{});
+
+    /* AUTO NEXT */
 
     setTimeout(() => {
 
@@ -898,7 +924,11 @@ function checkAnswer(value){
 
       else{
 
-        finishGame();
+        gameContent.style.display =
+        "none";
+
+        complete.style.display =
+        "block";
 
       }
 
@@ -916,11 +946,13 @@ function checkAnswer(value){
 
     wrongAudio.currentTime = 0;
 
-    wrongAudio.play().catch(() => {});
+    wrongAudio.play()
+    .catch(()=>{});
 
     setTimeout(() => {
 
-      answerBox.className = "";
+      answerBox.className =
+      "";
 
       answerBox.innerText =
       "Tap Picture";
@@ -932,26 +964,10 @@ function checkAnswer(value){
 }
 
 /* =========================
-   FINISH GAME
+   RESTART
 ========================= */
 
-function finishGame(){
-
-  gameContent.style.display =
-  "none";
-
-  complete.style.display =
-  "flex";
-
-  startConfetti();
-
-}
-
-/* =========================
-   PLAY AGAIN
-========================= */
-
-playAgainBtn.onclick = function(){
+function restartGame(){
 
   current = 0;
 
@@ -965,54 +981,6 @@ playAgainBtn.onclick = function(){
   "block";
 
   loadQuestion();
-
-};
-
-/* =========================
-   CONFETTI
-========================= */
-
-function startConfetti(){
-
-  const duration =
-  4000;
-
-  const end =
-  Date.now() + duration;
-
-  (function frame(){
-
-    confetti({
-
-      particleCount:4,
-
-      angle:60,
-
-      spread:55,
-
-      origin:{x:0}
-
-    });
-
-    confetti({
-
-      particleCount:4,
-
-      angle:120,
-
-      spread:55,
-
-      origin:{x:1}
-
-    });
-
-    if(Date.now() < end){
-
-      requestAnimationFrame(frame);
-
-    }
-
-  })();
 
 }
 
