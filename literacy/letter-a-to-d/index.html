@@ -6,129 +6,125 @@
 
 const gameData = [
 
-  {
-    letter:"A",
+{
+  letter:"A",
 
-    sound:"assets/letter a sound.m4a",
+  sound:"assets/letter a sound.m4a",
 
-    correct:"alligator",
+  correct:"alligator",
 
-    options:[
+  options:[
 
-      {
-        name:"Cap",
-        image:"assets/cap.png",
-        value:"cap"
-      },
+    {
+      name:"Cap",
+      image:"assets/cap.png",
+      value:"cap"
+    },
 
-      {
-        name:"Alligator",
-        image:"assets/alligator.png",
-        value:"alligator"
-      },
+    {
+      name:"Alligator",
+      image:"assets/alligator.png",
+      value:"alligator"
+    },
 
-      {
-        name:"Zip",
-        image:"assets/zip.png",
-        value:"zip"
-      }
+    {
+      name:"Zip",
+      image:"assets/zip.png",
+      value:"zip"
+    }
 
-    ]
+  ]
+},
 
-  },
+{
+  letter:"B",
 
-  {
-    letter:"B",
+  sound:"assets/letter b sound.m4a",
 
-    sound:"assets/letter b sound.m4a",
+  correct:"bird",
 
-    correct:"bird",
+  options:[
 
-    options:[
+    {
+      name:"Bird",
+      image:"assets/bird.png",
+      value:"bird"
+    },
 
-      {
-        name:"Bird",
-        image:"assets/bird.png",
-        value:"bird"
-      },
+    {
+      name:"Dog",
+      image:"assets/dog.png",
+      value:"dog"
+    },
 
-      {
-        name:"Dog",
-        image:"assets/dog.png",
-        value:"dog"
-      },
+    {
+      name:"Flower",
+      image:"assets/flower.png",
+      value:"flower"
+    }
 
-      {
-        name:"Flower",
-        image:"assets/flower.png",
-        value:"flower"
-      }
+  ]
+},
 
-    ]
+{
+  letter:"C",
 
-  },
+  sound:"assets/letter c sound.m4a",
 
-  {
-    letter:"C",
+  correct:"carrot",
 
-    sound:"assets/letter c sound.m4a",
+  options:[
 
-    correct:"carrot",
+    {
+      name:"Dinosaur",
+      image:"assets/dinosaur.png",
+      value:"dinosaur"
+    },
 
-    options:[
+    {
+      name:"Frog",
+      image:"assets/frog.png",
+      value:"frog"
+    },
 
-      {
-        name:"Dinosaur",
-        image:"assets/dinosaur.png",
-        value:"dinosaur"
-      },
+    {
+      name:"Carrot",
+      image:"assets/carrot.png",
+      value:"carrot"
+    }
 
-      {
-        name:"Frog",
-        image:"assets/frog.png",
-        value:"frog"
-      },
+  ]
+},
 
-      {
-        name:"Carrot",
-        image:"assets/carrot.png",
-        value:"carrot"
-      }
+{
+  letter:"D",
 
-    ]
+  sound:"assets/letter d sound.mp3",
 
-  },
+  correct:"dice",
 
-  {
-    letter:"D",
+  options:[
 
-    sound:"assets/letter d sound.mp3",
+    {
+      name:"Jelly",
+      image:"assets/jelly.png",
+      value:"jelly"
+    },
 
-    correct:"dice",
+    {
+      name:"Dice",
+      image:"assets/dice.png",
+      value:"dice"
+    },
 
-    options:[
+    {
+      name:"Gun",
+      image:"assets/gun.png",
+      value:"gun"
+    }
 
-      {
-        name:"Jelly",
-        image:"assets/jelly.png",
-        value:"jelly"
-      },
-
-      {
-        name:"Dice",
-        image:"assets/dice.png",
-        value:"dice"
-      },
-
-      {
-        name:"Gun",
-        image:"assets/gun.png",
-        value:"gun"
-      }
-
-    ]
-
-  }
+  ]
+}
 
 ];
 
@@ -151,41 +147,133 @@ shuffleArray(gameData);
 // =========================
 
 const splashScreen =
-document.getElementById("splashScreen");
+document.getElementById(
+  "splashScreen"
+);
 
 const gameWrapper =
-document.getElementById("gameWrapper");
+document.getElementById(
+  "gameWrapper"
+);
 
 const optionsPanel =
-document.getElementById("optionsPanel");
+document.getElementById(
+  "optionsPanel"
+);
 
 const answerZone =
-document.getElementById("answerZone");
+document.getElementById(
+  "answerZone"
+);
 
 const playSoundBtn =
-document.getElementById("playSoundBtn");
+document.getElementById(
+  "playSoundBtn"
+);
 
 const nextBtn =
-document.getElementById("nextBtn");
+document.getElementById(
+  "nextBtn"
+);
 
 const playAgainBtn =
-document.getElementById("playAgainBtn");
+document.getElementById(
+  "playAgainBtn"
+);
 
 const gameContent =
-document.getElementById("gameContent");
+document.getElementById(
+  "gameContent"
+);
 
 const completeScreen =
-document.getElementById("completeScreen");
+document.getElementById(
+  "completeScreen"
+);
 
 const correctSound =
-document.getElementById("correctSound");
+document.getElementById(
+  "correctSound"
+);
 
 const wrongSound =
-document.getElementById("wrongSound");
+document.getElementById(
+  "wrongSound"
+);
+
+// =========================
+// AUDIO OBJECT
+// =========================
+
+const letterAudio =
+new Audio();
+
+letterAudio.preload = "auto";
+
+// =========================
+// VARIABLES
+// =========================
 
 let currentQuestion = 0;
 
 let selectedAnswer = null;
+
+// =========================
+// IOS AUDIO UNLOCK
+// =========================
+
+function unlockAudio(){
+
+  letterAudio.play()
+  .then(() => {
+
+    letterAudio.pause();
+    letterAudio.currentTime = 0;
+
+  })
+  .catch(() => {});
+
+  correctSound.play()
+  .then(() => {
+
+    correctSound.pause();
+    correctSound.currentTime = 0;
+
+  })
+  .catch(() => {});
+
+  wrongSound.play()
+  .then(() => {
+
+    wrongSound.pause();
+    wrongSound.currentTime = 0;
+
+  })
+  .catch(() => {});
+
+  document.removeEventListener(
+    "touchstart",
+    unlockAudio
+  );
+
+  document.removeEventListener(
+    "click",
+    unlockAudio
+  );
+
+}
+
+document.addEventListener(
+  "touchstart",
+  unlockAudio,
+  { once:true }
+);
+
+document.addEventListener(
+  "click",
+  unlockAudio,
+  { once:true }
+);
 
 // =========================
 // SPLASH SCREEN
@@ -221,16 +309,16 @@ function loadQuestion(){
 
   selectedAnswer = null;
 
-  answerZone.innerHTML = `
-    <div class="drop-text">
-      Drop Here
-    </div>
-  `;
-
   answerZone.classList.remove(
     "correct",
     "wrong"
   );
+
+  answerZone.innerHTML = `
+    <div class="drop-text">
+      Tap Here To Submit
+    </div>
+  `;
 
   const data =
   shuffledGameData[currentQuestion];
@@ -270,17 +358,29 @@ function loadQuestion(){
       img.dataset.value =
       option.value;
 
-      // Desktop drag
+      // Desktop Drag
       img.addEventListener(
         "dragstart",
         dragStart
       );
 
-      // Mobile tap support
+      // Mobile Tap
       img.addEventListener(
         "click",
         () => {
+
           selectImage(option);
+
+        }
+      );
+
+      // Touch devices
+      img.addEventListener(
+        "touchstart",
+        () => {
+
+          selectImage(option);
+
         }
       );
 
@@ -317,10 +417,19 @@ function playLetterSound(){
   const data =
   shuffledGameData[currentQuestion];
 
-  const sound =
-  new Audio(data.sound);
+  letterAudio.src =
+  data.sound;
 
-  sound.play();
+  letterAudio.load();
+
+  const playPromise =
+  letterAudio.play();
+
+  if(playPromise !== undefined){
+
+    playPromise.catch(() => {});
+
+  }
 
 }
 
@@ -328,6 +437,30 @@ playSoundBtn.addEventListener(
   "click",
   playLetterSound
 );
+
+playSoundBtn.addEventListener(
+  "touchstart",
+  playLetterSound
+);
+
+// =========================
+// SELECT IMAGE
+// =========================
+
+function selectImage(option){
+
+  selectedAnswer =
+  option.value;
+
+  answerZone.innerHTML = `
+    <div class="drop-text">
+      Selected: ${option.name}
+      <br><br>
+      Tap Here To Submit
+    </div>
+  `;
+
+}
 
 // =========================
 // DESKTOP DRAG
@@ -352,30 +485,11 @@ answerZone.addEventListener(
 
     e.preventDefault();
 
-    answerZone.classList.add(
-      "hovered"
-    );
-
   }
 );
 
 // =========================
-// DRAG LEAVE
-// =========================
-
-answerZone.addEventListener(
-  "dragleave",
-  () => {
-
-    answerZone.classList.remove(
-      "hovered"
-    );
-
-  }
-);
-
-// =========================
-// DESKTOP DROP
+// DROP DESKTOP
 // =========================
 
 answerZone.addEventListener(
@@ -383,10 +497,6 @@ answerZone.addEventListener(
   (e) => {
 
     e.preventDefault();
-
-    answerZone.classList.remove(
-      "hovered"
-    );
 
     const draggedValue =
     e.dataTransfer.getData(
@@ -399,28 +509,24 @@ answerZone.addEventListener(
 );
 
 // =========================
-// MOBILE TAP SELECT
-// =========================
-
-function selectImage(option){
-
-  selectedAnswer =
-  option.value;
-
-  answerZone.innerHTML = `
-    <div class="drop-text">
-      Tap Here To Submit
-    </div>
-  `;
-
-}
-
-// =========================
-// MOBILE TAP DROP
+// MOBILE TAP SUBMIT
 // =========================
 
 answerZone.addEventListener(
   "click",
+  () => {
+
+    if(selectedAnswer){
+
+      checkAnswer(selectedAnswer);
+
+    }
+
+  }
+);
+
+answerZone.addEventListener(
+  "touchstart",
   () => {
 
     if(selectedAnswer){
@@ -494,33 +600,40 @@ function checkAnswer(answer){
 
 nextBtn.addEventListener(
   "click",
-  () => {
+  nextQuestion
+);
 
-    currentQuestion++;
+nextBtn.addEventListener(
+  "touchstart",
+  nextQuestion
+);
 
-    if(
-      currentQuestion <
-      shuffledGameData.length
-    ){
+function nextQuestion(){
 
-      loadQuestion();
+  currentQuestion++;
 
-    }
+  if(
+    currentQuestion <
+    shuffledGameData.length
+  ){
 
-    else{
-
-      gameContent.style.display =
-      "none";
-
-      completeScreen.style.display =
-      "block";
-
-      startConfetti();
-
-    }
+    loadQuestion();
 
   }
-);
+
+  else{
+
+    gameContent.style.display =
+    "none";
+
+    completeScreen.style.display =
+    "block";
+
+    startConfetti();
+
+  }
+
+}
 
 // =========================
 // PLAY AGAIN
@@ -528,23 +641,30 @@ nextBtn.addEventListener(
 
 playAgainBtn.addEventListener(
   "click",
-  () => {
-
-    shuffledGameData =
-    shuffleArray(gameData);
-
-    currentQuestion = 0;
-
-    completeScreen.style.display =
-    "none";
-
-    gameContent.style.display =
-    "block";
-
-    loadQuestion();
-
-  }
+  restartGame
 );
+
+playAgainBtn.addEventListener(
+  "touchstart",
+  restartGame
+);
+
+function restartGame(){
+
+  shuffledGameData =
+  shuffleArray(gameData);
+
+  currentQuestion = 0;
+
+  completeScreen.style.display =
+  "none";
+
+  gameContent.style.display =
+  "block";
+
+  loadQuestion();
+
+}
 
 // =========================
 // CONFETTI
@@ -553,7 +673,7 @@ playAgainBtn.addEventListener(
 function startConfetti(){
 
   const duration =
-  5 * 1000;
+  5000;
 
   const end =
   Date.now() + duration;
