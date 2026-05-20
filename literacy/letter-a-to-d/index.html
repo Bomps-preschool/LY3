@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8" />
@@ -27,19 +26,8 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
-
   font-family:Arial,sans-serif;
-
-  background-color:#fff7ef;
-
-  background-image:
-  url("./assets/letters-bg.png");
-
-  background-size:cover;
-
-  background-position:center;
-
-  background-repeat:no-repeat;
+  background:#fff7ef;
 }
 
 /* =========================
@@ -49,14 +37,11 @@ html,body{
 #splash{
   position:fixed;
   inset:0;
-
   background:white;
-
   z-index:9999;
 
   display:flex;
   flex-direction:column;
-
   justify-content:center;
   align-items:center;
 }
@@ -64,7 +49,6 @@ html,body{
 #splash img{
   width:240px;
   max-width:75%;
-
   object-fit:contain;
 }
 
@@ -99,9 +83,10 @@ html,body{
   padding:10px;
 
   background:
-  rgba(255,255,255,0.72);
-
-  backdrop-filter:blur(2px);
+  linear-gradient(
+    #fff7ef,
+    #eef5ff
+  );
 }
 
 .header{
@@ -261,6 +246,8 @@ html,body{
   max-height:210px;
 
   object-fit:contain;
+
+  loading:eager;
 }
 
 .card div{
@@ -693,13 +680,21 @@ function preloadAssets(){
 
   gameData.forEach(item => {
 
+    /* IMAGES */
+
     item.options.forEach(opt => {
 
       const img = new Image();
 
       img.src = opt.image;
 
+      img.loading = "eager";
+
+      img.decoding = "sync";
+
     });
+
+    /* LETTER AUDIO */
 
     const audio = new Audio();
 
@@ -770,7 +765,12 @@ function loadQuestion(){
 
   optionsBox.innerHTML = "";
 
+  optionsBox.style.visibility =
+  "hidden";
+
   const q = questions[current];
+
+  /* PRELOAD CURRENT SOUND */
 
   letterAudio.pause();
 
@@ -779,6 +779,8 @@ function loadQuestion(){
   letterAudio.src = q.sound;
 
   letterAudio.load();
+
+  /* RANDOMISE OPTIONS */
 
   shuffle([...q.options])
   .forEach(opt => {
@@ -794,6 +796,10 @@ function loadQuestion(){
     img.src = opt.image;
 
     img.alt = opt.name;
+
+    img.loading = "eager";
+
+    img.decoding = "sync";
 
     const label =
     document.createElement("div");
@@ -813,6 +819,15 @@ function loadQuestion(){
     optionsBox.appendChild(card);
 
   });
+
+  requestAnimationFrame(() => {
+
+    optionsBox.style.visibility =
+    "visible";
+
+  });
+
+  /* AUTO PLAY LETTER SOUND */
 
   setTimeout(() => {
 
