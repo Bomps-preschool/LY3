@@ -6,7 +6,7 @@
 
 <meta
 name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+content="width=device-width, initial-scale=1.0"
 >
 
 <title>Letters Aa to Dd Game</title>
@@ -22,9 +22,8 @@ content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable
 body{
   font-family:Arial,sans-serif;
   background:#f7f4ee;
-  overflow-x:hidden;
   color:#333;
-  touch-action:manipulation;
+  overflow-x:hidden;
 }
 
 /* =========================
@@ -34,6 +33,7 @@ body{
 #splashScreen{
   position:fixed;
   inset:0;
+
   background:#fff7ef;
 
   display:flex;
@@ -45,7 +45,7 @@ body{
 }
 
 #splashScreen img{
-  width:min(320px,75vw);
+  width:min(320px,70vw);
   height:auto;
 }
 
@@ -72,6 +72,7 @@ body{
 
 .game-wrapper{
   display:none;
+
   min-height:100vh;
 
   padding:20px;
@@ -80,13 +81,13 @@ body{
   linear-gradient(
     to bottom,
     #fff7ef,
-    #eef4ff
+    #eef5ff
   );
 }
 
 .top-bar{
   text-align:center;
-  margin-bottom:20px;
+  margin-bottom:25px;
 }
 
 .top-bar h1{
@@ -111,7 +112,7 @@ body{
 
 .game-area{
   display:flex;
-  gap:20px;
+  gap:25px;
 
   flex-wrap:wrap;
 
@@ -144,7 +145,7 @@ body{
 
 .sound-title{
   font-size:
-  clamp(1.5rem,3vw,2.2rem);
+  clamp(1.6rem,3vw,2.2rem);
 
   color:#4a6484;
 
@@ -174,30 +175,31 @@ body{
 }
 
 /* =========================
-   DROP ZONE
+   ANSWER BOX
 ========================= */
 
 #answerZone{
   width:100%;
 
-  min-height:160px;
+  min-height:170px;
 
   margin-top:25px;
 
   border-radius:24px;
 
-  border:4px dashed #d5d5d5;
+  border:
+  4px dashed #d8d8d8;
 
   display:flex;
 
   justify-content:center;
   align-items:center;
 
+  text-align:center;
+
   background:#fafafa;
 
   padding:20px;
-
-  text-align:center;
 }
 
 #answerZone.correct{
@@ -213,6 +215,7 @@ body{
 .drop-text{
   font-size:1.3rem;
   font-weight:bold;
+
   color:#666;
 }
 
@@ -352,6 +355,7 @@ body{
   .speaker-btn{
     width:130px;
     height:130px;
+
     font-size:3.5rem;
   }
 
@@ -363,7 +367,7 @@ body{
 
 <body>
 
-<!-- SPLASH -->
+<!-- SPLASH SCREEN -->
 
 <div id="splashScreen">
 
@@ -401,7 +405,7 @@ id="gameWrapper"
 
   <div class="game-area">
 
-    <!-- LEFT -->
+    <!-- LEFT PANEL -->
 
     <div class="sound-panel">
 
@@ -417,7 +421,7 @@ id="gameWrapper"
       </button>
 
       <div class="instruction">
-        Tap or drag the correct picture into the box below.
+        Tap the correct picture and submit your answer.
       </div>
 
       <div id="answerZone">
@@ -430,7 +434,7 @@ id="gameWrapper"
 
     </div>
 
-    <!-- RIGHT -->
+    <!-- RIGHT PANEL -->
 
     <div
     class="options-panel"
@@ -448,7 +452,7 @@ id="gameWrapper"
 
 </div>
 
-<!-- COMPLETE -->
+<!-- COMPLETE SCREEN -->
 
 <div
 class="complete-screen"
@@ -501,132 +505,132 @@ preload="auto"
 <script>
 
 // =========================
-// DATA
+// GAME DATA
 // =========================
 
 const gameData = [
 
 {
-letter:"A",
+  letter:"A",
 
-sound:"assets/letter a sound.m4a",
+  sound:"assets/letter a sound.m4a",
 
-correct:"alligator",
+  correct:"alligator",
 
-options:[
+  options:[
 
-{
-name:"Cap",
-image:"assets/cap.png",
-value:"cap"
-},
+    {
+      name:"Cap",
+      image:"assets/cap.png",
+      value:"cap"
+    },
 
-{
-name:"Alligator",
-image:"assets/alligator.png",
-value:"alligator"
-},
+    {
+      name:"Alligator",
+      image:"assets/alligator.png",
+      value:"alligator"
+    },
 
-{
-name:"Zip",
-image:"assets/zip.png",
-value:"zip"
-}
+    {
+      name:"Zip",
+      image:"assets/zip.png",
+      value:"zip"
+    }
 
-]
-
-},
-
-{
-letter:"B",
-
-sound:"assets/letter b sound.m4a",
-
-correct:"bird",
-
-options:[
-
-{
-name:"Bird",
-image:"assets/bird.png",
-value:"bird"
-},
-
-{
-name:"Dog",
-image:"assets/dog.png",
-value:"dog"
-},
-
-{
-name:"Flower",
-image:"assets/flower.png",
-value:"flower"
-}
-
-]
+  ]
 
 },
 
 {
-letter:"C",
+  letter:"B",
 
-sound:"assets/letter c sound.m4a",
+  sound:"assets/letter b sound.m4a",
 
-correct:"carrot",
+  correct:"bird",
 
-options:[
+  options:[
 
-{
-name:"Dinosaur",
-image:"assets/dinosaur.png",
-value:"dinosaur"
+    {
+      name:"Bird",
+      image:"assets/bird.png",
+      value:"bird"
+    },
+
+    {
+      name:"Dog",
+      image:"assets/dog.png",
+      value:"dog"
+    },
+
+    {
+      name:"Flower",
+      image:"assets/flower.png",
+      value:"flower"
+    }
+
+  ]
+
 },
 
 {
-name:"Frog",
-image:"assets/frog.png",
-value:"frog"
+  letter:"C",
+
+  sound:"assets/letter c sound.m4a",
+
+  correct:"carrot",
+
+  options:[
+
+    {
+      name:"Dinosaur",
+      image:"assets/dinosaur.png",
+      value:"dinosaur"
+    },
+
+    {
+      name:"Frog",
+      image:"assets/frog.png",
+      value:"frog"
+    },
+
+    {
+      name:"Carrot",
+      image:"assets/carrot.png",
+      value:"carrot"
+    }
+
+  ]
+
 },
 
 {
-name:"Carrot",
-image:"assets/carrot.png",
-value:"carrot"
-}
+  letter:"D",
 
-]
+  sound:"assets/letter d sound.mp3",
 
-},
+  correct:"dice",
 
-{
-letter:"D",
+  options:[
 
-sound:"assets/letter d sound.mp3",
+    {
+      name:"Jelly",
+      image:"assets/jelly.png",
+      value:"jelly"
+    },
 
-correct:"dice",
+    {
+      name:"Dice",
+      image:"assets/dice.png",
+      value:"dice"
+    },
 
-options:[
+    {
+      name:"Gun",
+      image:"assets/gun.png",
+      value:"gun"
+    }
 
-{
-name:"Jelly",
-image:"assets/jelly.png",
-value:"jelly"
-},
-
-{
-name:"Dice",
-image:"assets/dice.png",
-value:"dice"
-},
-
-{
-name:"Gun",
-image:"assets/gun.png",
-value:"gun"
-}
-
-]
+  ]
 
 }
 
@@ -638,8 +642,8 @@ value:"gun"
 
 function shuffleArray(array){
 
-return [...array]
-.sort(() => Math.random() - 0.5);
+  return [...array]
+  .sort(() => Math.random() - 0.5);
 
 }
 
@@ -730,13 +734,13 @@ startGame
 
 function startGame(){
 
-splashScreen.style.display =
-"none";
+  splashScreen.style.display =
+  "none";
 
-gameWrapper.style.display =
-"block";
+  gameWrapper.style.display =
+  "block";
 
-loadQuestion();
+  loadQuestion();
 
 }
 
@@ -746,72 +750,69 @@ loadQuestion();
 
 function loadQuestion(){
 
-nextBtn.style.display =
-"none";
+  nextBtn.style.display =
+  "none";
 
-selectedAnswer = null;
+  selectedAnswer = null;
 
-answerZone.classList.remove(
-"correct",
-"wrong"
-);
+  answerZone.classList.remove(
+  "correct",
+  "wrong"
+  );
 
-answerZone.innerHTML = `
-<div class="drop-text">
-Select a Picture
-</div>
-`;
+  answerZone.innerHTML = `
+  <div class="drop-text">
+    Select a Picture
+  </div>
+  `;
 
-const data =
-shuffledGameData[currentQuestion];
+  const data =
+  shuffledGameData[currentQuestion];
 
-optionsPanel.innerHTML = "";
+  optionsPanel.innerHTML = "";
 
-const shuffledOptions =
-shuffleArray(data.options);
+  const shuffledOptions =
+  shuffleArray(data.options);
 
-shuffledOptions.forEach(
-option => {
+  shuffledOptions.forEach(
+  option => {
 
-const card =
-document.createElement("div");
+    const card =
+    document.createElement("div");
 
-card.className =
-"option-card";
+    card.className =
+    "option-card";
 
-card.dataset.value =
-option.value;
+    card.innerHTML = `
+    <img
+    src="${option.image}"
+    alt="${option.name}"
+    >
 
-card.innerHTML = `
-<img
-src="${option.image}"
-alt="${option.name}"
->
+    <div class="image-label">
+      ${option.name}
+    </div>
+    `;
 
-<div class="image-label">
-${option.name}
-</div>
-`;
+    card.addEventListener(
+    "click",
+    () => {
 
-card.addEventListener(
-"click",
-() => {
+      selectOption(
+      option.value,
+      option.name,
+      card
+      );
 
-selectOption(
-option.value,
-card,
-option.name
-);
+    }
+    );
 
-}
-);
+    optionsPanel.appendChild(card);
 
-optionsPanel.appendChild(card);
+  }
+  );
 
-}
-);
-
-playLetterSound();
+  playLetterSound();
 
 }
 
@@ -821,13 +822,13 @@ playLetterSound();
 
 function playLetterSound(){
 
-const data =
-shuffledGameData[currentQuestion];
+  const data =
+  shuffledGameData[currentQuestion];
 
-letterAudio.src =
-data.sound;
+  letterAudio.src =
+  data.sound;
 
-letterAudio.play();
+  letterAudio.play();
 
 }
 
@@ -842,35 +843,35 @@ playLetterSound
 
 function selectOption(
 value,
-card,
-name
+name,
+card
 ){
 
-document
-.querySelectorAll(".option-card")
-.forEach(card => {
+  document
+  .querySelectorAll(".option-card")
+  .forEach(card => {
 
-card.classList.remove(
-"selected"
-);
+    card.classList.remove(
+    "selected"
+    );
 
-});
+  });
 
-card.classList.add(
-"selected"
-);
+  card.classList.add(
+  "selected"
+  );
 
-selectedAnswer = value;
+  selectedAnswer = value;
 
-answerZone.innerHTML = `
-<div class="drop-text">
-Selected:
-<br><br>
-${name}
-<br><br>
-Tap Here To Submit
-</div>
-`;
+  answerZone.innerHTML = `
+  <div class="drop-text">
+    Selected:
+    <br><br>
+    ${name}
+    <br><br>
+    Tap Here To Submit
+  </div>
+  `;
 
 }
 
@@ -885,58 +886,58 @@ submitAnswer
 
 function submitAnswer(){
 
-if(!selectedAnswer) return;
+  if(!selectedAnswer) return;
 
-const correctAnswer =
-shuffledGameData[
-currentQuestion
-].correct;
+  const correctAnswer =
+  shuffledGameData[
+  currentQuestion
+  ].correct;
 
-if(
-selectedAnswer ===
-correctAnswer
-){
+  if(
+  selectedAnswer ===
+  correctAnswer
+  ){
 
-answerZone.classList.remove(
-"wrong"
-);
+    answerZone.classList.remove(
+    "wrong"
+    );
 
-answerZone.classList.add(
-"correct"
-);
+    answerZone.classList.add(
+    "correct"
+    );
 
-correctSound.currentTime = 0;
+    correctSound.currentTime = 0;
 
-correctSound.play();
+    correctSound.play();
 
-nextBtn.style.display =
-"block";
+    nextBtn.style.display =
+    "block";
 
-}
+  }
 
-else{
+  else{
 
-answerZone.classList.remove(
-"correct"
-);
+    answerZone.classList.remove(
+    "correct"
+    );
 
-answerZone.classList.add(
-"wrong"
-);
+    answerZone.classList.add(
+    "wrong"
+    );
 
-wrongSound.currentTime = 0;
+    wrongSound.currentTime = 0;
 
-wrongSound.play();
+    wrongSound.play();
 
-setTimeout(() => {
+    setTimeout(() => {
 
-answerZone.classList.remove(
-"wrong"
-);
+      answerZone.classList.remove(
+      "wrong"
+      );
 
-}, 900);
+    }, 900);
 
-}
+  }
 
 }
 
@@ -951,28 +952,28 @@ nextQuestion
 
 function nextQuestion(){
 
-currentQuestion++;
+  currentQuestion++;
 
-if(
-currentQuestion <
-shuffledGameData.length
-){
+  if(
+  currentQuestion <
+  shuffledGameData.length
+  ){
 
-loadQuestion();
+    loadQuestion();
 
-}
+  }
 
-else{
+  else{
 
-gameContent.style.display =
-"none";
+    gameContent.style.display =
+    "none";
 
-completeScreen.style.display =
-"block";
+    completeScreen.style.display =
+    "block";
 
-startConfetti();
+    startConfetti();
 
-}
+  }
 
 }
 
@@ -987,18 +988,18 @@ restartGame
 
 function restartGame(){
 
-shuffledGameData =
-shuffleArray(gameData);
+  shuffledGameData =
+  shuffleArray(gameData);
 
-currentQuestion = 0;
+  currentQuestion = 0;
 
-completeScreen.style.display =
-"none";
+  completeScreen.style.display =
+  "none";
 
-gameContent.style.display =
-"block";
+  gameContent.style.display =
+  "block";
 
-loadQuestion();
+  loadQuestion();
 
 }
 
@@ -1008,48 +1009,48 @@ loadQuestion();
 
 function startConfetti(){
 
-const duration = 5000;
+  const duration = 5000;
 
-const end =
-Date.now() + duration;
+  const end =
+  Date.now() + duration;
 
-(function frame(){
+  (function frame(){
 
-confetti({
+    confetti({
 
-particleCount:4,
+      particleCount:4,
 
-angle:60,
+      angle:60,
 
-spread:55,
+      spread:55,
 
-origin:{ x:0 }
+      origin:{ x:0 }
 
-});
+    });
 
-confetti({
+    confetti({
 
-particleCount:4,
+      particleCount:4,
 
-angle:120,
+      angle:120,
 
-spread:55,
+      spread:55,
 
-origin:{ x:1 }
+      origin:{ x:1 }
 
-});
+    });
 
-if(
-Date.now() < end
-){
+    if(
+    Date.now() < end
+    ){
 
-requestAnimationFrame(
-frame
-);
+      requestAnimationFrame(
+      frame
+      );
 
-}
+    }
 
-})();
+  })();
 
 }
 
