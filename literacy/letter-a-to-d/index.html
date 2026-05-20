@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Letters Aa to Dd Game</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:Arial,sans-serif;
+      background:#f6f4ef;
+      overflow-x:hidden;
+      color:#333;
+    }
+
+    /* =========================
+       SPLASH SCREEN
+    ========================== */
+
+    #splashScreen{
+      position:fixed;
+      inset:0;
+      background:#fff8ef;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+
+      z-index:9999;
+    }
+
+    #splashScreen img{
+      width:min(320px,70vw);
+      height:auto;
+    }
+
+    /* =========================
+       MAIN GAME
+    ========================== */
+
+    .game-wrapper{
+      display:none;
+      min-height:100vh;
+
+      padding:20px;
+
+      background:
+      linear-gradient(
+        to bottom,
+        #fff7ef,
+        #eef5ff
+      );
+    }
+
+    .top-bar{
+      text-align:center;
+      margin-bottom:25px;
+    }
+
+    .top-bar h1{
+      font-size:
+      clamp(2rem,4vw,3rem);
+
+      color:#5b4b8a;
+
+      margin-bottom:10px;
+    }
+
+    .top-bar p{
+      font-size:
+      clamp(1rem,2vw,1.3rem);
+
+      color:#666;
+    }
+
+    .game-area{
+      display:flex;
+      gap:25px;
+
+      flex-wrap:wrap;
+
+      justify-content:center;
+      align-items:stretch;
+
+      max-width:1400px;
+      margin:auto;
+    }
+
+    /* =========================
+       LEFT PANEL
+    ========================== */
+
+    .sound-panel{
+      flex:1 1 300px;
+      max-width:340px;
+
+      background:white;
+
+      border-radius:24px;
+
+      padding:25px;
+
+      box-shadow:
+      0 8px 20px rgba(0,0,0,0.08);
+
+      display:flex;
+      flex-direction:column;
+
+      align-items:center;
+      justify-content:center;
+
+      min-height:500px;
+    }
+
+    .sound-title{
+      font-size:
+      clamp(1.7rem,3vw,2.4rem);
+
+      text-align:center;
+
+      color:#4a6484;
+
+      margin-bottom:20px;
+    }
+
+    .speaker-btn{
+      width:170px;
+      height:170px;
+
+      border:none;
+      border-radius:50%;
+
+      background:#ffd27f;
+
+      font-size:5rem;
+
+      cursor:pointer;
+
+      transition:
+      transform 0.2s ease;
+    }
+
+    .speaker-btn:hover{
+      transform:scale(1.03);
+    }
+
+    .speaker-btn:active{
+      transform:scale(0.97);
+    }
+
+    .instruction{
+      margin-top:20px;
+
+      text-align:center;
+
+      font-size:1.1rem;
+
+      line-height:1.5;
+    }
+
+    /* =========================
+       DROP ZONE
+    ========================== */
+
+    #answerZone{
+      width:100%;
+
+      min-height:180px;
+
+      margin-top:25px;
+
+      border-radius:24px;
+
+      border:
+      4px dashed #d8d8d8;
+
+      display:flex;
+
+      justify-content:center;
+      align-items:center;
+
+      background:#fafafa;
+
+      transition:all 0.2s ease;
+
+      padding:20px;
+    }
+
+    #answerZone.hovered{
+      border-color:#8cb7ff;
+      background:#f2f7ff;
+    }
+
+    #answerZone.correct{
+      border-color:#81c784;
+      background:#effff0;
+    }
+
+    #answerZone.wrong{
+      border-color:#ef9a9a;
+      background:#fff0f0;
+    }
+
+    .drop-text{
+      font-size:1.4rem;
+      font-weight:bold;
+
+      color:#666;
+
+      text-align:center;
+    }
+
+    /* =========================
+       OPTIONS
+    ========================== */
+
+    .options-panel{
+      flex:3 1 700px;
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(220px,1fr)
+      );
+
+      gap:22px;
+    }
+
+    .option-card{
+      background:white;
+
+      border-radius:24px;
+
+      padding:20px;
+
+      box-shadow:
+      0 8px 20px rgba(0,0,0,0.08);
+
+      display:flex;
+      flex-direction:column;
+
+      justify-content:center;
+      align-items:center;
+
+      min-height:420px;
+    }
+
+    .image-wrapper{
+      width:100%;
+      flex:1;
+
+      display:flex;
+
+      justify-content:center;
+      align-items:center;
+    }
+
+    .draggable{
+      width:100%;
+
+      max-width:240px;
+      max-height:240px;
+
+      object-fit:contain;
+
+      cursor:grab;
+
+      user-select:none;
+
+      -webkit-user-drag:element;
+    }
+
+    .image-label{
+      margin-top:18px;
+
+      font-size:1.5rem;
+      font-weight:bold;
+
+      text-align:center;
+
+      color:#444;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================== */
+
+    .game-btn{
+      display:none;
+
+      margin:30px auto 0;
+
+      padding:14px 30px;
+
+      border:none;
+
+      border-radius:16px;
+
+      background:#7fb77e;
+
+      color:white;
+
+      font-size:1.2rem;
+
+      cursor:pointer;
+
+      box-shadow:
+      0 6px 12px rgba(0,0,0,0.12);
+    }
+
+    .game-btn:hover{
+      opacity:0.95;
+    }
+
+    /* =========================
+       COMPLETE SCREEN
+    ========================== */
+
+    .complete-screen{
+      display:none;
+
+      text-align:center;
+
+      padding:80px 20px;
+    }
+
+    .complete-screen h2{
+      font-size:
+      clamp(2rem,4vw,3.5rem);
+
+      color:#5b4b8a;
+
+      margin-bottom:20px;
+    }
+
+    .complete-screen p{
+      font-size:1.4rem;
+      color:#555;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media(max-width:768px){
+
+      .game-area{
+        flex-direction:column;
+      }
+
+      .sound-panel{
+        max-width:100%;
+        min-height:auto;
+      }
+
+      .option-card{
+        min-height:320px;
+      }
+
+      .speaker-btn{
+        width:140px;
+        height:140px;
+
+        font-size:4rem;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- =========================
+       SPLASH SCREEN
+  ========================== -->
+
+  <div id="splashScreen">
+
+    <img
+      src="assets/innovine-logo.png"
+      alt="Innovine Logo"
+    >
+
+  </div>
+
+  <!-- =========================
+       MAIN GAME
+  ========================== -->
+
+  <div
+    class="game-wrapper"
+    id="gameWrapper"
+  >
+
+    <div class="top-bar">
+
+      <h1>
+        Letters Aa to Dd
+      </h1>
+
+      <p>
+        Listen to the sound and drag the correct picture.
+      </p>
+
+    </div>
+
+    <div id="gameContent">
+
+      <div class="game-area">
+
+        <!-- LEFT PANEL -->
+
+        <div class="sound-panel">
+
+          <div class="sound-title">
+            Listen to the Letter Sound
+          </div>
+
+          <button
+            class="speaker-btn"
+            id="playSoundBtn"
+          >
+            🔊
+          </button>
+
+          <div class="instruction">
+            Drag the correct picture into the box below.
+          </div>
+
+          <div id="answerZone">
+
+            <div class="drop-text">
+              Drop Here
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div
+          class="options-panel"
+          id="optionsPanel"
+        ></div>
+
+      </div>
+
+      <button
+        class="game-btn"
+        id="nextBtn"
+      >
+        Next
+      </button>
+
+    </div>
+
+    <!-- =========================
+         COMPLETE SCREEN
+    ========================== -->
+
+    <div
+      class="complete-screen"
+      id="completeScreen"
+    >
+
+      <h2>
+        Great Job!
+      </h2>
+
+      <p>
+        You completed the game.
+      </p>
+
+      <button
+        class="game-btn"
+        id="playAgainBtn"
+        style="display:block; margin-top:30px;"
+      >
+        Play Again
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+       AUDIO
+  ========================== -->
+
+  <audio
+    id="correctSound"
+    src="assets/right.mp3"
+  ></audio>
+
+  <audio
+    id="wrongSound"
+    src="assets/wrong.mp3"
+  ></audio>
+
+  <!-- =========================
+       CONFETTI LIBRARY
+  ========================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <script>
+
+    // =========================
+    // GAME DATA
+    // =========================
+
+    const gameData = [
+
+      {
+        letter:"A",
+
+        sound:"assets/a.mp3",
+
+        correct:"alligator",
+
+        options:[
+
+          {
+            name:"Cap",
+            image:"assets/cap.png",
+            value:"cap"
+          },
+
+          {
+            name:"Alligator",
+            image:"assets/alligator.png",
+            value:"alligator"
+          },
+
+          {
+            name:"Zip",
+            image:"assets/zip.png",
+            value:"zip"
+          }
+
+        ]
+
+      },
+
+      {
+        letter:"B",
+
+        sound:"assets/b.mp3",
+
+        correct:"bird",
+
+        options:[
+
+          {
+            name:"Bird",
+            image:"assets/bird.png",
+            value:"bird"
+          },
+
+          {
+            name:"Dog",
+            image:"assets/dog.png",
+            value:"dog"
+          },
+
+          {
+            name:"Flower",
+            image:"assets/flower.png",
+            value:"flower"
+          }
+
+        ]
+
+      },
+
+      {
+        letter:"C",
+
+        sound:"assets/c.mp3",
+
+        correct:"carrot",
+
+        options:[
+
+          {
+            name:"Dinosaur",
+            image:"assets/dinosaur.png",
+            value:"dinosaur"
+          },
+
+          {
+            name:"Frog",
+            image:"assets/frog.png",
+            value:"frog"
+          },
+
+          {
+            name:"Carrot",
+            image:"assets/carrot.png",
+            value:"carrot"
+          }
+
+        ]
+
+      },
+
+      {
+        letter:"D",
+
+        sound:"assets/d.mp3",
+
+        correct:"dice",
+
+        options:[
+
+          {
+            name:"Jelly",
+            image:"assets/jelly.png",
+            value:"jelly"
+          },
+
+          {
+            name:"Dice",
+            image:"assets/dice.png",
+            value:"dice"
+          },
+
+          {
+            name:"Gun",
+            image:"assets/gun.png",
+            value:"gun"
+          }
+
+        ]
+
+      }
+
+    ];
+
+    // =========================
+    // SHUFFLE FUNCTION
+    // =========================
+
+    function shuffleArray(array){
+
+      return [...array]
+      .sort(() => Math.random() - 0.5);
+
+    }
+
+    // =========================
+    // RANDOMISE LETTER ORDER
+    // =========================
+
+    let shuffledGameData =
+    shuffleArray(gameData);
+
+    // =========================
+    // ELEMENTS
+    // =========================
+
+    const splashScreen =
+    document.getElementById(
+      "splashScreen"
+    );
+
+    const gameWrapper =
+    document.getElementById(
+      "gameWrapper"
+    );
+
+    const optionsPanel =
+    document.getElementById(
+      "optionsPanel"
+    );
+
+    const answerZone =
+    document.getElementById(
+      "answerZone"
+    );
+
+    const playSoundBtn =
+    document.getElementById(
+      "playSoundBtn"
+    );
+
+    const nextBtn =
+    document.getElementById(
+      "nextBtn"
+    );
+
+    const playAgainBtn =
+    document.getElementById(
+      "playAgainBtn"
+    );
+
+    const gameContent =
+    document.getElementById(
+      "gameContent"
+    );
+
+    const completeScreen =
+    document.getElementById(
+      "completeScreen"
+    );
+
+    const correctSound =
+    document.getElementById(
+      "correctSound"
+    );
+
+    const wrongSound =
+    document.getElementById(
+      "wrongSound"
+    );
+
+    let currentQuestion = 0;
+
+    // =========================
+    // SPLASH SCREEN
+    // =========================
+
+    window.addEventListener(
+      "load",
+      () => {
+
+        setTimeout(() => {
+
+          splashScreen.style.display =
+          "none";
+
+          gameWrapper.style.display =
+          "block";
+
+          loadQuestion();
+
+        }, 5000);
+
+      }
+    );
+
+    // =========================
+    // LOAD QUESTION
+    // =========================
+
+    function loadQuestion(){
+
+      nextBtn.style.display =
+      "none";
+
+      answerZone.classList.remove(
+        "correct",
+        "wrong"
+      );
+
+      const data =
+      shuffledGameData[currentQuestion];
+
+      optionsPanel.innerHTML = "";
+
+      const shuffledOptions =
+      shuffleArray(data.options);
+
+      shuffledOptions.forEach(
+        option => {
+
+          const card =
+          document.createElement("div");
+
+          card.className =
+          "option-card";
+
+          const imageWrapper =
+          document.createElement("div");
+
+          imageWrapper.className =
+          "image-wrapper";
+
+          const img =
+          document.createElement("img");
+
+          img.src = option.image;
+
+          img.alt = option.name;
+
+          img.className =
+          "draggable";
+
+          img.draggable = true;
+
+          img.dataset.value =
+          option.value;
+
+          img.addEventListener(
+            "dragstart",
+            dragStart
+          );
+
+          const label =
+          document.createElement("div");
+
+          label.className =
+          "image-label";
+
+          label.textContent =
+          option.name;
+
+          imageWrapper.appendChild(img);
+
+          card.appendChild(
+            imageWrapper
+          );
+
+          card.appendChild(label);
+
+          optionsPanel.appendChild(card);
+
+        }
+      );
+
+      playLetterSound();
+
+    }
+
+    // =========================
+    // PLAY SOUND
+    // =========================
+
+    function playLetterSound(){
+
+      const data =
+      shuffledGameData[currentQuestion];
+
+      const sound =
+      new Audio(data.sound);
+
+      sound.play().catch(() => {});
+
+    }
+
+    playSoundBtn.addEventListener(
+      "click",
+      playLetterSound
+    );
+
+    // =========================
+    // DRAG START
+    // =========================
+
+    function dragStart(e){
+
+      e.dataTransfer.setData(
+        "text/plain",
+        e.target.dataset.value
+      );
+
+    }
+
+    // =========================
+    // DRAG OVER
+    // =========================
+
+    answerZone.addEventListener(
+      "dragover",
+      (e) => {
+
+        e.preventDefault();
+
+        answerZone.classList.add(
+          "hovered"
+        );
+
+      }
+    );
+
+    // =========================
+    // DRAG LEAVE
+    // =========================
+
+    answerZone.addEventListener(
+      "dragleave",
+      () => {
+
+        answerZone.classList.remove(
+          "hovered"
+        );
+
+      }
+    );
+
+    // =========================
+    // DROP
+    // =========================
+
+    answerZone.addEventListener(
+      "drop",
+      (e) => {
+
+        e.preventDefault();
+
+        answerZone.classList.remove(
+          "hovered"
+        );
+
+        const draggedValue =
+        e.dataTransfer.getData(
+          "text/plain"
+        );
+
+        const correctAnswer =
+        shuffledGameData[
+          currentQuestion
+        ].correct;
+
+        if(
+          draggedValue ===
+          correctAnswer
+        ){
+
+          answerZone.classList.add(
+            "correct"
+          );
+
+          correctSound.currentTime = 0;
+
+          correctSound.play();
+
+          nextBtn.style.display =
+          "block";
+
+        }
+
+        else{
+
+          answerZone.classList.add(
+            "wrong"
+          );
+
+          wrongSound.currentTime = 0;
+
+          wrongSound.play();
+
+          setTimeout(() => {
+
+            answerZone.classList.remove(
+              "wrong"
+            );
+
+          }, 800);
+
+        }
+
+      }
+    );
+
+    // =========================
+    // NEXT BUTTON
+    // =========================
+
+    nextBtn.addEventListener(
+      "click",
+      () => {
+
+        currentQuestion++;
+
+        if(
+          currentQuestion <
+          shuffledGameData.length
+        ){
+
+          loadQuestion();
+
+        }
+
+        else{
+
+          gameContent.style.display =
+          "none";
+
+          completeScreen.style.display =
+          "block";
+
+          startConfetti();
+
+        }
+
+      }
+    );
+
+    // =========================
+    // PLAY AGAIN
+    // =========================
+
+    playAgainBtn.addEventListener(
+      "click",
+      () => {
+
+        shuffledGameData =
+        shuffleArray(gameData);
+
+        currentQuestion = 0;
+
+        completeScreen.style.display =
+        "none";
+
+        gameContent.style.display =
+        "block";
+
+        loadQuestion();
+
+      }
+    );
+
+    // =========================
+    // CONFETTI
+    // =========================
+
+    function startConfetti(){
+
+      const duration =
+      5 * 1000;
+
+      const end =
+      Date.now() + duration;
+
+      (function frame(){
+
+        confetti({
+
+          particleCount:4,
+
+          angle:60,
+
+          spread:55,
+
+          origin:{ x:0 }
+
+        });
+
+        confetti({
+
+          particleCount:4,
+
+          angle:120,
+
+          spread:55,
+
+          origin:{ x:1 }
+
+        });
+
+        if(
+          Date.now() < end
+        ){
+
+          requestAnimationFrame(
+            frame
+          );
+
+        }
+
+      })();
+
+    }
+
+  </script>
+
+</body>
+</html>
