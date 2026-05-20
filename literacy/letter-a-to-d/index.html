@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 
 <meta
 name="viewport"
@@ -28,7 +28,7 @@ body{
 
 /* =========================
    SPLASH SCREEN
-========================== */
+========================= */
 
 #splashScreen{
   position:fixed;
@@ -49,7 +49,7 @@ body{
 
 /* =========================
    MAIN GAME
-========================== */
+========================= */
 
 .game-wrapper{
   display:none;
@@ -101,7 +101,7 @@ body{
 
 /* =========================
    LEFT PANEL
-========================== */
+========================= */
 
 .sound-panel{
   flex:1 1 300px;
@@ -173,7 +173,7 @@ body{
 
 /* =========================
    DROP ZONE
-========================== */
+========================= */
 
 #answerZone{
   width:100%;
@@ -225,7 +225,7 @@ body{
 
 /* =========================
    OPTIONS
-========================== */
+========================= */
 
 .options-panel{
   flex:3 1 700px;
@@ -298,7 +298,7 @@ body{
 
 /* =========================
    BUTTONS
-========================== */
+========================= */
 
 .game-btn{
   display:none;
@@ -329,7 +329,7 @@ body{
 
 /* =========================
    COMPLETE SCREEN
-========================== */
+========================= */
 
 .complete-screen{
   display:none;
@@ -355,7 +355,7 @@ body{
 
 /* =========================
    MOBILE
-========================== */
+========================= */
 
 @media(max-width:768px){
 
@@ -389,7 +389,7 @@ body{
 
 <!-- =========================
      SPLASH SCREEN
-========================== -->
+========================= -->
 
 <div id="splashScreen">
 
@@ -402,136 +402,161 @@ body{
 
 <!-- =========================
      MAIN GAME
-========================== -->
+========================= -->
 
 <div
-  class="game-wrapper"
-  id="gameWrapper"
+class="game-wrapper"
+id="gameWrapper"
 >
 
-  <div class="top-bar">
+<div class="top-bar">
 
-    <h1>
-      Letters Aa to Dd
-    </h1>
+  <h1>
+    Letters Aa to Dd
+  </h1>
 
-    <p>
-      Listen to the sound and drag the correct picture.
-    </p>
+  <p>
+    Listen to the sound and drag the correct picture.
+  </p>
 
-  </div>
+</div>
 
-  <div id="gameContent">
+<div id="gameContent">
 
-    <div class="game-area">
+  <div class="game-area">
 
-      <!-- LEFT PANEL -->
+    <!-- LEFT PANEL -->
 
-      <div class="sound-panel">
+    <div class="sound-panel">
 
-        <div class="sound-title">
-          Listen to the Letter Sound
-        </div>
+      <div class="sound-title">
+        Listen to the Letter Sound
+      </div>
 
-        <button
-          class="speaker-btn"
-          id="playSoundBtn"
-        >
-          🔊
-        </button>
+      <button
+      class="speaker-btn"
+      id="playSoundBtn"
+      >
+        🔊
+      </button>
 
-        <div class="instruction">
-          Drag the correct picture into the box below.
-        </div>
+      <div class="instruction">
+        Drag the correct picture into the box below.
+      </div>
 
-        <div id="answerZone">
+      <div id="answerZone">
 
-          <div class="drop-text">
-            Drop Here
-          </div>
-
+        <div class="drop-text">
+          Drop Here
         </div>
 
       </div>
 
-      <!-- RIGHT PANEL -->
-
-      <div
-        class="options-panel"
-        id="optionsPanel"
-      ></div>
-
     </div>
 
-    <button
-      class="game-btn"
-      id="nextBtn"
-    >
-      Next
-    </button>
+    <!-- RIGHT PANEL -->
+
+    <div
+    class="options-panel"
+    id="optionsPanel"
+    ></div>
 
   </div>
 
-  <!-- =========================
-       COMPLETE SCREEN
-  ========================== -->
-
-  <div
-    class="complete-screen"
-    id="completeScreen"
+  <button
+  class="game-btn"
+  id="nextBtn"
   >
+    Next
+  </button>
 
-    <h2>
-      Great Job!
-    </h2>
+</div>
 
-    <p>
-      You completed the game.
-    </p>
+<!-- =========================
+     COMPLETE SCREEN
+========================= -->
 
-    <button
-      class="game-btn"
-      id="playAgainBtn"
-      style="display:block; margin-top:30px;"
-    >
-      Play Again
-    </button>
+<div
+class="complete-screen"
+id="completeScreen"
+>
 
-  </div>
+<h2>
+  Great Job!
+</h2>
+
+<p>
+  You completed the game.
+</p>
+
+<button
+class="game-btn"
+id="playAgainBtn"
+style="display:block; margin-top:30px;"
+>
+  Play Again
+</button>
+
+</div>
 
 </div>
 
 <!-- =========================
      AUDIO
-========================== -->
+========================= -->
 
-<!-- RIGHT SOUND -->
 <audio
-  id="correctSound"
-  src="assets/claps.mp3"
-  preload="auto"
+id="correctSound"
+src="assets/claps.mp3"
+preload="auto"
 ></audio>
 
-<!-- WRONG SOUND -->
 <audio
-  id="wrongSound"
-  src="assets/wrong.mp3"
-  preload="auto"
+id="wrongSound"
+src="assets/wrong.mp3"
+preload="auto"
 ></audio>
 
-<!-- LETTER SOUND -->
 <audio
-  id="letterSound"
-  preload="auto"
+id="letterSound"
+preload="auto"
 ></audio>
 
 <!-- =========================
      CONFETTI LIBRARY
-========================== -->
+========================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
 <script>
+
+// =========================
+// PRELOAD IMAGES
+// =========================
+
+const preloadImages = [
+
+  "assets/alligator.png",
+  "assets/bird.png",
+  "assets/cap.png",
+  "assets/carrot.png",
+  "assets/dice.png",
+  "assets/dinosaur.png",
+  "assets/dog.png",
+  "assets/flower.png",
+  "assets/frog.png",
+  "assets/gun.png",
+  "assets/jelly.png",
+  "assets/zip.png"
+
+];
+
+preloadImages.forEach(src => {
+
+  const img = new Image();
+  img.src = src;
+
+});
 
 // =========================
 // GAME DATA
@@ -540,6 +565,7 @@ body{
 const gameData = [
 
   {
+
     letter:"A",
 
     sound:"assets/letter a sound.m4a",
@@ -571,6 +597,7 @@ const gameData = [
   },
 
   {
+
     letter:"B",
 
     sound:"assets/letter b sound.m4a",
@@ -602,6 +629,7 @@ const gameData = [
   },
 
   {
+
     letter:"C",
 
     sound:"assets/letter c sound.m4a",
@@ -633,6 +661,7 @@ const gameData = [
   },
 
   {
+
     letter:"D",
 
     sound:"assets/letter d sound.mp3",
@@ -666,7 +695,7 @@ const gameData = [
 ];
 
 // =========================
-// SHUFFLE FUNCTION
+// SHUFFLE
 // =========================
 
 function shuffleArray(array){
@@ -675,10 +704,6 @@ function shuffleArray(array){
   .sort(() => Math.random() - 0.5);
 
 }
-
-// =========================
-// RANDOMISE LETTER ORDER
-// =========================
 
 let shuffledGameData =
 shuffleArray(gameData);
@@ -689,62 +714,62 @@ shuffleArray(gameData);
 
 const splashScreen =
 document.getElementById(
-  "splashScreen"
+"splashScreen"
 );
 
 const gameWrapper =
 document.getElementById(
-  "gameWrapper"
+"gameWrapper"
 );
 
 const optionsPanel =
 document.getElementById(
-  "optionsPanel"
+"optionsPanel"
 );
 
 const answerZone =
 document.getElementById(
-  "answerZone"
+"answerZone"
 );
 
 const playSoundBtn =
 document.getElementById(
-  "playSoundBtn"
+"playSoundBtn"
 );
 
 const nextBtn =
 document.getElementById(
-  "nextBtn"
+"nextBtn"
 );
 
 const playAgainBtn =
 document.getElementById(
-  "playAgainBtn"
+"playAgainBtn"
 );
 
 const gameContent =
 document.getElementById(
-  "gameContent"
+"gameContent"
 );
 
 const completeScreen =
 document.getElementById(
-  "completeScreen"
+"completeScreen"
 );
 
 const correctSound =
 document.getElementById(
-  "correctSound"
+"correctSound"
 );
 
 const wrongSound =
 document.getElementById(
-  "wrongSound"
+"wrongSound"
 );
 
 const letterSound =
 document.getElementById(
-  "letterSound"
+"letterSound"
 );
 
 let currentQuestion = 0;
@@ -754,22 +779,22 @@ let currentQuestion = 0;
 // =========================
 
 window.addEventListener(
-  "load",
-  () => {
+"load",
+() => {
 
-    setTimeout(() => {
+  setTimeout(() => {
 
-      splashScreen.style.display =
-      "none";
+    splashScreen.style.display =
+    "none";
 
-      gameWrapper.style.display =
-      "block";
+    gameWrapper.style.display =
+    "block";
 
-      loadQuestion();
+    loadQuestion();
 
-    }, 5000);
+  }, 5000);
 
-  }
+}
 );
 
 // =========================
@@ -851,8 +876,6 @@ function loadQuestion(){
     }
   );
 
-  playLetterSound();
-
 }
 
 // =========================
@@ -864,25 +887,40 @@ function playLetterSound(){
   const data =
   shuffledGameData[currentQuestion];
 
+  letterSound.pause();
+
+  letterSound.currentTime = 0;
+
   letterSound.src =
   data.sound;
 
   letterSound.load();
 
-  const playPromise =
-  letterSound.play();
-
-  if(playPromise !== undefined){
-
-    playPromise.catch(() => {});
-
-  }
+  letterSound.play().catch(() => {});
 
 }
 
 playSoundBtn.addEventListener(
-  "click",
-  playLetterSound
+"click",
+playLetterSound
+);
+
+// =========================
+// AUTO PLAY SOUND
+// =========================
+
+document.body.addEventListener(
+"click",
+function startAudio(){
+
+  playLetterSound();
+
+  document.body.removeEventListener(
+    "click",
+    startAudio
+  );
+
+}
 );
 
 // =========================
@@ -903,16 +941,16 @@ function dragStart(e){
 // =========================
 
 answerZone.addEventListener(
-  "dragover",
-  (e) => {
+"dragover",
+(e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    answerZone.classList.add(
-      "hovered"
-    );
+  answerZone.classList.add(
+    "hovered"
+  );
 
-  }
+}
 );
 
 // =========================
@@ -920,14 +958,14 @@ answerZone.addEventListener(
 // =========================
 
 answerZone.addEventListener(
-  "dragleave",
-  () => {
+"dragleave",
+() => {
 
-    answerZone.classList.remove(
-      "hovered"
-    );
+  answerZone.classList.remove(
+    "hovered"
+  );
 
-  }
+}
 );
 
 // =========================
@@ -935,64 +973,64 @@ answerZone.addEventListener(
 // =========================
 
 answerZone.addEventListener(
-  "drop",
-  (e) => {
+"drop",
+(e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    answerZone.classList.remove(
-      "hovered"
+  answerZone.classList.remove(
+    "hovered"
+  );
+
+  const draggedValue =
+  e.dataTransfer.getData(
+    "text/plain"
+  );
+
+  const correctAnswer =
+  shuffledGameData[
+    currentQuestion
+  ].correct;
+
+  if(
+    draggedValue ===
+    correctAnswer
+  ){
+
+    answerZone.classList.add(
+      "correct"
     );
 
-    const draggedValue =
-    e.dataTransfer.getData(
-      "text/plain"
+    correctSound.currentTime = 0;
+
+    correctSound.play();
+
+    nextBtn.style.display =
+    "block";
+
+  }
+
+  else{
+
+    answerZone.classList.add(
+      "wrong"
     );
 
-    const correctAnswer =
-    shuffledGameData[
-      currentQuestion
-    ].correct;
+    wrongSound.currentTime = 0;
 
-    if(
-      draggedValue ===
-      correctAnswer
-    ){
+    wrongSound.play();
 
-      answerZone.classList.add(
-        "correct"
-      );
+    setTimeout(() => {
 
-      correctSound.currentTime = 0;
-
-      correctSound.play();
-
-      nextBtn.style.display =
-      "block";
-
-    }
-
-    else{
-
-      answerZone.classList.add(
+      answerZone.classList.remove(
         "wrong"
       );
 
-      wrongSound.currentTime = 0;
-
-      wrongSound.play();
-
-      setTimeout(() => {
-
-        answerZone.classList.remove(
-          "wrong"
-        );
-
-      }, 800);
-
-    }
+    }, 800);
 
   }
+
+}
 );
 
 // =========================
@@ -1000,33 +1038,39 @@ answerZone.addEventListener(
 // =========================
 
 nextBtn.addEventListener(
-  "click",
-  () => {
+"click",
+() => {
 
-    currentQuestion++;
+  currentQuestion++;
 
-    if(
-      currentQuestion <
-      shuffledGameData.length
-    ){
+  if(
+    currentQuestion <
+    shuffledGameData.length
+  ){
 
-      loadQuestion();
+    loadQuestion();
 
-    }
+    setTimeout(() => {
 
-    else{
+      playLetterSound();
 
-      gameContent.style.display =
-      "none";
-
-      completeScreen.style.display =
-      "block";
-
-      startConfetti();
-
-    }
+    }, 500);
 
   }
+
+  else{
+
+    gameContent.style.display =
+    "none";
+
+    completeScreen.style.display =
+    "block";
+
+    startConfetti();
+
+  }
+
+}
 );
 
 // =========================
@@ -1034,23 +1078,29 @@ nextBtn.addEventListener(
 // =========================
 
 playAgainBtn.addEventListener(
-  "click",
-  () => {
+"click",
+() => {
 
-    shuffledGameData =
-    shuffleArray(gameData);
+  shuffledGameData =
+  shuffleArray(gameData);
 
-    currentQuestion = 0;
+  currentQuestion = 0;
 
-    completeScreen.style.display =
-    "none";
+  completeScreen.style.display =
+  "none";
 
-    gameContent.style.display =
-    "block";
+  gameContent.style.display =
+  "block";
 
-    loadQuestion();
+  loadQuestion();
 
-  }
+  setTimeout(() => {
+
+    playLetterSound();
+
+  }, 500);
+
+}
 );
 
 // =========================
