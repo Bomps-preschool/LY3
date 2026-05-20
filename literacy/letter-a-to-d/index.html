@@ -3,353 +3,324 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Letters Aa to Dd Game</title>
+<title>Letters Aa to Dd</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
-html,body{width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#fff8ef;}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#fff7ef;}
 
-#splashScreen{
-  position:fixed;inset:0;background:white;
+#splash{
+  position:fixed;inset:0;background:white;z-index:999;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
-  z-index:9999;
 }
-#splashScreen img{width:240px;max-width:75%;}
+#splash img{width:230px;max-width:75%;}
 #startBtn{
-  margin-top:25px;padding:14px 32px;border:none;border-radius:25px;
+  margin-top:25px;padding:14px 30px;border:0;border-radius:24px;
   background:#7fb77e;color:white;font-size:22px;font-weight:bold;
 }
 
-#gameWrapper{
+#game{
   display:none;width:100vw;height:100vh;padding:10px;
-  background:linear-gradient(to bottom,#fff7ef,#eef5ff);
+  background:linear-gradient(#fff7ef,#eef5ff);
 }
 
-.top-bar{text-align:center;height:75px;}
-.top-bar h1{font-size:28px;color:#5b4b8a;}
-.top-bar p{font-size:16px;color:#555;margin-top:5px;}
+.header{text-align:center;height:62px;}
+.header h1{font-size:26px;color:#5b4b8a;}
+.header p{font-size:14px;color:#555;}
 
-.game-area{
-  height:calc(100vh - 125px);
-  display:flex;gap:12px;justify-content:center;
+.main{
+  height:calc(100vh - 105px);
+  display:grid;
+  grid-template-columns:28% 72%;
+  gap:10px;
 }
 
-.sound-panel{
-  width:30%;min-width:250px;background:white;border-radius:22px;padding:14px;
-  box-shadow:0 6px 16px rgba(0,0,0,.12);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
+.left,.card{
+  background:white;border-radius:20px;
+  box-shadow:0 5px 15px rgba(0,0,0,.12);
 }
 
-.sound-title{font-size:22px;text-align:center;color:#4a6484;margin-bottom:12px;font-weight:bold;}
-
-#playSoundBtn{
-  width:120px;height:120px;border:none;border-radius:50%;
-  background:#ffd27f;font-size:55px;cursor:pointer;
+.left{
+  padding:12px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
 }
 
-.instruction{text-align:center;margin-top:12px;font-size:16px;color:#555;}
+.left h2{font-size:20px;color:#4a6484;margin-bottom:10px;}
 
-#answerZone{
-  width:100%;height:120px;margin-top:15px;border-radius:20px;
-  border:4px dashed #ccc;background:#fafafa;
+#soundBtn{
+  width:110px;height:110px;border:0;border-radius:50%;
+  background:#ffd27f;font-size:50px;
+}
+
+#soundText{font-size:14px;margin:10px 0;color:#555;}
+
+#dropZone{
+  width:100%;height:105px;border:4px dashed #bbb;border-radius:18px;
   display:flex;justify-content:center;align-items:center;
+  font-size:22px;font-weight:bold;color:#555;background:#fafafa;
 }
 
-#answerZone.correct{border-color:#81c784;background:#effff0;}
-#answerZone.wrong{border-color:#ef9a9a;background:#fff0f0;}
+#dropZone.correct{border-color:#5fbf6a;background:#effff0;}
+#dropZone.wrong{border-color:#e57373;background:#fff0f0;}
 
-.drop-text{font-size:22px;font-weight:bold;color:#666;}
-
-.options-panel{
-  flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+.options{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
 }
 
-.option-card{
-  background:white;border-radius:22px;padding:10px;
-  box-shadow:0 6px 16px rgba(0,0,0,.12);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
+.card{
+  padding:10px;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  cursor:pointer;
+  border:4px solid transparent;
 }
 
-.draggable{
-  width:100%;max-width:210px;max-height:185px;object-fit:contain;
-  cursor:grab;
+.card.selected{border-color:#7fb77e;background:#f4fff4;}
+
+.card img{
+  width:100%;max-width:210px;max-height:190px;object-fit:contain;
 }
 
-.image-label{
-  margin-top:8px;font-size:22px;font-weight:bold;text-align:center;color:#444;
+.card div{
+  margin-top:8px;font-size:22px;font-weight:bold;color:#333;text-align:center;
 }
 
-#nextBtn,.game-btn{
-  display:none;margin:10px auto 0;padding:12px 28px;border:none;border-radius:18px;
+#nextBtn{
+  display:none;margin:8px auto 0;padding:10px 28px;border:0;border-radius:18px;
   background:#7fb77e;color:white;font-size:20px;font-weight:bold;
 }
 
-#completeScreen{
+#complete{
   display:none;text-align:center;padding-top:120px;
 }
-
-#completeScreen h2{font-size:42px;color:#5b4b8a;margin-bottom:15px;}
-#completeScreen p{font-size:22px;color:#555;}
+#complete h2{font-size:42px;color:#5b4b8a;}
+#complete button{
+  margin-top:20px;padding:12px 28px;border:0;border-radius:20px;
+  background:#7fb77e;color:white;font-size:22px;font-weight:bold;
+}
 
 @media(max-width:768px){
-  #gameWrapper{padding:8px;}
-  .top-bar{height:65px;}
-  .top-bar h1{font-size:24px;}
-  .top-bar p{font-size:14px;}
+  #game{padding:7px;}
+  .header{height:55px;}
+  .header h1{font-size:22px;}
+  .header p{font-size:12px;}
 
-  .game-area{
-    height:calc(100vh - 110px);
-    flex-direction:column;
+  .main{
+    height:calc(100vh - 95px);
+    grid-template-columns:1fr;
+    grid-template-rows:38% 62%;
   }
 
-  .sound-panel{
-    width:100%;min-width:0;padding:8px;
-  }
+  .left{padding:7px;}
+  .left h2{font-size:16px;margin-bottom:4px;}
+  #soundBtn{width:70px;height:70px;font-size:34px;}
+  #soundText{font-size:12px;margin:5px 0;}
+  #dropZone{height:54px;font-size:17px;}
 
-  .sound-title{font-size:17px;margin-bottom:5px;}
-
-  #playSoundBtn{
-    width:72px;height:72px;font-size:35px;
-  }
-
-  .instruction{font-size:13px;margin-top:5px;}
-
-  #answerZone{
-    height:60px;margin-top:6px;
-  }
-
-  .drop-text{font-size:18px;}
-
-  .options-panel{
-    grid-template-columns:repeat(3,1fr);
-    gap:7px;
-  }
-
-  .option-card{
-    padding:6px;border-radius:16px;
-  }
-
-  .draggable{
-    max-height:90px;
-  }
-
-  .image-label{
-    font-size:14px;margin-top:4px;
-  }
+  .options{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .card{padding:5px;border-radius:14px;}
+  .card img{max-height:92px;}
+  .card div{font-size:13px;margin-top:3px;}
 }
 </style>
 </head>
 
 <body>
 
-<div id="splashScreen">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+<div id="splash">
+  <img src="./assets/innovine-logo.png" alt="Logo">
   <button id="startBtn">Tap to Start</button>
 </div>
 
-<div id="gameWrapper">
-
-  <div class="top-bar">
+<div id="game">
+  <div class="header">
     <h1>Letters Aa to Dd</h1>
-    <p>Listen to the sound and drag the correct picture.</p>
+    <p>Tap the sound. Choose the correct picture.</p>
   </div>
 
   <div id="gameContent">
-    <div class="game-area">
-
-      <div class="sound-panel">
-        <div class="sound-title">Listen to the Letter Sound</div>
-        <button id="playSoundBtn">🔊</button>
-        <div class="instruction">Tap the sound button, then drag the correct picture.</div>
-
-        <div id="answerZone">
-          <div class="drop-text">Drop Here</div>
-        </div>
+    <div class="main">
+      <div class="left">
+        <h2>Listen to the Letter Sound</h2>
+        <button id="soundBtn">🔊</button>
+        <div id="soundText">Tap the speaker to hear the sound.</div>
+        <div id="dropZone">Tap Picture</div>
       </div>
 
-      <div class="options-panel" id="optionsPanel"></div>
-
+      <div class="options" id="options"></div>
     </div>
 
     <button id="nextBtn">Next</button>
   </div>
 
-  <div id="completeScreen">
+  <div id="complete">
     <h2>Great Job! 🎉</h2>
-    <p>You completed the game.</p>
-    <button class="game-btn" id="playAgainBtn" style="display:block;">Play Again</button>
+    <button onclick="restartGame()">Play Again</button>
   </div>
-
 </div>
 
-<audio id="letterSound" preload="auto"></audio>
-<audio id="correctSound" src="assets/claps.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="letterAudio" preload="auto"></audio>
+<audio id="correctAudio" src="./assets/claps.mp3" preload="auto"></audio>
+<audio id="wrongAudio" src="./assets/wrong.mp3" preload="auto"></audio>
 
 <script>
 const gameData = [
   {
-    sound:"assets/letter a sound.mp3",
+    sound:"./assets/letter a sound.mp3",
     correct:"alligator",
     options:[
-      {name:"Cap", image:"assets/cap.png", value:"cap"},
-      {name:"Alligator", image:"assets/alligator.png", value:"alligator"},
-      {name:"Zip", image:"assets/zip.png", value:"zip"}
+      {name:"Cap", image:"./assets/cap.png", value:"cap"},
+      {name:"Alligator", image:"./assets/alligator.png", value:"alligator"},
+      {name:"Zip", image:"./assets/zip.png", value:"zip"}
     ]
   },
   {
-    sound:"assets/letter b sound.mp3",
+    sound:"./assets/letter b sound.mp3",
     correct:"bird",
     options:[
-      {name:"Bird", image:"assets/bird.png", value:"bird"},
-      {name:"Dog", image:"assets/dog.png", value:"dog"},
-      {name:"Flower", image:"assets/flower.png", value:"flower"}
+      {name:"Bird", image:"./assets/bird.png", value:"bird"},
+      {name:"Dog", image:"./assets/dog.png", value:"dog"},
+      {name:"Flower", image:"./assets/flower.png", value:"flower"}
     ]
   },
   {
-    sound:"assets/letter c sound.mp3",
+    sound:"./assets/letter c sound.mp3",
     correct:"carrot",
     options:[
-      {name:"Dinosaur", image:"assets/dinosaur.png", value:"dinosaur"},
-      {name:"Frog", image:"assets/frog.png", value:"frog"},
-      {name:"Carrot", image:"assets/carrot.png", value:"carrot"}
+      {name:"Dinosaur", image:"./assets/dinosaur.png", value:"dinosaur"},
+      {name:"Frog", image:"./assets/frog.png", value:"frog"},
+      {name:"Carrot", image:"./assets/carrot.png", value:"carrot"}
     ]
   },
   {
-    sound:"assets/letter d sound.mp3",
+    sound:"./assets/letter d sound.mp3",
     correct:"dice",
     options:[
-      {name:"Jelly", image:"assets/jelly.png", value:"jelly"},
-      {name:"Dice", image:"assets/dice.png", value:"dice"},
-      {name:"Gun", image:"assets/gun.png", value:"gun"}
+      {name:"Jelly", image:"./assets/jelly.png", value:"jelly"},
+      {name:"Dice", image:"./assets/dice.png", value:"dice"},
+      {name:"Gun", image:"./assets/gun.png", value:"gun"}
     ]
   }
 ];
 
-let currentQuestion = 0;
-let shuffledGameData = shuffleArray(gameData);
-let draggedValue = "";
+let current = 0;
+let questions = shuffle([...gameData]);
 
-const splashScreen = document.getElementById("splashScreen");
-const startBtn = document.getElementById("startBtn");
-const gameWrapper = document.getElementById("gameWrapper");
-const optionsPanel = document.getElementById("optionsPanel");
-const answerZone = document.getElementById("answerZone");
-const playSoundBtn = document.getElementById("playSoundBtn");
+const splash = document.getElementById("splash");
+const game = document.getElementById("game");
+const optionsBox = document.getElementById("options");
+const dropZone = document.getElementById("dropZone");
 const nextBtn = document.getElementById("nextBtn");
 const gameContent = document.getElementById("gameContent");
-const completeScreen = document.getElementById("completeScreen");
-const playAgainBtn = document.getElementById("playAgainBtn");
-const letterSound = document.getElementById("letterSound");
-const correctSound = document.getElementById("correctSound");
-const wrongSound = document.getElementById("wrongSound");
+const complete = document.getElementById("complete");
 
-function shuffleArray(arr){
-  return [...arr].sort(() => Math.random() - 0.5);
-}
+const letterAudio = document.getElementById("letterAudio");
+const correctAudio = document.getElementById("correctAudio");
+const wrongAudio = document.getElementById("wrongAudio");
 
-startBtn.onclick = function(){
-  splashScreen.style.display = "none";
-  gameWrapper.style.display = "block";
+document.getElementById("startBtn").onclick = function(){
+  splash.style.display = "none";
+  game.style.display = "block";
   loadQuestion();
 };
 
+document.getElementById("soundBtn").onclick = function(){
+  playLetterSound();
+};
+
+function shuffle(arr){
+  return arr.sort(() => Math.random() - 0.5);
+}
+
 function loadQuestion(){
   nextBtn.style.display = "none";
-  answerZone.className = "";
-  optionsPanel.innerHTML = "";
+  dropZone.className = "";
+  dropZone.innerText = "Tap Picture";
+  optionsBox.innerHTML = "";
 
-  const data = shuffledGameData[currentQuestion];
+  const q = questions[current];
+  letterAudio.src = q.sound;
+  letterAudio.load();
 
-  letterSound.src = data.sound;
-  letterSound.load();
-
-  data.options.sort(() => Math.random() - 0.5).forEach(option => {
+  shuffle([...q.options]).forEach(opt => {
     const card = document.createElement("div");
-    card.className = "option-card";
+    card.className = "card";
 
     const img = document.createElement("img");
-    img.src = option.image;
-    img.className = "draggable";
-    img.alt = option.name;
-    img.draggable = true;
-    img.dataset.value = option.value;
-
-    img.addEventListener("dragstart", function(e){
-      draggedValue = option.value;
-      e.dataTransfer.setData("text/plain", option.value);
-    });
+    img.src = opt.image;
+    img.alt = opt.name;
 
     const label = document.createElement("div");
-    label.className = "image-label";
-    label.textContent = option.name;
+    label.innerText = opt.name;
 
     card.appendChild(img);
     card.appendChild(label);
-    optionsPanel.appendChild(card);
+
+    card.onclick = function(){
+      checkAnswer(opt.value);
+    };
+
+    optionsBox.appendChild(card);
   });
 }
 
 function playLetterSound(){
-  const data = shuffledGameData[currentQuestion];
+  const q = questions[current];
 
-  letterSound.pause();
-  letterSound.currentTime = 0;
-  letterSound.src = data.sound;
-  letterSound.load();
+  letterAudio.pause();
+  letterAudio.currentTime = 0;
+  letterAudio.src = q.sound;
+  letterAudio.load();
 
-  letterSound.play().catch(function(){
-    alert("Please tap the speaker button again.");
-  });
+  const playPromise = letterAudio.play();
+
+  if(playPromise){
+    playPromise.catch(() => {
+      document.getElementById("soundText").innerText =
+      "Sound file not playing. Check exact file name in assets.";
+    });
+  }
 }
 
-playSoundBtn.onclick = playLetterSound;
+function checkAnswer(value){
+  const correct = questions[current].correct;
 
-answerZone.addEventListener("dragover", function(e){
-  e.preventDefault();
-});
-
-answerZone.addEventListener("drop", function(e){
-  e.preventDefault();
-
-  draggedValue = e.dataTransfer.getData("text/plain");
-
-  const correctAnswer = shuffledGameData[currentQuestion].correct;
-
-  if(draggedValue === correctAnswer){
-    answerZone.className = "correct";
-    correctSound.currentTime = 0;
-    correctSound.play().catch(()=>{});
+  if(value === correct){
+    dropZone.className = "correct";
+    dropZone.innerText = "Correct!";
+    correctAudio.currentTime = 0;
+    correctAudio.play().catch(()=>{});
     nextBtn.style.display = "block";
   }else{
-    answerZone.className = "wrong";
-    wrongSound.currentTime = 0;
-    wrongSound.play().catch(()=>{});
+    dropZone.className = "wrong";
+    dropZone.innerText = "Try Again";
+    wrongAudio.currentTime = 0;
+    wrongAudio.play().catch(()=>{});
 
     setTimeout(() => {
-      answerZone.className = "";
-    }, 800);
+      dropZone.className = "";
+      dropZone.innerText = "Tap Picture";
+    }, 900);
   }
-});
+}
 
 nextBtn.onclick = function(){
-  currentQuestion++;
+  current++;
 
-  if(currentQuestion < shuffledGameData.length){
+  if(current < questions.length){
     loadQuestion();
   }else{
     gameContent.style.display = "none";
-    completeScreen.style.display = "block";
+    complete.style.display = "block";
   }
 };
 
-playAgainBtn.onclick = function(){
-  currentQuestion = 0;
-  shuffledGameData = shuffleArray(gameData);
-  completeScreen.style.display = "none";
+function restartGame(){
+  current = 0;
+  questions = shuffle([...gameData]);
+  complete.style.display = "none";
   gameContent.style.display = "block";
   loadQuestion();
-};
+}
 </script>
 
 </body>
