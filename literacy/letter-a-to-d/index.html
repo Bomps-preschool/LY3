@@ -500,6 +500,10 @@ let current = 0;
 let questions =
 shuffle([...gameData]);
 
+/* PRELOADED IMAGES */
+
+const preloadedImages = {};
+
 /* ELEMENTS */
 
 const splash =
@@ -526,7 +530,7 @@ document.getElementById("correctAudio");
 const wrongAudio =
 document.getElementById("wrongAudio");
 
-/* PRELOAD */
+/* FAST PRELOAD */
 
 function preloadAssets(){
 
@@ -537,6 +541,9 @@ item.options.forEach(opt => {
 const img = new Image();
 
 img.src = opt.image;
+
+/* STORE IN MEMORY */
+preloadedImages[opt.image] = img;
 
 });
 
@@ -604,14 +611,22 @@ card.className =
 const img =
 document.createElement("img");
 
+/* USE PRELOADED IMAGE */
 img.src =
-opt.image;
+preloadedImages[opt.image].src;
 
+img.alt =
+opt.name;
+
+/* FAST MOBILE DISPLAY */
 img.loading =
 "eager";
 
 img.decoding =
 "sync";
+
+img.fetchPriority =
+"high";
 
 const label =
 document.createElement("div");
@@ -667,6 +682,8 @@ answerBox.className =
 answerBox.innerText =
 "Correct!";
 
+correctAudio.currentTime = 0;
+
 correctAudio.play();
 
 setTimeout(() => {
@@ -699,6 +716,8 @@ answerBox.className =
 
 answerBox.innerText =
 "Try Again";
+
+wrongAudio.currentTime = 0;
 
 wrongAudio.play();
 
