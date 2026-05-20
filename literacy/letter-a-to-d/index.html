@@ -1,1 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8" />
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
+
+<title>Letters Aa to Dd</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+
+  font-family:Arial,sans-serif;
+
+  background-color:#fff7ef;
+
+  background-image:
+  url("./assets/letters-bg.png");
+
+  background-size:cover;
+
+  background-position:center;
+
+  background-repeat:no-repeat;
+}
+
+/* =========================
+   SPLASH
+========================= */
+
+#splash{
+  position:fixed;
+  inset:0;
+
+  background:white;
+
+  z-index:9999;
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+  align-items:center;
+}
+
+#splash img{
+  width:240px;
+  max-width:75%;
+
+  object-fit:contain;
+}
+
+#startBtn{
+  margin-top:25px;
+
+  padding:14px 30px;
+
+  border:none;
+  border-radius:24px;
+
+  background:#7fb77e;
+
+  color:white;
+
+  font-size:22px;
+  font-weight:bold;
+
+  cursor:pointer;
+}
+
+/* =========================
+   GAME
+========================= */
+
+#game{
+  display:none;
+
+  width:100vw;
+  height:100vh;
+
+  padding:10px;
+
+  background:
+  rgba(255,255,255,0.72);
+
+  backdrop-filter:blur(2px);
+}
+
+.header{
+  text-align:center;
+  height:65px;
+}
+
+.header h1{
+  font-size:28px;
+  color:#5b4b8a;
+}
+
+.header p{
+  font-size:15px;
+  color:#555;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main{
+  height:calc(100vh - 90px);
+
+  display:grid;
+
+  grid-template-columns:28% 72%;
+
+  gap:12px;
+}
+
+/* =========================
+   LEFT PANEL
+========================= */
+
+.left{
+  background:white;
+
+  border-radius:22px;
+
+  padding:14px;
+
+  box-shadow:
+  0 5px 15px rgba(0,0,0,.12);
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+  align-items:center;
+
+  text-align:center;
+}
+
+.left h2{
+  font-size:22px;
+  color:#4a6484;
+  margin-bottom:12px;
+}
+
+#soundBtn{
+  width:120px;
+  height:120px;
+
+  border:none;
+  border-radius:50%;
+
+  background:#ffd27f;
+
+  font-size:54px;
+
+  cursor:pointer;
+}
+
+#soundText{
+  margin-top:12px;
+
+  font-size:15px;
+  color:#555;
+}
+
+#answerBox{
+  margin-top:20px;
+
+  width:100%;
+  height:110px;
+
+  border-radius:20px;
+
+  border:4px dashed #bdbdbd;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  background:#fafafa;
+
+  font-size:24px;
+  font-weight:bold;
+
+  color:#555;
+}
+
+#answerBox.correct{
+  border-color:#66bb6a;
+  background:#effff0;
+}
+
+#answerBox.wrong{
+  border-color:#ef5350;
+  background:#fff0f0;
+}
+
+/* =========================
+   OPTIONS
+========================= */
+
+.options{
+  display:grid;
+
+  grid-template-columns:
+  repeat(3,1fr);
+
+  gap:12px;
+}
+
+.card{
+  background:white;
+
+  border-radius:22px;
+
+  padding:12px;
+
+  box-shadow:
+  0 5px 15px rgba(0,0,0,.12);
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:center;
+  align-items:center;
+
+  cursor:pointer;
+
+  transition:
+  transform .15s ease;
+}
+
+.card:active{
+  transform:scale(.97);
+}
+
+.card img{
+  width:100%;
+
+  max-width:220px;
+  max-height:210px;
+
+  object-fit:contain;
+}
+
+.card div{
+  margin-top:10px;
+
+  font-size:24px;
+  font-weight:bold;
+
+  color:#333;
+
+  text-align:center;
+}
+
+/* =========================
+   COMPLETE
+========================= */
+
+#complete{
+  display:none;
+
+  height:100%;
+
+  text-align:center;
+
+  justify-content:center;
+  align-items:center;
+
+  flex-direction:column;
+}
+
+#complete h2{
+  font-size:48px;
+  color:#5b4b8a;
+}
+
+#playAgainBtn{
+  margin-top:25px;
+
+  padding:14px 34px;
+
+  border:none;
+  border-radius:24px;
+
+  background:#7fb77e;
+
+  color:white;
+
+  font-size:24px;
+  font-weight:bold;
+
+  cursor:pointer;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+  #game{
+    padding:7px;
+  }
+
+  .header{
+    height:55px;
+  }
+
+  .header h1{
+    font-size:22px;
+  }
+
+  .header p{
+    font-size:12px;
+  }
+
+  .main{
+    height:calc(100vh - 80px);
+
+    grid-template-columns:1fr;
+    grid-template-rows:38% 62%;
+  }
+
+  .left{
+    padding:8px;
+  }
+
+  .left h2{
+    font-size:16px;
+    margin-bottom:6px;
+  }
+
+  #soundBtn{
+    width:75px;
+    height:75px;
+
+    font-size:36px;
+  }
+
+  #soundText{
+    font-size:12px;
+    margin-top:5px;
+  }
+
+  #answerBox{
+    margin-top:10px;
+
+    height:55px;
+
+    font-size:17px;
+  }
+
+  .options{
+    gap:6px;
+  }
+
+  .card{
+    padding:6px;
+    border-radius:14px;
+  }
+
+  .card img{
+    max-height:95px;
+  }
+
+  .card div{
+    margin-top:3px;
+    font-size:13px;
+  }
+
+  #complete h2{
+    font-size:34px;
+  }
+
+  #playAgainBtn{
+    font-size:18px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     SPLASH
+========================= -->
+
+<div id="splash">
+
+  <img
+    src="./assets/innovine-logo.png"
+    alt="Innovine Logo"
+  >
+
+  <button id="startBtn">
+    Tap to Start
+  </button>
+
+</div>
+
+<!-- =========================
+     GAME
+========================= -->
+
+<div id="game">
+
+  <div class="header">
+
+    <h1>
+      Letters Aa to Dd
+    </h1>
+
+    <p>
+      Listen to the sound and choose the correct picture.
+    </p>
+
+  </div>
+
+  <div id="gameContent">
+
+    <div class="main">
+
+      <!-- LEFT -->
+
+      <div class="left">
+
+        <h2>
+          Listen to the Letter Sound
+        </h2>
+
+        <button id="soundBtn">
+          🔊
+        </button>
+
+        <div id="soundText">
+          Tap the speaker to hear the sound.
+        </div>
+
+        <div id="answerBox">
+          Tap Picture
+        </div>
+
+      </div>
+
+      <!-- RIGHT -->
+
+      <div
+        class="options"
+        id="options"
+      ></div>
+
+    </div>
+
+  </div>
+
+  <!-- COMPLETE -->
+
+  <div id="complete">
+
+    <h2>
+      Great Job! 🎉
+    </h2>
+
+    <button id="playAgainBtn">
+      Play Again
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     AUDIO
+========================= -->
+
+<audio
+  id="letterAudio"
+  preload="auto"
+></audio>
+
+<audio
+  id="correctAudio"
+  src="./assets/claps.mp3"
+  preload="auto"
+></audio>
+
+<audio
+  id="wrongAudio"
+  src="./assets/wrong.mp3"
+  preload="auto"
+></audio>
+
+<!-- =========================
+     CONFETTI
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script>
+
+/* =========================
+   GAME DATA
+========================= */
+
+const gameData = [
+
+  {
+    sound:"./assets/letter-a-sound.mp3",
+
+    correct:"alligator",
+
+    options:[
+
+      {
+        name:"Cap",
+        image:"./assets/cap.png",
+        value:"cap"
+      },
+
+      {
+        name:"Alligator",
+        image:"./assets/alligator.png",
+        value:"alligator"
+      },
+
+      {
+        name:"Zip",
+        image:"./assets/zip.png",
+        value:"zip"
+      }
+
+    ]
+  },
+
+  {
+    sound:"./assets/letter-b-sound.mp3",
+
+    correct:"bird",
+
+    options:[
+
+      {
+        name:"Bird",
+        image:"./assets/bird.png",
+        value:"bird"
+      },
+
+      {
+        name:"Dog",
+        image:"./assets/dog.png",
+        value:"dog"
+      },
+
+      {
+        name:"Flower",
+        image:"./assets/flower.png",
+        value:"flower"
+      }
+
+    ]
+  },
+
+  {
+    sound:"./assets/letter-c-sound.mp3",
+
+    correct:"carrot",
+
+    options:[
+
+      {
+        name:"Dinosaur",
+        image:"./assets/dinosaur.png",
+        value:"dinosaur"
+      },
+
+      {
+        name:"Frog",
+        image:"./assets/frog.png",
+        value:"frog"
+      },
+
+      {
+        name:"Carrot",
+        image:"./assets/carrot.png",
+        value:"carrot"
+      }
+
+    ]
+  },
+
+  {
+    sound:"./assets/letter-d-sound.mp3",
+
+    correct:"dice",
+
+    options:[
+
+      {
+        name:"Jelly",
+        image:"./assets/jelly.png",
+        value:"jelly"
+      },
+
+      {
+        name:"Dice",
+        image:"./assets/dice.png",
+        value:"dice"
+      },
+
+      {
+        name:"Gun",
+        image:"./assets/gun.png",
+        value:"gun"
+      }
+
+    ]
+  }
+
+];
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const splash =
+document.getElementById("splash");
+
+const game =
+document.getElementById("game");
+
+const optionsBox =
+document.getElementById("options");
+
+const answerBox =
+document.getElementById("answerBox");
+
+const complete =
+document.getElementById("complete");
+
+const gameContent =
+document.getElementById("gameContent");
+
+const playAgainBtn =
+document.getElementById("playAgainBtn");
+
+const letterAudio =
+document.getElementById("letterAudio");
+
+const correctAudio =
+document.getElementById("correctAudio");
+
+const wrongAudio =
+document.getElementById("wrongAudio");
+
+/* =========================
+   VARIABLES
+========================= */
+
+let current = 0;
+
+let questions =
+shuffle([...gameData]);
+
+/* =========================
+   PRELOAD
+========================= */
+
+function preloadAssets(){
+
+  gameData.forEach(item => {
+
+    item.options.forEach(opt => {
+
+      const img = new Image();
+
+      img.src = opt.image;
+
+    });
+
+    const audio = new Audio();
+
+    audio.src = item.sound;
+
+    audio.preload = "auto";
+
+  });
+
+  correctAudio.load();
+
+  wrongAudio.load();
+
+}
+
+preloadAssets();
+
+/* =========================
+   START GAME
+========================= */
+
+document
+.getElementById("startBtn")
+.onclick = function(){
+
+  splash.style.display = "none";
+
+  game.style.display = "block";
+
+  loadQuestion();
+
+};
+
+/* =========================
+   PLAY SOUND BUTTON
+========================= */
+
+document
+.getElementById("soundBtn")
+.onclick = function(){
+
+  playLetterSound();
+
+};
+
+/* =========================
+   SHUFFLE
+========================= */
+
+function shuffle(arr){
+
+  return arr.sort(
+    () => Math.random() - 0.5
+  );
+
+}
+
+/* =========================
+   LOAD QUESTION
+========================= */
+
+function loadQuestion(){
+
+  answerBox.className = "";
+
+  answerBox.innerText =
+  "Tap Picture";
+
+  optionsBox.innerHTML = "";
+
+  const q = questions[current];
+
+  letterAudio.pause();
+
+  letterAudio.currentTime = 0;
+
+  letterAudio.src = q.sound;
+
+  letterAudio.load();
+
+  shuffle([...q.options])
+  .forEach(opt => {
+
+    const card =
+    document.createElement("div");
+
+    card.className = "card";
+
+    const img =
+    document.createElement("img");
+
+    img.src = opt.image;
+
+    img.alt = opt.name;
+
+    const label =
+    document.createElement("div");
+
+    label.innerText = opt.name;
+
+    card.appendChild(img);
+
+    card.appendChild(label);
+
+    card.onclick = function(){
+
+      checkAnswer(opt.value);
+
+    };
+
+    optionsBox.appendChild(card);
+
+  });
+
+  setTimeout(() => {
+
+    playLetterSound();
+
+  }, 200);
+
+}
+
+/* =========================
+   PLAY LETTER SOUND
+========================= */
+
+function playLetterSound(){
+
+  const q = questions[current];
+
+  letterAudio.pause();
+
+  letterAudio.currentTime = 0;
+
+  letterAudio.src = q.sound;
+
+  const playPromise =
+  letterAudio.play();
+
+  if(playPromise !== undefined){
+
+    playPromise.catch(() => {});
+
+  }
+
+}
+
+/* =========================
+   CHECK ANSWER
+========================= */
+
+function checkAnswer(value){
+
+  const correct =
+  questions[current].correct;
+
+  if(value === correct){
+
+    answerBox.className =
+    "correct";
+
+    answerBox.innerText =
+    "Correct!";
+
+    correctAudio.currentTime = 0;
+
+    correctAudio.play().catch(() => {});
+
+    setTimeout(() => {
+
+      current++;
+
+      if(
+        current <
+        questions.length
+      ){
+
+        loadQuestion();
+
+      }
+
+      else{
+
+        finishGame();
+
+      }
+
+    }, 1200);
+
+  }
+
+  else{
+
+    answerBox.className =
+    "wrong";
+
+    answerBox.innerText =
+    "Try Again";
+
+    wrongAudio.currentTime = 0;
+
+    wrongAudio.play().catch(() => {});
+
+    setTimeout(() => {
+
+      answerBox.className = "";
+
+      answerBox.innerText =
+      "Tap Picture";
+
+    }, 900);
+
+  }
+
+}
+
+/* =========================
+   FINISH GAME
+========================= */
+
+function finishGame(){
+
+  gameContent.style.display =
+  "none";
+
+  complete.style.display =
+  "flex";
+
+  startConfetti();
+
+}
+
+/* =========================
+   PLAY AGAIN
+========================= */
+
+playAgainBtn.onclick = function(){
+
+  current = 0;
+
+  questions =
+  shuffle([...gameData]);
+
+  complete.style.display =
+  "none";
+
+  gameContent.style.display =
+  "block";
+
+  loadQuestion();
+
+};
+
+/* =========================
+   CONFETTI
+========================= */
+
+function startConfetti(){
+
+  const duration =
+  4000;
+
+  const end =
+  Date.now() + duration;
+
+  (function frame(){
+
+    confetti({
+
+      particleCount:4,
+
+      angle:60,
+
+      spread:55,
+
+      origin:{x:0}
+
+    });
+
+    confetti({
+
+      particleCount:4,
+
+      angle:120,
+
+      spread:55,
+
+      origin:{x:1}
+
+    });
+
+    if(Date.now() < end){
+
+      requestAnimationFrame(frame);
+
+    }
+
+  })();
+
+}
+
+</script>
+
+</body>
+</html>
