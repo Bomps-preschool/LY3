@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8" />
@@ -17,17 +18,32 @@
   margin:0;
   padding:0;
   box-sizing:border-box;
+
   user-select:none;
   -webkit-user-select:none;
-  -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
   width:100%;
-  height:100%;
+  min-height:100%;
+
   overflow:hidden;
+
   font-family:Arial,sans-serif;
+
   background:#fff7ef;
+
+  -webkit-tap-highlight-color:transparent;
+
+  touch-action:manipulation;
+
+  overscroll-behavior:none;
+}
+
+body{
+  position:fixed;
+  inset:0;
 }
 
 /* =========================
@@ -37,23 +53,27 @@ html,body{
 #splash{
   position:fixed;
   inset:0;
+
   background:white;
+
   z-index:9999;
 
   display:flex;
   flex-direction:column;
+
   justify-content:center;
   align-items:center;
 }
 
 #splash img{
-  width:240px;
-  max-width:75%;
+  width:260px;
+  max-width:80%;
+
   object-fit:contain;
 }
 
 #startBtn{
-  margin-top:25px;
+  margin-top:28px;
 
   padding:14px 30px;
 
@@ -104,10 +124,6 @@ html,body{
   color:#555;
 }
 
-/* =========================
-   MAIN
-========================= */
-
 .main{
   height:calc(100vh - 90px);
 
@@ -125,12 +141,12 @@ html,body{
 .left{
   background:white;
 
-  border-radius:22px;
-
-  padding:14px;
+  border-radius:20px;
 
   box-shadow:
   0 5px 15px rgba(0,0,0,.12);
+
+  padding:14px;
 
   display:flex;
   flex-direction:column;
@@ -142,9 +158,10 @@ html,body{
 }
 
 .left h2{
-  font-size:22px;
+  font-size:21px;
   color:#4a6484;
-  margin-bottom:12px;
+
+  margin-bottom:10px;
 }
 
 #soundBtn{
@@ -156,27 +173,26 @@ html,body{
 
   background:#ffd27f;
 
-  font-size:54px;
+  font-size:52px;
 
   cursor:pointer;
 }
 
 #soundText{
-  margin-top:12px;
+  margin:10px 0;
 
   font-size:15px;
   color:#555;
 }
 
 #answerBox{
-  margin-top:20px;
-
   width:100%;
   height:110px;
 
-  border-radius:20px;
+  border:
+  4px dashed #bdbdbd;
 
-  border:4px dashed #bdbdbd;
+  border-radius:18px;
 
   display:flex;
   justify-content:center;
@@ -191,12 +207,12 @@ html,body{
 }
 
 #answerBox.correct{
-  border-color:#66bb6a;
+  border-color:#5fbf6a;
   background:#effff0;
 }
 
 #answerBox.wrong{
-  border-color:#ef5350;
+  border-color:#e57373;
   background:#fff0f0;
 }
 
@@ -216,12 +232,12 @@ html,body{
 .card{
   background:white;
 
-  border-radius:22px;
-
-  padding:12px;
+  border-radius:20px;
 
   box-shadow:
   0 5px 15px rgba(0,0,0,.12);
+
+  padding:10px;
 
   display:flex;
   flex-direction:column;
@@ -231,29 +247,26 @@ html,body{
 
   cursor:pointer;
 
-  transition:
-  transform .15s ease;
+  transition:transform .15s ease;
 }
 
 .card:active{
-  transform:scale(.97);
+  transform:scale(.98);
 }
 
 .card img{
   width:100%;
 
   max-width:220px;
-  max-height:210px;
+  max-height:190px;
 
   object-fit:contain;
-
-  loading:eager;
 }
 
 .card div{
   margin-top:10px;
 
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
 
   color:#333;
@@ -268,34 +281,37 @@ html,body{
 #complete{
   display:none;
 
+  width:100%;
   height:100%;
 
-  text-align:center;
+  flex-direction:column;
 
   justify-content:center;
   align-items:center;
 
-  flex-direction:column;
+  text-align:center;
 }
 
 #complete h2{
   font-size:48px;
   color:#5b4b8a;
+
+  margin-bottom:18px;
 }
 
-#playAgainBtn{
-  margin-top:25px;
+#complete button{
+  margin-top:20px;
 
-  padding:14px 34px;
+  padding:14px 30px;
 
   border:none;
-  border-radius:24px;
+  border-radius:22px;
 
   background:#7fb77e;
 
   color:white;
 
-  font-size:24px;
+  font-size:22px;
   font-weight:bold;
 
   cursor:pointer;
@@ -327,7 +343,7 @@ html,body{
     height:calc(100vh - 80px);
 
     grid-template-columns:1fr;
-    grid-template-rows:38% 62%;
+    grid-template-rows:36% 64%;
   }
 
   .left{
@@ -336,26 +352,23 @@ html,body{
 
   .left h2{
     font-size:16px;
-    margin-bottom:6px;
+    margin-bottom:5px;
   }
 
   #soundBtn{
     width:75px;
     height:75px;
 
-    font-size:36px;
+    font-size:34px;
   }
 
   #soundText{
     font-size:12px;
-    margin-top:5px;
+    margin:5px 0;
   }
 
   #answerBox{
-    margin-top:10px;
-
-    height:55px;
-
+    height:58px;
     font-size:17px;
   }
 
@@ -373,21 +386,18 @@ html,body{
   }
 
   .card div{
-    margin-top:3px;
     font-size:13px;
+    margin-top:4px;
   }
 
   #complete h2{
     font-size:34px;
   }
 
-  #playAgainBtn{
-    font-size:18px;
-  }
-
 }
 
 </style>
+
 </head>
 
 <body>
@@ -472,7 +482,7 @@ html,body{
       Great Job! 🎉
     </h2>
 
-    <button id="playAgainBtn">
+    <button onclick="restartGame()">
       Play Again
     </button>
 
@@ -484,22 +494,21 @@ html,body{
      AUDIO
 ========================= -->
 
-<audio
-  id="letterAudio"
-  preload="auto"
-></audio>
+<audio id="letterAudio" preload="auto"></audio>
 
 <audio
   id="correctAudio"
-  src="./assets/claps.mp3"
   preload="auto"
-></audio>
+>
+  <source src="./assets/claps.mp3" type="audio/mpeg">
+</audio>
 
 <audio
   id="wrongAudio"
-  src="./assets/wrong.mp3"
   preload="auto"
-></audio>
+>
+  <source src="./assets/wrong.mp3" type="audio/mpeg">
+</audio>
 
 <!-- =========================
      CONFETTI
@@ -630,6 +639,17 @@ const gameData = [
 ];
 
 /* =========================
+   VARIABLES
+========================= */
+
+let current = 0;
+
+let questions =
+shuffle([...gameData]);
+
+let gameStarted = false;
+
+/* =========================
    ELEMENTS
 ========================= */
 
@@ -651,8 +671,8 @@ document.getElementById("complete");
 const gameContent =
 document.getElementById("gameContent");
 
-const playAgainBtn =
-document.getElementById("playAgainBtn");
+const soundBtn =
+document.getElementById("soundBtn");
 
 const letterAudio =
 document.getElementById("letterAudio");
@@ -664,23 +684,12 @@ const wrongAudio =
 document.getElementById("wrongAudio");
 
 /* =========================
-   VARIABLES
-========================= */
-
-let current = 0;
-
-let questions =
-shuffle([...gameData]);
-
-/* =========================
-   PRELOAD
+   PRELOAD IMAGES
 ========================= */
 
 function preloadAssets(){
 
   gameData.forEach(item => {
-
-    /* IMAGES */
 
     item.options.forEach(opt => {
 
@@ -688,25 +697,9 @@ function preloadAssets(){
 
       img.src = opt.image;
 
-      img.loading = "eager";
-
-      img.decoding = "sync";
-
     });
 
-    /* LETTER AUDIO */
-
-    const audio = new Audio();
-
-    audio.src = item.sound;
-
-    audio.preload = "auto";
-
   });
-
-  correctAudio.load();
-
-  wrongAudio.load();
 
 }
 
@@ -716,29 +709,83 @@ preloadAssets();
    START GAME
 ========================= */
 
-document
-.getElementById("startBtn")
-.onclick = function(){
+document.getElementById(
+  "startBtn"
+).addEventListener(
+  "click",
+  startGame,
+  { passive:true }
+);
 
-  splash.style.display = "none";
+document.getElementById(
+  "startBtn"
+).addEventListener(
+  "touchstart",
+  startGame,
+  { passive:true }
+);
 
-  game.style.display = "block";
+function startGame(){
 
-  loadQuestion();
+  if(gameStarted) return;
 
-};
+  gameStarted = true;
+
+  splash.style.display =
+  "none";
+
+  game.style.display =
+  "block";
+
+  unlockAllAudio();
+
+  setTimeout(() => {
+
+    loadQuestion();
+
+  }, 200);
+
+}
 
 /* =========================
-   PLAY SOUND BUTTON
+   AUDIO UNLOCK
 ========================= */
 
-document
-.getElementById("soundBtn")
-.onclick = function(){
+function unlockAllAudio(){
 
-  playLetterSound();
+  const audioList = [
 
-};
+    letterAudio,
+    correctAudio,
+    wrongAudio
+
+  ];
+
+  audioList.forEach(audio => {
+
+    audio.volume = 0;
+
+    const promise =
+    audio.play();
+
+    if(promise !== undefined){
+
+      promise.then(() => {
+
+        audio.pause();
+
+        audio.currentTime = 0;
+
+        audio.volume = 1;
+
+      })
+      .catch(() => {});
+
+    }
+
+  });
+
+}
 
 /* =========================
    SHUFFLE
@@ -765,75 +812,69 @@ function loadQuestion(){
 
   optionsBox.innerHTML = "";
 
-  optionsBox.style.visibility =
-  "hidden";
+  const q =
+  questions[current];
 
-  const q = questions[current];
-
-  /* PRELOAD CURRENT SOUND */
-
-  letterAudio.pause();
-
-  letterAudio.currentTime = 0;
-
-  letterAudio.src = q.sound;
+  letterAudio.src =
+  q.sound;
 
   letterAudio.load();
-
-  /* RANDOMISE OPTIONS */
-
-  shuffle([...q.options])
-  .forEach(opt => {
-
-    const card =
-    document.createElement("div");
-
-    card.className = "card";
-
-    const img =
-    document.createElement("img");
-
-    img.src = opt.image;
-
-    img.alt = opt.name;
-
-    img.loading = "eager";
-
-    img.decoding = "sync";
-
-    const label =
-    document.createElement("div");
-
-    label.innerText = opt.name;
-
-    card.appendChild(img);
-
-    card.appendChild(label);
-
-    card.onclick = function(){
-
-      checkAnswer(opt.value);
-
-    };
-
-    optionsBox.appendChild(card);
-
-  });
-
-  requestAnimationFrame(() => {
-
-    optionsBox.style.visibility =
-    "visible";
-
-  });
-
-  /* AUTO PLAY LETTER SOUND */
 
   setTimeout(() => {
 
     playLetterSound();
 
-  }, 200);
+  }, 300);
+
+  shuffle(
+    [...q.options]
+  ).forEach(opt => {
+
+    const card =
+    document.createElement("div");
+
+    card.className =
+    "card";
+
+    const img =
+    document.createElement("img");
+
+    img.src =
+    opt.image;
+
+    img.alt =
+    opt.name;
+
+    img.loading = "eager";
+
+    /* FAST IMAGE DISPLAY FIX */
+    img.decoding = "sync";
+
+    const label =
+    document.createElement("div");
+
+    label.innerText =
+    opt.name;
+
+    card.appendChild(img);
+
+    card.appendChild(label);
+
+    card.addEventListener(
+      "click",
+      function(){
+
+        checkAnswer(
+          opt.value
+        );
+
+      },
+      { passive:true }
+    );
+
+    optionsBox.appendChild(card);
+
+  });
 
 }
 
@@ -843,24 +884,54 @@ function loadQuestion(){
 
 function playLetterSound(){
 
-  const q = questions[current];
+  const q =
+  questions[current];
 
-  letterAudio.pause();
+  try{
 
-  letterAudio.currentTime = 0;
+    letterAudio.pause();
 
-  letterAudio.src = q.sound;
+    letterAudio.currentTime = 0;
+
+  }catch(e){}
+
+  letterAudio.src =
+  q.sound;
+
+  letterAudio.load();
 
   const playPromise =
   letterAudio.play();
 
   if(playPromise !== undefined){
 
-    playPromise.catch(() => {});
+    playPromise
+    .then(() => {
+
+      document.getElementById(
+        "soundText"
+      ).innerText =
+      "Listening...";
+
+    })
+    .catch(() => {
+
+      document.getElementById(
+        "soundText"
+      ).innerText =
+      "Tap speaker to hear sound.";
+
+    });
 
   }
 
 }
+
+soundBtn.addEventListener(
+  "click",
+  playLetterSound,
+  { passive:true }
+);
 
 /* =========================
    CHECK ANSWER
@@ -881,7 +952,8 @@ function checkAnswer(value){
 
     correctAudio.currentTime = 0;
 
-    correctAudio.play().catch(() => {});
+    correctAudio.play()
+    .catch(() => {});
 
     setTimeout(() => {
 
@@ -916,7 +988,8 @@ function checkAnswer(value){
 
     wrongAudio.currentTime = 0;
 
-    wrongAudio.play().catch(() => {});
+    wrongAudio.play()
+    .catch(() => {});
 
     setTimeout(() => {
 
@@ -951,7 +1024,7 @@ function finishGame(){
    PLAY AGAIN
 ========================= */
 
-playAgainBtn.onclick = function(){
+function restartGame(){
 
   current = 0;
 
@@ -966,7 +1039,7 @@ playAgainBtn.onclick = function(){
 
   loadQuestion();
 
-};
+}
 
 /* =========================
    CONFETTI
@@ -988,9 +1061,9 @@ function startConfetti(){
 
       angle:60,
 
-      spread:55,
+      spread:60,
 
-      origin:{x:0}
+      origin:{ x:0 }
 
     });
 
@@ -1000,21 +1073,40 @@ function startConfetti(){
 
       angle:120,
 
-      spread:55,
+      spread:60,
 
-      origin:{x:1}
+      origin:{ x:1 }
 
     });
 
     if(Date.now() < end){
 
-      requestAnimationFrame(frame);
+      requestAnimationFrame(
+        frame
+      );
 
     }
 
   })();
 
 }
+
+/* =========================
+   ORIENTATION FIX
+========================= */
+
+window.addEventListener(
+  "orientationchange",
+  function(){
+
+    setTimeout(() => {
+
+      window.scrollTo(0,0);
+
+    }, 200);
+
+  }
+);
 
 </script>
 
