@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0"
->
+/>
 
 <title>Letters Aa to Dd Game</title>
 
@@ -21,25 +21,23 @@ content="width=device-width, initial-scale=1.0"
 
 body{
   font-family:Arial,sans-serif;
-  background:#f7f4ee;
-  color:#333;
+  background:#f6f4ef;
   overflow-x:hidden;
+  color:#333;
 }
 
 /* =========================
    SPLASH SCREEN
-========================= */
+========================== */
 
 #splashScreen{
   position:fixed;
   inset:0;
-
-  background:#fff7ef;
+  background:#fff8ef;
 
   display:flex;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
 
   z-index:9999;
 }
@@ -49,30 +47,12 @@ body{
   height:auto;
 }
 
-#startBtn{
-  margin-top:30px;
-
-  padding:14px 28px;
-
-  border:none;
-  border-radius:16px;
-
-  background:#7fb77e;
-
-  color:white;
-
-  font-size:1.2rem;
-
-  cursor:pointer;
-}
-
 /* =========================
    MAIN GAME
-========================= */
+========================== */
 
 .game-wrapper{
   display:none;
-
   min-height:100vh;
 
   padding:20px;
@@ -101,14 +81,10 @@ body{
 
 .top-bar p{
   font-size:
-  clamp(1rem,2vw,1.2rem);
+  clamp(1rem,2vw,1.3rem);
 
   color:#666;
 }
-
-/* =========================
-   GAME AREA
-========================= */
 
 .game-area{
   display:flex;
@@ -117,7 +93,7 @@ body{
   flex-wrap:wrap;
 
   justify-content:center;
-  align-items:flex-start;
+  align-items:stretch;
 
   max-width:1400px;
   margin:auto;
@@ -125,7 +101,7 @@ body{
 
 /* =========================
    LEFT PANEL
-========================= */
+========================== */
 
 .sound-panel{
   flex:1 1 300px;
@@ -140,12 +116,20 @@ body{
   box-shadow:
   0 8px 20px rgba(0,0,0,0.08);
 
-  text-align:center;
+  display:flex;
+  flex-direction:column;
+
+  align-items:center;
+  justify-content:center;
+
+  min-height:500px;
 }
 
 .sound-title{
   font-size:
-  clamp(1.6rem,3vw,2.2rem);
+  clamp(1.7rem,3vw,2.4rem);
+
+  text-align:center;
 
   color:#4a6484;
 
@@ -153,35 +137,48 @@ body{
 }
 
 .speaker-btn{
-  width:160px;
-  height:160px;
+  width:170px;
+  height:170px;
 
   border:none;
   border-radius:50%;
 
   background:#ffd27f;
 
-  font-size:4rem;
+  font-size:5rem;
 
   cursor:pointer;
+
+  transition:
+  transform 0.2s ease;
+}
+
+.speaker-btn:hover{
+  transform:scale(1.03);
+}
+
+.speaker-btn:active{
+  transform:scale(0.97);
 }
 
 .instruction{
   margin-top:20px;
 
-  font-size:1rem;
+  text-align:center;
+
+  font-size:1.1rem;
 
   line-height:1.5;
 }
 
 /* =========================
-   ANSWER BOX
-========================= */
+   DROP ZONE
+========================== */
 
 #answerZone{
   width:100%;
 
-  min-height:170px;
+  min-height:180px;
 
   margin-top:25px;
 
@@ -195,11 +192,16 @@ body{
   justify-content:center;
   align-items:center;
 
-  text-align:center;
-
   background:#fafafa;
 
+  transition:all 0.2s ease;
+
   padding:20px;
+}
+
+#answerZone.hovered{
+  border-color:#8cb7ff;
+  background:#f2f7ff;
 }
 
 #answerZone.correct{
@@ -213,15 +215,17 @@ body{
 }
 
 .drop-text{
-  font-size:1.3rem;
+  font-size:1.4rem;
   font-weight:bold;
 
   color:#666;
+
+  text-align:center;
 }
 
 /* =========================
    OPTIONS
-========================= */
+========================== */
 
 .options-panel{
   flex:3 1 700px;
@@ -253,27 +257,32 @@ body{
   justify-content:center;
   align-items:center;
 
-  min-height:380px;
-
-  cursor:pointer;
-
-  transition:0.2s;
+  min-height:420px;
 }
 
-.option-card:hover{
-  transform:translateY(-3px);
-}
-
-.option-card.selected{
-  border:5px solid #8cb7ff;
-}
-
-.option-card img{
+.image-wrapper{
   width:100%;
+  flex:1;
+
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+}
+
+.draggable{
+  width:100%;
+
   max-width:240px;
   max-height:240px;
 
   object-fit:contain;
+
+  cursor:grab;
+
+  user-select:none;
+
+  -webkit-user-drag:element;
 }
 
 .image-label{
@@ -283,11 +292,13 @@ body{
   font-weight:bold;
 
   text-align:center;
+
+  color:#444;
 }
 
 /* =========================
    BUTTONS
-========================= */
+========================== */
 
 .game-btn{
   display:none;
@@ -307,11 +318,18 @@ body{
   font-size:1.2rem;
 
   cursor:pointer;
+
+  box-shadow:
+  0 6px 12px rgba(0,0,0,0.12);
+}
+
+.game-btn:hover{
+  opacity:0.95;
 }
 
 /* =========================
    COMPLETE SCREEN
-========================= */
+========================== */
 
 .complete-screen{
   display:none;
@@ -331,12 +349,13 @@ body{
 }
 
 .complete-screen p{
-  font-size:1.3rem;
+  font-size:1.4rem;
+  color:#555;
 }
 
 /* =========================
    MOBILE
-========================= */
+========================== */
 
 @media(max-width:768px){
 
@@ -346,6 +365,7 @@ body{
 
   .sound-panel{
     max-width:100%;
+    min-height:auto;
   }
 
   .option-card{
@@ -353,10 +373,10 @@ body{
   }
 
   .speaker-btn{
-    width:130px;
-    height:130px;
+    width:140px;
+    height:140px;
 
-    font-size:3.5rem;
+    font-size:4rem;
   }
 
 }
@@ -367,138 +387,147 @@ body{
 
 <body>
 
-<!-- SPLASH SCREEN -->
+<!-- =========================
+     SPLASH SCREEN
+========================== -->
 
 <div id="splashScreen">
 
   <img
-  src="assets/innovine logo.png"
-  alt="Innovine Logo"
+    src="assets/innovine logo.png"
+    alt="Innovine Logo"
   >
 
-  <button id="startBtn">
-    Start Game
-  </button>
-
 </div>
 
-<!-- MAIN GAME -->
+<!-- =========================
+     MAIN GAME
+========================== -->
 
 <div
-class="game-wrapper"
-id="gameWrapper"
+  class="game-wrapper"
+  id="gameWrapper"
 >
 
-<div class="top-bar">
+  <div class="top-bar">
 
-  <h1>
-    Letters Aa to Dd
-  </h1>
+    <h1>
+      Letters Aa to Dd
+    </h1>
 
-  <p>
-    Listen to the sound and choose the correct picture.
-  </p>
+    <p>
+      Listen to the sound and drag the correct picture.
+    </p>
 
-</div>
+  </div>
 
-<div id="gameContent">
+  <div id="gameContent">
 
-  <div class="game-area">
+    <div class="game-area">
 
-    <!-- LEFT PANEL -->
+      <!-- LEFT PANEL -->
 
-    <div class="sound-panel">
+      <div class="sound-panel">
 
-      <div class="sound-title">
-        Listen to the Letter Sound
-      </div>
+        <div class="sound-title">
+          Listen to the Letter Sound
+        </div>
 
-      <button
-      class="speaker-btn"
-      id="playSoundBtn"
-      >
-        🔊
-      </button>
+        <button
+          class="speaker-btn"
+          id="playSoundBtn"
+        >
+          🔊
+        </button>
 
-      <div class="instruction">
-        Tap the correct picture and submit your answer.
-      </div>
+        <div class="instruction">
+          Drag the correct picture into the box below.
+        </div>
 
-      <div id="answerZone">
+        <div id="answerZone">
 
-        <div class="drop-text">
-          Select a Picture
+          <div class="drop-text">
+            Drop Here
+          </div>
+
         </div>
 
       </div>
 
+      <!-- RIGHT PANEL -->
+
+      <div
+        class="options-panel"
+        id="optionsPanel"
+      ></div>
+
     </div>
 
-    <!-- RIGHT PANEL -->
-
-    <div
-    class="options-panel"
-    id="optionsPanel"
-    ></div>
+    <button
+      class="game-btn"
+      id="nextBtn"
+    >
+      Next
+    </button>
 
   </div>
 
-  <button
-  class="game-btn"
-  id="nextBtn"
+  <!-- =========================
+       COMPLETE SCREEN
+  ========================== -->
+
+  <div
+    class="complete-screen"
+    id="completeScreen"
   >
-    Next
-  </button>
+
+    <h2>
+      Great Job!
+    </h2>
+
+    <p>
+      You completed the game.
+    </p>
+
+    <button
+      class="game-btn"
+      id="playAgainBtn"
+      style="display:block; margin-top:30px;"
+    >
+      Play Again
+    </button>
+
+  </div>
 
 </div>
 
-<!-- COMPLETE SCREEN -->
+<!-- =========================
+     AUDIO
+========================== -->
 
-<div
-class="complete-screen"
-id="completeScreen"
->
-
-<h2>
-  Great Job!
-</h2>
-
-<p>
-  You completed the game.
-</p>
-
-<button
-class="game-btn"
-id="playAgainBtn"
-style="display:block;margin-top:30px;"
->
-  Play Again
-</button>
-
-</div>
-
-</div>
-
-<!-- AUDIO -->
-
+<!-- RIGHT SOUND -->
 <audio
-id="correctSound"
-src="assets/correct.mp3"
-preload="auto"
+  id="correctSound"
+  src="assets/claps.mp3"
+  preload="auto"
 ></audio>
 
+<!-- WRONG SOUND -->
 <audio
-id="wrongSound"
-src="assets/wrong.mp3"
-preload="auto"
+  id="wrongSound"
+  src="assets/wrong.mp3"
+  preload="auto"
 ></audio>
 
+<!-- LETTER SOUND -->
 <audio
-id="letterAudio"
-preload="auto"
+  id="letterSound"
+  preload="auto"
 ></audio>
 
-<!-- CONFETTI -->
+<!-- =========================
+     CONFETTI LIBRARY
+========================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
@@ -510,134 +539,134 @@ preload="auto"
 
 const gameData = [
 
-{
-  letter:"A",
+  {
+    letter:"A",
 
-  sound:"assets/letter a sound.m4a",
+    sound:"assets/letter a sound.m4a",
 
-  correct:"alligator",
+    correct:"alligator",
 
-  options:[
+    options:[
 
-    {
-      name:"Cap",
-      image:"assets/cap.png",
-      value:"cap"
-    },
+      {
+        name:"Cap",
+        image:"assets/cap.png",
+        value:"cap"
+      },
 
-    {
-      name:"Alligator",
-      image:"assets/alligator.png",
-      value:"alligator"
-    },
+      {
+        name:"Alligator",
+        image:"assets/alligator.png",
+        value:"alligator"
+      },
 
-    {
-      name:"Zip",
-      image:"assets/zip.png",
-      value:"zip"
-    }
+      {
+        name:"Zip",
+        image:"assets/zip.png",
+        value:"zip"
+      }
 
-  ]
+    ]
 
-},
+  },
 
-{
-  letter:"B",
+  {
+    letter:"B",
 
-  sound:"assets/letter b sound.m4a",
+    sound:"assets/letter b sound.m4a",
 
-  correct:"bird",
+    correct:"bird",
 
-  options:[
+    options:[
 
-    {
-      name:"Bird",
-      image:"assets/bird.png",
-      value:"bird"
-    },
+      {
+        name:"Bird",
+        image:"assets/bird.png",
+        value:"bird"
+      },
 
-    {
-      name:"Dog",
-      image:"assets/dog.png",
-      value:"dog"
-    },
+      {
+        name:"Dog",
+        image:"assets/dog.png",
+        value:"dog"
+      },
 
-    {
-      name:"Flower",
-      image:"assets/flower.png",
-      value:"flower"
-    }
+      {
+        name:"Flower",
+        image:"assets/flower.png",
+        value:"flower"
+      }
 
-  ]
+    ]
 
-},
+  },
 
-{
-  letter:"C",
+  {
+    letter:"C",
 
-  sound:"assets/letter c sound.m4a",
+    sound:"assets/letter c sound.m4a",
 
-  correct:"carrot",
+    correct:"carrot",
 
-  options:[
+    options:[
 
-    {
-      name:"Dinosaur",
-      image:"assets/dinosaur.png",
-      value:"dinosaur"
-    },
+      {
+        name:"Dinosaur",
+        image:"assets/dinosaur.png",
+        value:"dinosaur"
+      },
 
-    {
-      name:"Frog",
-      image:"assets/frog.png",
-      value:"frog"
-    },
+      {
+        name:"Frog",
+        image:"assets/frog.png",
+        value:"frog"
+      },
 
-    {
-      name:"Carrot",
-      image:"assets/carrot.png",
-      value:"carrot"
-    }
+      {
+        name:"Carrot",
+        image:"assets/carrot.png",
+        value:"carrot"
+      }
 
-  ]
+    ]
 
-},
+  },
 
-{
-  letter:"D",
+  {
+    letter:"D",
 
-  sound:"assets/letter d sound.mp3",
+    sound:"assets/letter d sound.mp3",
 
-  correct:"dice",
+    correct:"dice",
 
-  options:[
+    options:[
 
-    {
-      name:"Jelly",
-      image:"assets/jelly.png",
-      value:"jelly"
-    },
+      {
+        name:"Jelly",
+        image:"assets/jelly.png",
+        value:"jelly"
+      },
 
-    {
-      name:"Dice",
-      image:"assets/dice.png",
-      value:"dice"
-    },
+      {
+        name:"Dice",
+        image:"assets/dice.png",
+        value:"dice"
+      },
 
-    {
-      name:"Gun",
-      image:"assets/gun.png",
-      value:"gun"
-    }
+      {
+        name:"Gun",
+        image:"assets/gun.png",
+        value:"gun"
+      }
 
-  ]
+    ]
 
-}
+  }
 
 ];
 
 // =========================
-// SHUFFLE
+// SHUFFLE FUNCTION
 // =========================
 
 function shuffleArray(array){
@@ -646,6 +675,10 @@ function shuffleArray(array){
   .sort(() => Math.random() - 0.5);
 
 }
+
+// =========================
+// RANDOMISE LETTER ORDER
+// =========================
 
 let shuffledGameData =
 shuffleArray(gameData);
@@ -656,93 +689,88 @@ shuffleArray(gameData);
 
 const splashScreen =
 document.getElementById(
-"splashScreen"
-);
-
-const startBtn =
-document.getElementById(
-"startBtn"
+  "splashScreen"
 );
 
 const gameWrapper =
 document.getElementById(
-"gameWrapper"
+  "gameWrapper"
 );
 
 const optionsPanel =
 document.getElementById(
-"optionsPanel"
+  "optionsPanel"
 );
 
 const answerZone =
 document.getElementById(
-"answerZone"
+  "answerZone"
 );
 
 const playSoundBtn =
 document.getElementById(
-"playSoundBtn"
+  "playSoundBtn"
 );
 
 const nextBtn =
 document.getElementById(
-"nextBtn"
+  "nextBtn"
 );
 
 const playAgainBtn =
 document.getElementById(
-"playAgainBtn"
+  "playAgainBtn"
 );
 
 const gameContent =
 document.getElementById(
-"gameContent"
+  "gameContent"
 );
 
 const completeScreen =
 document.getElementById(
-"completeScreen"
+  "completeScreen"
 );
 
 const correctSound =
 document.getElementById(
-"correctSound"
+  "correctSound"
 );
 
 const wrongSound =
 document.getElementById(
-"wrongSound"
+  "wrongSound"
 );
 
-const letterAudio =
+const letterSound =
 document.getElementById(
-"letterAudio"
+  "letterSound"
 );
 
 let currentQuestion = 0;
 
-let selectedAnswer = null;
-
 // =========================
-// START GAME
+// SPLASH SCREEN
 // =========================
 
-startBtn.addEventListener(
-"click",
-startGame
+window.addEventListener(
+  "load",
+  () => {
+
+    setTimeout(() => {
+
+      splashScreen.style.display =
+      "none";
+
+      gameWrapper.style.display =
+      "block";
+
+      loadQuestion();
+
+    }, 5000);
+
+  }
 );
-
-function startGame(){
-
-  splashScreen.style.display =
-  "none";
-
-  gameWrapper.style.display =
-  "block";
-
-  loadQuestion();
-
-}
 
 // =========================
 // LOAD QUESTION
@@ -753,18 +781,10 @@ function loadQuestion(){
   nextBtn.style.display =
   "none";
 
-  selectedAnswer = null;
-
   answerZone.classList.remove(
-  "correct",
-  "wrong"
+    "correct",
+    "wrong"
   );
-
-  answerZone.innerHTML = `
-  <div class="drop-text">
-    Select a Picture
-  </div>
-  `;
 
   const data =
   shuffledGameData[currentQuestion];
@@ -775,41 +795,60 @@ function loadQuestion(){
   shuffleArray(data.options);
 
   shuffledOptions.forEach(
-  option => {
+    option => {
 
-    const card =
-    document.createElement("div");
+      const card =
+      document.createElement("div");
 
-    card.className =
-    "option-card";
+      card.className =
+      "option-card";
 
-    card.innerHTML = `
-    <img
-    src="${option.image}"
-    alt="${option.name}"
-    >
+      const imageWrapper =
+      document.createElement("div");
 
-    <div class="image-label">
-      ${option.name}
-    </div>
-    `;
+      imageWrapper.className =
+      "image-wrapper";
 
-    card.addEventListener(
-    "click",
-    () => {
+      const img =
+      document.createElement("img");
 
-      selectOption(
-      option.value,
-      option.name,
-      card
+      img.src = option.image;
+
+      img.alt = option.name;
+
+      img.className =
+      "draggable";
+
+      img.draggable = true;
+
+      img.dataset.value =
+      option.value;
+
+      img.addEventListener(
+        "dragstart",
+        dragStart
       );
 
+      const label =
+      document.createElement("div");
+
+      label.className =
+      "image-label";
+
+      label.textContent =
+      option.name;
+
+      imageWrapper.appendChild(img);
+
+      card.appendChild(
+        imageWrapper
+      );
+
+      card.appendChild(label);
+
+      optionsPanel.appendChild(card);
+
     }
-    );
-
-    optionsPanel.appendChild(card);
-
-  }
   );
 
   playLetterSound();
@@ -825,183 +864,194 @@ function playLetterSound(){
   const data =
   shuffledGameData[currentQuestion];
 
-  letterAudio.src =
+  letterSound.src =
   data.sound;
 
-  letterAudio.play();
+  letterSound.load();
+
+  const playPromise =
+  letterSound.play();
+
+  if(playPromise !== undefined){
+
+    playPromise.catch(() => {});
+
+  }
 
 }
 
 playSoundBtn.addEventListener(
-"click",
-playLetterSound
+  "click",
+  playLetterSound
 );
 
 // =========================
-// SELECT OPTION
+// DRAG START
 // =========================
 
-function selectOption(
-value,
-name,
-card
-){
+function dragStart(e){
 
-  document
-  .querySelectorAll(".option-card")
-  .forEach(card => {
-
-    card.classList.remove(
-    "selected"
-    );
-
-  });
-
-  card.classList.add(
-  "selected"
+  e.dataTransfer.setData(
+    "text/plain",
+    e.target.dataset.value
   );
-
-  selectedAnswer = value;
-
-  answerZone.innerHTML = `
-  <div class="drop-text">
-    Selected:
-    <br><br>
-    ${name}
-    <br><br>
-    Tap Here To Submit
-  </div>
-  `;
 
 }
 
 // =========================
-// SUBMIT ANSWER
+// DRAG OVER
 // =========================
 
 answerZone.addEventListener(
-"click",
-submitAnswer
+  "dragover",
+  (e) => {
+
+    e.preventDefault();
+
+    answerZone.classList.add(
+      "hovered"
+    );
+
+  }
 );
 
-function submitAnswer(){
+// =========================
+// DRAG LEAVE
+// =========================
 
-  if(!selectedAnswer) return;
-
-  const correctAnswer =
-  shuffledGameData[
-  currentQuestion
-  ].correct;
-
-  if(
-  selectedAnswer ===
-  correctAnswer
-  ){
+answerZone.addEventListener(
+  "dragleave",
+  () => {
 
     answerZone.classList.remove(
-    "wrong"
+      "hovered"
     );
-
-    answerZone.classList.add(
-    "correct"
-    );
-
-    correctSound.currentTime = 0;
-
-    correctSound.play();
-
-    nextBtn.style.display =
-    "block";
 
   }
-
-  else{
-
-    answerZone.classList.remove(
-    "correct"
-    );
-
-    answerZone.classList.add(
-    "wrong"
-    );
-
-    wrongSound.currentTime = 0;
-
-    wrongSound.play();
-
-    setTimeout(() => {
-
-      answerZone.classList.remove(
-      "wrong"
-      );
-
-    }, 900);
-
-  }
-
-}
+);
 
 // =========================
-// NEXT
+// DROP
+// =========================
+
+answerZone.addEventListener(
+  "drop",
+  (e) => {
+
+    e.preventDefault();
+
+    answerZone.classList.remove(
+      "hovered"
+    );
+
+    const draggedValue =
+    e.dataTransfer.getData(
+      "text/plain"
+    );
+
+    const correctAnswer =
+    shuffledGameData[
+      currentQuestion
+    ].correct;
+
+    if(
+      draggedValue ===
+      correctAnswer
+    ){
+
+      answerZone.classList.add(
+        "correct"
+      );
+
+      correctSound.currentTime = 0;
+
+      correctSound.play();
+
+      nextBtn.style.display =
+      "block";
+
+    }
+
+    else{
+
+      answerZone.classList.add(
+        "wrong"
+      );
+
+      wrongSound.currentTime = 0;
+
+      wrongSound.play();
+
+      setTimeout(() => {
+
+        answerZone.classList.remove(
+          "wrong"
+        );
+
+      }, 800);
+
+    }
+
+  }
+);
+
+// =========================
+// NEXT BUTTON
 // =========================
 
 nextBtn.addEventListener(
-"click",
-nextQuestion
+  "click",
+  () => {
+
+    currentQuestion++;
+
+    if(
+      currentQuestion <
+      shuffledGameData.length
+    ){
+
+      loadQuestion();
+
+    }
+
+    else{
+
+      gameContent.style.display =
+      "none";
+
+      completeScreen.style.display =
+      "block";
+
+      startConfetti();
+
+    }
+
+  }
 );
-
-function nextQuestion(){
-
-  currentQuestion++;
-
-  if(
-  currentQuestion <
-  shuffledGameData.length
-  ){
-
-    loadQuestion();
-
-  }
-
-  else{
-
-    gameContent.style.display =
-    "none";
-
-    completeScreen.style.display =
-    "block";
-
-    startConfetti();
-
-  }
-
-}
 
 // =========================
 // PLAY AGAIN
 // =========================
 
 playAgainBtn.addEventListener(
-"click",
-restartGame
+  "click",
+  () => {
+
+    shuffledGameData =
+    shuffleArray(gameData);
+
+    currentQuestion = 0;
+
+    completeScreen.style.display =
+    "none";
+
+    gameContent.style.display =
+    "block";
+
+    loadQuestion();
+
+  }
 );
-
-function restartGame(){
-
-  shuffledGameData =
-  shuffleArray(gameData);
-
-  currentQuestion = 0;
-
-  completeScreen.style.display =
-  "none";
-
-  gameContent.style.display =
-  "block";
-
-  loadQuestion();
-
-}
 
 // =========================
 // CONFETTI
@@ -1009,7 +1059,8 @@ function restartGame(){
 
 function startConfetti(){
 
-  const duration = 5000;
+  const duration =
+  5 * 1000;
 
   const end =
   Date.now() + duration;
@@ -1041,11 +1092,11 @@ function startConfetti(){
     });
 
     if(
-    Date.now() < end
+      Date.now() < end
     ){
 
       requestAnimationFrame(
-      frame
+        frame
       );
 
     }
