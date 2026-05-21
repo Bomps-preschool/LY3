@@ -12,6 +12,7 @@ body{
   overflow:hidden;
   font-family:Arial, sans-serif;
   background:#fff7ee;
+  touch-action:none;
 }
 
 .game-container{
@@ -138,9 +139,9 @@ body{
 .trace-area{
   display:none;
   margin-top:8px;
-  width:620px;
-  max-width:94vw;
-  height:240px;
+  width:660px;
+  max-width:95vw;
+  height:260px;
   position:relative;
   background:white;
   border-radius:24px;
@@ -152,14 +153,15 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:55px;
+  gap:45px;
 }
 
 .trace-box{
-  width:230px;
-  height:210px;
+  width:260px;
+  height:225px;
   position:relative;
   border-radius:18px;
+  overflow:hidden;
 }
 
 .trace-svg{
@@ -170,24 +172,25 @@ body{
   left:0;
 }
 
-.big-letter{
-  font-size:170px;
-  font-weight:bold;
+.letter-fill{
   fill:#4fc3f7;
   stroke:#111;
-  stroke-width:3;
-  font-family:Arial, sans-serif;
+  stroke-width:4;
+  stroke-linejoin:round;
+  stroke-linecap:round;
 }
 
-.inner-dots{
-  font-size:118px;
-  font-weight:bold;
+.inner-line{
   fill:none;
   stroke:#111;
-  stroke-width:3;
-  stroke-dasharray:8 8;
+  stroke-width:5;
+  stroke-dasharray:10 10;
   stroke-linecap:round;
-  font-family:Arial, sans-serif;
+  stroke-linejoin:round;
+}
+
+.arrow{
+  fill:#111;
 }
 
 canvas{
@@ -196,6 +199,7 @@ canvas{
   left:0;
   width:100%;
   height:100%;
+  touch-action:none;
 }
 
 .final-text{
@@ -206,7 +210,6 @@ canvas{
   text-align:center;
 }
 
-/* SIDE CONFETTI */
 .confetti{
   position:fixed;
   width:12px;
@@ -216,62 +219,36 @@ canvas{
   pointer-events:none;
 }
 
-.confetti.left{
-  left:-20px;
-  animation:sideLeft 3.8s ease-out forwards;
-}
-
-.confetti.right{
-  right:-20px;
-  animation:sideRight 3.8s ease-out forwards;
-}
+.confetti.left{left:-20px;animation:sideLeft 4s ease-out forwards;}
+.confetti.right{right:-20px;animation:sideRight 4s ease-out forwards;}
+.confetti.top{top:-20px;animation:topFall 4.2s ease-out forwards;}
 
 @keyframes sideLeft{
   0%{transform:translate(0,0) rotate(0deg);opacity:1;}
-  100%{transform:translate(115vw,60vh) rotate(720deg);opacity:0;}
+  100%{transform:translate(115vw,55vh) rotate(760deg);opacity:0;}
 }
 
 @keyframes sideRight{
   0%{transform:translate(0,0) rotate(0deg);opacity:1;}
-  100%{transform:translate(-115vw,60vh) rotate(-720deg);opacity:0;}
+  100%{transform:translate(-115vw,55vh) rotate(-760deg);opacity:0;}
+}
+
+@keyframes topFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(115vh) rotate(760deg);opacity:0;}
 }
 
 @media(max-width:768px){
-
   .decor{font-size:32px;}
-
   .title{font-size:22px;}
-
   .letter-title{font-size:40px;}
-
   .grid{gap:8px;}
-
-  .card{
-    padding:6px;
-    border-radius:16px;
-  }
-
+  .card{padding:6px;border-radius:16px;}
   .card img{height:11vh;}
-
   .card p{font-size:16px;}
-
   .message{font-size:17px;}
-
-  .trace-area{
-    width:94vw;
-    height:190px;
-    gap:20px;
-  }
-
-  .trace-box{
-    width:145px;
-    height:165px;
-  }
-
-  .big-letter{font-size:125px;}
-
-  .inner-dots{font-size:86px;}
-
+  .trace-area{width:95vw;height:205px;gap:18px;}
+  .trace-box{width:155px;height:175px;}
   .final-text{font-size:42px;}
 }
 </style>
@@ -296,7 +273,7 @@ canvas{
   <div class="title">
     Listen to the letter sound.<br>
     Tap the odd one out.<br>
-    Then trace BOTH letters slowly.
+    Then trace BOTH letters.
   </div>
   <button class="btn" onclick="nextSlide()">Start</button>
 </div>
@@ -379,12 +356,9 @@ let slides = [
 let currentSlide = 0;
 let slideLocked = false;
 
-setTimeout(()=>{
-  showSlide(1);
-},5000);
+setTimeout(()=>showSlide(1),5000);
 
 function showSlide(index){
-
   if(slideLocked) return;
 
   document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
@@ -424,33 +398,24 @@ function nextSlide(){
 }
 
 function playSound(id){
-  const audio = document.getElementById(id);
-  audio.currentTime = 0;
+  const audio=document.getElementById(id);
+  audio.currentTime=0;
   audio.play().catch(()=>{});
 }
 
 function checkOdd(card,isOdd){
-
-  const slide = document.querySelector(".slide.active");
-  const msg = slide.querySelector(".message");
+  const slide=document.querySelector(".slide.active");
+  const msg=slide.querySelector(".message");
 
   if(isOdd){
-
     playSound("correctSound");
-
     card.style.borderColor="#39d353";
     msg.textContent="Good job! Now trace BOTH letters completely.";
 
-    slide.querySelectorAll(".card").forEach(c=>{
-      c.style.pointerEvents="none";
-    });
-
+    slide.querySelectorAll(".card").forEach(c=>c.style.pointerEvents="none");
     showTrace(slide);
-
   }else{
-
     playSound("wrongSound");
-
     if(navigator.vibrate) navigator.vibrate(200);
 
     card.style.borderColor="#ff4d4d";
@@ -463,48 +428,82 @@ function checkOdd(card,isOdd){
   }
 }
 
+function getLetterSVG(letter){
+  const svg = {
+    E: `
+      <rect class="letter-fill" x="35" y="25" width="155" height="170"></rect>
+      <rect fill="white" x="75" y="60" width="115" height="28"></rect>
+      <rect fill="white" x="75" y="118" width="100" height="28"></rect>
+      <path class="inner-line" d="M70 50 L70 170 M70 50 L170 50 M70 110 L150 110 M70 170 L175 170"></path>
+    `,
+    e: `
+      <path class="letter-fill" d="M165 125 C160 75 125 50 85 58 C45 66 25 100 32 140 C39 182 82 205 122 190 C142 183 158 168 166 150 L128 150 C120 162 105 169 88 166 C70 163 58 149 55 130 L168 130 Z M58 105 C65 85 80 74 100 74 C120 74 134 85 140 105 Z"></path>
+      <path class="inner-line" d="M140 103 C130 78 105 70 82 80 C55 92 48 124 58 150 C70 178 110 184 138 160 M55 122 L145 122"></path>
+    `,
+    H: `
+      <path class="letter-fill" d="M35 25 H78 V92 H150 V25 H193 V195 H150 V128 H78 V195 H35 Z"></path>
+      <path class="inner-line" d="M62 45 L62 175 M62 110 L166 110 M166 45 L166 175"></path>
+    `,
+    h: `
+      <path class="letter-fill" d="M45 25 H88 V92 C100 72 122 62 145 66 C175 71 190 94 190 128 V195 H147 V130 C147 112 138 101 123 101 C105 101 89 116 89 140 V195 H45 Z"></path>
+      <path class="inner-line" d="M68 45 L68 175 M68 130 C80 95 122 82 150 105 C165 118 166 145 166 175"></path>
+    `,
+    G: `
+      <path class="letter-fill" d="M188 75 C170 45 136 28 98 32 C49 37 20 76 21 118 C22 166 58 198 105 198 C145 198 178 176 192 145 L192 112 H112 V150 H150 C140 160 124 166 106 166 C80 166 61 146 61 118 C61 89 79 66 108 63 C130 61 149 70 161 88 Z"></path>
+      <path class="inner-line" d="M156 80 C137 58 98 55 75 75 C52 95 48 135 70 158 C95 184 135 178 158 155 M112 132 L172 132 L172 165"></path>
+    `,
+    g: `
+      <path class="letter-fill" d="M145 70 H185 V180 C185 220 158 248 112 248 C78 248 52 232 42 205 L82 195 C88 208 99 214 114 214 C135 214 145 202 145 182 V172 C133 187 114 194 92 190 C55 184 30 154 30 116 C30 78 57 49 93 45 C116 42 134 50 145 66 Z M108 80 C86 80 70 96 70 119 C70 142 86 158 108 158 C130 158 146 142 146 119 C146 96 130 80 108 80 Z"></path>
+      <path class="inner-line" d="M145 75 C125 55 83 58 62 82 C40 107 45 148 72 167 C100 187 132 176 146 150 M165 82 L165 178 C165 214 135 230 96 218"></path>
+    `,
+    F: `
+      <path class="letter-fill" d="M40 25 H195 V65 H84 V100 H170 V140 H84 V195 H40 Z"></path>
+      <path class="inner-line" d="M64 45 L64 175 M64 45 L175 45 M64 120 L150 120"></path>
+    `,
+    f: `
+      <path class="letter-fill" d="M155 25 V62 H132 C118 62 112 70 112 85 V96 H155 V132 H112 V195 H70 V132 H42 V96 H70 V83 C70 46 94 25 132 25 Z"></path>
+      <path class="inner-line" d="M132 45 C100 45 92 62 92 88 L92 175 M55 115 L145 115"></path>
+    `
+  };
+
+  return svg[letter];
+}
+
 function showTrace(slide){
+  slideLocked=true;
 
-  slideLocked = true;
-
-  const area = slide.querySelector(".trace-area");
+  const area=slide.querySelector(".trace-area");
   area.classList.add("show");
 
-  const upper = slide.dataset.upper;
-  const lower = slide.dataset.lower;
+  const upper=slide.dataset.upper;
+  const lower=slide.dataset.lower;
 
-  area.innerHTML = `
+  area.innerHTML=`
     <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 230 210">
-        <text class="big-letter" x="34" y="165">${upper}</text>
-        <text class="inner-dots" x="57" y="145">${upper}</text>
+      <svg class="trace-svg" viewBox="0 0 230 260">
+        ${getLetterSVG(upper)}
       </svg>
       <canvas></canvas>
     </div>
 
     <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 230 210">
-        <text class="big-letter" x="48" y="165">${lower}</text>
-        <text class="inner-dots" x="72" y="145">${lower}</text>
+      <svg class="trace-svg" viewBox="0 0 230 260">
+        ${getLetterSVG(lower)}
       </svg>
       <canvas></canvas>
     </div>
   `;
 
-  area.querySelectorAll(".trace-box").forEach(box=>{
-    setupCanvas(box, slide);
-  });
+  area.querySelectorAll(".trace-box").forEach(box=>setupCanvas(box,slide));
 }
 
-function setupCanvas(box, slide){
+function setupCanvas(box,slide){
+  const canvas=box.querySelector("canvas");
 
-  const canvas = box.querySelector("canvas");
+  canvas.width=box.offsetWidth;
+  canvas.height=box.offsetHeight;
 
-  canvas.width = box.offsetWidth;
-  canvas.height = box.offsetHeight;
-
-  const ctx = canvas.getContext("2d");
-
+  const ctx=canvas.getContext("2d");
   ctx.strokeStyle="#ff7300";
   ctx.lineWidth=15;
   ctx.lineCap="round";
@@ -514,120 +513,96 @@ function setupCanvas(box, slide){
   let alreadyDone=false;
 
   function pos(e){
-    const r = canvas.getBoundingClientRect();
-    const t = e.touches ? e.touches[0] : e;
-    return {
-      x:t.clientX-r.left,
-      y:t.clientY-r.top
-    };
+    const r=canvas.getBoundingClientRect();
+    return {x:e.clientX-r.left,y:e.clientY-r.top};
   }
 
-  function start(e){
+  canvas.addEventListener("pointerdown",e=>{
     e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
     drawing=true;
     const p=pos(e);
     ctx.beginPath();
     ctx.moveTo(p.x,p.y);
-  }
+  });
 
-  function draw(e){
+  canvas.addEventListener("pointermove",e=>{
     if(!drawing || alreadyDone) return;
-
     e.preventDefault();
-
     const p=pos(e);
     ctx.lineTo(p.x,p.y);
     ctx.stroke();
-
     traceCount++;
-  }
+  });
 
-  function stop(){
+  canvas.addEventListener("pointerup",()=>{
     drawing=false;
 
-    if(traceCount > 150 && !alreadyDone){
+    if(traceCount>130 && !alreadyDone){
       alreadyDone=true;
       box.dataset.done="true";
       box.style.border="4px solid #39d353";
       checkBothTraced(slide);
     }
-  }
+  });
 
-  canvas.onmousedown=start;
-  canvas.onmousemove=draw;
-  canvas.onmouseup=stop;
-  canvas.onmouseleave=stop;
-
-  canvas.ontouchstart=start;
-  canvas.ontouchmove=draw;
-  canvas.ontouchend=stop;
+  canvas.addEventListener("pointercancel",()=>{
+    drawing=false;
+  });
 }
 
 function checkBothTraced(slide){
-
-  const boxes = slide.querySelectorAll(".trace-box");
-  const done = [...boxes].every(box=>box.dataset.done==="true");
+  const boxes=slide.querySelectorAll(".trace-box");
+  const done=[...boxes].every(box=>box.dataset.done==="true");
 
   if(done){
-
     slide.querySelector(".message").textContent="Well done!";
-
     setTimeout(()=>{
-      slideLocked = false;
+      slideLocked=false;
       nextSlide();
     },1800);
   }
 }
 
 function playAgain(){
-
-  const letters = ["slideE","slideH","slideG","slideF"];
+  const letters=["slideE","slideH","slideG","slideF"];
 
   for(let i=letters.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
     [letters[i],letters[j]]=[letters[j],letters[i]];
   }
 
-  slides = [
-    "introSlide",
-    "instructionSlide",
-    ...letters,
-    "finalSlide"
-  ];
-
-  slideLocked = false;
+  slides=["introSlide","instructionSlide",...letters,"finalSlide"];
+  slideLocked=false;
   showSlide(1);
 }
 
 function createConfetti(){
+  const colors=["#ff595e","#ffca3a","#8ac926","#1982c4","#6a4c93","#ff85a1","#00c2ff"];
 
-  const colors=[
-    "#ff595e",
-    "#ffca3a",
-    "#8ac926",
-    "#1982c4",
-    "#6a4c93",
-    "#ff85a1",
-    "#00c2ff"
-  ];
-
-  for(let i=0;i<220;i++){
-
+  for(let i=0;i<360;i++){
     const confetti=document.createElement("div");
     confetti.classList.add("confetti");
 
-    const side = Math.random() > 0.5 ? "left" : "right";
-    confetti.classList.add(side);
+    const rand=Math.random();
 
-    confetti.style.top = Math.random()*80 + 10 + "vh";
-    confetti.style.background = colors[Math.floor(Math.random()*colors.length)];
-    confetti.style.animationDelay = Math.random()*0.8 + "s";
+    if(rand<0.33){
+      confetti.classList.add("left");
+      confetti.style.top=Math.random()*80+10+"vh";
+    }else if(rand<0.66){
+      confetti.classList.add("right");
+      confetti.style.top=Math.random()*80+10+"vh";
+    }else{
+      confetti.classList.add("top");
+      confetti.style.left=Math.random()*100+"vw";
+    }
+
+    confetti.style.background=colors[Math.floor(Math.random()*colors.length)];
+    confetti.style.animationDelay=Math.random()*0.8+"s";
 
     document.body.appendChild(confetti);
 
-    setTimeout(()=>{
-      confetti.remove();
-    },5000);
+    setTimeout(()=>confetti.remove(),5500);
   }
 }
 </script>
