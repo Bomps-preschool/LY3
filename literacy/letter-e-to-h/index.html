@@ -3,16 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>Odd One Out - Letters E H G F</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
 body{
   overflow:hidden;
@@ -20,24 +14,22 @@ body{
   background:#fff7ee;
 }
 
-/* CLEAR NON-BLUR BACKGROUND */
 .game-container{
   width:100vw;
   height:100vh;
   position:relative;
   overflow:hidden;
   background:
-    radial-gradient(circle at 10% 15%, #ffe4ec 0 8%, transparent 9%),
-    radial-gradient(circle at 90% 20%, #d7f5ff 0 10%, transparent 11%),
+    radial-gradient(circle at 12% 15%, #ffe4ec 0 8%, transparent 9%),
+    radial-gradient(circle at 88% 20%, #d7f5ff 0 10%, transparent 11%),
     radial-gradient(circle at 15% 85%, #fff1b8 0 9%, transparent 10%),
     radial-gradient(circle at 88% 82%, #d8ffd8 0 10%, transparent 11%),
     linear-gradient(135deg,#fff8ef,#ffffff,#f0fbff);
 }
 
-/* SCHOOL DECORATIONS */
 .decor{
   position:absolute;
-  font-size:46px;
+  font-size:44px;
   z-index:0;
   opacity:0.9;
   pointer-events:none;
@@ -64,9 +56,7 @@ body{
   z-index:2;
 }
 
-.active{
-  display:flex;
-}
+.active{display:flex;}
 
 .logo{
   width:300px;
@@ -96,7 +86,7 @@ body{
 }
 
 .letter-title{
-  font-size:56px;
+  font-size:54px;
   color:#ff7300;
   font-weight:bold;
   text-shadow:3px 3px white;
@@ -135,7 +125,7 @@ body{
 
 .message{
   margin-top:8px;
-  font-size:23px;
+  font-size:22px;
   font-weight:bold;
   color:#ff7300;
   background:white;
@@ -145,13 +135,12 @@ body{
   text-align:center;
 }
 
-/* BIGGER TRACING AREA */
 .trace-area{
   display:none;
   margin-top:8px;
-  width:520px;
-  max-width:92vw;
-  height:210px;
+  width:620px;
+  max-width:94vw;
+  height:240px;
   position:relative;
   background:white;
   border-radius:24px;
@@ -163,33 +152,48 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:45px;
+  gap:55px;
 }
 
 .trace-box{
-  width:190px;
-  height:180px;
+  width:230px;
+  height:210px;
   position:relative;
+  border-radius:18px;
 }
 
 .trace-svg{
   width:100%;
   height:100%;
   position:absolute;
+  top:0;
+  left:0;
 }
 
-.trace-svg text{
-  font-size:145px;
+.big-letter{
+  font-size:170px;
   font-weight:bold;
-  fill:white;
-  stroke:#28a9e0;
+  fill:#4fc3f7;
+  stroke:#111;
   stroke-width:3;
-  stroke-dasharray:14 13;
+  font-family:Arial, sans-serif;
+}
+
+.inner-dots{
+  font-size:118px;
+  font-weight:bold;
+  fill:none;
+  stroke:#111;
+  stroke-width:3;
+  stroke-dasharray:8 8;
+  stroke-linecap:round;
   font-family:Arial, sans-serif;
 }
 
 canvas{
   position:absolute;
+  top:0;
+  left:0;
   width:100%;
   height:100%;
 }
@@ -202,82 +206,73 @@ canvas{
   text-align:center;
 }
 
-/* CONFETTI FIXED */
+/* SIDE CONFETTI */
 .confetti{
   position:fixed;
-  top:-20px;
   width:12px;
   height:12px;
   border-radius:50%;
-  animation:fall linear forwards;
   z-index:99999;
   pointer-events:none;
 }
 
-@keyframes fall{
-  from{
-    transform:translateY(-30px) rotate(0deg);
-    opacity:1;
-  }
-  to{
-    transform:translateY(115vh) rotate(720deg);
-    opacity:0.8;
-  }
+.confetti.left{
+  left:-20px;
+  animation:sideLeft 3.8s ease-out forwards;
+}
+
+.confetti.right{
+  right:-20px;
+  animation:sideRight 3.8s ease-out forwards;
+}
+
+@keyframes sideLeft{
+  0%{transform:translate(0,0) rotate(0deg);opacity:1;}
+  100%{transform:translate(115vw,60vh) rotate(720deg);opacity:0;}
+}
+
+@keyframes sideRight{
+  0%{transform:translate(0,0) rotate(0deg);opacity:1;}
+  100%{transform:translate(-115vw,60vh) rotate(-720deg);opacity:0;}
 }
 
 @media(max-width:768px){
 
-  .decor{
-    font-size:34px;
-  }
+  .decor{font-size:32px;}
 
-  .title{
-    font-size:22px;
-  }
+  .title{font-size:22px;}
 
-  .letter-title{
-    font-size:42px;
-  }
+  .letter-title{font-size:40px;}
 
-  .grid{
-    gap:8px;
-  }
+  .grid{gap:8px;}
 
   .card{
     padding:6px;
     border-radius:16px;
   }
 
-  .card img{
-    height:12vh;
-  }
+  .card img{height:11vh;}
 
-  .card p{
-    font-size:16px;
-  }
+  .card p{font-size:16px;}
 
-  .message{
-    font-size:17px;
-  }
+  .message{font-size:17px;}
 
   .trace-area{
-    width:92vw;
-    height:170px;
-    gap:24px;
+    width:94vw;
+    height:190px;
+    gap:20px;
   }
 
   .trace-box{
-    width:135px;
-    height:145px;
+    width:145px;
+    height:165px;
   }
 
-  .trace-svg text{
-    font-size:112px;
-  }
+  .big-letter{font-size:125px;}
 
-  .final-text{
-    font-size:42px;
-  }
+  .inner-dots{font-size:86px;}
+
+  .final-text{font-size:42px;}
 }
 </style>
 </head>
@@ -301,12 +296,11 @@ canvas{
   <div class="title">
     Listen to the letter sound.<br>
     Tap the odd one out.<br>
-    Then trace BOTH letters.
+    Then trace BOTH letters slowly.
   </div>
   <button class="btn" onclick="nextSlide()">Start</button>
 </div>
 
-<!-- LETTER E -->
 <div class="slide letter-slide" id="slideE" data-sound="soundE" data-upper="E" data-lower="e">
   <div class="letter-title">Ee</div>
   <div class="grid">
@@ -319,7 +313,6 @@ canvas{
   <div class="trace-area"></div>
 </div>
 
-<!-- LETTER H -->
 <div class="slide letter-slide" id="slideH" data-sound="soundH" data-upper="H" data-lower="h">
   <div class="letter-title">Hh</div>
   <div class="grid">
@@ -332,7 +325,6 @@ canvas{
   <div class="trace-area"></div>
 </div>
 
-<!-- LETTER G -->
 <div class="slide letter-slide" id="slideG" data-sound="soundG" data-upper="G" data-lower="g">
   <div class="letter-title">Gg</div>
   <div class="grid">
@@ -345,7 +337,6 @@ canvas{
   <div class="trace-area"></div>
 </div>
 
-<!-- LETTER F -->
 <div class="slide letter-slide" id="slideF" data-sound="soundF" data-upper="F" data-lower="f">
   <div class="letter-title">Ff</div>
   <div class="grid">
@@ -386,6 +377,7 @@ let slides = [
 ];
 
 let currentSlide = 0;
+let slideLocked = false;
 
 setTimeout(()=>{
   showSlide(1);
@@ -393,12 +385,16 @@ setTimeout(()=>{
 
 function showSlide(index){
 
+  if(slideLocked) return;
+
   document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
   document.getElementById(slides[index]).classList.add("active");
 
   currentSlide = index;
+  slideLocked = false;
 
   document.querySelectorAll(".message").forEach(m=>m.textContent="");
+
   document.querySelectorAll(".trace-area").forEach(t=>{
     t.classList.remove("show");
     t.innerHTML="";
@@ -412,7 +408,7 @@ function showSlide(index){
   const active = document.querySelector(".slide.active");
 
   if(active.classList.contains("letter-slide")){
-    setTimeout(()=>playSound(active.dataset.sound),300);
+    setTimeout(()=>playSound(active.dataset.sound),500);
   }
 
   if(slides[index] === "finalSlide"){
@@ -422,7 +418,7 @@ function showSlide(index){
 }
 
 function nextSlide(){
-  if(currentSlide < slides.length - 1){
+  if(currentSlide < slides.length - 1 && !slideLocked){
     showSlide(currentSlide + 1);
   }
 }
@@ -443,7 +439,7 @@ function checkOdd(card,isOdd){
     playSound("correctSound");
 
     card.style.borderColor="#39d353";
-    msg.textContent="Good job! Now trace both letters.";
+    msg.textContent="Good job! Now trace BOTH letters completely.";
 
     slide.querySelectorAll(".card").forEach(c=>{
       c.style.pointerEvents="none";
@@ -463,12 +459,13 @@ function checkOdd(card,isOdd){
     setTimeout(()=>{
       card.style.borderColor="white";
       msg.textContent="";
-    },900);
+    },1000);
   }
 }
 
-/* TRACE BOTH LETTERS */
 function showTrace(slide){
+
+  slideLocked = true;
 
   const area = slide.querySelector(".trace-area");
   area.classList.add("show");
@@ -478,23 +475,23 @@ function showTrace(slide){
 
   area.innerHTML = `
     <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 190 180">
-        <text x="28" y="138">${upper}</text>
+      <svg class="trace-svg" viewBox="0 0 230 210">
+        <text class="big-letter" x="34" y="165">${upper}</text>
+        <text class="inner-dots" x="57" y="145">${upper}</text>
       </svg>
       <canvas></canvas>
     </div>
 
     <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 190 180">
-        <text x="35" y="138">${lower}</text>
+      <svg class="trace-svg" viewBox="0 0 230 210">
+        <text class="big-letter" x="48" y="165">${lower}</text>
+        <text class="inner-dots" x="72" y="145">${lower}</text>
       </svg>
       <canvas></canvas>
     </div>
   `;
 
-  const boxes = area.querySelectorAll(".trace-box");
-
-  boxes.forEach(box=>{
+  area.querySelectorAll(".trace-box").forEach(box=>{
     setupCanvas(box, slide);
   });
 }
@@ -514,6 +511,7 @@ function setupCanvas(box, slide){
 
   let drawing=false;
   let traceCount=0;
+  let alreadyDone=false;
 
   function pos(e){
     const r = canvas.getBoundingClientRect();
@@ -533,7 +531,7 @@ function setupCanvas(box, slide){
   }
 
   function draw(e){
-    if(!drawing) return;
+    if(!drawing || alreadyDone) return;
 
     e.preventDefault();
 
@@ -547,7 +545,8 @@ function setupCanvas(box, slide){
   function stop(){
     drawing=false;
 
-    if(traceCount > 70){
+    if(traceCount > 150 && !alreadyDone){
+      alreadyDone=true;
       box.dataset.done="true";
       box.style.border="4px solid #39d353";
       checkBothTraced(slide);
@@ -567,18 +566,19 @@ function setupCanvas(box, slide){
 function checkBothTraced(slide){
 
   const boxes = slide.querySelectorAll(".trace-box");
-
   const done = [...boxes].every(box=>box.dataset.done==="true");
 
   if(done){
+
     slide.querySelector(".message").textContent="Well done!";
+
     setTimeout(()=>{
+      slideLocked = false;
       nextSlide();
-    },1000);
+    },1800);
   }
 }
 
-/* PLAY AGAIN RANDOMISES ONLY AFTER FIRST GAME */
 function playAgain(){
 
   const letters = ["slideE","slideH","slideG","slideF"];
@@ -595,6 +595,7 @@ function playAgain(){
     "finalSlide"
   ];
 
+  slideLocked = false;
   showSlide(1);
 }
 
@@ -610,21 +611,23 @@ function createConfetti(){
     "#00c2ff"
   ];
 
-  for(let i=0;i<260;i++){
+  for(let i=0;i<220;i++){
 
     const confetti=document.createElement("div");
-
     confetti.classList.add("confetti");
 
-    confetti.style.left=Math.random()*100+"vw";
-    confetti.style.background=colors[Math.floor(Math.random()*colors.length)];
-    confetti.style.animationDuration=(Math.random()*3+2)+"s";
+    const side = Math.random() > 0.5 ? "left" : "right";
+    confetti.classList.add(side);
+
+    confetti.style.top = Math.random()*80 + 10 + "vh";
+    confetti.style.background = colors[Math.floor(Math.random()*colors.length)];
+    confetti.style.animationDelay = Math.random()*0.8 + "s";
 
     document.body.appendChild(confetti);
 
     setTimeout(()=>{
       confetti.remove();
-    },6000);
+    },5000);
   }
 }
 </script>
