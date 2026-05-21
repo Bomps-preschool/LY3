@@ -6,7 +6,12 @@
 <title>Odd One Out - Letters E H G F</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
 body{
   overflow:hidden;
@@ -28,7 +33,14 @@ body{
     linear-gradient(135deg,#fff8ef,#ffffff,#f0fbff);
 }
 
-.decor{position:absolute;font-size:40px;z-index:0;opacity:0.9;pointer-events:none;}
+.decor{
+  position:absolute;
+  font-size:40px;
+  z-index:0;
+  opacity:0.9;
+  pointer-events:none;
+}
+
 .d1{top:18px;left:22px;}
 .d2{top:20px;right:25px;}
 .d3{bottom:20px;left:20px;}
@@ -50,9 +62,14 @@ body{
   z-index:2;
 }
 
-.active{display:flex;}
+.active{
+  display:flex;
+}
 
-.logo{width:300px;max-width:80%;}
+.logo{
+  width:300px;
+  max-width:80%;
+}
 
 .title{
   font-size:32px;
@@ -225,15 +242,45 @@ canvas{
 }
 
 @media(max-width:768px){
-  .decor{font-size:30px;}
-  .title{font-size:22px;}
-  .letter-title{font-size:38px;}
-  .card img{height:12vh;}
-  .card p{font-size:16px;}
-  .message{font-size:17px;}
-  .trace-area{width:94vw;height:42vh;gap:14px;}
-  .trace-box{width:43vw;height:36vh;}
-  .final-text{font-size:42px;}
+
+  .decor{
+    font-size:30px;
+  }
+
+  .title{
+    font-size:22px;
+  }
+
+  .letter-title{
+    font-size:38px;
+  }
+
+  .card img{
+    height:12vh;
+  }
+
+  .card p{
+    font-size:16px;
+  }
+
+  .message{
+    font-size:17px;
+  }
+
+  .trace-area{
+    width:94vw;
+    height:42vh;
+    gap:14px;
+  }
+
+  .trace-box{
+    width:43vw;
+    height:36vh;
+  }
+
+  .final-text{
+    font-size:42px;
+  }
 }
 </style>
 </head>
@@ -264,48 +311,119 @@ canvas{
 
 <div class="slide letter-slide" id="slideE" data-sound="soundE" data-upper="E" data-lower="e">
   <div class="letter-title">Ee</div>
+
   <div class="grid">
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/envelope.png"><p>Envelope</p></div>
-    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/sunflower.png"><p>Sunflower</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/elf.png"><p>Elf</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/eggplant.png"><p>Eggplant</p></div>
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/envelope.png">
+      <p>Envelope</p>
+    </div>
+
+    <div class="card odd" onclick="checkOdd(this,true)">
+      <img src="assets/sunflower.png">
+      <p>Sunflower</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/elf.png">
+      <p>Elf</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/eggplant.png">
+      <p>Eggplant</p>
+    </div>
   </div>
+
   <div class="message"></div>
   <div class="trace-area"></div>
 </div>
 
 <div class="slide letter-slide" id="slideH" data-sound="soundH" data-upper="H" data-lower="h">
+
   <div class="letter-title">Hh</div>
+
   <div class="grid">
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/hat.png"><p>Hat</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/helicopter.png"><p>Helicopter</p></div>
-    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/vegetables.png"><p>Vegetables</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/hat.png"><p>Hat</p></div>
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/hat.png">
+      <p>Hat</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/helicopter.png">
+      <p>Helicopter</p>
+    </div>
+
+    <div class="card odd" onclick="checkOdd(this,true)">
+      <img src="assets/vegetables.png">
+      <p>Vegetables</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/hat.png">
+      <p>Hat</p>
+    </div>
   </div>
+
   <div class="message"></div>
   <div class="trace-area"></div>
 </div>
 
 <div class="slide letter-slide" id="slideG" data-sound="soundG" data-upper="G" data-lower="g">
+
   <div class="letter-title">Gg</div>
+
   <div class="grid">
-    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/lollipop.png"><p>Lollipop</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/guitar.png"><p>Guitar</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/globe.png"><p>Globe</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/grasshopper.png"><p>Grasshopper</p></div>
+    <div class="card odd" onclick="checkOdd(this,true)">
+      <img src="assets/lollipop.png">
+      <p>Lollipop</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/guitar.png">
+      <p>Guitar</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/globe.png">
+      <p>Globe</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/grasshopper.png">
+      <p>Grasshopper</p>
+    </div>
   </div>
+
   <div class="message"></div>
   <div class="trace-area"></div>
 </div>
 
 <div class="slide letter-slide" id="slideF" data-sound="soundF" data-upper="F" data-lower="f">
+
   <div class="letter-title">Ff</div>
+
   <div class="grid">
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/feather.png"><p>Feather</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/finch.png"><p>Finch</p></div>
-    <div class="card" onclick="checkOdd(this,false)"><img src="assets/flamingo.png"><p>Flamingo</p></div>
-    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/queen.png"><p>Queen</p></div>
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/feather.png">
+      <p>Feather</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/finch.png">
+      <p>Finch</p>
+    </div>
+
+    <div class="card" onclick="checkOdd(this,false)">
+      <img src="assets/flamingo.png">
+      <p>Flamingo</p>
+    </div>
+
+    <div class="card odd" onclick="checkOdd(this,true)">
+      <img src="assets/queen.png">
+      <p>Queen</p>
+    </div>
   </div>
+
   <div class="message"></div>
   <div class="trace-area"></div>
 </div>
@@ -327,233 +445,175 @@ canvas{
 <audio id="soundH" src="assets/letter-h-sound.mp3"></audio>
 
 <script>
-let slides = ["introSlide","instructionSlide","slideE","slideH","slideG","slideF","finalSlide"];
-let currentSlide = 0;
-let slideLocked = false;
-
-setTimeout(()=>showSlide(1),5000);
-
-function showSlide(index){
-  if(slideLocked) return;
-
-  document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
-  document.getElementById(slides[index]).classList.add("active");
-
-  currentSlide = index;
-  slideLocked = false;
-
-  document.querySelectorAll(".message").forEach(m=>m.textContent="");
-
-  document.querySelectorAll(".trace-area").forEach(t=>{
-    t.classList.remove("show");
-    t.innerHTML="";
-  });
-
-  document.querySelectorAll(".grid").forEach(g=>g.classList.remove("hide"));
-
-  document.querySelectorAll(".card").forEach(c=>{
-    c.style.borderColor="white";
-    c.style.pointerEvents="auto";
-  });
-
-  const active = document.querySelector(".slide.active");
-
-  if(active.classList.contains("letter-slide")){
-    setTimeout(()=>playSound(active.dataset.sound),500);
-  }
-
-  if(slides[index] === "finalSlide"){
-    playSound("clapsSound");
-    createConfetti();
-  }
-}
-
-function nextSlide(){
-  if(currentSlide < slides.length - 1 && !slideLocked){
-    showSlide(currentSlide + 1);
-  }
-}
-
-function playSound(id){
-  const audio=document.getElementById(id);
-  audio.currentTime=0;
-  audio.play().catch(()=>{});
-}
-
-function checkOdd(card,isOdd){
-  const slide=document.querySelector(".slide.active");
-  const msg=slide.querySelector(".message");
-
-  if(isOdd){
-    playSound("correctSound");
-    msg.textContent="Good job! Now trace BOTH letters completely.";
-    slide.querySelector(".grid").classList.add("hide");
-    showTrace(slide);
-  }else{
-    playSound("wrongSound");
-    if(navigator.vibrate) navigator.vibrate(200);
-    card.style.borderColor="#ff4d4d";
-    msg.textContent="Try again! Find the odd one out.";
-    setTimeout(()=>{
-      card.style.borderColor="white";
-      msg.textContent="";
-    },1000);
-  }
-}
-
 function getLetterSVG(letter){
-  const svg = {
-    E:`<path class="letter-fill" d="M40 25 H205 V65 H85 V100 H178 V140 H85 V178 H205 V218 H40 Z"></path>
-       <path class="inner-line" d="M66 50 V192 M66 50 H176 M66 120 H154 M66 192 H176"></path>`,
 
-    e:`<path class="letter-fill" d="M103 45 C57 45 25 80 25 130 C25 178 60 215 108 215 C142 215 168 198 183 168 H140 C132 178 120 184 105 184 C82 184 65 169 60 145 H185 C187 95 153 45 103 45 Z M61 115 C68 92 84 80 103 80 C123 80 138 92 145 115 Z"></path>
-       <path class="inner-line" d="M145 112 C137 90 112 78 88 86 C62 95 52 123 61 151 C70 180 104 192 132 174 M62 132 H153"></path>`,
+const svg = {
 
-    H:`<path class="letter-fill" d="M40 25 H85 V98 H155 V25 H200 V218 H155 V140 H85 V218 H40 Z"></path>
-       <path class="inner-line" d="M65 50 V192 M65 120 H175 M175 50 V192"></path>`,
+E:`
+<path class="letter-fill" d="M40 25 H205 V66 H88 V102 H178 V142 H88 V180 H205 V220 H40 Z"></path>
+<path class="inner-line" d="M66 52 V194 M66 52 H176 M66 122 H155 M66 194 H176"></path>
+`,
 
-    h:`<path class="letter-fill" d="M45 25 H90 V102 C104 82 126 72 150 72 C184 72 205 98 205 138 V218 H160 V142 C160 121 148 108 130 108 C107 108 90 128 90 158 V218 H45 Z"></path>
-       <path class="inner-line" d="M68 50 V192 M70 138 C83 105 122 91 150 114 C168 130 180 158 180 192"></path>`,
+e:`
+<path class="letter-fill" d="
+M105 46
+C58 46 26 82 26 130
+C26 180 62 218 112 218
+C148 218 174 198 188 168
+H144
+C136 179 124 185 108 185
+C86 185 68 171 62 148
+H190
+C192 91 156 46 105 46
+Z
+M64 116
+C72 94 88 82 106 82
+C126 82 142 94 149 116
+Z">
+</path>
 
-    G:`<path class="letter-fill" d="M130 30 C75 30 32 72 32 125 C32 180 76 220 132 220 C178 220 210 194 220 155 V122 H132 V160 H176 C166 176 150 185 130 185 C96 185 72 160 72 125 C72 92 97 67 130 67 C154 67 174 80 187 100 L220 80 C200 48 166 30 130 30 Z"></path>
-       <path class="inner-line" d="M184 90 C168 70 139 61 111 69 C80 78 61 105 62 134 C64 166 90 190 124 191 C151 192 171 178 184 156 M132 142 H196 V172"></path>`,
+<path class="inner-line" d="
+M150 113
+C142 91 122 82 102 84
+C78 87 61 107 59 132
+C57 160 77 184 106 187
+C126 189 143 181 155 166
+M62 132
+H158">
+</path>
+`,
 
-    g:`<path class="letter-fill" d="M150 70 H195 V182 C195 228 164 255 118 255 C82 255 56 236 45 208 L85 198 C92 212 104 220 120 220 C140 220 150 208 150 186 V174 C136 190 116 197 94 192 C58 185 34 156 34 120 C34 82 62 52 98 49 C120 47 138 55 150 70 Z M113 86 C90 86 74 102 74 124 C74 146 90 162 113 162 C136 162 152 146 152 124 C152 102 136 86 113 86 Z"></path>
-       <path class="inner-line" d="M148 82 C130 64 98 64 77 84 C54 106 56 144 80 165 C103 185 134 180 150 154 M174 92 V184 C174 216 146 233 110 224"></path>`,
+H:`
+<path class="letter-fill" d="M40 25 H86 V100 H156 V25 H202 V220 H156 V142 H86 V220 H40 Z"></path>
+<path class="inner-line" d="M66 52 V194 M66 122 H176 M176 52 V194"></path>
+`,
 
-    F:`<path class="letter-fill" d="M42 25 H205 V66 H87 V108 H178 V148 H87 V218 H42 Z"></path>
-       <path class="inner-line" d="M66 50 V192 M66 50 H180 M66 128 H154"></path>`,
+h:`
+<path class="letter-fill" d="
+M45 25
+H91
+V104
+C104 84 126 74 151 74
+C186 74 207 100 207 140
+V220
+H161
+V145
+C161 123 149 111 131 111
+C108 111 91 131 91 160
+V220
+H45
+Z">
+</path>
 
-    f:`<path class="letter-fill" d="M165 25 V65 H140 C124 65 116 74 116 92 V105 H165 V142 H116 V218 H72 V142 H42 V105 H72 V90 C72 50 98 25 138 25 Z"></path>
-       <path class="inner-line" d="M136 50 C106 50 96 66 96 92 V192 M58 124 H150"></path>`
-  };
+<path class="inner-line" d="
+M69 52
+V194
+M70 138
+C80 112 101 96 126 96
+C154 96 181 119 181 194">
+</path>
+`,
 
-  return svg[letter];
-}
+G:`
+<path class="letter-fill" d="
+M132 30
+C76 30 32 74 32 128
+C32 183 77 223 134 223
+C184 223 218 192 223 149
+V120
+H132
+V160
+H178
+C168 176 152 184 132 184
+C97 184 72 159 72 128
+C72 94 98 69 132 69
+C158 69 178 82 190 104
+L224 83
+C204 50 169 30 132 30
+Z">
+</path>
 
-function showTrace(slide){
-  slideLocked=true;
+<path class="inner-line" d="
+M186 95
+C170 75 142 67 114 75
+C84 84 65 109 65 138
+C65 169 90 193 123 195
+C151 197 174 183 187 160
+M135 141
+H197
+V172">
+</path>
+`,
 
-  const area=slide.querySelector(".trace-area");
-  area.classList.add("show");
+g:`
+<path class="letter-fill" d="
+M152 72
+H198
+V184
+C198 231 166 258 119 258
+C82 258 55 239 44 210
+L86 199
+C93 214 105 222 121 222
+C142 222 152 210 152 188
+V176
+C138 192 118 199 95 194
+C58 187 33 157 33 120
+C33 82 62 52 100 49
+C122 47 140 56 152 72
+Z
 
-  const upper=slide.dataset.upper;
-  const lower=slide.dataset.lower;
+M115 86
+C91 86 75 103 75 126
+C75 149 91 165 115 165
+C139 165 155 149 155 126
+C155 103 139 86 115 86
+Z">
+</path>
 
-  area.innerHTML=`
-    <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 250 270">${getLetterSVG(upper)}</svg>
-      <canvas></canvas>
-    </div>
-    <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 250 270">${getLetterSVG(lower)}</svg>
-      <canvas></canvas>
-    </div>
-  `;
+<path class="inner-line" d="
+M150 85
+C134 70 108 67 86 80
+C62 94 52 125 62 152
+C72 179 104 192 132 178
+C144 172 153 162 159 149
 
-  area.querySelectorAll(".trace-box").forEach(box=>setupCanvas(box,slide));
-}
+M176 94
+V184
+C176 218 149 236 112 228">
+</path>
+`,
 
-function setupCanvas(box,slide){
-  const canvas=box.querySelector("canvas");
-  canvas.width=box.offsetWidth;
-  canvas.height=box.offsetHeight;
+F:`
+<path class="letter-fill" d="M42 25 H205 V66 H88 V108 H178 V148 H88 V220 H42 Z"></path>
+<path class="inner-line" d="M66 52 V194 M66 52 H180 M66 128 H154"></path>
+`,
 
-  const ctx=canvas.getContext("2d");
-  ctx.strokeStyle="#ff7300";
-  ctx.lineWidth=15;
-  ctx.lineCap="round";
+f:`
+<path class="letter-fill" d="
+M165 25
+V66
+H140
+C124 66 116 75 116 94
+V106
+H165
+V144
+H116
+V220
+H72
+V144
+H42
+V106
+H72
+V91
+C72 50 98 25 138 25
+Z">
+</path>
 
-  let drawing=false;
-  let traceCount=0;
-  let alreadyDone=false;
+<path class="inner-line" d="M136 52 C106 52 96 68 96 94 V194 M58 126 H150"></path>
+`
+};
 
-  function pos(e){
-    const r=canvas.getBoundingClientRect();
-    return {x:e.clientX-r.left,y:e.clientY-r.top};
-  }
-
-  canvas.addEventListener("pointerdown",e=>{
-    e.preventDefault();
-    canvas.setPointerCapture(e.pointerId);
-    drawing=true;
-    const p=pos(e);
-    ctx.beginPath();
-    ctx.moveTo(p.x,p.y);
-  });
-
-  canvas.addEventListener("pointermove",e=>{
-    if(!drawing || alreadyDone) return;
-    e.preventDefault();
-    const p=pos(e);
-    ctx.lineTo(p.x,p.y);
-    ctx.stroke();
-    traceCount++;
-  });
-
-  canvas.addEventListener("pointerup",()=>{
-    drawing=false;
-    if(traceCount>120 && !alreadyDone){
-      alreadyDone=true;
-      box.dataset.done="true";
-      box.style.border="4px solid #39d353";
-      checkBothTraced(slide);
-    }
-  });
-}
-
-function checkBothTraced(slide){
-  const boxes=slide.querySelectorAll(".trace-box");
-  const done=[...boxes].every(box=>box.dataset.done==="true");
-
-  if(done){
-    slide.querySelector(".message").textContent="Well done!";
-    setTimeout(()=>{
-      slideLocked=false;
-      nextSlide();
-    },1800);
-  }
-}
-
-function playAgain(){
-  const letters=["slideE","slideH","slideG","slideF"];
-
-  for(let i=letters.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [letters[i],letters[j]]=[letters[j],letters[i]];
-  }
-
-  slides=["introSlide","instructionSlide",...letters,"finalSlide"];
-  slideLocked=false;
-  showSlide(1);
-}
-
-function createConfetti(){
-  const colors=["#ff595e","#ffca3a","#8ac926","#1982c4","#6a4c93","#ff85a1","#00c2ff"];
-
-  for(let i=0;i<400;i++){
-    const confetti=document.createElement("div");
-    confetti.classList.add("confetti");
-
-    const rand=Math.random();
-
-    if(rand<0.33){
-      confetti.classList.add("left");
-      confetti.style.top=Math.random()*80+10+"vh";
-    }else if(rand<0.66){
-      confetti.classList.add("right");
-      confetti.style.top=Math.random()*80+10+"vh";
-    }else{
-      confetti.classList.add("top");
-      confetti.style.left=Math.random()*100+"vw";
-    }
-
-    confetti.style.background=colors[Math.floor(Math.random()*colors.length)];
-    confetti.style.animationDelay=Math.random()*0.8+"s";
-
-    document.body.appendChild(confetti);
-    setTimeout(()=>confetti.remove(),5500);
-  }
+return svg[letter];
 }
 </script>
 
