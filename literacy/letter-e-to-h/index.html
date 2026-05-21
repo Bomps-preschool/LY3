@@ -6,12 +6,7 @@
 <title>Odd One Out - Letters E H G F</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
 body{
   overflow:hidden;
@@ -33,14 +28,7 @@ body{
     linear-gradient(135deg,#fff8ef,#ffffff,#f0fbff);
 }
 
-.decor{
-  position:absolute;
-  font-size:40px;
-  z-index:0;
-  opacity:0.9;
-  pointer-events:none;
-}
-
+.decor{position:absolute;font-size:40px;z-index:0;opacity:0.9;pointer-events:none;}
 .d1{top:18px;left:22px;}
 .d2{top:20px;right:25px;}
 .d3{bottom:20px;left:20px;}
@@ -62,14 +50,9 @@ body{
   z-index:2;
 }
 
-.active{
-  display:flex;
-}
+.active{display:flex;}
 
-.logo{
-  width:300px;
-  max-width:80%;
-}
+.logo{width:300px;max-width:80%;}
 
 .title{
   font-size:32px;
@@ -82,9 +65,9 @@ body{
 }
 
 .btn{
-  margin-top:20px;
-  font-size:24px;
-  padding:12px 30px;
+  margin-top:18px;
+  font-size:23px;
+  padding:11px 28px;
   border:none;
   border-radius:25px;
   background:#ff7300;
@@ -109,9 +92,7 @@ body{
   gap:10px;
 }
 
-.grid.hide{
-  display:none;
-}
+.grid.hide{display:none;}
 
 .card{
   background:white;
@@ -147,54 +128,27 @@ body{
   text-align:center;
 }
 
-.trace-area{
+.writing-area{
   display:none;
   margin-top:10px;
   width:min(92vw,720px);
-  height:min(48vh,310px);
+  height:min(45vh,300px);
   background:white;
   border-radius:24px;
   border:4px solid white;
   box-shadow:0 4px 12px rgba(0,0,0,0.18);
-}
-
-.trace-area.show{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:40px;
-}
-
-.trace-box{
-  width:min(38vw,280px);
-  height:min(40vh,270px);
   position:relative;
-  border-radius:18px;
   overflow:hidden;
 }
 
-.trace-svg{
-  width:100%;
-  height:100%;
+.writing-area.show{display:block;}
+
+.writing-lines{
   position:absolute;
   inset:0;
-}
-
-.letter-fill{
-  fill:#4fc3f7;
-  stroke:#111;
-  stroke-width:4;
-  stroke-linejoin:round;
-  stroke-linecap:round;
-}
-
-.inner-line{
-  fill:none;
-  stroke:#111;
-  stroke-width:5;
-  stroke-dasharray:10 10;
-  stroke-linecap:round;
-  stroke-linejoin:round;
+  width:100%;
+  height:100%;
+  object-fit:fill;
 }
 
 canvas{
@@ -203,6 +157,14 @@ canvas{
   width:100%;
   height:100%;
   touch-action:none;
+}
+
+.done-btn{
+  display:none;
+}
+
+.done-btn.show{
+  display:block;
 }
 
 .final-text{
@@ -242,45 +204,14 @@ canvas{
 }
 
 @media(max-width:768px){
-
-  .decor{
-    font-size:30px;
-  }
-
-  .title{
-    font-size:22px;
-  }
-
-  .letter-title{
-    font-size:38px;
-  }
-
-  .card img{
-    height:12vh;
-  }
-
-  .card p{
-    font-size:16px;
-  }
-
-  .message{
-    font-size:17px;
-  }
-
-  .trace-area{
-    width:94vw;
-    height:42vh;
-    gap:14px;
-  }
-
-  .trace-box{
-    width:43vw;
-    height:36vh;
-  }
-
-  .final-text{
-    font-size:42px;
-  }
+  .decor{font-size:30px;}
+  .title{font-size:22px;}
+  .letter-title{font-size:38px;}
+  .card img{height:12vh;}
+  .card p{font-size:16px;}
+  .message{font-size:17px;}
+  .writing-area{width:94vw;height:40vh;}
+  .final-text{font-size:42px;}
 }
 </style>
 </head>
@@ -304,128 +235,69 @@ canvas{
   <div class="title">
     Listen to the letter sound.<br>
     Tap the odd one out.<br>
-    Then trace BOTH letters.
+    Then write the letter on the lines.
   </div>
   <button class="btn" onclick="nextSlide()">Start</button>
 </div>
 
-<div class="slide letter-slide" id="slideE" data-sound="soundE" data-upper="E" data-lower="e">
+<div class="slide letter-slide" id="slideE" data-sound="soundE">
   <div class="letter-title">Ee</div>
 
   <div class="grid">
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/envelope.png">
-      <p>Envelope</p>
-    </div>
-
-    <div class="card odd" onclick="checkOdd(this,true)">
-      <img src="assets/sunflower.png">
-      <p>Sunflower</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/elf.png">
-      <p>Elf</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/eggplant.png">
-      <p>Eggplant</p>
-    </div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/envelope.png"><p>Envelope</p></div>
+    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/sunflower.png"><p>Sunflower</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/elf.png"><p>Elf</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/eggplant.png"><p>Eggplant</p></div>
   </div>
 
   <div class="message"></div>
-  <div class="trace-area"></div>
+  <div class="writing-area"><img src="assets/writing-lines.png" class="writing-lines"><canvas></canvas></div>
+  <button class="btn done-btn" onclick="finishWriting()">Done</button>
 </div>
 
-<div class="slide letter-slide" id="slideH" data-sound="soundH" data-upper="H" data-lower="h">
-
+<div class="slide letter-slide" id="slideH" data-sound="soundH">
   <div class="letter-title">Hh</div>
 
   <div class="grid">
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/hat.png">
-      <p>Hat</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/helicopter.png">
-      <p>Helicopter</p>
-    </div>
-
-    <div class="card odd" onclick="checkOdd(this,true)">
-      <img src="assets/vegetables.png">
-      <p>Vegetables</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/hat.png">
-      <p>Hat</p>
-    </div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/hat.png"><p>Hat</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/helicopter.png"><p>Helicopter</p></div>
+    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/vegetables.png"><p>Vegetables</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/hat.png"><p>Hat</p></div>
   </div>
 
   <div class="message"></div>
-  <div class="trace-area"></div>
+  <div class="writing-area"><img src="assets/writing-lines.png" class="writing-lines"><canvas></canvas></div>
+  <button class="btn done-btn" onclick="finishWriting()">Done</button>
 </div>
 
-<div class="slide letter-slide" id="slideG" data-sound="soundG" data-upper="G" data-lower="g">
-
+<div class="slide letter-slide" id="slideG" data-sound="soundG">
   <div class="letter-title">Gg</div>
 
   <div class="grid">
-    <div class="card odd" onclick="checkOdd(this,true)">
-      <img src="assets/lollipop.png">
-      <p>Lollipop</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/guitar.png">
-      <p>Guitar</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/globe.png">
-      <p>Globe</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/grasshopper.png">
-      <p>Grasshopper</p>
-    </div>
+    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/lollipop.png"><p>Lollipop</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/guitar.png"><p>Guitar</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/globe.png"><p>Globe</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/grasshopper.png"><p>Grasshopper</p></div>
   </div>
 
   <div class="message"></div>
-  <div class="trace-area"></div>
+  <div class="writing-area"><img src="assets/writing-lines.png" class="writing-lines"><canvas></canvas></div>
+  <button class="btn done-btn" onclick="finishWriting()">Done</button>
 </div>
 
-<div class="slide letter-slide" id="slideF" data-sound="soundF" data-upper="F" data-lower="f">
-
+<div class="slide letter-slide" id="slideF" data-sound="soundF">
   <div class="letter-title">Ff</div>
 
   <div class="grid">
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/feather.png">
-      <p>Feather</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/finch.png">
-      <p>Finch</p>
-    </div>
-
-    <div class="card" onclick="checkOdd(this,false)">
-      <img src="assets/flamingo.png">
-      <p>Flamingo</p>
-    </div>
-
-    <div class="card odd" onclick="checkOdd(this,true)">
-      <img src="assets/queen.png">
-      <p>Queen</p>
-    </div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/feather.png"><p>Feather</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/finch.png"><p>Finch</p></div>
+    <div class="card" onclick="checkOdd(this,false)"><img src="assets/flamingo.png"><p>Flamingo</p></div>
+    <div class="card odd" onclick="checkOdd(this,true)"><img src="assets/queen.png"><p>Queen</p></div>
   </div>
 
   <div class="message"></div>
-  <div class="trace-area"></div>
+  <div class="writing-area"><img src="assets/writing-lines.png" class="writing-lines"><canvas></canvas></div>
+  <button class="btn done-btn" onclick="finishWriting()">Done</button>
 </div>
 
 <div class="slide" id="finalSlide">
@@ -445,175 +317,179 @@ canvas{
 <audio id="soundH" src="assets/letter-h-sound.mp3"></audio>
 
 <script>
-function getLetterSVG(letter){
+let slides = ["introSlide","instructionSlide","slideE","slideH","slideG","slideF","finalSlide"];
+let currentSlide = 0;
+let slideLocked = false;
 
-const svg = {
+setTimeout(()=>showSlide(1),5000);
 
-E:`
-<path class="letter-fill" d="M40 25 H205 V66 H88 V102 H178 V142 H88 V180 H205 V220 H40 Z"></path>
-<path class="inner-line" d="M66 52 V194 M66 52 H176 M66 122 H155 M66 194 H176"></path>
-`,
+function showSlide(index){
+  if(slideLocked) return;
 
-e:`
-<path class="letter-fill" d="
-M105 46
-C58 46 26 82 26 130
-C26 180 62 218 112 218
-C148 218 174 198 188 168
-H144
-C136 179 124 185 108 185
-C86 185 68 171 62 148
-H190
-C192 91 156 46 105 46
-Z
-M64 116
-C72 94 88 82 106 82
-C126 82 142 94 149 116
-Z">
-</path>
+  document.querySelectorAll(".slide").forEach(s=>s.classList.remove("active"));
+  document.getElementById(slides[index]).classList.add("active");
 
-<path class="inner-line" d="
-M150 113
-C142 91 122 82 102 84
-C78 87 61 107 59 132
-C57 160 77 184 106 187
-C126 189 143 181 155 166
-M62 132
-H158">
-</path>
-`,
+  currentSlide = index;
+  slideLocked = false;
 
-H:`
-<path class="letter-fill" d="M40 25 H86 V100 H156 V25 H202 V220 H156 V142 H86 V220 H40 Z"></path>
-<path class="inner-line" d="M66 52 V194 M66 122 H176 M176 52 V194"></path>
-`,
+  document.querySelectorAll(".message").forEach(m=>m.textContent="");
+  document.querySelectorAll(".grid").forEach(g=>g.classList.remove("hide"));
+  document.querySelectorAll(".writing-area").forEach(w=>w.classList.remove("show"));
+  document.querySelectorAll(".done-btn").forEach(b=>b.classList.remove("show"));
 
-h:`
-<path class="letter-fill" d="
-M45 25
-H91
-V104
-C104 84 126 74 151 74
-C186 74 207 100 207 140
-V220
-H161
-V145
-C161 123 149 111 131 111
-C108 111 91 131 91 160
-V220
-H45
-Z">
-</path>
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.borderColor="white";
+    c.style.pointerEvents="auto";
+  });
 
-<path class="inner-line" d="
-M69 52
-V194
-M70 138
-C80 112 101 96 126 96
-C154 96 181 119 181 194">
-</path>
-`,
+  const active = document.querySelector(".slide.active");
 
-G:`
-<path class="letter-fill" d="
-M132 30
-C76 30 32 74 32 128
-C32 183 77 223 134 223
-C184 223 218 192 223 149
-V120
-H132
-V160
-H178
-C168 176 152 184 132 184
-C97 184 72 159 72 128
-C72 94 98 69 132 69
-C158 69 178 82 190 104
-L224 83
-C204 50 169 30 132 30
-Z">
-</path>
+  if(active.classList.contains("letter-slide")){
+    setTimeout(()=>playSound(active.dataset.sound),500);
+  }
 
-<path class="inner-line" d="
-M186 95
-C170 75 142 67 114 75
-C84 84 65 109 65 138
-C65 169 90 193 123 195
-C151 197 174 183 187 160
-M135 141
-H197
-V172">
-</path>
-`,
+  if(slides[index] === "finalSlide"){
+    playSound("clapsSound");
+    createConfetti();
+  }
+}
 
-g:`
-<path class="letter-fill" d="
-M152 72
-H198
-V184
-C198 231 166 258 119 258
-C82 258 55 239 44 210
-L86 199
-C93 214 105 222 121 222
-C142 222 152 210 152 188
-V176
-C138 192 118 199 95 194
-C58 187 33 157 33 120
-C33 82 62 52 100 49
-C122 47 140 56 152 72
-Z
+function nextSlide(){
+  if(currentSlide < slides.length - 1 && !slideLocked){
+    showSlide(currentSlide + 1);
+  }
+}
 
-M115 86
-C91 86 75 103 75 126
-C75 149 91 165 115 165
-C139 165 155 149 155 126
-C155 103 139 86 115 86
-Z">
-</path>
+function playSound(id){
+  const audio=document.getElementById(id);
+  audio.currentTime=0;
+  audio.play().catch(()=>{});
+}
 
-<path class="inner-line" d="
-M150 85
-C134 70 108 67 86 80
-C62 94 52 125 62 152
-C72 179 104 192 132 178
-C144 172 153 162 159 149
+function checkOdd(card,isOdd){
+  const slide=document.querySelector(".slide.active");
+  const msg=slide.querySelector(".message");
 
-M176 94
-V184
-C176 218 149 236 112 228">
-</path>
-`,
+  if(isOdd){
+    playSound("correctSound");
+    msg.textContent="Good job! Write the letter on the lines.";
+    slide.querySelector(".grid").classList.add("hide");
+    showWritingArea(slide);
+  }else{
+    playSound("wrongSound");
+    if(navigator.vibrate) navigator.vibrate(200);
+    card.style.borderColor="#ff4d4d";
+    msg.textContent="Try again! Find the odd one out.";
 
-F:`
-<path class="letter-fill" d="M42 25 H205 V66 H88 V108 H178 V148 H88 V220 H42 Z"></path>
-<path class="inner-line" d="M66 52 V194 M66 52 H180 M66 128 H154"></path>
-`,
+    setTimeout(()=>{
+      card.style.borderColor="white";
+      msg.textContent="";
+    },1000);
+  }
+}
 
-f:`
-<path class="letter-fill" d="
-M165 25
-V66
-H140
-C124 66 116 75 116 94
-V106
-H165
-V144
-H116
-V220
-H72
-V144
-H42
-V106
-H72
-V91
-C72 50 98 25 138 25
-Z">
-</path>
+function showWritingArea(slide){
+  slideLocked = true;
 
-<path class="inner-line" d="M136 52 C106 52 96 68 96 94 V194 M58 126 H150"></path>
-`
-};
+  const area = slide.querySelector(".writing-area");
+  const canvas = slide.querySelector("canvas");
+  const doneBtn = slide.querySelector(".done-btn");
 
-return svg[letter];
+  area.classList.add("show");
+  doneBtn.classList.add("show");
+
+  canvas.width = area.offsetWidth;
+  canvas.height = area.offsetHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle="#ff7300";
+  ctx.lineWidth=14;
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
+
+  let drawing=false;
+
+  function pos(e){
+    const r=canvas.getBoundingClientRect();
+    return {x:e.clientX-r.left,y:e.clientY-r.top};
+  }
+
+  canvas.onpointerdown = function(e){
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    drawing=true;
+    const p=pos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x,p.y);
+  };
+
+  canvas.onpointermove = function(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const p=pos(e);
+    ctx.lineTo(p.x,p.y);
+    ctx.stroke();
+  };
+
+  canvas.onpointerup = function(){
+    drawing=false;
+  };
+
+  canvas.onpointercancel = function(){
+    drawing=false;
+  };
+}
+
+function finishWriting(){
+  const slide=document.querySelector(".slide.active");
+  slide.querySelector(".message").textContent="Well done!";
+
+  setTimeout(()=>{
+    slideLocked=false;
+    nextSlide();
+  },1000);
+}
+
+function playAgain(){
+  const letters=["slideE","slideH","slideG","slideF"];
+
+  for(let i=letters.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [letters[i],letters[j]]=[letters[j],letters[i]];
+  }
+
+  slides=["introSlide","instructionSlide",...letters,"finalSlide"];
+  slideLocked=false;
+  showSlide(1);
+}
+
+function createConfetti(){
+  const colors=["#ff595e","#ffca3a","#8ac926","#1982c4","#6a4c93","#ff85a1","#00c2ff"];
+
+  for(let i=0;i<400;i++){
+    const confetti=document.createElement("div");
+    confetti.classList.add("confetti");
+
+    const rand=Math.random();
+
+    if(rand<0.33){
+      confetti.classList.add("left");
+      confetti.style.top=Math.random()*80+10+"vh";
+    }else if(rand<0.66){
+      confetti.classList.add("right");
+      confetti.style.top=Math.random()*80+10+"vh";
+    }else{
+      confetti.classList.add("top");
+      confetti.style.left=Math.random()*100+"vw";
+    }
+
+    confetti.style.background=colors[Math.floor(Math.random()*colors.length)];
+    confetti.style.animationDelay=Math.random()*0.8+"s";
+
+    document.body.appendChild(confetti);
+    setTimeout(()=>confetti.remove(),5500);
+  }
 }
 </script>
 
