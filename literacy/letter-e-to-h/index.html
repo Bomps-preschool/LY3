@@ -28,7 +28,7 @@ body{
     linear-gradient(135deg,#fff8ef,#ffffff,#f0fbff);
 }
 
-.decor{position:absolute;font-size:44px;z-index:0;opacity:0.9;pointer-events:none;}
+.decor{position:absolute;font-size:40px;z-index:0;opacity:0.9;pointer-events:none;}
 .d1{top:18px;left:22px;}
 .d2{top:20px;right:25px;}
 .d3{bottom:20px;left:20px;}
@@ -55,7 +55,7 @@ body{
 .logo{width:300px;max-width:80%;}
 
 .title{
-  font-size:34px;
+  font-size:32px;
   color:#ff7300;
   background:white;
   padding:14px 22px;
@@ -65,7 +65,7 @@ body{
 }
 
 .btn{
-  margin-top:22px;
+  margin-top:20px;
   font-size:24px;
   padding:12px 30px;
   border:none;
@@ -77,19 +77,23 @@ body{
 }
 
 .letter-title{
-  font-size:54px;
+  font-size:48px;
   color:#ff7300;
   font-weight:bold;
   text-shadow:3px 3px white;
-  margin-bottom:6px;
+  margin-bottom:8px;
 }
 
 .grid{
   width:100%;
-  max-width:820px;
+  max-width:780px;
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:10px;
+}
+
+.grid.hide{
+  display:none;
 }
 
 .card{
@@ -109,7 +113,7 @@ body{
 }
 
 .card p{
-  font-size:23px;
+  font-size:22px;
   font-weight:bold;
   color:#234c70;
 }
@@ -128,11 +132,9 @@ body{
 
 .trace-area{
   display:none;
-  margin-top:8px;
-  width:690px;
-  max-width:95vw;
-  height:270px;
-  position:relative;
+  margin-top:10px;
+  width:min(92vw,720px);
+  height:min(48vh,310px);
   background:white;
   border-radius:24px;
   border:4px solid white;
@@ -143,12 +145,12 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:50px;
+  gap:40px;
 }
 
 .trace-box{
-  width:275px;
-  height:240px;
+  width:min(38vw,280px);
+  height:min(40vh,270px);
   position:relative;
   border-radius:18px;
   overflow:hidden;
@@ -158,8 +160,7 @@ body{
   width:100%;
   height:100%;
   position:absolute;
-  top:0;
-  left:0;
+  inset:0;
 }
 
 .letter-fill{
@@ -181,15 +182,14 @@ body{
 
 canvas{
   position:absolute;
-  top:0;
-  left:0;
+  inset:0;
   width:100%;
   height:100%;
   touch-action:none;
 }
 
 .final-text{
-  font-size:60px;
+  font-size:58px;
   font-weight:bold;
   color:#ff7300;
   text-shadow:4px 4px white;
@@ -225,16 +225,14 @@ canvas{
 }
 
 @media(max-width:768px){
-  .decor{font-size:32px;}
+  .decor{font-size:30px;}
   .title{font-size:22px;}
-  .letter-title{font-size:40px;}
-  .grid{gap:8px;}
-  .card{padding:6px;border-radius:16px;}
-  .card img{height:11vh;}
+  .letter-title{font-size:38px;}
+  .card img{height:12vh;}
   .card p{font-size:16px;}
   .message{font-size:17px;}
-  .trace-area{width:95vw;height:215px;gap:16px;}
-  .trace-box{width:160px;height:185px;}
+  .trace-area{width:94vw;height:42vh;gap:14px;}
+  .trace-box{width:43vw;height:36vh;}
   .final-text{font-size:42px;}
 }
 </style>
@@ -329,16 +327,7 @@ canvas{
 <audio id="soundH" src="assets/letter-h-sound.mp3"></audio>
 
 <script>
-let slides = [
-  "introSlide",
-  "instructionSlide",
-  "slideE",
-  "slideH",
-  "slideG",
-  "slideF",
-  "finalSlide"
-];
-
+let slides = ["introSlide","instructionSlide","slideE","slideH","slideG","slideF","finalSlide"];
 let currentSlide = 0;
 let slideLocked = false;
 
@@ -359,6 +348,8 @@ function showSlide(index){
     t.classList.remove("show");
     t.innerHTML="";
   });
+
+  document.querySelectorAll(".grid").forEach(g=>g.classList.remove("hide"));
 
   document.querySelectorAll(".card").forEach(c=>{
     c.style.borderColor="white";
@@ -395,18 +386,14 @@ function checkOdd(card,isOdd){
 
   if(isOdd){
     playSound("correctSound");
-    card.style.borderColor="#39d353";
     msg.textContent="Good job! Now trace BOTH letters completely.";
-
-    slide.querySelectorAll(".card").forEach(c=>c.style.pointerEvents="none");
+    slide.querySelector(".grid").classList.add("hide");
     showTrace(slide);
   }else{
     playSound("wrongSound");
     if(navigator.vibrate) navigator.vibrate(200);
-
     card.style.borderColor="#ff4d4d";
     msg.textContent="Try again! Find the odd one out.";
-
     setTimeout(()=>{
       card.style.borderColor="white";
       msg.textContent="";
@@ -416,143 +403,29 @@ function checkOdd(card,isOdd){
 
 function getLetterSVG(letter){
   const svg = {
+    E:`<path class="letter-fill" d="M40 25 H205 V65 H85 V100 H178 V140 H85 V178 H205 V218 H40 Z"></path>
+       <path class="inner-line" d="M66 50 V192 M66 50 H176 M66 120 H154 M66 192 H176"></path>`,
 
-    E: `
-      <path class="letter-fill" d="M38 25 H198 V63 H82 V96 H175 V134 H82 V172 H198 V210 H38 Z"></path>
-      <path class="inner-line" d="M63 48 L63 188 M63 48 L172 48 M63 115 L153 115 M63 188 L173 188"></path>
-    `,
+    e:`<path class="letter-fill" d="M103 45 C57 45 25 80 25 130 C25 178 60 215 108 215 C142 215 168 198 183 168 H140 C132 178 120 184 105 184 C82 184 65 169 60 145 H185 C187 95 153 45 103 45 Z M61 115 C68 92 84 80 103 80 C123 80 138 92 145 115 Z"></path>
+       <path class="inner-line" d="M145 112 C137 90 112 78 88 86 C62 95 52 123 61 151 C70 180 104 192 132 174 M62 132 H153"></path>`,
 
-    e: `
-      <path class="letter-fill" d="
-        M98 48
-        C54 48 25 82 25 126
-        C25 172 57 205 104 205
-        C137 205 162 188 176 160
-        H134
-        C126 170 114 175 100 175
-        C80 175 64 162 59 142
-        H178
-        C179 137 179 132 178 127
-        C176 80 142 48 98 48
-        Z
-        M61 111
-        C68 90 81 79 98 79
-        C117 79 132 91 138 111
-        Z">
-      </path>
-      <path class="inner-line" d="
-        M139 107
-        C130 84 105 73 82 82
-        C58 92 49 119 58 146
-        C67 174 100 185 128 168
-        M60 127
-        H151">
-      </path>
-    `,
+    H:`<path class="letter-fill" d="M40 25 H85 V98 H155 V25 H200 V218 H155 V140 H85 V218 H40 Z"></path>
+       <path class="inner-line" d="M65 50 V192 M65 120 H175 M175 50 V192"></path>`,
 
-    H: `
-      <path class="letter-fill" d="M35 25 H78 V96 H154 V25 H197 V210 H154 V136 H78 V210 H35 Z"></path>
-      <path class="inner-line" d="M58 48 L58 188 M58 116 L176 116 M176 48 L176 188"></path>
-    `,
+    h:`<path class="letter-fill" d="M45 25 H90 V102 C104 82 126 72 150 72 C184 72 205 98 205 138 V218 H160 V142 C160 121 148 108 130 108 C107 108 90 128 90 158 V218 H45 Z"></path>
+       <path class="inner-line" d="M68 50 V192 M70 138 C83 105 122 91 150 114 C168 130 180 158 180 192"></path>`,
 
-    h: `
-      <path class="letter-fill" d="
-        M42 25
-        H85
-        V96
-        C98 76 119 66 142 66
-        C176 66 195 91 195 130
-        V210
-        H152
-        V134
-        C152 114 141 102 124 102
-        C102 102 85 121 85 150
-        V210
-        H42
-        Z">
-      </path>
-      <path class="inner-line" d="
-        M64 48
-        V188
-        M66 135
-        C77 100 120 82 149 108
-        C164 122 170 150 170 188">
-      </path>
-    `,
+    G:`<path class="letter-fill" d="M130 30 C75 30 32 72 32 125 C32 180 76 220 132 220 C178 220 210 194 220 155 V122 H132 V160 H176 C166 176 150 185 130 185 C96 185 72 160 72 125 C72 92 97 67 130 67 C154 67 174 80 187 100 L220 80 C200 48 166 30 130 30 Z"></path>
+       <path class="inner-line" d="M184 90 C168 70 139 61 111 69 C80 78 61 105 62 134 C64 166 90 190 124 191 C151 192 171 178 184 156 M132 142 H196 V172"></path>`,
 
-    G: `
-      <path class="letter-fill" d="
-        M125 27
-        C73 27 31 68 31 119
-        C31 172 73 211 126 211
-        C174 211 206 181 213 142
-        V112
-        H125
-        V149
-        H168
-        C158 165 143 174 124 174
-        C92 174 69 150 69 119
-        C69 87 93 63 125 63
-        C149 63 168 75 181 96
-        L213 77
-        C194 46 161 27 125 27
-        Z">
-      </path>
-      <path class="inner-line" d="
-        M174 86
-        C158 66 132 58 106 65
-        C77 73 58 99 59 128
-        C61 160 86 183 119 184
-        C145 185 166 171 179 150
-        M126 131
-        H187
-        V164">
-      </path>
-    `,
+    g:`<path class="letter-fill" d="M150 70 H195 V182 C195 228 164 255 118 255 C82 255 56 236 45 208 L85 198 C92 212 104 220 120 220 C140 220 150 208 150 186 V174 C136 190 116 197 94 192 C58 185 34 156 34 120 C34 82 62 52 98 49 C120 47 138 55 150 70 Z M113 86 C90 86 74 102 74 124 C74 146 90 162 113 162 C136 162 152 146 152 124 C152 102 136 86 113 86 Z"></path>
+       <path class="inner-line" d="M148 82 C130 64 98 64 77 84 C54 106 56 144 80 165 C103 185 134 180 150 154 M174 92 V184 C174 216 146 233 110 224"></path>`,
 
-    g: `
-      <path class="letter-fill" d="
-        M147 67
-        H190
-        V176
-        C190 221 160 250 114 250
-        C78 250 52 232 42 205
-        L82 194
-        C88 209 100 216 116 216
-        C136 216 147 204 147 183
-        V171
-        C133 187 114 194 92 190
-        C56 184 31 154 31 117
-        C31 79 58 50 94 46
-        C116 43 134 51 147 67
-        Z
-        M110 82
-        C88 82 72 98 72 120
-        C72 142 88 158 110 158
-        C132 158 148 142 148 120
-        C148 98 132 82 110 82
-        Z">
-      </path>
-      <path class="inner-line" d="
-        M145 78
-        C128 61 96 60 74 80
-        C51 101 52 140 76 161
-        C99 181 130 176 147 151
-        M166 88
-        V180
-        C166 212 140 229 105 220">
-      </path>
-    `,
+    F:`<path class="letter-fill" d="M42 25 H205 V66 H87 V108 H178 V148 H87 V218 H42 Z"></path>
+       <path class="inner-line" d="M66 50 V192 M66 50 H180 M66 128 H154"></path>`,
 
-    F: `
-      <path class="letter-fill" d="M40 25 H198 V65 H84 V106 H174 V146 H84 V210 H40 Z"></path>
-      <path class="inner-line" d="M64 48 L64 188 M64 48 L176 48 M64 126 L152 126"></path>
-    `,
-
-    f: `
-      <path class="letter-fill" d="M160 25 V63 H136 C120 63 113 72 113 90 V100 H160 V137 H113 V210 H70 V137 H42 V100 H70 V88 C70 49 95 25 134 25 Z"></path>
-      <path class="inner-line" d="M132 48 C102 48 92 65 92 90 L92 188 M55 119 L148 119"></path>
-    `
+    f:`<path class="letter-fill" d="M165 25 V65 H140 C124 65 116 74 116 92 V105 H165 V142 H116 V218 H72 V142 H42 V105 H72 V90 C72 50 98 25 138 25 Z"></path>
+       <path class="inner-line" d="M136 50 C106 50 96 66 96 92 V192 M58 124 H150"></path>`
   };
 
   return svg[letter];
@@ -569,16 +442,11 @@ function showTrace(slide){
 
   area.innerHTML=`
     <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 240 260">
-        ${getLetterSVG(upper)}
-      </svg>
+      <svg class="trace-svg" viewBox="0 0 250 270">${getLetterSVG(upper)}</svg>
       <canvas></canvas>
     </div>
-
     <div class="trace-box" data-done="false">
-      <svg class="trace-svg" viewBox="0 0 240 260">
-        ${getLetterSVG(lower)}
-      </svg>
+      <svg class="trace-svg" viewBox="0 0 250 270">${getLetterSVG(lower)}</svg>
       <canvas></canvas>
     </div>
   `;
@@ -588,7 +456,6 @@ function showTrace(slide){
 
 function setupCanvas(box,slide){
   const canvas=box.querySelector("canvas");
-
   canvas.width=box.offsetWidth;
   canvas.height=box.offsetHeight;
 
@@ -626,16 +493,13 @@ function setupCanvas(box,slide){
 
   canvas.addEventListener("pointerup",()=>{
     drawing=false;
-
-    if(traceCount>130 && !alreadyDone){
+    if(traceCount>120 && !alreadyDone){
       alreadyDone=true;
       box.dataset.done="true";
       box.style.border="4px solid #39d353";
       checkBothTraced(slide);
     }
   });
-
-  canvas.addEventListener("pointercancel",()=>drawing=false);
 }
 
 function checkBothTraced(slide){
@@ -688,7 +552,6 @@ function createConfetti(){
     confetti.style.animationDelay=Math.random()*0.8+"s";
 
     document.body.appendChild(confetti);
-
     setTimeout(()=>confetti.remove(),5500);
   }
 }
