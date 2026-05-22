@@ -60,12 +60,7 @@ body{
   touch-action:manipulation;
   transition:transform 1.7s ease, opacity 1.7s ease;
   z-index:4;
-  filter:saturate(1.2) brightness(1.08);
-}
-
-/* Removes visible white box by blending white into scene background */
-.noWhite{
-  mix-blend-mode:multiply;
+  filter:saturate(1.25) brightness(1.08);
 }
 
 .bee{
@@ -74,27 +69,25 @@ body{
 }
 
 .apple{
-  width:clamp(42px,5.8vw,78px);
-  mix-blend-mode:multiply;
-  filter:saturate(1.35) brightness(1.05);
+  width:clamp(34px,4.8vw,62px);
+  filter:saturate(1.45) brightness(1.1) drop-shadow(0 2px 3px rgba(0,0,0,.2));
 }
 
 .star{
-  filter:saturate(2) brightness(1.5) drop-shadow(0 0 12px #fff56b);
+  filter:saturate(2) brightness(1.55) drop-shadow(0 0 14px #fff56b);
 }
 
 .ball{
-  width:clamp(48px,7vw,86px);
-  mix-blend-mode:multiply;
+  width:clamp(44px,6vw,76px);
 }
 
 .kite{
-  mix-blend-mode:multiply;
+  width:clamp(58px,8vw,105px);
 }
 
 .car{
   width:clamp(70px,10vw,125px);
-  filter:saturate(1.3) brightness(1.08);
+  filter:saturate(1.35) brightness(1.1);
 }
 
 .lamp{
@@ -180,7 +173,7 @@ button{
 
 .tree{
   position:absolute;
-  width:min(64vw,520px);
+  width:min(68vw,560px);
   left:50%;
   top:53%;
   transform:translate(-50%,-50%);
@@ -271,10 +264,10 @@ button{
   .cloud{transform:scale(.72)}
   .object{width:clamp(44px,13vw,76px)}
   .bee{width:clamp(52px,14vw,82px)}
-  .apple{width:clamp(34px,10vw,58px)}
+  .apple{width:clamp(30px,8vw,50px)}
   .ball{width:clamp(40px,12vw,68px)}
   .car{width:clamp(58px,16vw,92px)}
-  .tree{width:90vw}
+  .tree{width:95vw}
 }
 
 @media(max-height:620px){
@@ -319,16 +312,16 @@ button{
 
 <script>
 const slides=[
-  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"beeFly", scene:"garden", fallback:"🐝", cls:"bee noWhite"},
-  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎", cls:"apple"},
+  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"beeFly", scene:"garden", fallback:"🐝", cls:"bee", removeWhite:true},
+  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎", cls:"apple", removeWhite:true},
   {text:"Count the sun and write in the box given below.", count:1, action:"sun", scene:"sky"},
-  {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"sunflowerGarden", fallback:"🌻", cls:"noWhite"},
-  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", cls:"star noWhite"},
-  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"eyesOnly", fallback:"👁️", cls:"noWhite"},
-  {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"driveLeft", scene:"road", fallback:"🚗", cls:"car"},
-  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"lamp", scene:"room", fallback:"💡", cls:"lamp noWhite"},
-  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽", cls:"ball"},
-  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁", cls:"kite"}
+  {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"sunflowerGarden", fallback:"🌻", removeWhite:true},
+  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", cls:"star", removeWhite:true},
+  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"eyesOnly", fallback:"👁️", removeWhite:true},
+  {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"driveLeft", scene:"road", fallback:"🚗", cls:"car", removeWhite:true},
+  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"lamp", scene:"room", fallback:"💡", cls:"lamp", removeWhite:true},
+  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽", cls:"ball", removeWhite:true},
+  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁", cls:"kite", removeWhite:true}
 ];
 
 let current=0;
@@ -371,6 +364,10 @@ function createObject(s,i){
   img.src="assets/"+s.img;
   img.className="object "+(s.cls || "");
 
+  img.onload=()=>{
+    if(s.removeWhite) removeWhiteBackground(img);
+  };
+
   img.onerror=()=>{
     const span=document.createElement("div");
     span.textContent=s.fallback || "⭐";
@@ -386,10 +383,36 @@ function createObject(s,i){
   return img;
 }
 
+function removeWhiteBackground(img){
+  if(img.dataset.cleaned==="yes") return;
+  img.dataset.cleaned="yes";
+
+  try{
+    const c=document.createElement("canvas");
+    const ctx=c.getContext("2d");
+    c.width=img.naturalWidth;
+    c.height=img.naturalHeight;
+    ctx.drawImage(img,0,0);
+
+    const data=ctx.getImageData(0,0,c.width,c.height);
+    const pixels=data.data;
+
+    for(let i=0;i<pixels.length;i+=4){
+      const r=pixels[i], g=pixels[i+1], b=pixels[i+2];
+      if(r>235 && g>235 && b>235){
+        pixels[i+3]=0;
+      }
+    }
+
+    ctx.putImageData(data,0,0);
+    img.src=c.toDataURL("image/png");
+  }catch(e){}
+}
+
 function placeObject(el,s,i){
   if(s.scene==="tree"){
-    const xs=[23,35,48,60,72,30,50,66];
-    const ys=[20,14,18,24,30,38,42,46];
+    const xs=[38,45,52,59,42,49,56,63];
+    const ys=[18,14,19,16,31,28,33,30];
     el.style.left=xs[i]+"%";
     el.style.top=ys[i]+"%";
     el.style.zIndex=5;
@@ -404,8 +427,9 @@ function placeObject(el,s,i){
   }
 
   if(s.scene==="road"){
-    el.style.left=(105+i*18)+"%";
-    el.style.top=(60+(i%2)*13)+"%";
+    el.style.left=(8+i*14)+"%";
+    el.style.top=(58+(i%2)*16)+"%";
+    el.style.zIndex=5;
     return;
   }
 
@@ -416,8 +440,8 @@ function placeObject(el,s,i){
   }
 
   if(s.scene==="playground"){
-    const xs=[8,20,32,44,56,68,80,28,60];
-    const ys=[66,66,66,66,66,66,66,80,80];
+    const xs=[6,17,28,39,50,61,72,83,44];
+    const ys=[66,66,66,66,66,66,66,66,80];
     el.style.left=xs[i]+"%";
     el.style.top=ys[i]+"%";
     return;
@@ -440,8 +464,8 @@ function createScene(type){
 
   if(type==="garden"){
     scene.style.background="linear-gradient(#bceeff 0%,#bceeff 55%,#79c765 55%,#79c765 100%)";
-    addCloud(5,10);
-    addCloud(73,14);
+    addCloud(5,8);
+    addCloud(73,12);
     addFlowers();
   }
 
@@ -535,13 +559,20 @@ function animate(obj,s,i){
   obj.dataset.done="true";
 
   if(s.action==="open"){
-    if(obj.tagName==="IMG" && s.openImg) obj.src="assets/"+s.openImg;
+    if(obj.tagName==="IMG" && s.openImg){
+      obj.src="assets/"+s.openImg;
+      obj.onload=()=>removeWhiteBackground(obj);
+    }
     obj.style.transform="scale(1.18)";
     return;
   }
 
   if(s.action==="lamp"){
-    if(obj.tagName==="IMG" && s.openImg) obj.src="assets/"+s.openImg;
+    if(obj.tagName==="IMG" && s.openImg){
+      obj.src="assets/"+s.openImg;
+      obj.onload=()=>removeWhiteBackground(obj);
+    }
+
     const light=document.createElement("div");
     light.className="lampLight";
     light.style.left=obj.style.left;
