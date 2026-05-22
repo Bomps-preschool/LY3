@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Number Value Game</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Comic Sans MS","Trebuchet MS",sans-serif;
+  background:#fff7df;
+  color:#45311d;
+  overflow:hidden;
+}
+.screen{
+  width:100vw;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#logoScreen{
+  background:#fff;
+  z-index:99;
+  position:fixed;
+  inset:0;
+}
+#logoScreen img{
+  width:min(55vw,360px);
+}
+.game{
+  width:100vw;
+  height:100vh;
+  padding:14px;
+  display:none;
+  flex-direction:column;
+  background:linear-gradient(#fff4c7,#dff6ff);
+}
+.header{
+  text-align:center;
+  font-size:clamp(24px,5vw,42px);
+  font-weight:bold;
+  color:#5b3a12;
+}
+.instruction{
+  text-align:center;
+  font-size:clamp(16px,3vw,24px);
+  margin:6px 0;
+}
+.playArea{
+  flex:1;
+  position:relative;
+  border-radius:26px;
+  background:#ffffffbb;
+  border:4px solid #f4c56a;
+  overflow:hidden;
+}
+.object{
+  position:absolute;
+  width:clamp(70px,13vw,130px);
+  cursor:pointer;
+  transition:transform 1.5s ease, opacity 1.5s ease;
+  touch-action:manipulation;
+}
+.bigObject{
+  width:clamp(130px,25vw,260px);
+}
+.label{
+  display:block;
+  text-align:center;
+  font-size:clamp(16px,2.8vw,23px);
+  font-weight:bold;
+  background:#fff7d1;
+  padding:4px 10px;
+  border-radius:14px;
+  margin-top:3px;
+}
+.itemWrap{
+  position:absolute;
+  text-align:center;
+}
+.writeBox{
+  background:#fff;
+  border:3px dashed #7aa95c;
+  border-radius:20px;
+  padding:10px;
+  margin-top:10px;
+  text-align:center;
+}
+.writeBox p{
+  margin:0 0 6px;
+  font-size:clamp(15px,2.5vw,20px);
+}
+canvas{
+  width:160px;
+  height:80px;
+  border:3px solid #5b9bd5;
+  border-radius:14px;
+  background:#fff;
+  touch-action:none;
+}
+.numbers{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+button{
+  border:0;
+  border-radius:16px;
+  padding:10px 16px;
+  font-size:20px;
+  font-weight:bold;
+  background:#f7b955;
+  color:#422909;
+  cursor:pointer;
+}
+button:active{transform:scale(.96)}
+.feedback{
+  min-height:28px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+.sunCircle{
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  background:#ffd45c;
+  position:absolute;
+  left:50%;
+  top:42%;
+  transform:translate(-50%,-50%);
+  cursor:pointer;
+}
+.sunCircle.rays{
+  box-shadow:
+  0 0 0 40px #ffe68a,
+  0 0 0 90px #fff1a8,
+  0 0 80px 120px #fff6c8;
+}
+.final{
+  display:none;
+  text-align:center;
+  padding:30px;
+}
+.final h1{
+  font-size:clamp(34px,7vw,64px);
+}
+.score{
+  font-size:clamp(24px,5vw,42px);
+  background:#fff;
+  display:inline-block;
+  padding:20px 35px;
+  border-radius:25px;
+  border:4px solid #f4c56a;
+}
+.burst{
+  position:absolute;
+  font-size:30px;
+  animation:pop 1.5s ease forwards;
+}
+@keyframes pop{
+  from{transform:scale(.3);opacity:1}
+  to{transform:scale(2) translateY(-80px);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<div id="logoScreen" class="screen">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+</div>
+
+<div id="game" class="game">
+  <div class="header" id="title"></div>
+  <div class="instruction">Touch the pictures. Count them. Write the number, then tap the correct number.</div>
+  <div class="playArea" id="playArea"></div>
+
+  <div class="writeBox">
+    <p>Write the number here:</p>
+    <canvas id="drawCanvas" width="320" height="160"></canvas>
+    <div class="numbers" id="numberButtons"></div>
+    <button onclick="clearCanvas()">Clear</button>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<div id="final" class="screen final">
+  <div>
+    <h1>🎉 Congratulations! 🎉</h1>
+    <div class="score" id="scoreCard"></div><br><br>
+    <button onclick="location.reload()">Play Again</button>
+  </div>
+</div>
+
+<audio id="rightSound" src="assets/right.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
+<script>
+const slides = [
+  {title:"Count the Honeybees", count:5, img:"honeybee.png", label:"Honeybee", action:"fly"},
+  {title:"Count the Apples", count:8, img:"apple.png", label:"Apple", bg:"tree.png", action:"fall"},
+  {title:"Count the Sun", count:1, img:null, label:"Sun", action:"sun"},
+  {title:"Count the Sunflowers", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", label:"Sunflower", action:"open"},
+  {title:"Count the Stars", count:4, img:"star.png", label:"Star", action:"starfall"},
+  {title:"Count the Eyes", count:2, img:"closed-eye.png", openImg:"open-eye.png", label:"Eye", action:"open"},
+  {title:"Count the Cars", count:6, img:"car.png", label:"Car", action:"drive"},
+  {title:"Count the Lamps", count:3, img:"lamp-off.png", openImg:"lamp-on.png", label:"Lamp", action:"open"},
+  {title:"Count the Balls", count:9, img:"ball.png", label:"Ball", action:"roll"},
+  {title:"Count the Kites", count:7, img:"kite.png", label:"Kite", action:"fly"}
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+
+const game = document.getElementById("game");
+const playArea = document.getElementById("playArea");
+const title = document.getElementById("title");
+const feedback = document.getElementById("feedback");
+const rightSound = document.getElementById("rightSound");
+const wrongSound = document.getElementById("wrongSound");
+
+setTimeout(()=>{
+  document.getElementById("logoScreen").style.display="none";
+  game.style.display="flex";
+  loadSlide();
+},5000);
+
+function loadSlide(){
+  answered=false;
+  feedback.textContent="";
+  clearCanvas();
+  playArea.innerHTML="";
+  const s = slides[current];
+  title.textContent=s.title;
+
+  if(s.bg){
+    const bg=document.createElement("img");
+    bg.src="assets/"+s.bg;
+    bg.style.position="absolute";
+    bg.style.left="50%";
+    bg.style.top="45%";
+    bg.style.transform="translate(-50%,-50%)";
+    bg.style.width="min(55vw,420px)";
+    bg.style.opacity=".95";
+    playArea.appendChild(bg);
+  }
+
+  if(s.action==="sun"){
+    const sun=document.createElement("div");
+    sun.className="sunCircle";
+    sun.onclick=()=>sun.classList.add("rays");
+    playArea.appendChild(sun);
+    return;
+  }
+
+  for(let i=0;i<s.count;i++){
+    const wrap=document.createElement("div");
+    wrap.className="itemWrap";
+    wrap.style.left=(8 + (i%5)*18) + "%";
+    wrap.style.top=(12 + Math.floor(i/5)*35) + "%";
+
+    const img=document.createElement("img");
+    img.src="assets/"+s.img;
+    img.className="object";
+    img.style.position="relative";
+    img.style.left="0";
+    img.style.top="0";
+    img.alt=s.label;
+
+    const lab=document.createElement("span");
+    lab.className="label";
+    lab.textContent=s.label;
+
+    wrap.appendChild(img);
+    wrap.appendChild(lab);
+    playArea.appendChild(wrap);
+
+    img.addEventListener("click",()=>animateObject(img,s));
+    img.addEventListener("touchstart",(e)=>{e.preventDefault();animateObject(img,s);},{passive:false});
+  }
+}
+
+function animateObject(img,s){
+  if(img.dataset.done) return;
+  img.dataset.done="true";
+
+  if(s.action==="open" && s.openImg){
+    img.src="assets/"+s.openImg;
+    img.style.transform="scale(1.08)";
+    return;
+  }
+
+  let x=(Math.random()*240-120);
+  let y=(Math.random()*180-90);
+
+  if(s.action==="fall") y=220;
+  if(s.action==="drive") x=window.innerWidth;
+  if(s.action==="roll"){x=(Math.random()>.5?1:-1)*window.innerWidth; y=160; img.style.transform=`translate(${x}px,${y}px) rotate(720deg)`; return;}
+  if(s.action==="starfall") y=250;
+  if(s.action==="fly") y=-220;
+
+  img.style.transform=`translate(${x}px,${y}px) rotate(${Math.random()*45-20}deg)`;
+  if(["fly","drive","roll","starfall"].includes(s.action)) img.style.opacity=".15";
+}
+
+function makeButtons(){
+  const box=document.getElementById("numberButtons");
+  box.innerHTML="";
+  for(let i=1;i<=10;i++){
+    const b=document.createElement("button");
+    b.textContent=i;
+    b.onclick=()=>checkAnswer(i);
+    box.appendChild(b);
+  }
+}
+makeButtons();
+
+function checkAnswer(n){
+  if(answered) return;
+  answered=true;
+  if(n===slides[current].count){
+    score++;
+    feedback.textContent="✅ Correct!";
+    rightSound.currentTime=0;
+    rightSound.play();
+  }else{
+    feedback.textContent=`❌ Try again next time. Correct answer is ${slides[current].count}.`;
+    wrongSound.currentTime=0;
+    wrongSound.play();
+  }
+  setTimeout(nextSlide,1800);
+}
+
+function nextSlide(){
+  current++;
+  if(current>=slides.length) showFinal();
+  else loadSlide();
+}
+
+function showFinal(){
+  game.style.display="none";
+  const final=document.getElementById("final");
+  final.style.display="flex";
+  document.getElementById("scoreCard").textContent=`Score: ${score} / ${slides.length}`;
+  for(let i=0;i<35;i++){
+    const b=document.createElement("div");
+    b.className="burst";
+    b.textContent=["⭐","✨","🪙","🎆"][Math.floor(Math.random()*4)];
+    b.style.left=Math.random()*100+"vw";
+    b.style.top=Math.random()*100+"vh";
+    b.style.animationDelay=Math.random()*1.2+"s";
+    final.appendChild(b);
+  }
+}
+
+/* Writing Canvas */
+const canvas=document.getElementById("drawCanvas");
+const ctx=canvas.getContext("2d");
+ctx.lineWidth=7;
+ctx.lineCap="round";
+ctx.strokeStyle="#3b3b3b";
+let drawing=false;
+
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  const p=e.touches?e.touches[0]:e;
+  return {
+    x:(p.clientX-r.left)*(canvas.width/r.width),
+    y:(p.clientY-r.top)*(canvas.height/r.height)
+  };
+}
+function startDraw(e){
+  drawing=true;
+  const p=getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(p.x,p.y);
+}
+function draw(e){
+  if(!drawing)return;
+  e.preventDefault();
+  const p=getPos(e);
+  ctx.lineTo(p.x,p.y);
+  ctx.stroke();
+}
+function stopDraw(){drawing=false;}
+function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+
+canvas.addEventListener("mousedown",startDraw);
+canvas.addEventListener("mousemove",draw);
+canvas.addEventListener("mouseup",stopDraw);
+canvas.addEventListener("mouseleave",stopDraw);
+canvas.addEventListener("touchstart",startDraw,{passive:false});
+canvas.addEventListener("touchmove",draw,{passive:false});
+canvas.addEventListener("touchend",stopDraw);
+</script>
+
+</body>
+</html>
