@@ -7,6 +7,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:"Comic Sans MS","Trebuchet MS",sans-serif;
@@ -14,6 +15,7 @@ body{
   overflow:hidden;
   color:#4b2e0f;
 }
+
 #logoScreen{
   position:fixed;
   inset:0;
@@ -23,7 +25,10 @@ body{
   align-items:center;
   z-index:100;
 }
-#logoScreen img{width:min(55vw,360px)}
+
+#logoScreen img{
+  width:min(55vw,360px);
+}
 
 #game{
   display:none;
@@ -31,8 +36,9 @@ body{
   width:100vw;
   flex-direction:column;
 }
+
 .instruction{
-  min-height:56px;
+  min-height:54px;
   padding:8px 10px;
   text-align:center;
   font-size:clamp(17px,2.6vw,32px);
@@ -40,51 +46,85 @@ body{
   background:#fff6d8;
   line-height:1.15;
 }
+
 .scene{
   flex:1;
   position:relative;
   overflow:hidden;
 }
+
 .object{
   position:absolute;
-  width:clamp(55px,8vw,110px);
+  width:clamp(54px,8vw,105px);
   cursor:pointer;
   touch-action:manipulation;
-  transition:transform 1.8s ease, opacity 1.8s ease;
+  transition:transform 1.7s ease, opacity 1.7s ease;
   z-index:4;
-  filter:saturate(1.25) brightness(1.08);
+  filter:saturate(1.2) brightness(1.08);
 }
-.object.bright{
-  filter:saturate(1.55) brightness(1.25) drop-shadow(0 0 8px rgba(255,240,90,.8));
+
+/* Removes visible white box by blending white into scene background */
+.noWhite{
+  mix-blend-mode:multiply;
 }
-.bigObject{width:clamp(80px,12vw,145px)}
+
+.bee{
+  width:clamp(62px,8vw,112px);
+  filter:saturate(1.65) brightness(1.22) drop-shadow(0 4px 5px rgba(0,0,0,.18));
+}
+
+.apple{
+  width:clamp(42px,5.8vw,78px);
+  mix-blend-mode:multiply;
+  filter:saturate(1.35) brightness(1.05);
+}
+
+.star{
+  filter:saturate(2) brightness(1.5) drop-shadow(0 0 12px #fff56b);
+}
+
+.ball{
+  width:clamp(48px,7vw,86px);
+  mix-blend-mode:multiply;
+}
+
+.kite{
+  mix-blend-mode:multiply;
+}
+
+.car{
+  width:clamp(70px,10vw,125px);
+  filter:saturate(1.3) brightness(1.08);
+}
+
+.lamp{
+  width:clamp(80px,11vw,135px);
+}
 
 .writeArea{
-  min-height:145px;
-  max-height:28vh;
+  min-height:155px;
   background:#fff9e8;
   text-align:center;
   padding:6px;
   position:relative;
   z-index:10;
 }
+
 .writeArea p{
   margin:0 0 4px;
   font-size:clamp(15px,2.2vw,24px);
   font-weight:bold;
 }
-.answerBox{
-  width:min(42vw,180px);
+
+#drawCanvas{
+  width:min(45vw,185px);
   height:min(12vh,78px);
   background:white;
   border:4px solid #4e9add;
   border-radius:16px;
-  font-size:clamp(36px,6vw,58px);
-  font-weight:bold;
-  text-align:center;
-  color:#333;
-  outline:none;
+  touch-action:none;
 }
+
 .controls{
   display:flex;
   justify-content:center;
@@ -92,6 +132,7 @@ body{
   margin-top:4px;
   flex-wrap:wrap;
 }
+
 button{
   border:0;
   border-radius:16px;
@@ -101,9 +142,9 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+
 #nextBtn{
   background:#8bcf70;
-  display:none;
 }
 
 .cloud{
@@ -115,24 +156,45 @@ button{
   opacity:.9;
   z-index:1;
 }
+
 .cloud:before,.cloud:after{
   content:"";
   position:absolute;
   background:white;
   border-radius:50%;
 }
-.cloud:before{width:55px;height:55px;left:18px;top:-25px}
-.cloud:after{width:72px;height:72px;left:58px;top:-38px}
+
+.cloud:before{
+  width:55px;
+  height:55px;
+  left:18px;
+  top:-25px;
+}
+
+.cloud:after{
+  width:72px;
+  height:72px;
+  left:58px;
+  top:-38px;
+}
 
 .tree{
   position:absolute;
-  width:min(35vw,310px);
-  top:54%;
+  width:min(64vw,520px);
+  left:50%;
+  top:53%;
   transform:translate(-50%,-50%);
   z-index:2;
 }
-.tree.one{left:34%}
-.tree.two{left:66%}
+
+.roadLine{
+  position:absolute;
+  height:7px;
+  width:100%;
+  top:78%;
+  background:repeating-linear-gradient(90deg,#fff 0 45px,transparent 45px 85px);
+  opacity:.9;
+}
 
 .sun{
   position:absolute;
@@ -146,23 +208,17 @@ button{
   cursor:pointer;
   z-index:4;
 }
+
 .sun.rays{
   box-shadow:0 0 0 35px #ffe88c,0 0 0 75px #fff3bb,0 0 80px 110px #fff8d8;
 }
-.roadLine{
-  position:absolute;
-  height:7px;
-  width:100%;
-  top:78%;
-  background:repeating-linear-gradient(90deg,#fff 0 45px,transparent 45px 85px);
-  opacity:.9;
-}
+
 .lampLight{
   position:absolute;
-  width:150px;
-  height:170px;
-  background:radial-gradient(ellipse at top,rgba(255,245,120,.8),rgba(255,245,120,.25),transparent 70%);
-  transform:translate(-35px,35px);
+  width:180px;
+  height:190px;
+  background:radial-gradient(ellipse at top,rgba(255,245,90,.85),rgba(255,245,120,.35),transparent 70%);
+  transform:translate(-45px,40px);
   pointer-events:none;
   z-index:1;
 }
@@ -178,40 +234,53 @@ button{
   overflow:hidden;
   color:white;
 }
-.final h1{font-size:clamp(34px,7vw,70px)}
-.final p{font-size:clamp(22px,4vw,42px)}
+
+.final h1{
+  font-size:clamp(34px,7vw,70px);
+}
+
+.final p{
+  font-size:clamp(22px,4vw,42px);
+}
+
 .cracker{
   position:absolute;
-  width:8px;
-  height:8px;
+  width:9px;
+  height:9px;
   border-radius:50%;
-  animation:cracker 1.6s ease-out forwards;
+  animation:cracker 1.7s ease-out forwards;
   z-index:20;
 }
+
 @keyframes cracker{
   0%{transform:translate(0,0) scale(.5);opacity:1}
-  100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
+  100%{transform:translate(var(--x),var(--y)) scale(1.9);opacity:0}
 }
+
 .fallback{
   position:absolute;
   font-size:clamp(45px,8vw,95px);
   z-index:4;
   cursor:pointer;
-  transition:transform 1.8s ease, opacity 1.8s ease;
+  transition:transform 1.7s ease, opacity 1.7s ease;
 }
 
 @media(max-width:768px){
   .instruction{min-height:50px}
-  .writeArea{min-height:132px}
+  .writeArea{min-height:145px}
   .cloud{transform:scale(.72)}
-  .object{width:clamp(46px,14vw,76px)}
-  .bigObject{width:clamp(65px,18vw,100px)}
-  .tree{width:46vw}
+  .object{width:clamp(44px,13vw,76px)}
+  .bee{width:clamp(52px,14vw,82px)}
+  .apple{width:clamp(34px,10vw,58px)}
+  .ball{width:clamp(40px,12vw,68px)}
+  .car{width:clamp(58px,16vw,92px)}
+  .tree{width:90vw}
 }
+
 @media(max-height:620px){
   .instruction{font-size:17px;min-height:44px}
-  .writeArea{min-height:110px}
-  .answerBox{height:56px}
+  .writeArea{min-height:120px}
+  #drawCanvas{height:58px}
   .writeArea p{font-size:15px}
 }
 </style>
@@ -229,9 +298,9 @@ button{
 
   <div class="writeArea">
     <p>Write the number in the box given below.</p>
-    <input id="answerInput" class="answerBox" type="tel" maxlength="2" inputmode="numeric">
+    <canvas id="drawCanvas" width="370" height="170"></canvas>
     <div class="controls">
-      <button onclick="clearAnswer()">Clear</button>
+      <button onclick="clearCanvas()">Clear</button>
       <button id="nextBtn" onclick="nextSlide()">Next</button>
     </div>
   </div>
@@ -250,23 +319,21 @@ button{
 
 <script>
 const slides=[
-  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"beeFly", scene:"garden", fallback:"🐝"},
-  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎"},
+  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"beeFly", scene:"garden", fallback:"🐝", cls:"bee noWhite"},
+  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎", cls:"apple"},
   {text:"Count the sun and write in the box given below.", count:1, action:"sun", scene:"sky"},
-  {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"sunflowerGarden", fallback:"🌻"},
-  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", bright:true},
-  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"eyesOnly", fallback:"👁️"},
-  {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"driveLeft", scene:"road", fallback:"🚗"},
-  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"lamp", scene:"room", fallback:"💡"},
-  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽"},
-  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁"}
+  {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"sunflowerGarden", fallback:"🌻", cls:"noWhite"},
+  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", cls:"star noWhite"},
+  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"eyesOnly", fallback:"👁️", cls:"noWhite"},
+  {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"driveLeft", scene:"road", fallback:"🚗", cls:"car"},
+  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"lamp", scene:"room", fallback:"💡", cls:"lamp noWhite"},
+  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽", cls:"ball"},
+  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁", cls:"kite"}
 ];
 
 let current=0;
 const scene=document.getElementById("scene");
 const instruction=document.getElementById("instruction");
-const answerInput=document.getElementById("answerInput");
-const nextBtn=document.getElementById("nextBtn");
 
 setTimeout(()=>{
   document.getElementById("logoScreen").style.display="none";
@@ -274,21 +341,8 @@ setTimeout(()=>{
   loadSlide();
 },5000);
 
-answerInput.addEventListener("input",()=>{
-  answerInput.value=answerInput.value.replace(/\D/g,"");
-  const correct=Number(answerInput.value)===slides[current].count;
-  nextBtn.style.display=correct ? "inline-block" : "none";
-  if(correct) document.getElementById("rightSound").play().catch(()=>{});
-});
-
-function clearAnswer(){
-  answerInput.value="";
-  nextBtn.style.display="none";
-  answerInput.focus();
-}
-
 function loadSlide(){
-  clearAnswer();
+  clearCanvas();
   const s=slides[current];
   instruction.textContent=s.text;
   createScene(s.scene);
@@ -315,8 +369,7 @@ function loadSlide(){
 function createObject(s,i){
   const img=document.createElement("img");
   img.src="assets/"+s.img;
-  img.className="object";
-  if(s.bright) img.classList.add("bright");
+  img.className="object "+(s.cls || "");
 
   img.onerror=()=>{
     const span=document.createElement("div");
@@ -326,6 +379,7 @@ function createObject(s,i){
     span.style.top=img.style.top;
     img.replaceWith(span);
     span.addEventListener("click",()=>animate(span,s,i));
+    span.addEventListener("touchstart",(e)=>{e.preventDefault();animate(span,s,i)},{passive:false});
   };
 
   placeObject(img,s,i);
@@ -334,8 +388,8 @@ function createObject(s,i){
 
 function placeObject(el,s,i){
   if(s.scene==="tree"){
-    const xs=[20,30,39,50,60,70,36,63];
-    const ys=[24,15,31,18,34,22,47,50];
+    const xs=[23,35,48,60,72,30,50,66];
+    const ys=[20,14,18,24,30,38,42,46];
     el.style.left=xs[i]+"%";
     el.style.top=ys[i]+"%";
     el.style.zIndex=5;
@@ -344,8 +398,8 @@ function placeObject(el,s,i){
 
   if(s.scene==="eyesOnly"){
     el.style.left=i===0?"28%":"58%";
-    el.style.top="36%";
-    el.style.width="clamp(105px,15vw,185px)";
+    el.style.top="34%";
+    el.style.width="clamp(115px,17vw,210px)";
     return;
   }
 
@@ -357,20 +411,21 @@ function placeObject(el,s,i){
 
   if(s.scene==="room"){
     el.style.left=(24+i*24)+"%";
-    el.style.top="36%";
-    el.classList.add("bigObject");
+    el.style.top="34%";
     return;
   }
 
   if(s.scene==="playground"){
-    el.style.left=(8+(i%5)*18)+"%";
-    el.style.top=(i<5?"64%":"78%");
+    const xs=[8,20,32,44,56,68,80,28,60];
+    const ys=[66,66,66,66,66,66,66,80,80];
+    el.style.left=xs[i]+"%";
+    el.style.top=ys[i]+"%";
     return;
   }
 
   if(s.scene==="garden" && s.action==="beeFly"){
     const xs=[12,30,49,68,86];
-    const ys=[26,22,28,24,30];
+    const ys=[30,24,31,25,32];
     el.style.left=xs[i]+"%";
     el.style.top=ys[i]+"%";
     return;
@@ -385,8 +440,8 @@ function createScene(type){
 
   if(type==="garden"){
     scene.style.background="linear-gradient(#bceeff 0%,#bceeff 55%,#79c765 55%,#79c765 100%)";
-    addCloud(7,12);
-    addCloud(73,15);
+    addCloud(5,10);
+    addCloud(73,14);
     addFlowers();
   }
 
@@ -401,17 +456,11 @@ function createScene(type){
     addCloud(7,12);
     addCloud(75,15);
 
-    const tree1=document.createElement("img");
-    tree1.src="assets/tree.png";
-    tree1.className="tree one";
-    tree1.onerror=()=>tree1.style.display="none";
-    scene.appendChild(tree1);
-
-    const tree2=document.createElement("img");
-    tree2.src="assets/tree.png";
-    tree2.className="tree two";
-    tree2.onerror=()=>tree2.style.display="none";
-    scene.appendChild(tree2);
+    const tree=document.createElement("img");
+    tree.src="assets/tree.png";
+    tree.className="tree";
+    tree.onerror=()=>tree.style.display="none";
+    scene.appendChild(tree);
   }
 
   if(type==="sky"){
@@ -508,8 +557,8 @@ function animate(obj,s,i){
     const moves=[
       {x:160,y:-80,r:25},
       {x:0,y:-260,r:-15},
-      {x:window.innerWidth*.8,y:-70,r:20},
-      {x:-window.innerWidth*.8,y:-70,r:-20},
+      {x:window.innerWidth*.85,y:-70,r:20},
+      {x:-window.innerWidth*.85,y:-70,r:-20},
       {x:120,y:-170,r:35}
     ];
     x=moves[i%moves.length].x;
@@ -537,8 +586,8 @@ function animate(obj,s,i){
   }
 
   if(s.action==="roll"){
-    x=(Math.random()>.5?1:-1)*(window.innerWidth*.5);
-    y=window.innerHeight*.08;
+    x=(Math.random()>.5?1:-1)*(window.innerWidth*.45);
+    y=window.innerHeight*.05;
     r=720;
   }
 
@@ -567,24 +616,80 @@ function showFinal(){
 
 function createCrackers(final){
   const colors=["#ff3131","#ffb703","#00d4ff","#7cff6b","#ff5efc","#ffffff"];
-  for(let center=0;center<22;center++){
+  for(let center=0;center<25;center++){
     const cx=Math.random()*100;
     const cy=Math.random()*80+5;
-    for(let i=0;i<34;i++){
+    for(let i=0;i<36;i++){
       const b=document.createElement("div");
       b.className="cracker";
       b.style.left=cx+"vw";
       b.style.top=cy+"vh";
       b.style.background=colors[Math.floor(Math.random()*colors.length)];
-      const angle=(Math.PI*2*i)/34;
-      const distance=80+Math.random()*130;
+      const angle=(Math.PI*2*i)/36;
+      const distance=85+Math.random()*140;
       b.style.setProperty("--x",Math.cos(angle)*distance+"px");
       b.style.setProperty("--y",Math.sin(angle)*distance+"px");
-      b.style.animationDelay=(center*.1)+"s";
+      b.style.animationDelay=(center*.08)+"s";
       final.appendChild(b);
     }
   }
 }
+
+/* Finger + mouse writing */
+const canvas=document.getElementById("drawCanvas");
+const ctx=canvas.getContext("2d");
+ctx.lineWidth=9;
+ctx.lineCap="round";
+ctx.lineJoin="round";
+ctx.strokeStyle="#333";
+let drawing=false;
+
+function getPos(e){
+  const r=canvas.getBoundingClientRect();
+  const p=e.touches?e.touches[0]:e;
+  return{
+    x:(p.clientX-r.left)*(canvas.width/r.width),
+    y:(p.clientY-r.top)*(canvas.height/r.height)
+  };
+}
+
+function startDraw(e){
+  e.preventDefault();
+  drawing=true;
+  const p=getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(p.x,p.y);
+}
+
+function draw(e){
+  if(!drawing)return;
+  e.preventDefault();
+  const p=getPos(e);
+  ctx.lineTo(p.x,p.y);
+  ctx.stroke();
+}
+
+function stopDraw(){
+  drawing=false;
+}
+
+function clearCanvas(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+canvas.addEventListener("mousedown",startDraw);
+canvas.addEventListener("mousemove",draw);
+canvas.addEventListener("mouseup",stopDraw);
+canvas.addEventListener("mouseleave",stopDraw);
+
+canvas.addEventListener("touchstart",startDraw,{passive:false});
+canvas.addEventListener("touchmove",draw,{passive:false});
+canvas.addEventListener("touchend",stopDraw);
+
+canvas.addEventListener("pointerdown",startDraw);
+canvas.addEventListener("pointermove",draw);
+canvas.addEventListener("pointerup",stopDraw);
+canvas.addEventListener("pointercancel",stopDraw);
 </script>
 
 </body>
