@@ -7,7 +7,6 @@
 
 <style>
 *{box-sizing:border-box}
-
 body{
   margin:0;
   font-family:"Comic Sans MS","Trebuchet MS",sans-serif;
@@ -15,7 +14,6 @@ body{
   overflow:hidden;
   color:#4b2e0f;
 }
-
 #logoScreen{
   position:fixed;
   inset:0;
@@ -25,10 +23,7 @@ body{
   align-items:center;
   z-index:100;
 }
-
-#logoScreen img{
-  width:min(55vw,360px);
-}
+#logoScreen img{width:min(55vw,360px)}
 
 #game{
   display:none;
@@ -36,39 +31,33 @@ body{
   width:100vw;
   flex-direction:column;
 }
-
 .instruction{
-  min-height:58px;
+  min-height:56px;
   padding:8px 10px;
   text-align:center;
-  font-size:clamp(18px,2.7vw,32px);
+  font-size:clamp(17px,2.6vw,32px);
   font-weight:bold;
   background:#fff6d8;
   line-height:1.15;
 }
-
 .scene{
   flex:1;
   position:relative;
   overflow:hidden;
 }
-
 .object{
   position:absolute;
-  width:clamp(58px,8.5vw,118px);
+  width:clamp(55px,8vw,110px);
   cursor:pointer;
   touch-action:manipulation;
   transition:transform 1.8s ease, opacity 1.8s ease;
   z-index:4;
+  filter:saturate(1.25) brightness(1.08);
 }
-
-.object.cutout{
-  mix-blend-mode:multiply;
+.object.bright{
+  filter:saturate(1.55) brightness(1.25) drop-shadow(0 0 8px rgba(255,240,90,.8));
 }
-
-.bigObject{
-  width:clamp(85px,12vw,150px);
-}
+.bigObject{width:clamp(80px,12vw,145px)}
 
 .writeArea{
   min-height:145px;
@@ -79,22 +68,23 @@ body{
   position:relative;
   z-index:10;
 }
-
 .writeArea p{
   margin:0 0 4px;
-  font-size:clamp(16px,2.2vw,24px);
+  font-size:clamp(15px,2.2vw,24px);
   font-weight:bold;
 }
-
-canvas{
-  width:min(44vw,180px);
+.answerBox{
+  width:min(42vw,180px);
   height:min(12vh,78px);
   background:white;
   border:4px solid #4e9add;
   border-radius:16px;
-  touch-action:none;
+  font-size:clamp(36px,6vw,58px);
+  font-weight:bold;
+  text-align:center;
+  color:#333;
+  outline:none;
 }
-
 .controls{
   display:flex;
   justify-content:center;
@@ -102,7 +92,6 @@ canvas{
   margin-top:4px;
   flex-wrap:wrap;
 }
-
 button{
   border:0;
   border-radius:16px;
@@ -112,9 +101,9 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
-
 #nextBtn{
   background:#8bcf70;
+  display:none;
 }
 
 .cloud{
@@ -126,36 +115,24 @@ button{
   opacity:.9;
   z-index:1;
 }
-
 .cloud:before,.cloud:after{
   content:"";
   position:absolute;
   background:white;
   border-radius:50%;
 }
-
-.cloud:before{
-  width:55px;
-  height:55px;
-  left:18px;
-  top:-25px;
-}
-
-.cloud:after{
-  width:72px;
-  height:72px;
-  left:58px;
-  top:-38px;
-}
+.cloud:before{width:55px;height:55px;left:18px;top:-25px}
+.cloud:after{width:72px;height:72px;left:58px;top:-38px}
 
 .tree{
   position:absolute;
-  width:min(46vw,390px);
-  left:50%;
+  width:min(35vw,310px);
   top:54%;
   transform:translate(-50%,-50%);
   z-index:2;
 }
+.tree.one{left:34%}
+.tree.two{left:66%}
 
 .sun{
   position:absolute;
@@ -169,14 +146,9 @@ button{
   cursor:pointer;
   z-index:4;
 }
-
 .sun.rays{
-  box-shadow:
-  0 0 0 35px #ffe88c,
-  0 0 0 75px #fff3bb,
-  0 0 80px 110px #fff8d8;
+  box-shadow:0 0 0 35px #ffe88c,0 0 0 75px #fff3bb,0 0 80px 110px #fff8d8;
 }
-
 .roadLine{
   position:absolute;
   height:7px;
@@ -185,34 +157,14 @@ button{
   background:repeating-linear-gradient(90deg,#fff 0 45px,transparent 45px 85px);
   opacity:.9;
 }
-
-.roomFloor{
+.lampLight{
   position:absolute;
-  bottom:0;
-  width:100%;
-  height:34%;
-  background:#d28b54;
-}
-
-.face{
-  position:absolute;
-  width:min(55vw,380px);
-  aspect-ratio:1;
-  border-radius:50%;
-  background:#ffd7b4;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  border:5px solid #f0a66f;
-}
-
-.eyeZone{
-  position:absolute;
-  width:100%;
-  top:37%;
-  display:flex;
-  justify-content:center;
-  gap:13%;
+  width:150px;
+  height:170px;
+  background:radial-gradient(ellipse at top,rgba(255,245,120,.8),rgba(255,245,120,.25),transparent 70%);
+  transform:translate(-35px,35px);
+  pointer-events:none;
+  z-index:1;
 }
 
 .final{
@@ -226,15 +178,8 @@ button{
   overflow:hidden;
   color:white;
 }
-
-.final h1{
-  font-size:clamp(34px,7vw,70px);
-}
-
-.final p{
-  font-size:clamp(22px,4vw,42px);
-}
-
+.final h1{font-size:clamp(34px,7vw,70px)}
+.final p{font-size:clamp(22px,4vw,42px)}
 .cracker{
   position:absolute;
   width:8px;
@@ -243,12 +188,10 @@ button{
   animation:cracker 1.6s ease-out forwards;
   z-index:20;
 }
-
 @keyframes cracker{
   0%{transform:translate(0,0) scale(.5);opacity:1}
   100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
 }
-
 .fallback{
   position:absolute;
   font-size:clamp(45px,8vw,95px);
@@ -258,18 +201,17 @@ button{
 }
 
 @media(max-width:768px){
-  .instruction{min-height:52px}
-  .writeArea{min-height:135px}
-  .cloud{transform:scale(.75)}
-  .object{width:clamp(48px,14vw,78px)}
+  .instruction{min-height:50px}
+  .writeArea{min-height:132px}
+  .cloud{transform:scale(.72)}
+  .object{width:clamp(46px,14vw,76px)}
   .bigObject{width:clamp(65px,18vw,100px)}
-  .tree{width:70vw}
+  .tree{width:46vw}
 }
-
 @media(max-height:620px){
-  .instruction{font-size:18px;min-height:45px}
-  .writeArea{min-height:115px}
-  canvas{height:58px}
+  .instruction{font-size:17px;min-height:44px}
+  .writeArea{min-height:110px}
+  .answerBox{height:56px}
   .writeArea p{font-size:15px}
 }
 </style>
@@ -287,9 +229,9 @@ button{
 
   <div class="writeArea">
     <p>Write the number in the box given below.</p>
-    <canvas id="drawCanvas" width="370" height="170"></canvas>
+    <input id="answerInput" class="answerBox" type="tel" maxlength="2" inputmode="numeric">
     <div class="controls">
-      <button onclick="clearCanvas()">Clear</button>
+      <button onclick="clearAnswer()">Clear</button>
       <button id="nextBtn" onclick="nextSlide()">Next</button>
     </div>
   </div>
@@ -308,21 +250,23 @@ button{
 
 <script>
 const slides=[
-  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"fly", scene:"garden", fallback:"🐝", cutout:true},
-  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎", cutout:true},
+  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"beeFly", scene:"garden", fallback:"🐝"},
+  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎"},
   {text:"Count the sun and write in the box given below.", count:1, action:"sun", scene:"sky"},
   {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"sunflowerGarden", fallback:"🌻"},
-  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", cutout:true},
-  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"face", fallback:"👁️"},
+  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", bright:true},
+  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"eyesOnly", fallback:"👁️"},
   {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"driveLeft", scene:"road", fallback:"🚗"},
-  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"open", scene:"room", fallback:"💡"},
-  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽", cutout:true},
-  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁", cutout:true}
+  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"lamp", scene:"room", fallback:"💡"},
+  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽"},
+  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁"}
 ];
 
 let current=0;
 const scene=document.getElementById("scene");
 const instruction=document.getElementById("instruction");
+const answerInput=document.getElementById("answerInput");
+const nextBtn=document.getElementById("nextBtn");
 
 setTimeout(()=>{
   document.getElementById("logoScreen").style.display="none";
@@ -330,8 +274,21 @@ setTimeout(()=>{
   loadSlide();
 },5000);
 
+answerInput.addEventListener("input",()=>{
+  answerInput.value=answerInput.value.replace(/\D/g,"");
+  const correct=Number(answerInput.value)===slides[current].count;
+  nextBtn.style.display=correct ? "inline-block" : "none";
+  if(correct) document.getElementById("rightSound").play().catch(()=>{});
+});
+
+function clearAnswer(){
+  answerInput.value="";
+  nextBtn.style.display="none";
+  answerInput.focus();
+}
+
 function loadSlide(){
-  clearCanvas();
+  clearAnswer();
   const s=slides[current];
   instruction.textContent=s.text;
   createScene(s.scene);
@@ -347,10 +304,10 @@ function loadSlide(){
   for(let i=0;i<s.count;i++){
     const obj=createObject(s,i);
     scene.appendChild(obj);
-    obj.addEventListener("click",()=>animate(obj,s));
+    obj.addEventListener("click",()=>animate(obj,s,i));
     obj.addEventListener("touchstart",(e)=>{
       e.preventDefault();
-      animate(obj,s);
+      animate(obj,s,i);
     },{passive:false});
   }
 }
@@ -359,7 +316,7 @@ function createObject(s,i){
   const img=document.createElement("img");
   img.src="assets/"+s.img;
   img.className="object";
-  if(s.cutout) img.classList.add("cutout");
+  if(s.bright) img.classList.add("bright");
 
   img.onerror=()=>{
     const span=document.createElement("div");
@@ -367,10 +324,8 @@ function createObject(s,i){
     span.className="fallback";
     span.style.left=img.style.left;
     span.style.top=img.style.top;
-    span.dataset.done=img.dataset.done || "";
-    span.addEventListener("click",()=>animate(span,s));
-    span.addEventListener("touchstart",(e)=>{e.preventDefault();animate(span,s);},{passive:false});
     img.replaceWith(span);
+    span.addEventListener("click",()=>animate(span,s,i));
   };
 
   placeObject(img,s,i);
@@ -379,18 +334,18 @@ function createObject(s,i){
 
 function placeObject(el,s,i){
   if(s.scene==="tree"){
-    const xs=[22,34,48,61,73,29,50,67];
-    const ys=[18,13,17,24,30,38,41,45];
+    const xs=[20,30,39,50,60,70,36,63];
+    const ys=[24,15,31,18,34,22,47,50];
     el.style.left=xs[i]+"%";
     el.style.top=ys[i]+"%";
     el.style.zIndex=5;
     return;
   }
 
-  if(s.scene==="face"){
-    el.style.left=i===0?"34%":"56%";
-    el.style.top="38%";
-    el.style.width="clamp(75px,12vw,140px)";
+  if(s.scene==="eyesOnly"){
+    el.style.left=i===0?"28%":"58%";
+    el.style.top="36%";
+    el.style.width="clamp(105px,15vw,185px)";
     return;
   }
 
@@ -401,9 +356,23 @@ function placeObject(el,s,i){
   }
 
   if(s.scene==="room"){
-    el.style.left=(24+i*22)+"%";
-    el.style.top="38%";
+    el.style.left=(24+i*24)+"%";
+    el.style.top="36%";
     el.classList.add("bigObject");
+    return;
+  }
+
+  if(s.scene==="playground"){
+    el.style.left=(8+(i%5)*18)+"%";
+    el.style.top=(i<5?"64%":"78%");
+    return;
+  }
+
+  if(s.scene==="garden" && s.action==="beeFly"){
+    const xs=[12,30,49,68,86];
+    const ys=[26,22,28,24,30];
+    el.style.left=xs[i]+"%";
+    el.style.top=ys[i]+"%";
     return;
   }
 
@@ -416,8 +385,8 @@ function createScene(type){
 
   if(type==="garden"){
     scene.style.background="linear-gradient(#bceeff 0%,#bceeff 55%,#79c765 55%,#79c765 100%)";
-    addCloud(10,12);
-    addCloud(70,15);
+    addCloud(7,12);
+    addCloud(73,15);
     addFlowers();
   }
 
@@ -429,13 +398,20 @@ function createScene(type){
 
   if(type==="tree"){
     scene.style.background="linear-gradient(#bceeff 0%,#bceeff 58%,#7ccc65 58%,#7ccc65 100%)";
-    addCloud(8,12);
-    addCloud(72,15);
-    const tree=document.createElement("img");
-    tree.src="assets/tree.png";
-    tree.className="tree";
-    tree.onerror=()=>{tree.style.display="none"};
-    scene.appendChild(tree);
+    addCloud(7,12);
+    addCloud(75,15);
+
+    const tree1=document.createElement("img");
+    tree1.src="assets/tree.png";
+    tree1.className="tree one";
+    tree1.onerror=()=>tree1.style.display="none";
+    scene.appendChild(tree1);
+
+    const tree2=document.createElement("img");
+    tree2.src="assets/tree.png";
+    tree2.className="tree two";
+    tree2.onerror=()=>tree2.style.display="none";
+    scene.appendChild(tree2);
   }
 
   if(type==="sky"){
@@ -445,14 +421,11 @@ function createScene(type){
   }
 
   if(type==="night"){
-    scene.style.background="linear-gradient(#14245c,#415794)";
+    scene.style.background="linear-gradient(#07123f,#2d4388)";
   }
 
-  if(type==="face"){
+  if(type==="eyesOnly"){
     scene.style.background="linear-gradient(#ffe3c7,#ffd0a6)";
-    const face=document.createElement("div");
-    face.className="face";
-    scene.appendChild(face);
   }
 
   if(type==="road"){
@@ -466,13 +439,10 @@ function createScene(type){
 
   if(type==="room"){
     scene.style.background="linear-gradient(#ffe4bd 0%,#ffe4bd 66%,#c7854b 66%,#c7854b 100%)";
-    const floor=document.createElement("div");
-    floor.className="roomFloor";
-    scene.appendChild(floor);
   }
 
   if(type==="playground"){
-    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 48%,#8ad06c 48%,#8ad06c 100%)";
+    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 50%,#8ad06c 50%,#8ad06c 100%)";
     addCloud(8,12);
     addCloud(72,15);
   }
@@ -505,25 +475,47 @@ function getX(i,count){
 }
 
 function getY(i,count,type){
-  if(type==="night")return 78-Math.floor(i/4)*22;
+  if(type==="night")return 70-Math.floor(i/4)*22;
   if(type==="sky")return 28+Math.floor(i/4)*24;
   if(type==="sunflowerGarden")return 25+Math.floor(i/5)*32;
   return 14+Math.floor(i/5)*26;
 }
 
-function animate(obj,s){
+function animate(obj,s,i){
   if(obj.dataset.done)return;
   obj.dataset.done="true";
 
   if(s.action==="open"){
-    if(obj.tagName==="IMG" && s.openImg){
-      obj.src="assets/"+s.openImg;
-    }
+    if(obj.tagName==="IMG" && s.openImg) obj.src="assets/"+s.openImg;
     obj.style.transform="scale(1.18)";
     return;
   }
 
+  if(s.action==="lamp"){
+    if(obj.tagName==="IMG" && s.openImg) obj.src="assets/"+s.openImg;
+    const light=document.createElement("div");
+    light.className="lampLight";
+    light.style.left=obj.style.left;
+    light.style.top=obj.style.top;
+    scene.appendChild(light);
+    obj.style.transform="scale(1.12)";
+    return;
+  }
+
   let x=0,y=0,r=Math.random()*80-40;
+
+  if(s.action==="beeFly"){
+    const moves=[
+      {x:160,y:-80,r:25},
+      {x:0,y:-260,r:-15},
+      {x:window.innerWidth*.8,y:-70,r:20},
+      {x:-window.innerWidth*.8,y:-70,r:-20},
+      {x:120,y:-170,r:35}
+    ];
+    x=moves[i%moves.length].x;
+    y=moves[i%moves.length].y;
+    r=moves[i%moves.length].r;
+  }
 
   if(s.action==="fly"){
     x=(Math.random()>.5?1:-1)*(window.innerWidth*.42);
@@ -531,7 +523,7 @@ function animate(obj,s){
   }
 
   if(s.action==="fall"){
-    x=(Math.random()*100)-50;
+    x=(Math.random()*80)-40;
     y=window.innerHeight*.34;
   }
 
@@ -546,14 +538,14 @@ function animate(obj,s){
 
   if(s.action==="roll"){
     x=(Math.random()>.5?1:-1)*(window.innerWidth*.5);
-    y=window.innerHeight*.22;
+    y=window.innerHeight*.08;
     r=720;
   }
 
   obj.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`;
 
-  if(["fly","driveLeft","roll","starup"].includes(s.action)){
-    obj.style.opacity=".25";
+  if(["beeFly","fly","driveLeft","roll","starup"].includes(s.action)){
+    setTimeout(()=>obj.remove(),1700);
   }
 }
 
@@ -575,68 +567,24 @@ function showFinal(){
 
 function createCrackers(final){
   const colors=["#ff3131","#ffb703","#00d4ff","#7cff6b","#ff5efc","#ffffff"];
-  for(let center=0;center<12;center++){
+  for(let center=0;center<22;center++){
     const cx=Math.random()*100;
     const cy=Math.random()*80+5;
-    for(let i=0;i<28;i++){
+    for(let i=0;i<34;i++){
       const b=document.createElement("div");
       b.className="cracker";
       b.style.left=cx+"vw";
       b.style.top=cy+"vh";
       b.style.background=colors[Math.floor(Math.random()*colors.length)];
-      const angle=(Math.PI*2*i)/28;
-      const distance=70+Math.random()*110;
+      const angle=(Math.PI*2*i)/34;
+      const distance=80+Math.random()*130;
       b.style.setProperty("--x",Math.cos(angle)*distance+"px");
       b.style.setProperty("--y",Math.sin(angle)*distance+"px");
-      b.style.animationDelay=(center*.15)+"s";
+      b.style.animationDelay=(center*.1)+"s";
       final.appendChild(b);
     }
   }
 }
-
-/* Drawing box */
-const canvas=document.getElementById("drawCanvas");
-const ctx=canvas.getContext("2d");
-ctx.lineWidth=9;
-ctx.lineCap="round";
-ctx.strokeStyle="#333";
-let drawing=false;
-
-function getPos(e){
-  const r=canvas.getBoundingClientRect();
-  const p=e.touches?e.touches[0]:e;
-  return{
-    x:(p.clientX-r.left)*(canvas.width/r.width),
-    y:(p.clientY-r.top)*(canvas.height/r.height)
-  };
-}
-
-function startDraw(e){
-  drawing=true;
-  const p=getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(p.x,p.y);
-}
-
-function draw(e){
-  if(!drawing)return;
-  e.preventDefault();
-  const p=getPos(e);
-  ctx.lineTo(p.x,p.y);
-  ctx.stroke();
-}
-
-function stopDraw(){drawing=false}
-function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height)}
-
-canvas.addEventListener("mousedown",startDraw);
-canvas.addEventListener("mousemove",draw);
-canvas.addEventListener("mouseup",stopDraw);
-canvas.addEventListener("mouseleave",stopDraw);
-
-canvas.addEventListener("touchstart",startDraw,{passive:false});
-canvas.addEventListener("touchmove",draw,{passive:false});
-canvas.addEventListener("touchend",stopDraw);
 </script>
 
 </body>
