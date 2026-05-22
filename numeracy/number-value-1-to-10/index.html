@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Number Value Game</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:"Comic Sans MS","Trebuchet MS",sans-serif;
@@ -14,6 +15,7 @@ body{
   overflow:hidden;
   color:#4b2e0f;
 }
+
 #logoScreen{
   position:fixed;
   inset:0;
@@ -23,144 +25,252 @@ body{
   align-items:center;
   z-index:100;
 }
+
 #logoScreen img{
-  width:min(55vw,380px);
+  width:min(55vw,360px);
 }
+
 #game{
   display:none;
   height:100vh;
   width:100vw;
   flex-direction:column;
 }
+
 .instruction{
-  min-height:70px;
-  padding:12px;
+  min-height:58px;
+  padding:8px 10px;
   text-align:center;
-  font-size:clamp(21px,3vw,34px);
+  font-size:clamp(18px,2.7vw,32px);
   font-weight:bold;
   background:#fff6d8;
+  line-height:1.15;
 }
+
 .scene{
   flex:1;
   position:relative;
   overflow:hidden;
 }
+
 .object{
   position:absolute;
-  width:clamp(75px,10vw,130px);
+  width:clamp(58px,8.5vw,118px);
   cursor:pointer;
   touch-action:manipulation;
   transition:transform 1.8s ease, opacity 1.8s ease;
+  z-index:4;
 }
+
+.object.cutout{
+  mix-blend-mode:multiply;
+}
+
 .bigObject{
-  width:clamp(110px,15vw,180px);
+  width:clamp(85px,12vw,150px);
 }
+
 .writeArea{
-  height:165px;
+  min-height:145px;
+  max-height:28vh;
   background:#fff9e8;
   text-align:center;
-  padding:8px;
+  padding:6px;
+  position:relative;
+  z-index:10;
 }
+
 .writeArea p{
-  margin:0 0 5px;
-  font-size:clamp(18px,2.5vw,26px);
+  margin:0 0 4px;
+  font-size:clamp(16px,2.2vw,24px);
   font-weight:bold;
 }
+
 canvas{
-  width:185px;
-  height:85px;
+  width:min(44vw,180px);
+  height:min(12vh,78px);
   background:white;
   border:4px solid #4e9add;
   border-radius:16px;
   touch-action:none;
 }
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:4px;
+  flex-wrap:wrap;
+}
+
 button{
-  margin-top:5px;
   border:0;
   border-radius:16px;
   background:#f4b84f;
-  padding:8px 18px;
-  font-size:18px;
+  padding:7px 16px;
+  font-size:clamp(14px,2vw,18px);
   font-weight:bold;
   cursor:pointer;
 }
+
 #nextBtn{
   background:#8bcf70;
 }
+
 .cloud{
   position:absolute;
-  width:150px;
-  height:55px;
+  width:130px;
+  height:48px;
   background:white;
   border-radius:40px;
   opacity:.9;
+  z-index:1;
 }
+
 .cloud:before,.cloud:after{
   content:"";
   position:absolute;
   background:white;
   border-radius:50%;
 }
+
 .cloud:before{
-  width:60px;
-  height:60px;
-  left:20px;
-  top:-28px;
+  width:55px;
+  height:55px;
+  left:18px;
+  top:-25px;
 }
+
 .cloud:after{
-  width:80px;
-  height:80px;
-  left:65px;
-  top:-42px;
+  width:72px;
+  height:72px;
+  left:58px;
+  top:-38px;
 }
+
 .tree{
   position:absolute;
-  width:min(45vw,420px);
+  width:min(46vw,390px);
   left:50%;
-  top:48%;
+  top:54%;
   transform:translate(-50%,-50%);
+  z-index:2;
 }
+
 .sun{
   position:absolute;
-  width:180px;
-  height:180px;
+  width:clamp(120px,18vw,180px);
+  height:clamp(120px,18vw,180px);
   border-radius:50%;
   background:#ffd452;
   left:50%;
   top:45%;
   transform:translate(-50%,-50%);
   cursor:pointer;
+  z-index:4;
 }
+
 .sun.rays{
   box-shadow:
-  0 0 0 45px #ffe88c,
-  0 0 0 95px #fff3bb,
-  0 0 90px 140px #fff8d8;
+  0 0 0 35px #ffe88c,
+  0 0 0 75px #fff3bb,
+  0 0 80px 110px #fff8d8;
 }
+
+.roadLine{
+  position:absolute;
+  height:7px;
+  width:100%;
+  top:78%;
+  background:repeating-linear-gradient(90deg,#fff 0 45px,transparent 45px 85px);
+  opacity:.9;
+}
+
+.roomFloor{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:34%;
+  background:#d28b54;
+}
+
+.face{
+  position:absolute;
+  width:min(55vw,380px);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#ffd7b4;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  border:5px solid #f0a66f;
+}
+
+.eyeZone{
+  position:absolute;
+  width:100%;
+  top:37%;
+  display:flex;
+  justify-content:center;
+  gap:13%;
+}
+
 .final{
   display:none;
   height:100vh;
-  background:#fff2c7;
+  background:linear-gradient(#101849,#3b186d);
   align-items:center;
   justify-content:center;
   text-align:center;
   position:relative;
   overflow:hidden;
+  color:white;
 }
+
 .final h1{
-  font-size:clamp(38px,7vw,70px);
+  font-size:clamp(34px,7vw,70px);
 }
+
 .final p{
-  font-size:clamp(24px,4vw,42px);
+  font-size:clamp(22px,4vw,42px);
 }
-.burst{
+
+.cracker{
   position:absolute;
-  font-size:32px;
-  animation:burst 1.8s ease forwards;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  animation:cracker 1.6s ease-out forwards;
+  z-index:20;
 }
-@keyframes burst{
-  from{transform:scale(.3);opacity:1}
-  to{transform:scale(2) translateY(-90px);opacity:0}
+
+@keyframes cracker{
+  0%{transform:translate(0,0) scale(.5);opacity:1}
+  100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
+}
+
+.fallback{
+  position:absolute;
+  font-size:clamp(45px,8vw,95px);
+  z-index:4;
+  cursor:pointer;
+  transition:transform 1.8s ease, opacity 1.8s ease;
+}
+
+@media(max-width:768px){
+  .instruction{min-height:52px}
+  .writeArea{min-height:135px}
+  .cloud{transform:scale(.75)}
+  .object{width:clamp(48px,14vw,78px)}
+  .bigObject{width:clamp(65px,18vw,100px)}
+  .tree{width:70vw}
+}
+
+@media(max-height:620px){
+  .instruction{font-size:18px;min-height:45px}
+  .writeArea{min-height:115px}
+  canvas{height:58px}
+  .writeArea p{font-size:15px}
 }
 </style>
 </head>
@@ -177,9 +287,11 @@ button{
 
   <div class="writeArea">
     <p>Write the number in the box given below.</p>
-    <canvas id="drawCanvas" width="370" height="170"></canvas><br>
-    <button onclick="clearCanvas()">Clear</button>
-    <button id="nextBtn" onclick="nextSlide()">Next</button>
+    <canvas id="drawCanvas" width="370" height="170"></canvas>
+    <div class="controls">
+      <button onclick="clearCanvas()">Clear</button>
+      <button id="nextBtn" onclick="nextSlide()">Next</button>
+    </div>
   </div>
 </div>
 
@@ -196,16 +308,16 @@ button{
 
 <script>
 const slides=[
-  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"fly", scene:"garden"},
-  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree"},
+  {text:"Count the number of honeybees and write in the box given below.", count:5, img:"honeybee.png", action:"fly", scene:"garden", fallback:"🐝", cutout:true},
+  {text:"Count the number of apples and write in the box given below.", count:8, img:"apple.png", action:"fall", scene:"tree", fallback:"🍎", cutout:true},
   {text:"Count the sun and write in the box given below.", count:1, action:"sun", scene:"sky"},
-  {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"garden"},
-  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starfall", scene:"night"},
-  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"face"},
-  {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"drive", scene:"road"},
-  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"open", scene:"room"},
-  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground"},
-  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky"}
+  {text:"Count the number of sunflowers and write in the box given below.", count:10, img:"closed-sunflower.png", openImg:"open-sunflower.png", action:"open", scene:"sunflowerGarden", fallback:"🌻"},
+  {text:"Count the number of stars and write in the box given below.", count:4, img:"star.png", action:"starup", scene:"night", fallback:"⭐", cutout:true},
+  {text:"Count the number of eyes and write in the box given below.", count:2, img:"closed-eye.png", openImg:"open-eye.png", action:"open", scene:"face", fallback:"👁️"},
+  {text:"Count the number of cars and write in the box given below.", count:6, img:"car.png", action:"driveLeft", scene:"road", fallback:"🚗"},
+  {text:"Count the number of lamps and write in the box given below.", count:3, img:"lamp-off.png", openImg:"lamp-on.png", action:"open", scene:"room", fallback:"💡"},
+  {text:"Count the number of balls and write in the box given below.", count:9, img:"ball.png", action:"roll", scene:"playground", fallback:"⚽", cutout:true},
+  {text:"Count the number of kites and write in the box given below.", count:7, img:"kite.png", action:"fly", scene:"sky", fallback:"🪁", cutout:true}
 ];
 
 let current=0;
@@ -233,26 +345,70 @@ function loadSlide(){
   }
 
   for(let i=0;i<s.count;i++){
-    const img=document.createElement("img");
-    img.src="assets/"+s.img;
-    img.className="object";
-
-    if(s.scene==="tree"){
-      img.style.left=[30,42,55,65,35,48,58,70][i]+"%";
-      img.style.top=[20,18,22,30,38,36,42,47][i]+"%";
-    }else{
-      img.style.left=getX(i,s.count)+"%";
-      img.style.top=getY(i,s.count,s.scene)+"%";
-    }
-
-    scene.appendChild(img);
-
-    img.addEventListener("click",()=>animate(img,s));
-    img.addEventListener("touchstart",(e)=>{
+    const obj=createObject(s,i);
+    scene.appendChild(obj);
+    obj.addEventListener("click",()=>animate(obj,s));
+    obj.addEventListener("touchstart",(e)=>{
       e.preventDefault();
-      animate(img,s);
+      animate(obj,s);
     },{passive:false});
   }
+}
+
+function createObject(s,i){
+  const img=document.createElement("img");
+  img.src="assets/"+s.img;
+  img.className="object";
+  if(s.cutout) img.classList.add("cutout");
+
+  img.onerror=()=>{
+    const span=document.createElement("div");
+    span.textContent=s.fallback || "⭐";
+    span.className="fallback";
+    span.style.left=img.style.left;
+    span.style.top=img.style.top;
+    span.dataset.done=img.dataset.done || "";
+    span.addEventListener("click",()=>animate(span,s));
+    span.addEventListener("touchstart",(e)=>{e.preventDefault();animate(span,s);},{passive:false});
+    img.replaceWith(span);
+  };
+
+  placeObject(img,s,i);
+  return img;
+}
+
+function placeObject(el,s,i){
+  if(s.scene==="tree"){
+    const xs=[22,34,48,61,73,29,50,67];
+    const ys=[18,13,17,24,30,38,41,45];
+    el.style.left=xs[i]+"%";
+    el.style.top=ys[i]+"%";
+    el.style.zIndex=5;
+    return;
+  }
+
+  if(s.scene==="face"){
+    el.style.left=i===0?"34%":"56%";
+    el.style.top="38%";
+    el.style.width="clamp(75px,12vw,140px)";
+    return;
+  }
+
+  if(s.scene==="road"){
+    el.style.left=(105+i*18)+"%";
+    el.style.top=(60+(i%2)*13)+"%";
+    return;
+  }
+
+  if(s.scene==="room"){
+    el.style.left=(24+i*22)+"%";
+    el.style.top="38%";
+    el.classList.add("bigObject");
+    return;
+  }
+
+  el.style.left=getX(i,s.count)+"%";
+  el.style.top=getY(i,s.count,s.scene)+"%";
 }
 
 function createScene(type){
@@ -265,13 +421,20 @@ function createScene(type){
     addFlowers();
   }
 
+  if(type==="sunflowerGarden"){
+    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 48%,#7ccc65 48%,#7ccc65 100%)";
+    addCloud(8,12);
+    addCloud(72,15);
+  }
+
   if(type==="tree"){
-    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 55%,#7ccc65 55%,#7ccc65 100%)";
+    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 58%,#7ccc65 58%,#7ccc65 100%)";
     addCloud(8,12);
     addCloud(72,15);
     const tree=document.createElement("img");
     tree.src="assets/tree.png";
     tree.className="tree";
+    tree.onerror=()=>{tree.style.display="none"};
     scene.appendChild(tree);
   }
 
@@ -282,25 +445,34 @@ function createScene(type){
   }
 
   if(type==="night"){
-    scene.style.background="linear-gradient(#18275c,#42548c)";
+    scene.style.background="linear-gradient(#14245c,#415794)";
   }
 
   if(type==="face"){
     scene.style.background="linear-gradient(#ffe3c7,#ffd0a6)";
+    const face=document.createElement("div");
+    face.className="face";
+    scene.appendChild(face);
   }
 
   if(type==="road"){
-    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 45%,#7bc96a 45%,#7bc96a 65%,#5d5d5d 65%,#5d5d5d 100%)";
+    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 45%,#7bc96a 45%,#7bc96a 62%,#5d5d5d 62%,#5d5d5d 100%)";
     addCloud(12,12);
     addCloud(70,15);
+    const line=document.createElement("div");
+    line.className="roadLine";
+    scene.appendChild(line);
   }
 
   if(type==="room"){
-    scene.style.background="linear-gradient(#ffe4bd,#f7c994)";
+    scene.style.background="linear-gradient(#ffe4bd 0%,#ffe4bd 66%,#c7854b 66%,#c7854b 100%)";
+    const floor=document.createElement("div");
+    floor.className="roomFloor";
+    scene.appendChild(floor);
   }
 
   if(type==="playground"){
-    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 50%,#8ad06c 50%,#8ad06c 100%)";
+    scene.style.background="linear-gradient(#bceeff 0%,#bceeff 48%,#8ad06c 48%,#8ad06c 100%)";
     addCloud(8,12);
     addCloud(72,15);
   }
@@ -319,7 +491,7 @@ function addFlowers(){
     const f=document.createElement("div");
     f.textContent="🌼";
     f.style.position="absolute";
-    f.style.fontSize="34px";
+    f.style.fontSize="clamp(22px,4vw,34px)";
     f.style.left=(5+i*12)+"%";
     f.style.bottom="18px";
     scene.appendChild(f);
@@ -328,55 +500,60 @@ function addFlowers(){
 
 function getX(i,count){
   if(count<=3)return 24+i*22;
-  if(count<=5)return 12+i*18;
-  return 8+(i%5)*18;
+  if(count<=5)return 14+i*18;
+  return 9+(i%5)*18;
 }
 
 function getY(i,count,type){
-  if(type==="road")return i<3?60:75;
-  if(type==="night")return 15+i*12;
-  if(type==="face")return 35;
-  if(type==="sky")return 16+Math.floor(i/4)*22;
-  return 15+Math.floor(i/5)*26;
+  if(type==="night")return 78-Math.floor(i/4)*22;
+  if(type==="sky")return 28+Math.floor(i/4)*24;
+  if(type==="sunflowerGarden")return 25+Math.floor(i/5)*32;
+  return 14+Math.floor(i/5)*26;
 }
 
-function animate(img,s){
-  if(img.dataset.done)return;
-  img.dataset.done="true";
+function animate(obj,s){
+  if(obj.dataset.done)return;
+  obj.dataset.done="true";
 
   if(s.action==="open"){
-    img.src="assets/"+s.openImg;
-    img.style.transform="scale(1.2)";
+    if(obj.tagName==="IMG" && s.openImg){
+      obj.src="assets/"+s.openImg;
+    }
+    obj.style.transform="scale(1.18)";
     return;
   }
 
   let x=0,y=0,r=Math.random()*80-40;
 
   if(s.action==="fly"){
-    x=(Math.random()>.5?1:-1)*(window.innerWidth*.5);
-    y=-(100+Math.random()*220);
+    x=(Math.random()>.5?1:-1)*(window.innerWidth*.42);
+    y=-(100+Math.random()*180);
   }
+
   if(s.action==="fall"){
-    x=(Math.random()*160)-80;
-    y=window.innerHeight*.4;
+    x=(Math.random()*100)-50;
+    y=window.innerHeight*.34;
   }
-  if(s.action==="starfall"){
-    x=(Math.random()*180)-90;
-    y=window.innerHeight*.45;
+
+  if(s.action==="starup"){
+    x=(Math.random()*120)-60;
+    y=-(window.innerHeight*.45);
   }
-  if(s.action==="drive"){
-    x=window.innerWidth*.8;
+
+  if(s.action==="driveLeft"){
+    x=-(window.innerWidth*1.3);
   }
+
   if(s.action==="roll"){
-    x=(Math.random()>.5?1:-1)*(window.innerWidth*.6);
-    y=window.innerHeight*.25;
+    x=(Math.random()>.5?1:-1)*(window.innerWidth*.5);
+    y=window.innerHeight*.22;
     r=720;
   }
 
-  img.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`;
+  obj.style.transform=`translate(${x}px,${y}px) rotate(${r}deg)`;
 
-  if(["fly","drive","roll","starfall"].includes(s.action)){
-    img.style.opacity=".15";
+  if(["fly","driveLeft","roll","starup"].includes(s.action)){
+    obj.style.opacity=".25";
   }
 }
 
@@ -393,15 +570,27 @@ function showFinal(){
   document.getElementById("game").style.display="none";
   const final=document.getElementById("final");
   final.style.display="flex";
+  createCrackers(final);
+}
 
-  for(let i=0;i<45;i++){
-    const b=document.createElement("div");
-    b.className="burst";
-    b.textContent=["⭐","✨","🪙","🎆"][Math.floor(Math.random()*4)];
-    b.style.left=Math.random()*100+"vw";
-    b.style.top=Math.random()*100+"vh";
-    b.style.animationDelay=Math.random()*1.2+"s";
-    final.appendChild(b);
+function createCrackers(final){
+  const colors=["#ff3131","#ffb703","#00d4ff","#7cff6b","#ff5efc","#ffffff"];
+  for(let center=0;center<12;center++){
+    const cx=Math.random()*100;
+    const cy=Math.random()*80+5;
+    for(let i=0;i<28;i++){
+      const b=document.createElement("div");
+      b.className="cracker";
+      b.style.left=cx+"vw";
+      b.style.top=cy+"vh";
+      b.style.background=colors[Math.floor(Math.random()*colors.length)];
+      const angle=(Math.PI*2*i)/28;
+      const distance=70+Math.random()*110;
+      b.style.setProperty("--x",Math.cos(angle)*distance+"px");
+      b.style.setProperty("--y",Math.sin(angle)*distance+"px");
+      b.style.animationDelay=(center*.15)+"s";
+      final.appendChild(b);
+    }
   }
 }
 
@@ -421,12 +610,14 @@ function getPos(e){
     y:(p.clientY-r.top)*(canvas.height/r.height)
   };
 }
+
 function startDraw(e){
   drawing=true;
   const p=getPos(e);
   ctx.beginPath();
   ctx.moveTo(p.x,p.y);
 }
+
 function draw(e){
   if(!drawing)return;
   e.preventDefault();
@@ -434,6 +625,7 @@ function draw(e){
   ctx.lineTo(p.x,p.y);
   ctx.stroke();
 }
+
 function stopDraw(){drawing=false}
 function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height)}
 
