@@ -54,26 +54,24 @@ html,body{
   flex:1;
   min-height:0;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
   background:linear-gradient(#dff5ff,#fff5db);
-  padding:8px;
-  position:relative;
+  padding:10px;
+  gap:22px;
 }
 
 .placeValueBoard{
-  width:min(90vw,520px);
-  height:min(55vh,410px);
+  width:min(62vw,560px);
+  height:min(78vh,520px);
   background:white;
-  border-radius:24px;
-  padding:16px;
+  border-radius:26px;
+  padding:18px;
   box-shadow:0 8px 20px rgba(0,0,0,.15);
   display:flex;
   justify-content:space-around;
   align-items:flex-end;
-  gap:28px;
-  position:relative;
+  gap:25px;
 }
 
 .column{
@@ -86,16 +84,17 @@ html,body{
 
 .rod{
   width:14px;
-  height:min(38vh,280px);
+  height:min(58vh,360px);
   background:#b8782b;
   border-radius:20px;
   position:relative;
   box-shadow:inset 0 0 4px rgba(0,0,0,.25);
+  overflow:visible;
 }
 
 .bead{
-  width:42px;
-  height:42px;
+  width:40px;
+  height:40px;
   border-radius:50%;
   background:radial-gradient(circle at 30% 30%,#c7efff,#4a95d8);
   border:3px solid #2b5d92;
@@ -104,8 +103,9 @@ html,body{
   transform:translateX(-50%);
   box-shadow:0 3px 6px rgba(0,0,0,.2);
   cursor:pointer;
-  transition:top .35s ease;
+  transition:top .45s ease;
   touch-action:none;
+  z-index:5;
 }
 
 .label{
@@ -118,22 +118,29 @@ html,body{
   border-radius:12px;
 }
 
-.options{
-  margin-top:18px;
+.optionsPanel{
+  width:min(28vw,220px);
   display:flex;
-  flex-wrap:wrap;
+  flex-direction:column;
   justify-content:center;
+  align-items:center;
+  gap:18px;
+}
+
+.options{
+  display:flex;
+  flex-direction:column;
   gap:16px;
 }
 
 .option{
-  width:88px;
-  height:88px;
+  width:95px;
+  height:95px;
   border-radius:50%;
   border:none;
   background:linear-gradient(#ffce73,#ff9b4a);
   color:#5a2b00;
-  font-size:32px;
+  font-size:34px;
   font-weight:bold;
   cursor:pointer;
   box-shadow:0 5px 10px rgba(0,0,0,.2);
@@ -145,10 +152,10 @@ html,body{
 }
 
 .feedback{
-  margin-top:12px;
   font-size:clamp(20px,2.5vw,32px);
   font-weight:bold;
   min-height:38px;
+  text-align:center;
 }
 
 .correct{color:#179b36}
@@ -170,10 +177,12 @@ html,body{
 
 .final h1{
   font-size:clamp(48px,7vw,86px);
+  z-index:2;
 }
 
 .final p{
   font-size:clamp(26px,4vw,46px);
+  z-index:2;
 }
 
 .playAgain{
@@ -186,39 +195,101 @@ html,body{
   font-size:26px;
   font-weight:bold;
   cursor:pointer;
+  z-index:2;
 }
 
 .confetti{
   position:absolute;
+  top:-30px;
   width:12px;
   height:12px;
   border-radius:3px;
-  animation:fall 3s linear forwards;
+  animation:fall 5s linear forwards;
+  pointer-events:none;
 }
 
 @keyframes fall{
-  0%{transform:translateY(-100px) rotate(0deg);opacity:1}
-  100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+  0%{transform:translateY(-30px) rotate(0deg);opacity:1}
+  100%{transform:translateY(115vh) rotate(720deg);opacity:0}
 }
 
 @media(max-width:768px){
-  .header{font-size:18px;padding:7px}
-  .placeValueBoard{height:50vh;padding:12px}
-  .rod{height:34vh}
-  .bead{width:34px;height:34px}
-  .option{width:74px;height:74px;font-size:27px}
-  .label{font-size:20px;padding:4px 18px}
-  .feedback{font-size:20px}
+  .header{
+    font-size:16px;
+    padding:6px;
+  }
+
+  .scene{
+    gap:8px;
+    padding:6px;
+  }
+
+  .placeValueBoard{
+    width:68vw;
+    height:74vh;
+    padding:10px;
+    gap:12px;
+  }
+
+  .rod{
+    height:52vh;
+  }
+
+  .bead{
+    width:31px;
+    height:31px;
+  }
+
+  .label{
+    font-size:18px;
+    padding:4px 15px;
+  }
+
+  .optionsPanel{
+    width:28vw;
+    gap:10px;
+  }
+
+  .option{
+    width:68px;
+    height:68px;
+    font-size:25px;
+  }
+
+  .feedback{
+    font-size:18px;
+    min-height:28px;
+  }
 }
 
 @media(max-height:560px){
-  .header{font-size:16px;padding:5px}
-  .placeValueBoard{height:44vh}
-  .rod{height:30vh}
-  .bead{width:30px;height:30px}
-  .option{width:64px;height:64px;font-size:23px}
-  .options{margin-top:10px}
-  .feedback{min-height:28px;font-size:18px}
+  .header{
+    font-size:15px;
+    padding:4px;
+  }
+
+  .placeValueBoard{
+    height:70vh;
+  }
+
+  .rod{
+    height:48vh;
+  }
+
+  .bead{
+    width:28px;
+    height:28px;
+  }
+
+  .option{
+    width:58px;
+    height:58px;
+    font-size:22px;
+  }
+
+  .label{
+    font-size:16px;
+  }
 }
 </style>
 </head>
@@ -230,7 +301,7 @@ html,body{
 </div>
 
 <div id="game">
-  <div class="header">Move the beads down. Then choose the correct number.</div>
+  <div class="header">Count the beads and choose the correct answer.</div>
 
   <div class="scene">
     <div class="placeValueBoard">
@@ -245,8 +316,10 @@ html,body{
       </div>
     </div>
 
-    <div class="options" id="options"></div>
-    <div class="feedback" id="feedback"></div>
+    <div class="optionsPanel">
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
   </div>
 </div>
 
@@ -281,6 +354,7 @@ const originalQuestions=[
 let questions=[...originalQuestions];
 let current=0;
 let locked=false;
+let confettiInterval=null;
 
 const tensRod=document.getElementById("tensRod");
 const onesRod=document.getElementById("onesRod");
@@ -303,21 +377,22 @@ function playSound(id){
 function createBeads(rod,count){
   rod.innerHTML="";
 
-  const beadSize=window.innerWidth<=768 ? 34 : 42;
-  const gap=beadSize+6;
+  const rodHeight=rod.clientHeight;
+  const beadSize=window.innerWidth<=768 ? 31 : 40;
+  const gap=Math.min(beadSize+7,(rodHeight-beadSize-12)/Math.max(count,1));
 
   for(let i=0;i<count;i++){
     const bead=document.createElement("div");
     bead.className="bead";
 
-    const startTop=10+i*gap;
-    const downTop=startTop+38;
+    const startTop=8+i*gap;
+    const bottomTop=rodHeight-beadSize-4;
 
     bead.style.top=startTop+"px";
 
     function moveBeadDown(e){
       e.preventDefault();
-      bead.style.top=downTop+"px";
+      bead.style.top=bottomTop+"px";
     }
 
     bead.addEventListener("click",moveBeadDown);
@@ -397,29 +472,45 @@ function showFinal(){
   const final=document.getElementById("finalScreen");
   final.style.display="flex";
   playSound("clapSound");
-  createConfetti();
+  startContinuousConfetti();
 }
 
-function createConfetti(){
+function createConfettiBurst(){
   const final=document.getElementById("finalScreen");
-  final.querySelectorAll(".confetti").forEach(c=>c.remove());
-
   const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
 
-  for(let i=0;i<260;i++){
+  for(let i=0;i<45;i++){
     const c=document.createElement("div");
     c.className="confetti";
     c.style.left=Math.random()*100+"vw";
     c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDelay=Math.random()*2+"s";
-    c.style.width=(8+Math.random()*10)+"px";
-    c.style.height=(8+Math.random()*10)+"px";
+    c.style.animationDelay=Math.random()*0.4+"s";
+    c.style.width=(7+Math.random()*9)+"px";
+    c.style.height=(7+Math.random()*9)+"px";
     final.appendChild(c);
+
+    setTimeout(()=>c.remove(),5600);
   }
+}
+
+function startContinuousConfetti(){
+  clearInterval(confettiInterval);
+  createConfettiBurst();
+
+  confettiInterval=setInterval(()=>{
+    createConfettiBurst();
+  },500);
+
+  setTimeout(()=>{
+    clearInterval(confettiInterval);
+    confettiInterval=null;
+  },12000);
 }
 
 function playAgain(){
   document.querySelectorAll(".confetti").forEach(c=>c.remove());
+  clearInterval(confettiInterval);
+
   questions=[...originalQuestions].sort(()=>Math.random()-0.5);
   current=0;
   locked=false;
