@@ -3,19 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Number Value Game</title>
+<title>Number Value 11 to 20</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
-body{
+html,body{
+  width:100%;
+  height:100%;
   overflow:hidden;
-  font-family:"Comic Sans MS", sans-serif;
+  font-family:"Comic Sans MS",sans-serif;
   background:#fff6e9;
+  touch-action:none;
 }
 
 #logoScreen{
@@ -35,7 +34,7 @@ body{
 #game{
   display:none;
   width:100vw;
-  height:100vh;
+  height:100dvh;
   overflow:hidden;
   flex-direction:column;
 }
@@ -43,125 +42,117 @@ body{
 .header{
   background:#fff2cf;
   text-align:center;
-  padding:10px;
-  font-size:clamp(22px,3vw,36px);
+  padding:8px;
+  font-size:clamp(18px,3vw,34px);
   font-weight:bold;
   color:#7a4200;
   box-shadow:0 3px 6px rgba(0,0,0,.1);
+  flex-shrink:0;
 }
 
 .scene{
   flex:1;
+  min-height:0;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
   background:linear-gradient(#dff5ff,#fff5db);
-  padding:10px;
+  padding:8px;
   position:relative;
 }
 
 .placeValueBoard{
   width:min(90vw,520px);
+  height:min(55vh,410px);
   background:white;
   border-radius:24px;
-  padding:18px;
+  padding:16px;
   box-shadow:0 8px 20px rgba(0,0,0,.15);
   display:flex;
   justify-content:space-around;
   align-items:flex-end;
-  gap:30px;
+  gap:28px;
+  position:relative;
 }
 
 .column{
   display:flex;
   flex-direction:column;
   align-items:center;
+  justify-content:flex-end;
+  height:100%;
 }
 
 .rod{
   width:14px;
-  height:280px;
-  background:#c7802f;
+  height:min(38vh,280px);
+  background:#b8782b;
   border-radius:20px;
   position:relative;
+  box-shadow:inset 0 0 4px rgba(0,0,0,.25);
 }
 
 .bead{
   width:42px;
   height:42px;
   border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#b6e3ff,#3d86cc);
+  background:radial-gradient(circle at 30% 30%,#c7efff,#4a95d8);
   border:3px solid #2b5d92;
   position:absolute;
   left:50%;
   transform:translateX(-50%);
   box-shadow:0 3px 6px rgba(0,0,0,.2);
+  cursor:pointer;
+  transition:top .35s ease;
+  touch-action:none;
 }
 
 .label{
-  margin-top:12px;
+  margin-top:10px;
   background:#3ea4df;
   color:white;
-  font-size:clamp(20px,2.5vw,30px);
+  font-size:clamp(18px,2.5vw,28px);
   font-weight:bold;
-  padding:6px 22px;
+  padding:5px 22px;
   border-radius:12px;
 }
 
 .options{
-  margin-top:28px;
+  margin-top:18px;
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
-  gap:18px;
+  gap:16px;
 }
 
 .option{
-  width:95px;
-  height:95px;
+  width:88px;
+  height:88px;
   border-radius:50%;
   border:none;
   background:linear-gradient(#ffce73,#ff9b4a);
   color:#5a2b00;
-  font-size:34px;
+  font-size:32px;
   font-weight:bold;
   cursor:pointer;
   box-shadow:0 5px 10px rgba(0,0,0,.2);
   transition:.2s;
 }
 
-.option:hover{
-  transform:scale(1.08);
+.option:active{
+  transform:scale(.95);
 }
 
 .feedback{
-  margin-top:20px;
-  font-size:clamp(22px,2.5vw,34px);
+  margin-top:12px;
+  font-size:clamp(20px,2.5vw,32px);
   font-weight:bold;
-  min-height:40px;
+  min-height:38px;
 }
 
-.correct{
-  color:#179b36;
-}
-
-.wrong{
-  color:#d93333;
-}
-
-.nextBtn{
-  margin-top:18px;
-  padding:12px 28px;
-  border:none;
-  border-radius:16px;
-  background:#7dcf63;
-  color:#123b00;
-  font-size:24px;
-  font-weight:bold;
-  cursor:pointer;
-  display:none;
-}
+.correct{color:#179b36}
+.wrong{color:#d93333}
 
 .final{
   display:none;
@@ -173,14 +164,16 @@ body{
   flex-direction:column;
   color:white;
   overflow:hidden;
+  text-align:center;
+  z-index:1000;
 }
 
 .final h1{
-  font-size:clamp(50px,7vw,90px);
+  font-size:clamp(48px,7vw,86px);
 }
 
 .final p{
-  font-size:clamp(28px,4vw,48px);
+  font-size:clamp(26px,4vw,46px);
 }
 
 .playAgain{
@@ -190,7 +183,7 @@ body{
   border-radius:18px;
   background:#ffd04f;
   color:#5a3500;
-  font-size:28px;
+  font-size:26px;
   font-weight:bold;
   cursor:pointer;
 }
@@ -204,38 +197,29 @@ body{
 }
 
 @keyframes fall{
-  0%{
-    transform:translateY(-100px) rotate(0deg);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(110vh) rotate(720deg);
-    opacity:0;
-  }
+  0%{transform:translateY(-100px) rotate(0deg);opacity:1}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0}
 }
 
 @media(max-width:768px){
-
-  .rod{
-    height:200px;
-  }
-
-  .bead{
-    width:34px;
-    height:34px;
-  }
-
-  .option{
-    width:78px;
-    height:78px;
-    font-size:28px;
-  }
-
-  .placeValueBoard{
-    gap:18px;
-  }
+  .header{font-size:18px;padding:7px}
+  .placeValueBoard{height:50vh;padding:12px}
+  .rod{height:34vh}
+  .bead{width:34px;height:34px}
+  .option{width:74px;height:74px;font-size:27px}
+  .label{font-size:20px;padding:4px 18px}
+  .feedback{font-size:20px}
 }
 
+@media(max-height:560px){
+  .header{font-size:16px;padding:5px}
+  .placeValueBoard{height:44vh}
+  .rod{height:30vh}
+  .bead{width:30px;height:30px}
+  .option{width:64px;height:64px;font-size:23px}
+  .options{margin-top:10px}
+  .feedback{min-height:28px;font-size:18px}
+}
 </style>
 </head>
 
@@ -246,54 +230,42 @@ body{
 </div>
 
 <div id="game">
-
-  <div class="header">
-    Count the beads and choose the correct number.
-  </div>
+  <div class="header">Move the beads down. Then choose the correct number.</div>
 
   <div class="scene">
-
     <div class="placeValueBoard">
-
       <div class="column">
         <div class="rod" id="tensRod"></div>
-        <div class="label">T</div>
+        <div class="label">Tens</div>
       </div>
 
       <div class="column">
         <div class="rod" id="onesRod"></div>
-        <div class="label">O</div>
+        <div class="label">Ones</div>
       </div>
-
     </div>
 
     <div class="options" id="options"></div>
-
     <div class="feedback" id="feedback"></div>
-
-    <button class="nextBtn" id="nextBtn" onclick="nextQuestion()">
-      Next
-    </button>
-
   </div>
-
 </div>
 
 <div class="final" id="finalScreen">
   <h1>🎉 Well Done 🎉</h1>
   <p>You completed the game!</p>
-
-  <button class="playAgain" onclick="playAgain()">
-    Play Again
-  </button>
+  <button class="playAgain" onclick="playAgain()">Play Again</button>
 </div>
 
-<audio id="rightSound" src="assets/right.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="rightSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
 
 <script>
+document.addEventListener("touchmove",function(e){
+  e.preventDefault();
+},{passive:false});
 
-const questions = [
+const originalQuestions=[
   {tens:1, ones:3, options:[12,15,13], answer:13},
   {tens:1, ones:7, options:[17,16,20], answer:17},
   {tens:1, ones:5, options:[13,15,12], answer:15},
@@ -306,14 +278,14 @@ const questions = [
   {tens:1, ones:6, options:[14,19,16], answer:16}
 ];
 
-let current = 0;
-let gameQuestions = [...questions];
+let questions=[...originalQuestions];
+let current=0;
+let locked=false;
 
-const tensRod = document.getElementById("tensRod");
-const onesRod = document.getElementById("onesRod");
-const optionsDiv = document.getElementById("options");
-const feedback = document.getElementById("feedback");
-const nextBtn = document.getElementById("nextBtn");
+const tensRod=document.getElementById("tensRod");
+const onesRod=document.getElementById("onesRod");
+const optionsDiv=document.getElementById("options");
+const feedback=document.getElementById("feedback");
 
 setTimeout(()=>{
   document.getElementById("logoScreen").style.display="none";
@@ -323,33 +295,45 @@ setTimeout(()=>{
 
 function playSound(id){
   const s=document.getElementById(id);
+  if(!s)return;
   s.currentTime=0;
   s.play().catch(()=>{});
 }
 
 function createBeads(rod,count){
-
   rod.innerHTML="";
 
-  for(let i=0;i<count;i++){
+  const beadSize=window.innerWidth<=768 ? 34 : 42;
+  const gap=beadSize+6;
 
+  for(let i=0;i<count;i++){
     const bead=document.createElement("div");
     bead.className="bead";
 
-    bead.style.top=(10 + i*48)+"px";
+    const startTop=10+i*gap;
+    const downTop=startTop+38;
+
+    bead.style.top=startTop+"px";
+
+    function moveBeadDown(e){
+      e.preventDefault();
+      bead.style.top=downTop+"px";
+    }
+
+    bead.addEventListener("click",moveBeadDown);
+    bead.addEventListener("touchstart",moveBeadDown,{passive:false});
+    bead.addEventListener("pointerdown",moveBeadDown);
 
     rod.appendChild(bead);
   }
 }
 
 function loadQuestion(){
-
+  locked=false;
   feedback.textContent="";
   feedback.className="feedback";
 
-  nextBtn.style.display="none";
-
-  const q=gameQuestions[current];
+  const q=questions[current];
 
   createBeads(tensRod,q.tens);
   createBeads(onesRod,q.ones);
@@ -357,121 +341,94 @@ function loadQuestion(){
   optionsDiv.innerHTML="";
 
   q.options.forEach(opt=>{
-
     const btn=document.createElement("button");
-
     btn.className="option";
     btn.textContent=opt;
 
     btn.onclick=()=>checkAnswer(opt);
+    btn.addEventListener("touchstart",e=>{
+      e.preventDefault();
+      checkAnswer(opt);
+    },{passive:false});
 
     optionsDiv.appendChild(btn);
   });
 }
 
 function checkAnswer(selected){
+  if(locked)return;
 
-  const q=gameQuestions[current];
+  const q=questions[current];
 
   if(selected===q.answer){
-
+    locked=true;
     feedback.textContent="Correct!";
-    feedback.classList.add("correct");
-
+    feedback.className="feedback correct";
     playSound("rightSound");
 
-    nextBtn.style.display="inline-block";
+    document.querySelectorAll(".option").forEach(btn=>{
+      btn.disabled=true;
+      btn.style.opacity=".7";
+    });
 
-    disableOptions();
+    setTimeout(()=>{
+      nextQuestion();
+    },900);
 
   }else{
-
     feedback.textContent="Try Again!";
-    feedback.classList.add("wrong");
-
+    feedback.className="feedback wrong";
     playSound("wrongSound");
   }
 }
 
-function disableOptions(){
-
-  document.querySelectorAll(".option").forEach(btn=>{
-    btn.disabled=true;
-    btn.style.opacity=".7";
-  });
-}
-
 function nextQuestion(){
-
   current++;
 
-  if(current>=gameQuestions.length){
-
+  if(current>=questions.length){
     showFinal();
-
   }else{
-
     loadQuestion();
   }
 }
 
 function showFinal(){
-
   document.getElementById("game").style.display="none";
-
   const final=document.getElementById("finalScreen");
-
   final.style.display="flex";
-
+  playSound("clapSound");
   createConfetti();
 }
 
 function createConfetti(){
+  const final=document.getElementById("finalScreen");
+  final.querySelectorAll(".confetti").forEach(c=>c.remove());
 
-  const colors=[
-    "#ff4d4d",
-    "#ffd93d",
-    "#6bff95",
-    "#4dc3ff",
-    "#ff73d9",
-    "#ffffff"
-  ];
+  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
 
-  for(let i=0;i<220;i++){
-
+  for(let i=0;i<260;i++){
     const c=document.createElement("div");
-
     c.className="confetti";
-
     c.style.left=Math.random()*100+"vw";
-
-    c.style.background=
-      colors[Math.floor(Math.random()*colors.length)];
-
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
     c.style.animationDelay=Math.random()*2+"s";
-
     c.style.width=(8+Math.random()*10)+"px";
     c.style.height=(8+Math.random()*10)+"px";
-
-    document.getElementById("finalScreen").appendChild(c);
+    final.appendChild(c);
   }
 }
 
 function playAgain(){
-
   document.querySelectorAll(".confetti").forEach(c=>c.remove());
-
-  gameQuestions=[...questions].sort(()=>Math.random()-0.5);
-
+  questions=[...originalQuestions].sort(()=>Math.random()-0.5);
   current=0;
+  locked=false;
 
   document.getElementById("finalScreen").style.display="none";
-
   document.getElementById("game").style.display="flex";
 
   loadQuestion();
 }
-
 </script>
 
 </body>
