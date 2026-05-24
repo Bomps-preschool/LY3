@@ -56,7 +56,7 @@ html,body{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(#dff5ff,#fff5db);
+  background:url("assets/bg.png") center/cover no-repeat;
   padding:10px;
   gap:22px;
 }
@@ -64,7 +64,7 @@ html,body{
 .placeValueBoard{
   width:min(62vw,560px);
   height:min(78vh,520px);
-  background:white;
+  background:rgba(255,255,255,.92);
   border-radius:26px;
   padding:18px;
   box-shadow:0 8px 20px rgba(0,0,0,.15);
@@ -386,13 +386,16 @@ function createBeads(rod,count){
     bead.className="bead";
 
     const startTop=8+i*gap;
-    const bottomTop=rodHeight-beadSize-4;
+
+    /* bottom position keeps beads in a line, not overlapping */
+    const bottomStart=rodHeight-(count*gap);
+    const downTop=bottomStart+(i*gap);
 
     bead.style.top=startTop+"px";
 
     function moveBeadDown(e){
       e.preventDefault();
-      bead.style.top=bottomTop+"px";
+      bead.style.top=downTop+"px";
     }
 
     bead.addEventListener("click",moveBeadDown);
