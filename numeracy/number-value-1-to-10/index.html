@@ -27,9 +27,7 @@ html,body{
   z-index:999;
 }
 
-#logoScreen img{
-  width:min(60vw,350px);
-}
+#logoScreen img{width:min(60vw,350px)}
 
 #game{
   display:none;
@@ -126,11 +124,13 @@ html,body{
 .leftPage{
   background:#fff5df;
   border-right:2px dashed rgba(90,60,30,.25);
+  padding-right:38px;
 }
 
 .rightPage{
   background:#edf7ee;
   border-left:2px dashed rgba(90,60,30,.25);
+  padding-left:38px;
 }
 
 .pageTitle{
@@ -142,13 +142,14 @@ html,body{
 }
 
 .objectGrid{
-  width:100%;
+  width:88%;
   max-height:72%;
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
   align-items:center;
   justify-items:center;
+  margin-left:-12px;
 }
 
 .itemBox{
@@ -162,13 +163,27 @@ html,body{
 }
 
 .itemBox img{
-  width:clamp(42px,5.8vw,76px);
-  height:clamp(42px,5.8vw,76px);
+  width:clamp(46px,5.4vw,72px);
+  height:clamp(46px,5.4vw,72px);
   object-fit:contain;
 }
 
 .fallbackEmoji{
   font-size:clamp(42px,5.8vw,76px);
+}
+
+.singleItem{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+}
+
+.singleItem img{
+  width:110px !important;
+  height:110px !important;
+  object-fit:contain;
 }
 
 .itemLabel{
@@ -216,15 +231,8 @@ button{
   box-shadow:0 4px 8px rgba(0,0,0,.15);
 }
 
-.clearBtn{
-  background:#d68b73;
-  color:white;
-}
-
-.nextBtn{
-  background:#7aa874;
-  color:white;
-}
+.clearBtn{background:#d68b73;color:white}
+.nextBtn{background:#7aa874;color:white}
 
 .pageFlip{
   position:absolute;
@@ -279,15 +287,8 @@ button{
   z-index:1000;
 }
 
-.final h1{
-  font-size:clamp(42px,7vw,82px);
-  z-index:2;
-}
-
-.final p{
-  font-size:clamp(24px,4vw,42px);
-  z-index:2;
-}
+.final h1{font-size:clamp(42px,7vw,82px);z-index:2}
+.final p{font-size:clamp(24px,4vw,42px);z-index:2}
 
 .playAgain{
   margin-top:24px;
@@ -314,9 +315,12 @@ button{
   .stage{padding:6px}
   .notebook{width:98vw;height:78vh;border-width:4px}
   .page{padding:18px 14px}
-  .objectGrid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .leftPage{padding-right:30px}
+  .rightPage{padding-left:30px}
+  .objectGrid{grid-template-columns:repeat(3,1fr);gap:6px;width:84%;margin-left:-14px}
   .itemBox img{width:42px;height:42px}
   .fallbackEmoji{font-size:42px}
+  .singleItem img{width:92px !important;height:92px !important}
   #drawCanvas{width:36vw;height:25vh}
   .controls{gap:7px;margin-top:8px}
   button{padding:7px 12px}
@@ -331,6 +335,7 @@ button{
   .notebook{height:82vh}
   .itemBox img{width:34px;height:34px}
   .fallbackEmoji{font-size:34px}
+  .singleItem img{width:76px !important;height:76px !important}
   #drawCanvas{height:21vh}
   .pageTitle{font-size:14px;top:8px}
 }
@@ -357,233 +362,4 @@ button{
       <div class="page rightPage">
         <div class="pageTitle">Write</div>
         <div class="writeTitle">Write the number here</div>
-        <canvas id="drawCanvas" width="420" height="300"></canvas>
-        <div class="controls">
-          <button class="clearBtn" onclick="clearCanvasWithSound()">Clear</button>
-          <button class="nextBtn" onclick="nextPage()">Next Page</button>
-        </div>
-      </div>
-
-      <div class="spiral">
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-      </div>
-
-      <div class="pageFlip" id="pageFlip"></div>
-    </div>
-  </div>
-</div>
-
-<div class="final" id="finalScreen">
-  <h1>🎉 Congratulations! 🎉</h1>
-  <p>Great counting work!</p>
-  <button class="playAgain" onclick="playAgain()">Play Again</button>
-</div>
-
-<audio id="rightSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
-
-<script>
-document.addEventListener("touchmove",function(e){
-  if(!e.target.closest("#drawCanvas")){
-    e.preventDefault();
-  }
-},{passive:false});
-
-const originalPages=[
-  {count:8, name:"football", img:"football.png", emoji:"⚽"},
-  {count:4, name:"cars", img:"car.png", emoji:"🚗"},
-  {count:9, name:"teddy bears", img:"teddy.png", emoji:"🧸"},
-  {count:3, name:"bikes", img:"bike.png", emoji:"🚲"},
-  {count:1, name:"fruit", img:"fruits.png", emoji:"🍎"},
-  {count:10, name:"bees", img:"bee.png", emoji:"🐝"},
-  {count:2, name:"stars", img:"star.png", emoji:"⭐"},
-  {count:1, name:"elephant", img:"elephant.png", emoji:"🐘"},
-  {count:1, name:"ice-cream", img:"ice-cream.png", emoji:"🍦"},
-  {count:7, name:"umbrellas", img:"umbrella.png", emoji:"☂️"}
-];
-
-let pages=[...originalPages];
-let current=0;
-let turning=false;
-
-const objectGrid=document.getElementById("objectGrid");
-const itemLabel=document.getElementById("itemLabel");
-const pageFlip=document.getElementById("pageFlip");
-
-setTimeout(()=>{
-  document.getElementById("logoScreen").style.display="none";
-  document.getElementById("game").style.display="flex";
-  loadPage();
-},5000);
-
-function playSound(id){
-  const s=document.getElementById(id);
-  if(!s)return;
-  s.currentTime=0;
-  s.play().catch(()=>{});
-}
-
-function loadPage(){
-  clearCanvas();
-  objectGrid.innerHTML="";
-
-  const page=pages[current];
-  itemLabel.textContent=page.name;
-
-  for(let i=0;i<page.count;i++){
-    const box=document.createElement("div");
-    box.className="itemBox";
-
-    const img=document.createElement("img");
-    img.src="assets/"+page.img;
-    img.alt=page.name;
-
-    img.onerror=()=>{
-      box.innerHTML=`<span class="fallbackEmoji">${page.emoji}</span>`;
-    };
-
-    box.appendChild(img);
-    objectGrid.appendChild(box);
-  }
-}
-
-function nextPage(){
-  if(turning)return;
-  turning=true;
-
-  playSound("rightSound");
-
-  pageFlip.classList.remove("show");
-  void pageFlip.offsetWidth;
-  pageFlip.classList.add("show");
-
-  setTimeout(()=>{
-    current++;
-
-    if(current>=pages.length){
-      showFinal();
-    }else{
-      loadPage();
-      pageFlip.classList.remove("show");
-      turning=false;
-    }
-  },720);
-}
-
-function showFinal(){
-  document.getElementById("game").style.display="none";
-  const final=document.getElementById("finalScreen");
-  final.style.display="flex";
-  playSound("clapSound");
-  createCrackers();
-  turning=false;
-}
-
-function playAgain(){
-  document.querySelectorAll(".cracker").forEach(c=>c.remove());
-  pages=[...originalPages].sort(()=>Math.random()-0.5);
-  current=0;
-  turning=false;
-  document.getElementById("finalScreen").style.display="none";
-  document.getElementById("game").style.display="flex";
-  pageFlip.classList.remove("show");
-  loadPage();
-}
-
-function createCrackers(){
-  const final=document.getElementById("finalScreen");
-  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
-
-  for(let burst=0;burst<18;burst++){
-    const cx=Math.random()*100;
-    const cy=Math.random()*80+5;
-
-    for(let i=0;i<32;i++){
-      const c=document.createElement("div");
-      c.className="cracker";
-      c.style.left=cx+"vw";
-      c.style.top=cy+"vh";
-      c.style.background=colors[Math.floor(Math.random()*colors.length)];
-
-      const angle=(Math.PI*2*i)/32;
-      const distance=80+Math.random()*130;
-
-      c.style.setProperty("--x",Math.cos(angle)*distance+"px");
-      c.style.setProperty("--y",Math.sin(angle)*distance+"px");
-      c.style.animationDelay=(burst*.12)+"s";
-
-      final.appendChild(c);
-    }
-  }
-}
-
-const canvas=document.getElementById("drawCanvas");
-const ctx=canvas.getContext("2d");
-
-ctx.lineWidth=10;
-ctx.lineCap="round";
-ctx.lineJoin="round";
-ctx.strokeStyle="#333";
-
-let drawing=false;
-
-function getPos(e){
-  const r=canvas.getBoundingClientRect();
-  const p=e.touches?e.touches[0]:e;
-
-  return{
-    x:(p.clientX-r.left)*(canvas.width/r.width),
-    y:(p.clientY-r.top)*(canvas.height/r.height)
-  };
-}
-
-function startDraw(e){
-  e.preventDefault();
-  drawing=true;
-  const p=getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(p.x,p.y);
-}
-
-function draw(e){
-  if(!drawing)return;
-  e.preventDefault();
-  const p=getPos(e);
-  ctx.lineTo(p.x,p.y);
-  ctx.stroke();
-}
-
-function stopDraw(){drawing=false}
-
-function clearCanvas(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-}
-
-function clearCanvasWithSound(){
-  playSound("wrongSound");
-  clearCanvas();
-}
-
-canvas.addEventListener("mousedown",startDraw);
-canvas.addEventListener("mousemove",draw);
-canvas.addEventListener("mouseup",stopDraw);
-canvas.addEventListener("mouseleave",stopDraw);
-
-canvas.addEventListener("touchstart",startDraw,{passive:false});
-canvas.addEventListener("touchmove",draw,{passive:false});
-canvas.addEventListener("touchend",stopDraw);
-
-canvas.addEventListener("pointerdown",startDraw);
-canvas.addEventListener("pointermove",draw);
-canvas.addEventListener("pointerup",stopDraw);
-canvas.addEventListener("pointercancel",stopDraw);
-</script>
-
-</body>
-</html>
+        <canvas id="drawCanvas"
