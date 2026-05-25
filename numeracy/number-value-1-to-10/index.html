@@ -31,6 +31,8 @@ html,body{
 
 #game{
   display:none;
+  position:fixed;
+  inset:0;
   width:100vw;
   height:100dvh;
   overflow:hidden;
@@ -39,24 +41,26 @@ html,body{
 }
 
 .header{
-  height:52px;
+  height:50px;
+  flex-shrink:0;
   background:#fff7df;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-size:clamp(16px,2.5vw,28px);
+  font-size:clamp(15px,2.4vw,27px);
   font-weight:bold;
   color:#6b3a00;
-  padding:6px;
+  padding:5px 10px;
 }
 
 .stage{
   flex:1;
+  min-height:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:10px;
+  padding:8px;
 }
 
 .notebook{
@@ -80,6 +84,7 @@ html,body{
   width:8px;
   transform:translateX(-50%);
   background:#8b5e4b;
+  z-index:4;
 }
 
 .spiral{
@@ -94,6 +99,7 @@ html,body{
   justify-content:space-around;
   align-items:center;
   z-index:5;
+  pointer-events:none;
 }
 
 .ring{
@@ -127,13 +133,14 @@ html,body{
 }
 
 .objectGrid{
-  width:88%;
+  width:78%;
+  max-height:68%;
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
   align-items:center;
   justify-items:center;
-  margin-left:-12px;
+  margin-left:-28px;
 }
 
 .itemBox{
@@ -146,8 +153,8 @@ html,body{
 }
 
 .itemBox img{
-  width:70px;
-  height:70px;
+  width:clamp(42px,5vw,70px);
+  height:clamp(42px,5vw,70px);
   object-fit:contain;
 }
 
@@ -181,11 +188,12 @@ html,body{
   margin-bottom:22px;
   margin-top:-28px;
   color:#6b3a00;
+  text-align:center;
 }
 
 #drawCanvas{
-  width:min(34vw,300px);
-  height:min(29vh,205px);
+  width:min(32vw,300px);
+  height:min(27vh,205px);
   background:white;
   border:4px solid #6aa5b8;
   border-radius:20px;
@@ -270,14 +278,153 @@ button{
   100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
 }
 
-@media(max-width:768px){
-  .notebook{width:98vw;height:78vh}
-  .objectGrid{grid-template-columns:repeat(3,1fr)}
-  .itemBox img{width:45px;height:45px}
-  .singleItem img{width:170px;height:170px}
+/* Mobile portrait fix */
+@media(max-width:600px){
+  .header{
+    height:58px;
+    font-size:15px;
+    line-height:1.25;
+  }
+
+  .stage{
+    padding:6px;
+  }
+
+  .notebook{
+    width:96vw;
+    height:calc(100dvh - 70px);
+    border-width:4px;
+    border-radius:24px;
+  }
+
+  .page{
+    padding:12px 8px;
+  }
+
+  .pageTitle{
+    top:18px;
+    font-size:21px;
+  }
+
+  .objectGrid{
+    width:62%;
+    max-height:52%;
+    grid-template-columns:repeat(2,1fr);
+    gap:7px;
+    margin-left:-42px;
+  }
+
+  .itemBox{
+    border-radius:13px;
+    padding:4px;
+  }
+
+  .itemBox img{
+    width:38px;
+    height:38px;
+  }
+
+  .itemLabel{
+    font-size:18px;
+    padding:4px 14px;
+    margin-top:9px;
+    margin-left:-42px;
+  }
+
+  .singleItem img{
+    width:118px!important;
+    height:118px!important;
+  }
+
   .writeTitle{
-    margin-top:-18px;
-    margin-bottom:16px;
+    font-size:18px;
+    line-height:1.1;
+    margin-top:-10px;
+    margin-bottom:10px;
+    max-width:90%;
+  }
+
+  #drawCanvas{
+    width:34vw;
+    height:27vh;
+    border-width:4px;
+  }
+
+  .controls{
+    gap:8px;
+    margin-top:10px;
+  }
+
+  button{
+    font-size:18px;
+    padding:8px 14px;
+    border-radius:14px;
+  }
+
+  .spiral{
+    top:35px;
+    bottom:35px;
+    width:22px;
+  }
+
+  .ring{
+    width:22px;
+    height:22px;
+    border-width:5px;
+  }
+}
+
+/* Small height phones */
+@media(max-height:700px) and (max-width:600px){
+  .header{
+    height:48px;
+    font-size:14px;
+  }
+
+  .notebook{
+    height:calc(100dvh - 58px);
+  }
+
+  .objectGrid{
+    max-height:48%;
+  }
+
+  .itemBox img{
+    width:34px;
+    height:34px;
+  }
+
+  #drawCanvas{
+    height:24vh;
+  }
+
+  button{
+    font-size:15px;
+    padding:7px 11px;
+  }
+}
+
+/* Tablet */
+@media(min-width:601px) and (max-width:900px){
+  .notebook{
+    width:96vw;
+    height:76vh;
+  }
+
+  .objectGrid{
+    width:76%;
+    grid-template-columns:repeat(3,1fr);
+    margin-left:-26px;
+  }
+
+  .itemBox img{
+    width:52px;
+    height:52px;
+  }
+
+  .singleItem img{
+    width:170px!important;
+    height:170px!important;
   }
 }
 </style>
@@ -335,6 +482,12 @@ button{
 <audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
 
 <script>
+document.addEventListener("touchmove",function(e){
+  if(!e.target.closest("#drawCanvas")){
+    e.preventDefault();
+  }
+},{passive:false});
+
 const originalPages=[
   {count:8,name:"football",img:"football.png"},
   {count:4,name:"cars",img:"car.png"},
@@ -354,7 +507,6 @@ let current=0;
 const objectGrid=document.getElementById("objectGrid");
 const itemLabel=document.getElementById("itemLabel");
 const pageFlip=document.getElementById("pageFlip");
-
 const canvas=document.getElementById("drawCanvas");
 const ctx=canvas.getContext("2d");
 
@@ -370,13 +522,11 @@ function preloadImages(){
     "football.png","car.png","teddy.png","cycle.png","fruits.png",
     "honeybee.png","star.png","elephant.png","ice-cream.png","umbrella.png"
   ];
-
   files.forEach(file=>{
     const img=new Image();
     img.src="assets/"+file;
   });
 }
-
 preloadImages();
 
 setTimeout(()=>{
@@ -390,6 +540,12 @@ function playSound(id){
   if(!sound)return;
   sound.currentTime=0;
   sound.play().catch(()=>{});
+}
+
+function getColumns(){
+  if(window.innerWidth<=600)return "repeat(2,1fr)";
+  if(window.innerWidth<=900)return "repeat(3,1fr)";
+  return "repeat(4,1fr)";
 }
 
 function loadPage(){
@@ -411,17 +567,17 @@ function loadPage(){
     img.src="assets/"+page.img;
 
     if(page.img==="fruits.png"){
-      img.style.width="320px";
-      img.style.height="320px";
+      img.style.width=window.innerWidth<=600?"130px":"320px";
+      img.style.height=window.innerWidth<=600?"130px":"320px";
     }else if(page.img==="ice-cream.png"){
-      img.style.width="300px";
-      img.style.height="300px";
+      img.style.width=window.innerWidth<=600?"125px":"300px";
+      img.style.height=window.innerWidth<=600?"125px":"300px";
     }else if(page.img==="elephant.png"){
-      img.style.width="230px";
-      img.style.height="230px";
+      img.style.width=window.innerWidth<=600?"125px":"230px";
+      img.style.height=window.innerWidth<=600?"125px":"230px";
     }else{
-      img.style.width="190px";
-      img.style.height="190px";
+      img.style.width=window.innerWidth<=600?"118px":"190px";
+      img.style.height=window.innerWidth<=600?"118px":"190px";
     }
 
     single.appendChild(img);
@@ -429,7 +585,7 @@ function loadPage(){
 
   }else{
     objectGrid.style.display="grid";
-    objectGrid.style.gridTemplateColumns=window.innerWidth<=768 ? "repeat(3,1fr)" : "repeat(4,1fr)";
+    objectGrid.style.gridTemplateColumns=getColumns();
 
     for(let i=0;i<page.count;i++){
       const box=document.createElement("div");
@@ -482,17 +638,7 @@ function playAgain(){
 
 function createCrackers(){
   const final=document.getElementById("finalScreen");
-
-  const colors=[
-    "#ff4d4d",
-    "#ffd93d",
-    "#6bff95",
-    "#4dc3ff",
-    "#ff73d9",
-    "#ffffff",
-    "#ff9f43",
-    "#b892ff"
-  ];
+  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff","#ff9f43","#b892ff"];
 
   for(let burst=0;burst<40;burst++){
     const cx=Math.random()*100;
@@ -503,10 +649,8 @@ function createCrackers(){
       c.className="cracker";
       c.style.left=cx+"vw";
       c.style.top=cy+"vh";
-
       c.style.width=(8+Math.random()*10)+"px";
       c.style.height=c.style.width;
-
       c.style.background=colors[Math.floor(Math.random()*colors.length)];
 
       const angle=(Math.PI*2*i)/50;
