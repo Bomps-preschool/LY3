@@ -1,365 +1,671 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Count and Write Scrapbook Game</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Count and Write</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
 html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:"Comic Sans MS",sans-serif;
-  background:#f6eadf;
-  touch-action:none;
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:"Comic Sans MS", cursive;
+background:#f6eadf;
+touch-action:none;
 }
+
+/* LOGO SCREEN */
 
 #logoScreen{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,#f4c7b8,#c9d8b6,#c7dbe8,#d8c4e8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+position:fixed;
+inset:0;
+background-image:url("assets/number-bg.png");
+background-size:cover;
+background-position:center;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
 }
 
-#logoScreen img{width:min(60vw,350px)}
+#logoScreen img{
+width:min(60vw,320px);
+}
+
+/* GAME */
 
 #game{
-  display:none;
-  width:100vw;
-  height:100dvh;
-  overflow:hidden;
-  flex-direction:column;
-  background:linear-gradient(135deg,#f4c7b8,#f5df9e,#b8d6c2,#c7dbe8);
+display:none;
+width:100vw;
+height:100dvh;
+overflow:hidden;
+background:linear-gradient(135deg,#f5d0b5,#f5e2a4,#c8dfcb,#cadcf0);
+display:flex;
+flex-direction:column;
 }
+
+/* HEADER */
 
 .header{
-  height:52px;
-  flex-shrink:0;
-  background:#fff7df;
-  color:#6b3a00;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-size:clamp(16px,2.5vw,28px);
-  font-weight:bold;
-  box-shadow:0 3px 8px rgba(0,0,0,.12);
-  padding:6px;
+height:48px;
+flex-shrink:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#fff4df;
+color:#70451d;
+font-size:clamp(14px,2vw,24px);
+font-weight:bold;
+text-align:center;
+padding:6px;
+box-shadow:0 3px 8px rgba(0,0,0,.12);
 }
 
+/* NOTEBOOK */
+
 .stage{
-  flex:1;
-  min-height:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:10px;
-  perspective:1400px;
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:10px;
+overflow:hidden;
 }
 
 .notebook{
-  width:min(94vw,920px);
-  height:min(78vh,560px);
-  background:#f8f2df;
-  border-radius:28px;
-  box-shadow:0 14px 28px rgba(0,0,0,.22);
-  display:flex;
-  position:relative;
-  overflow:hidden;
-  border:6px solid #9f735c;
+width:min(95vw,960px);
+height:min(82vh,620px);
+background:#f9f0dc;
+border-radius:28px;
+border:6px solid #a6785f;
+display:flex;
+position:relative;
+overflow:hidden;
+box-shadow:0 14px 28px rgba(0,0,0,.22);
 }
+
+/* CENTER LINE */
 
 .notebook::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:0;
-  bottom:0;
-  width:8px;
-  transform:translateX(-50%);
-  background:#8b5e4b;
-  z-index:5;
-  box-shadow:0 0 10px rgba(0,0,0,.25);
+content:"";
+position:absolute;
+left:50%;
+top:0;
+bottom:0;
+width:8px;
+background:#8b5d4a;
+transform:translateX(-50%);
+z-index:5;
 }
 
+/* SPIRAL */
+
 .spiral{
-  position:absolute;
-  left:50%;
-  top:20px;
-  bottom:20px;
-  width:28px;
-  transform:translateX(-50%);
-  z-index:8;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-around;
-  align-items:center;
+position:absolute;
+left:50%;
+top:18px;
+bottom:18px;
+width:28px;
+transform:translateX(-50%);
+display:flex;
+flex-direction:column;
+justify-content:space-around;
+align-items:center;
+z-index:10;
 }
 
 .ring{
-  width:26px;
-  height:26px;
-  border:5px solid #6f5a4b;
-  border-radius:50%;
-  background:#f6eadf;
+width:24px;
+height:24px;
+border-radius:50%;
+border:5px solid #735242;
+background:#f6eadf;
 }
 
+/* PAGES */
+
 .page{
-  width:50%;
-  height:100%;
-  padding:24px 26px;
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+width:50%;
+height:100%;
+padding:20px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+position:relative;
+overflow:hidden;
 }
 
 .leftPage{
-  background:#fff5df;
-  border-right:2px dashed rgba(90,60,30,.25);
-  padding-right:38px;
+background:#fff6e5;
 }
 
 .rightPage{
-  background:#edf7ee;
-  border-left:2px dashed rgba(90,60,30,.25);
-  padding-left:38px;
+background:#edf6ef;
 }
 
 .pageTitle{
-  position:absolute;
-  top:16px;
-  font-size:clamp(18px,2.2vw,28px);
-  font-weight:bold;
-  color:#7a4c2c;
+position:absolute;
+top:14px;
+font-size:clamp(18px,2.4vw,30px);
+font-weight:bold;
+color:#73441f;
 }
 
+/* OBJECTS */
+
 .objectGrid{
-  width:88%;
-  max-height:72%;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  align-items:center;
-  justify-items:center;
-  margin-left:-12px;
+width:84%;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+justify-items:center;
+align-items:center;
+margin-left:-12px;
 }
 
 .itemBox{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#ffffffb8;
-  border-radius:18px;
-  padding:5px;
-  box-shadow:0 3px 6px rgba(0,0,0,.1);
+background:#ffffffd8;
+border-radius:18px;
+padding:7px;
+box-shadow:0 4px 8px rgba(0,0,0,.1);
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .itemBox img{
-  width:clamp(46px,5.4vw,72px);
-  height:clamp(46px,5.4vw,72px);
-  object-fit:contain;
-}
-
-.fallbackEmoji{
-  font-size:clamp(42px,5.8vw,76px);
+width:clamp(42px,5vw,72px);
+height:clamp(42px,5vw,72px);
+object-fit:contain;
 }
 
 .singleItem{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+width:100%;
+height:100%;
 }
 
 .singleItem img{
-  width:110px !important;
-  height:110px !important;
-  object-fit:contain;
+width:110px!important;
+height:110px!important;
+object-fit:contain;
 }
 
 .itemLabel{
-  margin-top:12px;
-  font-size:clamp(20px,2.5vw,34px);
-  font-weight:bold;
-  color:#355c4a;
-  text-align:center;
-  background:#f5df9e;
-  padding:5px 18px;
-  border-radius:18px;
+margin-top:14px;
+padding:6px 20px;
+background:#f2db92;
+border-radius:18px;
+font-size:clamp(18px,2.2vw,34px);
+font-weight:bold;
+color:#2f5e52;
 }
 
+/* RIGHT PAGE */
+
 .writeTitle{
-  font-size:clamp(18px,2.2vw,28px);
-  font-weight:bold;
-  color:#6b3a00;
-  margin-bottom:12px;
-  text-align:center;
+font-size:clamp(16px,2vw,28px);
+font-weight:bold;
+color:#73441f;
+margin-bottom:12px;
+text-align:center;
 }
 
 #drawCanvas{
-  width:min(34vw,300px);
-  height:min(29vh,205px);
-  background:white;
-  border:4px solid #6aa5b8;
-  border-radius:20px;
-  touch-action:none;
-  box-shadow:inset 0 0 0 3px #f8f2df;
+width:min(34vw,300px);
+height:min(28vh,210px);
+background:white;
+border:5px solid #71a7b9;
+border-radius:22px;
+touch-action:none;
 }
 
+/* BUTTONS */
+
 .controls{
-  display:flex;
-  gap:12px;
-  margin-top:14px;
+display:flex;
+gap:12px;
+margin-top:14px;
 }
 
 button{
-  border:none;
-  border-radius:16px;
-  padding:9px 20px;
-  font-size:clamp(15px,2vw,21px);
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 4px 8px rgba(0,0,0,.15);
+border:none;
+border-radius:18px;
+padding:10px 20px;
+font-size:clamp(14px,2vw,22px);
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 4px 8px rgba(0,0,0,.14);
 }
 
-.clearBtn{background:#d68b73;color:white}
-.nextBtn{background:#7aa874;color:white}
+.clearBtn{
+background:#d9876d;
+color:white;
+}
+
+.nextBtn{
+background:#79ab72;
+color:white;
+}
+
+/* PAGE FLIP */
 
 .pageFlip{
-  position:absolute;
-  right:0;
-  top:0;
-  width:50%;
-  height:100%;
-  background:#edf7ee;
-  transform-origin:left center;
-  transform-style:preserve-3d;
-  z-index:20;
-  display:none;
+position:absolute;
+right:0;
+top:0;
+width:50%;
+height:100%;
+background:#edf6ef;
+transform-origin:left center;
+z-index:30;
+display:none;
 }
 
 .pageFlip.show{
-  display:block;
-  animation:turnNotebookPage .75s ease-in-out forwards;
+display:block;
+animation:flipPage .75s ease-in-out forwards;
 }
 
-.pageFlip::before,
-.pageFlip::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  backface-visibility:hidden;
-  background:#edf7ee;
-  box-shadow:inset 18px 0 25px rgba(0,0,0,.12),0 8px 18px rgba(0,0,0,.18);
+@keyframes flipPage{
+0%{
+transform:rotateY(0deg);
+}
+50%{
+transform:rotateY(-90deg);
+}
+100%{
+transform:rotateY(-180deg);
+}
 }
 
-.pageFlip::after{
-  transform:rotateY(180deg);
-  background:#fff5df;
-}
-
-@keyframes turnNotebookPage{
-  0%{transform:rotateY(0deg)}
-  40%{transform:rotateY(-80deg)}
-  100%{transform:rotateY(-180deg)}
-}
+/* FINAL SCREEN */
 
 .final{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,#6f5a8a,#a66f73,#7aa874);
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  text-align:center;
-  color:white;
-  overflow:hidden;
-  z-index:1000;
+display:none;
+position:fixed;
+inset:0;
+background:linear-gradient(135deg,#7a5b8c,#d58a7d,#7fb178);
+align-items:center;
+justify-content:center;
+flex-direction:column;
+text-align:center;
+color:white;
+overflow:hidden;
+z-index:2000;
 }
 
-.final h1{font-size:clamp(42px,7vw,82px);z-index:2}
-.final p{font-size:clamp(24px,4vw,42px);z-index:2}
+.final h1{
+font-size:clamp(40px,7vw,82px);
+z-index:2;
+}
+
+.final p{
+font-size:clamp(20px,4vw,40px);
+z-index:2;
+}
 
 .playAgain{
-  margin-top:24px;
-  background:#f5df9e;
-  color:#5a3500;
-  z-index:2;
+margin-top:24px;
+background:#ffe28a;
+color:#5a3500;
+z-index:2;
 }
 
+/* CONFETTI */
+
 .cracker{
-  position:absolute;
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  animation:cracker 1.7s ease-out forwards;
+position:absolute;
+width:9px;
+height:9px;
+border-radius:50%;
+animation:cracker 1.8s ease-out forwards;
 }
 
 @keyframes cracker{
-  0%{transform:translate(0,0) scale(.4);opacity:1}
-  100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
+0%{
+transform:translate(0,0) scale(.4);
+opacity:1;
 }
+100%{
+transform:translate(var(--x),var(--y)) scale(1.8);
+opacity:0;
+}
+}
+
+/* MOBILE */
 
 @media(max-width:768px){
-  .header{height:44px;font-size:15px}
-  .stage{padding:6px}
-  .notebook{width:98vw;height:78vh;border-width:4px}
-  .page{padding:18px 14px}
-  .leftPage{padding-right:30px}
-  .rightPage{padding-left:30px}
-  .objectGrid{grid-template-columns:repeat(3,1fr);gap:6px;width:84%;margin-left:-14px}
-  .itemBox img{width:42px;height:42px}
-  .fallbackEmoji{font-size:42px}
-  .singleItem img{width:92px !important;height:92px !important}
-  #drawCanvas{width:36vw;height:25vh}
-  .controls{gap:7px;margin-top:8px}
-  button{padding:7px 12px}
-  .writeTitle{font-size:14px}
-  .itemLabel{font-size:16px}
-  .spiral{width:20px}
-  .ring{width:18px;height:18px;border-width:4px}
+
+.header{
+height:42px;
+font-size:14px;
 }
 
-@media(max-height:560px){
-  .header{height:36px;font-size:13px}
-  .notebook{height:82vh}
-  .itemBox img{width:34px;height:34px}
-  .fallbackEmoji{font-size:34px}
-  .singleItem img{width:76px !important;height:76px !important}
-  #drawCanvas{height:21vh}
-  .pageTitle{font-size:14px;top:8px}
+.notebook{
+width:98vw;
+height:80vh;
+}
+
+.objectGrid{
+grid-template-columns:repeat(3,1fr);
+gap:6px;
+margin-left:-8px;
+}
+
+.itemBox img{
+width:38px;
+height:38px;
+}
+
+.singleItem img{
+width:82px!important;
+height:82px!important;
+}
+
+#drawCanvas{
+width:38vw;
+height:24vh;
+}
+
+.itemLabel{
+font-size:16px;
+}
+
+button{
+padding:7px 12px;
+font-size:14px;
+}
+
+.ring{
+width:18px;
+height:18px;
+border-width:4px;
+}
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGO -->
+
 <div id="logoScreen">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+<img src="assets/innovine-logo.png">
 </div>
 
+<!-- GAME -->
+
 <div id="game">
-  <div class="header">Count the pictures and write the number on the right page.</div>
 
-  <div class="stage">
-    <div class="notebook">
-      <div class="page leftPage">
-        <div class="pageTitle">Count</div>
-        <div class="objectGrid" id="objectGrid"></div>
-        <div class="itemLabel" id="itemLabel"></div>
-      </div>
+<div class="header">
+Count the pictures and write the number.
+</div>
 
-      <div class="page rightPage">
-        <div class="pageTitle">Write</div>
-        <div class="writeTitle">Write the number here</div>
-        <canvas id="drawCanvas"
+<div class="stage">
+
+<div class="notebook">
+
+<!-- LEFT -->
+
+<div class="page leftPage">
+
+<div class="pageTitle">Count</div>
+
+<div class="objectGrid" id="objectGrid"></div>
+
+<div class="itemLabel" id="itemLabel"></div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div class="page rightPage">
+
+<div class="pageTitle">Write</div>
+
+<div class="writeTitle">
+Write the number here
+</div>
+
+<canvas id="drawCanvas" width="420" height="300"></canvas>
+
+<div class="controls">
+<button class="clearBtn" onclick="clearCanvasWithSound()">Clear</button>
+<button class="nextBtn" onclick="nextPage()">Next Page</button>
+</div>
+
+</div>
+
+<!-- SPIRAL -->
+
+<div class="spiral">
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+</div>
+
+<!-- PAGE FLIP -->
+
+<div class="pageFlip" id="pageFlip"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- FINAL -->
+
+<div class="final" id="finalScreen">
+
+<h1>🎉 Congratulations! 🎉</h1>
+
+<p>Great counting work!</p>
+
+<button class="playAgain" onclick="playAgain()">
+Play Again
+</button>
+
+</div>
+
+<!-- AUDIO -->
+
+<audio id="rightSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/claps.mp3"></audio>
+
+<script>
+document.addEventListener("touchmove",function(e){
+if(!e.target.closest("#drawCanvas")){
+e.preventDefault();
+}
+},{passive:false});
+
+/* DATA */
+
+const originalPages=[
+{count:8,name:"football",img:"football.png"},
+{count:4,name:"cars",img:"car.png"},
+{count:9,name:"teddy bears",img:"teddy.png"},
+{count:3,name:"cycles",img:"cycle.png"},
+{count:1,name:"fruit",img:"fruits.png"},
+{count:10,name:"bees",img:"honeybee.png"},
+{count:2,name:"stars",img:"star.png"},
+{count:1,name:"elephant",img:"elephant.png"},
+{count:1,name:"ice-cream",img:"ice-cream.png"},
+{count:7,name:"umbrellas",img:"umbrella.png"}
+];
+
+let pages=[...originalPages];
+let current=0;
+let turning=false;
+
+const objectGrid=document.getElementById("objectGrid");
+const itemLabel=document.getElementById("itemLabel");
+const pageFlip=document.getElementById("pageFlip");
+
+/* START */
+
+setTimeout(()=>{
+document.getElementById("logoScreen").style.display="none";
+document.getElementById("game").style.display="flex";
+loadPage();
+},5000);
+
+/* SOUND */
+
+function playSound(id){
+const s=document.getElementById(id);
+if(!s)return;
+s.currentTime=0;
+s.play().catch(()=>{});
+}
+
+/* LOAD PAGE */
+
+function loadPage(){
+
+clearCanvas();
+
+objectGrid.innerHTML="";
+
+const page=pages[current];
+
+itemLabel.textContent=page.name;
+
+/* SINGLE */
+
+if(page.count===1){
+
+objectGrid.style.display="flex";
+objectGrid.style.justifyContent="center";
+objectGrid.style.alignItems="center";
+
+const single=document.createElement("div");
+single.className="singleItem";
+
+const img=document.createElement("img");
+img.src="assets/"+page.img;
+
+single.appendChild(img);
+
+objectGrid.appendChild(single);
+
+}
+
+/* MULTIPLE */
+
+else{
+
+objectGrid.style.display="grid";
+
+objectGrid.style.gridTemplateColumns=
+window.innerWidth<=768
+? "repeat(3,1fr)"
+: "repeat(4,1fr)";
+
+for(let i=0;i<page.count;i++){
+
+const box=document.createElement("div");
+
+box.className="itemBox";
+
+const img=document.createElement("img");
+
+img.src="assets/"+page.img;
+
+box.appendChild(img);
+
+objectGrid.appendChild(box);
+
+}
+}
+}
+
+/* NEXT */
+
+function nextPage(){
+
+if(turning)return;
+
+turning=true;
+
+playSound("rightSound");
+
+pageFlip.classList.remove("show");
+
+void pageFlip.offsetWidth;
+
+pageFlip.classList.add("show");
+
+setTimeout(()=>{
+
+current++;
+
+if(current>=pages.length){
+
+showFinal();
+
+}else{
+
+loadPage();
+
+pageFlip.classList.remove("show");
+
+turning=false;
+
+}
+
+},720);
+}
+
+/* FINAL */
+
+function showFinal(){
+
+document.getElementById("game").style.display="none";
+
+const final=document.getElementById("finalScreen");
+
+final.style.display="flex";
+
+playSound("clapSound");
+
+createCrackers();
+
+turning=false;
+}
+
+/* PLAY AGAIN */
+
+function playAgain(){
+
+document.querySelectorAll(".cracker").forEach(c=>c.remove());
+
+pages=[...originalPages].sort(()=>Math.random()-0.5);
+
+current=0;
+
+turning=false;
+
+document.getElementById("finalScreen").style.display="none";
+
+document.getElementById("game").style.display="flex";
+
+pageFlip.classList.remove("show");
+
+loadPage();
