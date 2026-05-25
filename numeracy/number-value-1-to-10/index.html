@@ -2,503 +2,558 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>Count and Write Scrapbook Game</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
 html,body{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:"Comic Sans MS",sans-serif;
-  background:#f6eadf;
-  touch-action:none;
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:"Comic Sans MS",sans-serif;
+background:#f6eadf;
+touch-action:none;
 }
 
 #logoScreen{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,#f4c7b8,#c9d8b6,#c7dbe8,#d8c4e8);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+position:fixed;
+inset:0;
+background:linear-gradient(135deg,#f4c7b8,#c9d8b6,#c7dbe8,#d8c4e8);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:999;
 }
 
-#logoScreen img{width:min(60vw,350px)}
+#logoScreen img{
+width:min(60vw,350px);
+}
 
 #game{
-  display:none;
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100dvh;
-  overflow:hidden;
-  flex-direction:column;
-  background:linear-gradient(135deg,#f4c7b8,#f5df9e,#b8d6c2,#c7dbe8);
+display:none;
+position:fixed;
+inset:0;
+width:100vw;
+height:100dvh;
+overflow:hidden;
+flex-direction:column;
+background:linear-gradient(135deg,#f4c7b8,#f5df9e,#b8d6c2,#c7dbe8);
 }
 
 .header{
-  height:50px;
-  flex-shrink:0;
-  background:#fff7df;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  font-size:clamp(15px,2.4vw,27px);
-  font-weight:bold;
-  color:#6b3a00;
-  padding:5px 10px;
+height:50px;
+flex-shrink:0;
+background:#fff7df;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+font-size:clamp(15px,2.4vw,27px);
+font-weight:bold;
+color:#6b3a00;
+padding:5px 10px;
 }
 
 .stage{
-  flex:1;
-  min-height:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:8px;
+flex:1;
+min-height:0;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:8px;
 }
 
 .notebook{
-  width:min(94vw,920px);
-  height:min(78vh,560px);
-  background:#f8f2df;
-  border-radius:28px;
-  box-shadow:0 14px 28px rgba(0,0,0,.22);
-  display:flex;
-  position:relative;
-  overflow:hidden;
-  border:6px solid #9f735c;
+width:min(94vw,920px);
+height:min(78vh,560px);
+background:#f8f2df;
+border-radius:28px;
+box-shadow:0 14px 28px rgba(0,0,0,.22);
+display:flex;
+position:relative;
+overflow:hidden;
+border:6px solid #9f735c;
 }
 
 .notebook::before{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:0;
-  bottom:0;
-  width:8px;
-  transform:translateX(-50%);
-  background:#8b5e4b;
-  z-index:4;
+content:"";
+position:absolute;
+left:50%;
+top:0;
+bottom:0;
+width:8px;
+transform:translateX(-50%);
+background:#8b5e4b;
+z-index:4;
 }
 
 .spiral{
-  position:absolute;
-  left:50%;
-  top:20px;
-  bottom:20px;
-  width:28px;
-  transform:translateX(-50%);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-around;
-  align-items:center;
-  z-index:5;
-  pointer-events:none;
+position:absolute;
+left:50%;
+top:20px;
+bottom:20px;
+width:28px;
+transform:translateX(-50%);
+display:flex;
+flex-direction:column;
+justify-content:space-around;
+align-items:center;
+z-index:5;
+pointer-events:none;
 }
 
 .ring{
-  width:26px;
-  height:26px;
-  border:5px solid #6f5a4b;
-  border-radius:50%;
-  background:#f6eadf;
+width:26px;
+height:26px;
+border:5px solid #6f5a4b;
+border-radius:50%;
+background:#f6eadf;
 }
 
 .page{
-  width:50%;
-  height:100%;
-  padding:24px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  position:relative;
+width:50%;
+height:100%;
+padding:24px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+position:relative;
 }
 
-.leftPage{background:#fff5df}
-.rightPage{background:#edf7ee}
+.leftPage{
+background:#fff5df;
+}
+
+.rightPage{
+background:#edf7ee;
+}
 
 .pageTitle{
-  position:absolute;
-  top:16px;
-  font-size:clamp(18px,2.2vw,28px);
-  font-weight:bold;
-  color:#7a4c2c;
+position:absolute;
+top:16px;
+font-size:clamp(18px,2.2vw,28px);
+font-weight:bold;
+color:#7a4c2c;
 }
 
 .objectGrid{
-  width:78%;
-  max-height:68%;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  align-items:center;
-  justify-items:center;
-  margin-left:-28px;
+width:78%;
+max-height:68%;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px;
+align-items:center;
+justify-items:center;
+margin-left:-28px;
 }
 
 .itemBox{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#ffffffb8;
-  border-radius:18px;
-  padding:5px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#ffffffb8;
+border-radius:18px;
+padding:5px;
 }
 
 .itemBox img{
-  width:clamp(42px,5vw,70px);
-  height:clamp(42px,5vw,70px);
-  object-fit:contain;
+width:clamp(42px,5vw,70px);
+height:clamp(42px,5vw,70px);
+object-fit:contain;
 }
 
 .singleItem{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;
-  height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+width:100%;
+height:100%;
 }
 
 .singleItem img{
-  width:190px;
-  height:190px;
-  object-fit:contain;
+width:190px;
+height:190px;
+object-fit:contain;
 }
 
 .itemLabel{
-  margin-top:10px;
-  font-size:clamp(18px,2vw,30px);
-  font-weight:bold;
-  color:#355c4a;
-  background:#f5df9e;
-  padding:5px 18px;
-  border-radius:18px;
+margin-top:10px;
+font-size:clamp(18px,2vw,30px);
+font-weight:bold;
+color:#355c4a;
+background:#f5df9e;
+padding:5px 18px;
+border-radius:18px;
 }
 
 .writeTitle{
-  font-size:clamp(18px,2vw,28px);
-  font-weight:bold;
-  margin-bottom:22px;
-  margin-top:-28px;
-  color:#6b3a00;
-  text-align:center;
+position:absolute;
+top:16px;
+font-size:clamp(18px,2.2vw,28px);
+font-weight:bold;
+color:#6b3a00;
+text-align:center;
 }
 
 #drawCanvas{
-  width:min(32vw,300px);
-  height:min(27vh,205px);
-  background:white;
-  border:4px solid #6aa5b8;
-  border-radius:20px;
-  touch-action:none;
+width:min(32vw,300px);
+height:min(27vh,205px);
+background:white;
+border:4px solid #6aa5b8;
+border-radius:20px;
+touch-action:none;
 }
 
 .controls{
-  display:flex;
-  gap:12px;
-  margin-top:14px;
+display:flex;
+gap:12px;
+margin-top:14px;
 }
 
 button{
-  border:none;
-  border-radius:16px;
-  padding:9px 20px;
-  font-size:18px;
-  font-weight:bold;
-  cursor:pointer;
+border:none;
+border-radius:16px;
+padding:9px 20px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
 }
 
-.clearBtn{background:#d68b73;color:white}
-.nextBtn{background:#7aa874;color:white}
+.clearBtn{
+background:#d68b73;
+color:white;
+}
+
+.nextBtn{
+background:#7aa874;
+color:white;
+}
 
 .pageFlip{
-  position:absolute;
-  right:0;
-  top:0;
-  width:50%;
-  height:100%;
-  background:#edf7ee;
-  transform-origin:left center;
-  display:none;
-  z-index:20;
+position:absolute;
+right:0;
+top:0;
+width:50%;
+height:100%;
+background:#edf7ee;
+transform-origin:left center;
+display:none;
+z-index:20;
 }
 
 .pageFlip.show{
-  display:block;
-  animation:flip .7s ease-in-out forwards;
+display:block;
+animation:flip .7s ease-in-out forwards;
 }
 
 @keyframes flip{
-  0%{transform:rotateY(0deg)}
-  100%{transform:rotateY(-180deg)}
+0%{transform:rotateY(0deg)}
+100%{transform:rotateY(-180deg)}
 }
 
 .final{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:linear-gradient(135deg,#6f5a8a,#a66f73,#7aa874);
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  color:white;
-  overflow:hidden;
-  z-index:1000;
+display:none;
+position:fixed;
+inset:0;
+background:linear-gradient(135deg,#6f5a8a,#a66f73,#7aa874);
+align-items:center;
+justify-content:center;
+flex-direction:column;
+color:white;
+overflow:hidden;
+z-index:1000;
 }
 
 .final h1{
-  font-size:clamp(42px,7vw,82px);
-  z-index:2;
+font-size:clamp(42px,7vw,82px);
+z-index:2;
 }
 
 .playAgain{
-  margin-top:24px;
-  background:#f5df9e;
-  color:#5a3500;
-  z-index:2;
+margin-top:24px;
+background:#f5df9e;
+color:#5a3500;
+z-index:2;
 }
 
 .cracker{
-  position:absolute;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  animation:cracker 1.8s ease-out forwards;
+position:absolute;
+width:10px;
+height:10px;
+border-radius:50%;
+animation:cracker 1.8s ease-out forwards;
 }
 
 @keyframes cracker{
-  0%{transform:translate(0,0) scale(.5);opacity:1}
-  100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
+0%{
+transform:translate(0,0) scale(.5);
+opacity:1;
+}
+100%{
+transform:translate(var(--x),var(--y)) scale(1.8);
+opacity:0;
+}
 }
 
-/* Mobile portrait fix */
 @media(max-width:600px){
-  .header{
-    height:58px;
-    font-size:15px;
-    line-height:1.25;
-  }
 
-  .stage{
-    padding:6px;
-  }
-
-  .notebook{
-    width:96vw;
-    height:calc(100dvh - 70px);
-    border-width:4px;
-    border-radius:24px;
-  }
-
-  .page{
-    padding:12px 8px;
-  }
-
-  .pageTitle{
-    top:18px;
-    font-size:21px;
-  }
-
-  .objectGrid{
-    width:62%;
-    max-height:52%;
-    grid-template-columns:repeat(2,1fr);
-    gap:7px;
-    margin-left:-42px;
-  }
-
-  .itemBox{
-    border-radius:13px;
-    padding:4px;
-  }
-
-  .itemBox img{
-    width:38px;
-    height:38px;
-  }
-
-  .itemLabel{
-    font-size:18px;
-    padding:4px 14px;
-    margin-top:9px;
-    margin-left:-42px;
-  }
-
-  .singleItem img{
-    width:118px!important;
-    height:118px!important;
-  }
-
-  .writeTitle{
-    font-size:18px;
-    line-height:1.1;
-    margin-top:-10px;
-    margin-bottom:10px;
-    max-width:90%;
-  }
-
-  #drawCanvas{
-    width:34vw;
-    height:27vh;
-    border-width:4px;
-  }
-
-  .controls{
-    gap:8px;
-    margin-top:10px;
-  }
-
-  button{
-    font-size:18px;
-    padding:8px 14px;
-    border-radius:14px;
-  }
-
-  .spiral{
-    top:35px;
-    bottom:35px;
-    width:22px;
-  }
-
-  .ring{
-    width:22px;
-    height:22px;
-    border-width:5px;
-  }
+.header{
+height:58px;
+font-size:15px;
+line-height:1.25;
 }
 
-/* Small height phones */
+.stage{
+padding:6px;
+}
+
+.notebook{
+width:96vw;
+height:calc(100dvh - 70px);
+border-width:4px;
+border-radius:24px;
+}
+
+.page{
+padding:12px 8px;
+}
+
+.pageTitle{
+top:16px;
+font-size:21px;
+}
+
+.objectGrid{
+width:62%;
+max-height:52%;
+grid-template-columns:repeat(2,1fr);
+gap:7px;
+margin-left:-42px;
+}
+
+.itemBox{
+border-radius:13px;
+padding:4px;
+}
+
+.itemBox img{
+width:38px;
+height:38px;
+}
+
+.itemLabel{
+font-size:18px;
+padding:4px 14px;
+margin-top:9px;
+margin-left:-42px;
+}
+
+.singleItem img{
+width:118px!important;
+height:118px!important;
+}
+
+.writeTitle{
+top:16px;
+font-size:18px;
+text-align:center;
+line-height:1.1;
+}
+
+#drawCanvas{
+width:34vw;
+height:27vh;
+border-width:4px;
+}
+
+.controls{
+gap:8px;
+margin-top:10px;
+}
+
+button{
+font-size:18px;
+padding:8px 14px;
+border-radius:14px;
+}
+
+.spiral{
+top:35px;
+bottom:35px;
+width:22px;
+}
+
+.ring{
+width:22px;
+height:22px;
+border-width:5px;
+}
+
+}
+
 @media(max-height:700px) and (max-width:600px){
-  .header{
-    height:48px;
-    font-size:14px;
-  }
 
-  .notebook{
-    height:calc(100dvh - 58px);
-  }
-
-  .objectGrid{
-    max-height:48%;
-  }
-
-  .itemBox img{
-    width:34px;
-    height:34px;
-  }
-
-  #drawCanvas{
-    height:24vh;
-  }
-
-  button{
-    font-size:15px;
-    padding:7px 11px;
-  }
+.header{
+height:48px;
+font-size:14px;
 }
 
-/* Tablet */
+.notebook{
+height:calc(100dvh - 58px);
+}
+
+.objectGrid{
+max-height:48%;
+}
+
+.itemBox img{
+width:34px;
+height:34px;
+}
+
+#drawCanvas{
+height:24vh;
+}
+
+button{
+font-size:15px;
+padding:7px 11px;
+}
+
+}
+
 @media(min-width:601px) and (max-width:900px){
-  .notebook{
-    width:96vw;
-    height:76vh;
-  }
 
-  .objectGrid{
-    width:76%;
-    grid-template-columns:repeat(3,1fr);
-    margin-left:-26px;
-  }
-
-  .itemBox img{
-    width:52px;
-    height:52px;
-  }
-
-  .singleItem img{
-    width:170px!important;
-    height:170px!important;
-  }
+.notebook{
+width:96vw;
+height:76vh;
 }
+
+.objectGrid{
+width:76%;
+grid-template-columns:repeat(3,1fr);
+margin-left:-26px;
+}
+
+.itemBox img{
+width:52px;
+height:52px;
+}
+
+.singleItem img{
+width:170px!important;
+height:170px!important;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <div id="logoScreen">
-  <img src="assets/innovine-logo.png">
+<img src="assets/innovine-logo.png">
 </div>
 
 <div id="game">
-  <div class="header">Count the pictures and write the number on the right page.</div>
 
-  <div class="stage">
-    <div class="notebook">
+<div class="header">
+Count the pictures and write the number on the right page.
+</div>
 
-      <div class="page leftPage">
-        <div class="pageTitle">Count</div>
-        <div class="objectGrid" id="objectGrid"></div>
-        <div class="itemLabel" id="itemLabel"></div>
-      </div>
+<div class="stage">
 
-      <div class="page rightPage">
-        <div class="writeTitle">Write the number here</div>
-        <canvas id="drawCanvas" width="420" height="300"></canvas>
-        <div class="controls">
-          <button class="clearBtn" onclick="clearCanvasWithSound()">Clear</button>
-          <button class="nextBtn" onclick="nextPage()">Next Page</button>
-        </div>
-      </div>
+<div class="notebook">
 
-      <div class="spiral">
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-      </div>
+<div class="page leftPage">
 
-      <div class="pageFlip" id="pageFlip"></div>
+<div class="pageTitle">Count</div>
 
-    </div>
-  </div>
+<div class="objectGrid" id="objectGrid"></div>
+
+<div class="itemLabel" id="itemLabel"></div>
+
+</div>
+
+<div class="page rightPage">
+
+<div class="writeTitle">Write the number here</div>
+
+<canvas id="drawCanvas" width="420" height="300"></canvas>
+
+<div class="controls">
+<button class="clearBtn"
+onclick="clearCanvasWithSound()">Clear</button>
+
+<button class="nextBtn"
+onclick="nextPage()">Next Page</button>
+</div>
+
+</div>
+
+<div class="spiral">
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+</div>
+
+<div class="pageFlip" id="pageFlip"></div>
+
+</div>
+</div>
 </div>
 
 <div class="final" id="finalScreen">
-  <h1>🎉 Congratulations 🎉</h1>
-  <button class="playAgain" onclick="playAgain()">Play Again</button>
+<h1>🎉 Congratulations 🎉</h1>
+<button class="playAgain"
+onclick="playAgain()">Play Again</button>
 </div>
 
-<audio id="rightSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="rightSound"
+src="assets/correct.mp3"
+preload="auto"></audio>
+
+<audio id="wrongSound"
+src="assets/wrong.mp3"
+preload="auto"></audio>
+
+<audio id="clapSound"
+src="assets/claps.mp3"
+preload="auto"></audio>
 
 <script>
+
 document.addEventListener("touchmove",function(e){
-  if(!e.target.closest("#drawCanvas")){
-    e.preventDefault();
-  }
+if(!e.target.closest("#drawCanvas")){
+e.preventDefault();
+}
 },{passive:false});
 
 const originalPages=[
-  {count:8,name:"football",img:"football.png"},
-  {count:4,name:"cars",img:"car.png"},
-  {count:9,name:"teddy bears",img:"teddy.png"},
-  {count:3,name:"cycles",img:"cycle.png"},
-  {count:1,name:"fruits",img:"fruits.png"},
-  {count:10,name:"bees",img:"honeybee.png"},
-  {count:2,name:"stars",img:"star.png"},
-  {count:1,name:"elephant",img:"elephant.png"},
-  {count:1,name:"ice-cream",img:"ice-cream.png"},
-  {count:7,name:"umbrellas",img:"umbrella.png"}
+{count:8,name:"football",img:"football.png"},
+{count:4,name:"cars",img:"car.png"},
+{count:9,name:"teddy bears",img:"teddy.png"},
+{count:3,name:"cycles",img:"cycle.png"},
+{count:1,name:"fruits",img:"fruits.png"},
+{count:10,name:"bees",img:"honeybee.png"},
+{count:2,name:"stars",img:"star.png"},
+{count:1,name:"elephant",img:"elephant.png"},
+{count:1,name:"ice-cream",img:"ice-cream.png"},
+{count:7,name:"umbrellas",img:"umbrella.png"}
 ];
 
 let pages=[...originalPages];
@@ -507,6 +562,7 @@ let current=0;
 const objectGrid=document.getElementById("objectGrid");
 const itemLabel=document.getElementById("itemLabel");
 const pageFlip=document.getElementById("pageFlip");
+
 const canvas=document.getElementById("drawCanvas");
 const ctx=canvas.getContext("2d");
 
@@ -518,205 +574,349 @@ ctx.strokeStyle="#333";
 let drawing=false;
 
 function preloadImages(){
-  const files=[
-    "football.png","car.png","teddy.png","cycle.png","fruits.png",
-    "honeybee.png","star.png","elephant.png","ice-cream.png","umbrella.png"
-  ];
-  files.forEach(file=>{
-    const img=new Image();
-    img.src="assets/"+file;
-  });
+
+const files=[
+"football.png",
+"car.png",
+"teddy.png",
+"cycle.png",
+"fruits.png",
+"honeybee.png",
+"star.png",
+"elephant.png",
+"ice-cream.png",
+"umbrella.png"
+];
+
+files.forEach(file=>{
+const img=new Image();
+img.src="assets/"+file;
+});
+
 }
+
 preloadImages();
 
 setTimeout(()=>{
-  document.getElementById("logoScreen").style.display="none";
-  document.getElementById("game").style.display="flex";
-  loadPage();
+
+document.getElementById("logoScreen").style.display="none";
+
+document.getElementById("game").style.display="flex";
+
+loadPage();
+
 },5000);
 
 function playSound(id){
-  const sound=document.getElementById(id);
-  if(!sound)return;
-  sound.currentTime=0;
-  sound.play().catch(()=>{});
+
+const sound=document.getElementById(id);
+
+if(!sound)return;
+
+sound.currentTime=0;
+
+sound.play().catch(()=>{});
+
 }
 
 function getColumns(){
-  if(window.innerWidth<=600)return "repeat(2,1fr)";
-  if(window.innerWidth<=900)return "repeat(3,1fr)";
-  return "repeat(4,1fr)";
+
+if(window.innerWidth<=600)return "repeat(2,1fr)";
+
+if(window.innerWidth<=900)return "repeat(3,1fr)";
+
+return "repeat(4,1fr)";
+
 }
 
 function loadPage(){
-  clearCanvas();
-  objectGrid.innerHTML="";
 
-  const page=pages[current];
-  itemLabel.textContent=page.name;
+clearCanvas();
 
-  if(page.count===1){
-    objectGrid.style.display="flex";
-    objectGrid.style.justifyContent="center";
-    objectGrid.style.alignItems="center";
+objectGrid.innerHTML="";
 
-    const single=document.createElement("div");
-    single.className="singleItem";
+const page=pages[current];
 
-    const img=document.createElement("img");
-    img.src="assets/"+page.img;
+itemLabel.textContent=page.name;
 
-    if(page.img==="fruits.png"){
-      img.style.width=window.innerWidth<=600?"130px":"320px";
-      img.style.height=window.innerWidth<=600?"130px":"320px";
-    }else if(page.img==="ice-cream.png"){
-      img.style.width=window.innerWidth<=600?"125px":"300px";
-      img.style.height=window.innerWidth<=600?"125px":"300px";
-    }else if(page.img==="elephant.png"){
-      img.style.width=window.innerWidth<=600?"125px":"230px";
-      img.style.height=window.innerWidth<=600?"125px":"230px";
-    }else{
-      img.style.width=window.innerWidth<=600?"118px":"190px";
-      img.style.height=window.innerWidth<=600?"118px":"190px";
-    }
+if(page.count===1){
 
-    single.appendChild(img);
-    objectGrid.appendChild(single);
+objectGrid.style.display="flex";
 
-  }else{
-    objectGrid.style.display="grid";
-    objectGrid.style.gridTemplateColumns=getColumns();
+objectGrid.style.justifyContent="center";
 
-    for(let i=0;i<page.count;i++){
-      const box=document.createElement("div");
-      box.className="itemBox";
+objectGrid.style.alignItems="center";
 
-      const img=document.createElement("img");
-      img.src="assets/"+page.img;
+const single=document.createElement("div");
 
-      box.appendChild(img);
-      objectGrid.appendChild(box);
-    }
-  }
+single.className="singleItem";
+
+const img=document.createElement("img");
+
+img.src="assets/"+page.img;
+
+if(page.img==="fruits.png"){
+
+img.style.width=window.innerWidth<=600?"130px":"320px";
+img.style.height=window.innerWidth<=600?"130px":"320px";
+
+}
+else if(page.img==="ice-cream.png"){
+
+img.style.width=window.innerWidth<=600?"125px":"300px";
+img.style.height=window.innerWidth<=600?"125px":"300px";
+
+}
+else if(page.img==="elephant.png"){
+
+img.style.width=window.innerWidth<=600?"125px":"230px";
+img.style.height=window.innerWidth<=600?"125px":"230px";
+
+}
+else{
+
+img.style.width=window.innerWidth<=600?"118px":"190px";
+img.style.height=window.innerWidth<=600?"118px":"190px";
+
+}
+
+single.appendChild(img);
+
+objectGrid.appendChild(single);
+
+}
+else{
+
+objectGrid.style.display="grid";
+
+objectGrid.style.gridTemplateColumns=getColumns();
+
+for(let i=0;i<page.count;i++){
+
+const box=document.createElement("div");
+
+box.className="itemBox";
+
+const img=document.createElement("img");
+
+img.src="assets/"+page.img;
+
+box.appendChild(img);
+
+objectGrid.appendChild(box);
+
+}
+
+}
+
 }
 
 function nextPage(){
-  playSound("rightSound");
-  clearCanvas();
 
-  pageFlip.classList.remove("show");
-  void pageFlip.offsetWidth;
-  pageFlip.classList.add("show");
+playSound("rightSound");
 
-  setTimeout(()=>{
-    current++;
+clearCanvas();
 
-    if(current>=pages.length){
-      showFinal();
-    }else{
-      loadPage();
-      pageFlip.classList.remove("show");
-    }
-  },700);
+pageFlip.classList.remove("show");
+
+void pageFlip.offsetWidth;
+
+pageFlip.classList.add("show");
+
+setTimeout(()=>{
+
+current++;
+
+if(current>=pages.length){
+
+showFinal();
+
+}
+else{
+
+loadPage();
+
+pageFlip.classList.remove("show");
+
+}
+
+},700);
+
 }
 
 function showFinal(){
-  document.getElementById("game").style.display="none";
-  document.getElementById("finalScreen").style.display="flex";
-  playSound("clapSound");
-  createCrackers();
+
+document.getElementById("game").style.display="none";
+
+document.getElementById("finalScreen").style.display="flex";
+
+playSound("clapSound");
+
+createCrackers();
+
 }
 
 function playAgain(){
-  document.querySelectorAll(".cracker").forEach(c=>c.remove());
-  pages=[...originalPages].sort(()=>Math.random()-0.5);
-  current=0;
-  document.getElementById("finalScreen").style.display="none";
-  document.getElementById("game").style.display="flex";
-  loadPage();
+
+document.querySelectorAll(".cracker").forEach(c=>c.remove());
+
+pages=[...originalPages].sort(()=>Math.random()-0.5);
+
+current=0;
+
+document.getElementById("finalScreen").style.display="none";
+
+document.getElementById("game").style.display="flex";
+
+loadPage();
+
 }
 
 function createCrackers(){
-  const final=document.getElementById("finalScreen");
-  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff","#ff9f43","#b892ff"];
 
-  for(let burst=0;burst<40;burst++){
-    const cx=Math.random()*100;
-    const cy=Math.random()*80+5;
+const final=document.getElementById("finalScreen");
 
-    for(let i=0;i<50;i++){
-      const c=document.createElement("div");
-      c.className="cracker";
-      c.style.left=cx+"vw";
-      c.style.top=cy+"vh";
-      c.style.width=(8+Math.random()*10)+"px";
-      c.style.height=c.style.width;
-      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+const colors=[
+"#ff4d4d",
+"#ffd93d",
+"#6bff95",
+"#4dc3ff",
+"#ff73d9",
+"#ffffff",
+"#ff9f43",
+"#b892ff"
+];
 
-      const angle=(Math.PI*2*i)/50;
-      const distance=140+Math.random()*220;
+for(let burst=0;burst<40;burst++){
 
-      c.style.setProperty("--x",Math.cos(angle)*distance+"px");
-      c.style.setProperty("--y",Math.sin(angle)*distance+"px");
-      c.style.animationDelay=(burst*0.08)+"s";
+const cx=Math.random()*100;
 
-      final.appendChild(c);
-    }
-  }
+const cy=Math.random()*80+5;
+
+for(let i=0;i<50;i++){
+
+const c=document.createElement("div");
+
+c.className="cracker";
+
+c.style.left=cx+"vw";
+
+c.style.top=cy+"vh";
+
+c.style.width=(8+Math.random()*10)+"px";
+
+c.style.height=c.style.width;
+
+c.style.background=
+colors[Math.floor(Math.random()*colors.length)];
+
+const angle=(Math.PI*2*i)/50;
+
+const distance=140+Math.random()*220;
+
+c.style.setProperty(
+"--x",
+Math.cos(angle)*distance+"px"
+);
+
+c.style.setProperty(
+"--y",
+Math.sin(angle)*distance+"px"
+);
+
+c.style.animationDelay=(burst*0.08)+"s";
+
+final.appendChild(c);
+
+}
+
+}
+
 }
 
 function getPos(e){
-  const rect=canvas.getBoundingClientRect();
-  const point=e.touches?e.touches[0]:e;
 
-  return{
-    x:(point.clientX-rect.left)*(canvas.width/rect.width),
-    y:(point.clientY-rect.top)*(canvas.height/rect.height)
-  };
+const rect=canvas.getBoundingClientRect();
+
+const point=e.touches?e.touches[0]:e;
+
+return{
+x:(point.clientX-rect.left)*(canvas.width/rect.width),
+y:(point.clientY-rect.top)*(canvas.height/rect.height)
+};
+
 }
 
 function startDraw(e){
-  e.preventDefault();
-  drawing=true;
-  const pos=getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(pos.x,pos.y);
+
+e.preventDefault();
+
+drawing=true;
+
+const pos=getPos(e);
+
+ctx.beginPath();
+
+ctx.moveTo(pos.x,pos.y);
+
 }
 
 function draw(e){
-  if(!drawing)return;
-  e.preventDefault();
-  const pos=getPos(e);
-  ctx.lineTo(pos.x,pos.y);
-  ctx.stroke();
+
+if(!drawing)return;
+
+e.preventDefault();
+
+const pos=getPos(e);
+
+ctx.lineTo(pos.x,pos.y);
+
+ctx.stroke();
+
 }
 
 function stopDraw(){
-  drawing=false;
+
+drawing=false;
+
 }
 
 function clearCanvas(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
 }
 
 function clearCanvasWithSound(){
-  playSound("wrongSound");
-  clearCanvas();
+
+playSound("wrongSound");
+
+clearCanvas();
+
 }
 
 canvas.addEventListener("mousedown",startDraw);
+
 canvas.addEventListener("mousemove",draw);
+
 canvas.addEventListener("mouseup",stopDraw);
+
 canvas.addEventListener("mouseleave",stopDraw);
 
 canvas.addEventListener("touchstart",startDraw,{passive:false});
+
 canvas.addEventListener("touchmove",draw,{passive:false});
+
 canvas.addEventListener("touchend",stopDraw);
 
 canvas.addEventListener("pointerdown",startDraw);
+
 canvas.addEventListener("pointermove",draw);
+
 canvas.addEventListener("pointerup",stopDraw);
+
 canvas.addEventListener("pointercancel",stopDraw);
+
 </script>
 
 </body>
