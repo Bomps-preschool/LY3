@@ -190,8 +190,8 @@ html,body{
 }
 
 .singleItem img{
-  width:110px !important;
-  height:110px !important;
+  width:150px !important;
+  height:150px !important;
   object-fit:contain;
 }
 
@@ -315,7 +315,7 @@ button{
   }
   .itemBox img{width:40px;height:40px}
   .fallbackEmoji{font-size:40px}
-  .singleItem img{width:90px!important;height:90px!important}
+  .singleItem img{width:125px!important;height:125px!important}
   #drawCanvas{width:36vw;height:25vh}
   .controls{gap:7px;margin-top:8px}
   button{padding:7px 12px}
@@ -330,7 +330,7 @@ button{
   .notebook{height:82vh}
   .itemBox img{width:32px;height:32px}
   .fallbackEmoji{font-size:32px}
-  .singleItem img{width:75px!important;height:75px!important}
+  .singleItem img{width:95px!important;height:95px!important}
   #drawCanvas{height:21vh}
   .pageTitle{font-size:14px;top:8px}
 }
@@ -467,6 +467,21 @@ function loadPage(){
     const img=document.createElement("img");
     img.src="assets/"+page.img;
     img.alt=page.name;
+
+    if(page.img==="fruits.png"){
+      img.style.width="180px";
+      img.style.height="180px";
+    }
+
+    if(page.img==="ice-cream.png"){
+      img.style.width="170px";
+      img.style.height="170px";
+    }
+
+    if(page.img==="elephant.png"){
+      img.style.width="170px";
+      img.style.height="170px";
+    }
 
     img.onerror=()=>{
       single.innerHTML=`<span class="fallbackEmoji">${page.emoji}</span>`;
