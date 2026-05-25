@@ -1,551 +1,534 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Number Value 11–20</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Number Value 11 to 20</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:'Comic Sans MS', cursive;
-background:linear-gradient(180deg,#d8e9f3,#f6edd2);
-touch-action:manipulation;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:"Comic Sans MS",sans-serif;
+  background:#fff6e9;
+  touch-action:none;
 }
 
 #logoScreen{
-position:fixed;
-inset:0;
-background:linear-gradient(135deg,#d9edf7,#fce8d5,#e5f5dc);
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:9999;
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg,#ffe8b5,#c8ebff,#ffd6e8);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
 }
 
 #logoScreen img{
-width:min(65vw,320px);
-animation:pulse 2s infinite;
+  width:min(60vw,340px);
 }
 
-@keyframes pulse{
-0%,100%{transform:scale(1)}
-50%{transform:scale(1.05)}
-}
-
-#gameContainer{
-display:none;
-width:100%;
-height:100%;
-flex-direction:column;
+#game{
+  display:none;
+  width:100vw;
+  height:100dvh;
+  overflow:hidden;
+  flex-direction:column;
 }
 
 .header{
-width:100%;
-background:#fff3d9;
-padding:12px 10px;
-text-align:center;
-font-size:clamp(16px,2.5vw,28px);
-font-weight:bold;
-color:#6b3a00;
-line-height:1.3;
-box-shadow:0 3px 6px rgba(0,0,0,0.1);
-z-index:5;
+  background:#fff2cf;
+  text-align:center;
+  padding:8px;
+  font-size:clamp(18px,3vw,34px);
+  font-weight:bold;
+  color:#7a4200;
+  box-shadow:0 3px 6px rgba(0,0,0,.1);
+  flex-shrink:0;
 }
 
 .header span{
-font-size:clamp(14px,2vw,22px);
-color:#7a4200;
+  font-size:clamp(14px,2vw,24px);
+  color:#7a4200;
 }
 
-.gameArea{
-flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:10px;
-overflow:hidden;
+.scene{
+  flex:1;
+  min-height:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:url("assets/bg.png") center/cover no-repeat;
+  padding:10px;
+  gap:22px;
 }
 
-.card{
-width:min(92vw,900px);
-height:min(80vh,560px);
-background:#f9f9f9;
-border-radius:30px;
-display:flex;
-overflow:hidden;
-box-shadow:0 12px 25px rgba(0,0,0,0.18);
-position:relative;
+.placeValueBoard{
+  width:min(62vw,560px);
+  height:min(78vh,520px);
+  background:rgba(255,255,255,.92);
+  border-radius:26px;
+  padding:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  gap:25px;
 }
 
-.left{
-width:50%;
-background:#f4f0ff;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-padding:20px;
-position:relative;
-}
-
-.right{
-width:50%;
-background:#eef8ec;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-padding:20px;
-position:relative;
-}
-
-.title{
-position:absolute;
-top:16px;
-font-size:clamp(22px,2.5vw,34px);
-font-weight:bold;
-color:#6b3a00;
-}
-
-.abacus{
-display:flex;
-gap:40px;
-align-items:flex-end;
-justify-content:center;
-width:100%;
-margin-top:40px;
+.column{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  height:100%;
 }
 
 .rod{
-position:relative;
-width:80px;
-height:320px;
-display:flex;
-justify-content:center;
-}
-
-.stick{
-position:absolute;
-bottom:0;
-width:12px;
-height:270px;
-background:linear-gradient(#d78c28,#b96b0b);
-border-radius:10px;
-}
-
-.label{
-position:absolute;
-bottom:-60px;
-background:#46a2de;
-color:white;
-padding:10px 18px;
-border-radius:18px;
-font-size:clamp(20px,2vw,30px);
-font-weight:bold;
+  width:14px;
+  height:min(58vh,360px);
+  background:#b8782b;
+  border-radius:20px;
+  position:relative;
+  box-shadow:inset 0 0 4px rgba(0,0,0,.25);
+  overflow:visible;
 }
 
 .bead{
-position:absolute;
-width:58px;
-height:58px;
-border-radius:50%;
-background:radial-gradient(circle at 30% 30%,#bfe8ff,#5d9ed6);
-border:4px solid #295d96;
-box-shadow:0 4px 10px rgba(0,0,0,0.25);
-transition:all .35s ease;
-cursor:pointer;
-touch-action:manipulation;
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#c7efff,#4a95d8);
+  border:3px solid #2b5d92;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  box-shadow:0 3px 6px rgba(0,0,0,.2);
+  cursor:pointer;
+  transition:top .45s ease;
+  touch-action:none;
+  z-index:5;
 }
 
-.questionText{
-position:absolute;
-top:16px;
-text-align:center;
-font-size:clamp(22px,2.4vw,34px);
-font-weight:bold;
-color:#6b3a00;
-line-height:1.2;
+.label{
+  margin-top:10px;
+  background:#3ea4df;
+  color:white;
+  font-size:clamp(18px,2.5vw,28px);
+  font-weight:bold;
+  padding:5px 22px;
+  border-radius:12px;
+}
+
+.optionsPanel{
+  width:min(28vw,220px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
 }
 
 .options{
-display:flex;
-flex-direction:column;
-gap:18px;
-margin-top:40px;
-width:100%;
-align-items:center;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
 }
 
 .option{
-width:min(220px,70%);
-padding:16px;
-border-radius:20px;
-background:linear-gradient(180deg,#ffcf7d,#ff9d3d);
-font-size:clamp(24px,2.5vw,36px);
-font-weight:bold;
-color:#5a2d00;
-text-align:center;
-cursor:pointer;
-box-shadow:0 6px 12px rgba(0,0,0,0.15);
-transition:.2s;
+  width:95px;
+  height:95px;
+  border-radius:50%;
+  border:none;
+  background:linear-gradient(#ffce73,#ff9b4a);
+  color:#5a2b00;
+  font-size:34px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 5px 10px rgba(0,0,0,.2);
+  transition:.2s;
 }
 
 .option:active{
-transform:scale(.95);
+  transform:scale(.95);
 }
 
-.message{
-height:34px;
-margin-top:10px;
-font-size:clamp(18px,2vw,26px);
-font-weight:bold;
-color:#b10000;
+.feedback{
+  font-size:clamp(20px,2.5vw,32px);
+  font-weight:bold;
+  min-height:38px;
+  text-align:center;
 }
 
-.finalScreen{
-position:fixed;
-inset:0;
-display:none;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-background:linear-gradient(135deg,#ffe7d2,#d7f0ff,#e6f8d8);
-z-index:999;
-overflow:hidden;
+.correct{color:#179b36}
+.wrong{color:#d93333}
+
+.final{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:linear-gradient(#2f1f5b,#6d36a8);
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  color:white;
+  overflow:hidden;
+  text-align:center;
+  z-index:1000;
 }
 
-.finalScreen h1{
-font-size:clamp(42px,7vw,88px);
-color:#6b3a00;
-margin-bottom:20px;
-text-align:center;
-z-index:2;
+.final h1{
+  font-size:clamp(48px,7vw,86px);
+  z-index:2;
+}
+
+.final p{
+  font-size:clamp(26px,4vw,46px);
+  z-index:2;
 }
 
 .playAgain{
-padding:16px 34px;
-border:none;
-border-radius:22px;
-font-size:clamp(24px,2.5vw,34px);
-font-weight:bold;
-background:#7bc96f;
-color:white;
-cursor:pointer;
-z-index:2;
-box-shadow:0 8px 16px rgba(0,0,0,.2);
+  margin-top:24px;
+  padding:14px 30px;
+  border:none;
+  border-radius:18px;
+  background:#ffd04f;
+  color:#5a3500;
+  font-size:26px;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:2;
 }
 
 .confetti{
-position:absolute;
-width:12px;
-height:12px;
-border-radius:50%;
-animation:burst 2.5s linear forwards;
+  position:absolute;
+  top:-30px;
+  width:12px;
+  height:12px;
+  border-radius:3px;
+  animation:fall 5s linear forwards;
+  pointer-events:none;
 }
 
-@keyframes burst{
-0%{
-transform:translate(0,0) scale(.5);
-opacity:1;
-}
-100%{
-transform:translate(var(--x),var(--y)) scale(1.4);
-opacity:0;
-}
+@keyframes fall{
+  0%{transform:translateY(-30px) rotate(0deg);opacity:1}
+  100%{transform:translateY(115vh) rotate(720deg);opacity:0}
 }
 
 @media(max-width:768px){
+  .header{
+    font-size:16px;
+    padding:6px;
+  }
 
-.card{
-width:96vw;
-height:78vh;
+  .scene{
+    gap:8px;
+    padding:6px;
+  }
+
+  .placeValueBoard{
+    width:68vw;
+    height:74vh;
+    padding:10px;
+    gap:12px;
+  }
+
+  .rod{
+    height:52vh;
+  }
+
+  .bead{
+    width:31px;
+    height:31px;
+  }
+
+  .label{
+    font-size:18px;
+    padding:4px 15px;
+  }
+
+  .optionsPanel{
+    width:28vw;
+    gap:10px;
+  }
+
+  .option{
+    width:68px;
+    height:68px;
+    font-size:25px;
+  }
+
+  .feedback{
+    font-size:18px;
+    min-height:28px;
+  }
 }
 
-.abacus{
-gap:16px;
-}
+@media(max-height:560px){
+  .header{
+    font-size:15px;
+    padding:4px;
+  }
 
-.rod{
-width:60px;
-height:250px;
-}
+  .placeValueBoard{
+    height:70vh;
+  }
 
-.stick{
-height:210px;
-}
+  .rod{
+    height:48vh;
+  }
 
-.bead{
-width:44px;
-height:44px;
-}
+  .bead{
+    width:28px;
+    height:28px;
+  }
 
-.label{
-font-size:18px;
-padding:8px 14px;
-bottom:-52px;
-}
+  .option{
+    width:58px;
+    height:58px;
+    font-size:22px;
+  }
 
-.option{
-width:78%;
-font-size:28px;
-padding:14px;
+  .label{
+    font-size:16px;
+  }
 }
-
-.questionText{
-font-size:20px;
-width:90%;
-}
-
-.header{
-font-size:15px;
-padding:10px;
-}
-}
-
 </style>
 </head>
 
 <body>
 
 <div id="logoScreen">
-<img src="assets/innovine-logo.png">
+  <img src="assets/innovine-logo.png">
 </div>
 
-<div id="gameContainer">
+<div id="game">
+  <div class="header">
+    Count the beads and choose the correct answer.<br>
+    <span>Tap on the beads.</span>
+  </div>
 
-<div class="header">
-Count the beads and choose the correct answer.<br>
-<span>Tap on the beads.</span>
+  <div class="scene">
+    <div class="placeValueBoard">
+      <div class="column">
+        <div class="rod" id="tensRod"></div>
+        <div class="label">Tens</div>
+      </div>
+
+      <div class="column">
+        <div class="rod" id="onesRod"></div>
+        <div class="label">Ones</div>
+      </div>
+    </div>
+
+    <div class="optionsPanel">
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+  </div>
 </div>
 
-<div class="gameArea">
-
-<div class="card">
-
-<div class="left">
-
-<div class="abacus">
-
-<div class="rod">
-<div class="stick"></div>
-<div class="label">Tens</div>
-<div id="tensContainer"></div>
+<div class="final" id="finalScreen">
+  <h1>🎉 Well Done 🎉</h1>
+  <p>You completed the game!</p>
+  <button class="playAgain" onclick="playAgain()">Play Again</button>
 </div>
 
-<div class="rod">
-<div class="stick"></div>
-<div class="label">Ones</div>
-<div id="onesContainer"></div>
-</div>
-
-</div>
-
-</div>
-
-<div class="right">
-
-<div class="questionText">Choose the correct answer</div>
-
-<div class="options" id="options"></div>
-
-<div class="message" id="message"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="finalScreen" id="finalScreen">
-<h1>🎉 Well Done 🎉</h1>
-<button class="playAgain" onclick="restartGame()">Play Again</button>
-</div>
-
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/claps.mp3"></audio>
+<audio id="rightSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
 
 <script>
+document.addEventListener("touchmove",function(e){
+  e.preventDefault();
+},{passive:false});
 
-const originalQuestions = [
-{tens:1, ones:3, options:[12,15,13], answer:13},
-{tens:1, ones:7, options:[17,16,20], answer:17},
-{tens:1, ones:5, options:[15,12,14], answer:15},
-{tens:1, ones:1, options:[11,14,18], answer:11},
-{tens:1, ones:9, options:[19,18,17], answer:19},
-{tens:1, ones:4, options:[14,12,18], answer:14},
-{tens:1, ones:8, options:[18,17,20], answer:18},
-{tens:1, ones:2, options:[12,11,16], answer:12},
-{tens:2, ones:0, options:[20,18,19], answer:20},
-{tens:1, ones:6, options:[16,14,15], answer:16}
+const originalQuestions=[
+  {tens:1, ones:3, options:[12,15,13], answer:13},
+  {tens:1, ones:7, options:[17,16,20], answer:17},
+  {tens:1, ones:5, options:[13,15,12], answer:15},
+  {tens:1, ones:1, options:[11,15,19], answer:11},
+  {tens:1, ones:9, options:[18,19,14], answer:19},
+  {tens:1, ones:4, options:[14,17,13], answer:14},
+  {tens:1, ones:8, options:[18,15,11], answer:18},
+  {tens:1, ones:2, options:[19,12,15], answer:12},
+  {tens:2, ones:0, options:[20,18,16], answer:20},
+  {tens:1, ones:6, options:[14,19,16], answer:16}
 ];
 
 let questions=[...originalQuestions];
 let current=0;
+let locked=false;
+let confettiInterval=null;
 
-const tensContainer=document.getElementById("tensContainer");
-const onesContainer=document.getElementById("onesContainer");
+const tensRod=document.getElementById("tensRod");
+const onesRod=document.getElementById("onesRod");
 const optionsDiv=document.getElementById("options");
-const message=document.getElementById("message");
-
-function playSound(id){
-const audio=document.getElementById(id);
-audio.currentTime=0;
-audio.play().catch(()=>{});
-}
+const feedback=document.getElementById("feedback");
 
 setTimeout(()=>{
-document.getElementById("logoScreen").style.display="none";
-document.getElementById("gameContainer").style.display="flex";
-loadQuestion();
+  document.getElementById("logoScreen").style.display="none";
+  document.getElementById("game").style.display="flex";
+  loadQuestion();
 },5000);
 
-function createBeads(container,count){
-
-container.innerHTML="";
-
-for(let i=0;i<count;i++){
-
-const bead=document.createElement("div");
-bead.className="bead";
-
-const startY=20 + (i*62);
-
-bead.style.top=startY+"px";
-
-bead.addEventListener("click",()=>{
-
-let targetY=180-(count-i-1)*48;
-
-bead.style.top=targetY+"px";
-
-});
-
-container.appendChild(bead);
+function playSound(id){
+  const s=document.getElementById(id);
+  if(!s)return;
+  s.currentTime=0;
+  s.play().catch(()=>{});
 }
+
+function createBeads(rod,count){
+  rod.innerHTML="";
+
+  const rodHeight=rod.clientHeight;
+  const beadSize=window.innerWidth<=768 ? 31 : 40;
+  const gap=Math.min(beadSize+7,(rodHeight-beadSize-12)/Math.max(count,1));
+
+  for(let i=0;i<count;i++){
+    const bead=document.createElement("div");
+    bead.className="bead";
+
+    const startTop=8+i*gap;
+    const bottomStart=rodHeight-(count*gap);
+    const downTop=bottomStart+(i*gap);
+
+    bead.style.top=startTop+"px";
+
+    function moveBeadDown(e){
+      e.preventDefault();
+      bead.style.top=downTop+"px";
+    }
+
+    bead.addEventListener("click",moveBeadDown);
+    bead.addEventListener("touchstart",moveBeadDown,{passive:false});
+    bead.addEventListener("pointerdown",moveBeadDown);
+
+    rod.appendChild(bead);
+  }
 }
 
 function loadQuestion(){
+  locked=false;
+  feedback.textContent="";
+  feedback.className="feedback";
 
-message.textContent="";
+  const q=questions[current];
 
-const q=questions[current];
+  createBeads(tensRod,q.tens);
+  createBeads(onesRod,q.ones);
 
-createBeads(tensContainer,q.tens);
-createBeads(onesContainer,q.ones);
+  optionsDiv.innerHTML="";
 
-optionsDiv.innerHTML="";
+  q.options.forEach(opt=>{
+    const btn=document.createElement("button");
+    btn.className="option";
+    btn.textContent=opt;
 
-q.options.forEach(option=>{
+    btn.onclick=()=>checkAnswer(opt);
+    btn.addEventListener("touchstart",e=>{
+      e.preventDefault();
+      checkAnswer(opt);
+    },{passive:false});
 
-const btn=document.createElement("div");
-btn.className="option";
-btn.textContent=option;
-
-btn.onclick=()=>checkAnswer(option);
-
-optionsDiv.appendChild(btn);
-
-});
+    optionsDiv.appendChild(btn);
+  });
 }
 
 function checkAnswer(selected){
+  if(locked)return;
 
-const q=questions[current];
+  const q=questions[current];
 
-if(selected===q.answer){
+  if(selected===q.answer){
+    locked=true;
+    feedback.textContent="Correct!";
+    feedback.className="feedback correct";
+    playSound("rightSound");
 
-playSound("correctSound");
+    document.querySelectorAll(".option").forEach(btn=>{
+      btn.disabled=true;
+      btn.style.opacity=".7";
+    });
 
-setTimeout(()=>{
-nextQuestion();
-},700);
+    setTimeout(()=>{
+      nextQuestion();
+    },900);
 
-}else{
-
-message.textContent="Try Again!";
-playSound("wrongSound");
-
-}
+  }else{
+    feedback.textContent="Try Again!";
+    feedback.className="feedback wrong";
+    playSound("wrongSound");
+  }
 }
 
 function nextQuestion(){
+  current++;
 
-current++;
-
-if(current>=questions.length){
-
-showFinal();
-
-}else{
-
-loadQuestion();
-
-}
+  if(current>=questions.length){
+    showFinal();
+  }else{
+    loadQuestion();
+  }
 }
 
 function showFinal(){
-
-document.getElementById("gameContainer").style.display="none";
-
-const final=document.getElementById("finalScreen");
-final.style.display="flex";
-
-playSound("clapSound");
-
-createConfetti();
-
+  document.getElementById("game").style.display="none";
+  const final=document.getElementById("finalScreen");
+  final.style.display="flex";
+  playSound("clapSound");
+  startContinuousConfetti();
 }
 
-function createConfetti(){
+function createConfettiBurst(){
+  const final=document.getElementById("finalScreen");
+  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
 
-const colors=["#ff4d4d","#ffd93d","#4dff88","#4dc3ff","#ff73d9","#ffffff","#ff9f43"];
+  for(let i=0;i<45;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDelay=Math.random()*0.4+"s";
+    c.style.width=(7+Math.random()*9)+"px";
+    c.style.height=(7+Math.random()*9)+"px";
+    final.appendChild(c);
 
-for(let i=0;i<220;i++){
-
-const c=document.createElement("div");
-c.className="confetti";
-
-c.style.left=Math.random()*100+"vw";
-c.style.top=Math.random()*100+"vh";
-
-c.style.background=colors[Math.floor(Math.random()*colors.length)];
-
-c.style.setProperty("--x",(Math.random()*600-300)+"px");
-c.style.setProperty("--y",(Math.random()*600-300)+"px");
-
-c.style.animationDelay=(Math.random()*1.5)+"s";
-
-document.getElementById("finalScreen").appendChild(c);
-}
+    setTimeout(()=>c.remove(),5600);
+  }
 }
 
-function restartGame(){
+function startContinuousConfetti(){
+  clearInterval(confettiInterval);
+  createConfettiBurst();
 
-document.querySelectorAll(".confetti").forEach(e=>e.remove());
+  confettiInterval=setInterval(()=>{
+    createConfettiBurst();
+  },500);
 
-questions=[...originalQuestions].sort(()=>Math.random()-0.5);
-
-current=0;
-
-document.getElementById("finalScreen").style.display="none";
-document.getElementById("gameContainer").style.display="flex";
-
-loadQuestion();
+  setTimeout(()=>{
+    clearInterval(confettiInterval);
+    confettiInterval=null;
+  },12000);
 }
 
+function playAgain(){
+  document.querySelectorAll(".confetti").forEach(c=>c.remove());
+  clearInterval(confettiInterval);
+
+  questions=[...originalQuestions].sort(()=>Math.random()-0.5);
+  current=0;
+  locked=false;
+
+  document.getElementById("finalScreen").style.display="none";
+  document.getElementById("game").style.display="flex";
+
+  loadQuestion();
+}
 </script>
 
 </body>
