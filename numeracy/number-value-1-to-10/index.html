@@ -6,7 +6,11 @@
 <title>Count and Write Scrapbook Game</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 html,body{
   width:100%;
@@ -42,27 +46,23 @@ html,body{
 
 .header{
   height:52px;
-  flex-shrink:0;
   background:#fff7df;
-  color:#6b3a00;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
   font-size:clamp(16px,2.5vw,28px);
   font-weight:bold;
-  box-shadow:0 3px 8px rgba(0,0,0,.12);
+  color:#6b3a00;
   padding:6px;
 }
 
 .stage{
   flex:1;
-  min-height:0;
   display:flex;
   align-items:center;
   justify-content:center;
   padding:10px;
-  perspective:1400px;
 }
 
 .notebook{
@@ -86,8 +86,6 @@ html,body{
   width:8px;
   transform:translateX(-50%);
   background:#8b5e4b;
-  z-index:5;
-  box-shadow:0 0 10px rgba(0,0,0,.25);
 }
 
 .spiral{
@@ -97,11 +95,11 @@ html,body{
   bottom:20px;
   width:28px;
   transform:translateX(-50%);
-  z-index:8;
   display:flex;
   flex-direction:column;
   justify-content:space-around;
   align-items:center;
+  z-index:5;
 }
 
 .ring{
@@ -115,22 +113,20 @@ html,body{
 .page{
   width:50%;
   height:100%;
-  padding:24px 26px;
-  position:relative;
+  padding:24px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
+  position:relative;
 }
 
 .leftPage{
   background:#fff5df;
-  border-right:2px dashed rgba(90,60,30,.25);
 }
 
 .rightPage{
   background:#edf7ee;
-  border-left:2px dashed rgba(90,60,30,.25);
 }
 
 .pageTitle{
@@ -143,7 +139,6 @@ html,body{
 
 .objectGrid{
   width:88%;
-  max-height:72%;
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
@@ -159,24 +154,12 @@ html,body{
   background:#ffffffb8;
   border-radius:18px;
   padding:5px;
-  box-shadow:0 3px 6px rgba(0,0,0,.1);
 }
 
 .itemBox img{
-  width:clamp(46px,5.4vw,72px);
-  height:clamp(46px,5.4vw,72px);
+  width:70px;
+  height:70px;
   object-fit:contain;
-}
-
-.itemLabel{
-  margin-top:12px;
-  font-size:clamp(20px,2.5vw,34px);
-  font-weight:bold;
-  color:#355c4a;
-  text-align:center;
-  background:#f5df9e;
-  padding:5px 18px;
-  border-radius:18px;
 }
 
 .singleItem{
@@ -188,17 +171,26 @@ html,body{
 }
 
 .singleItem img{
-  width:190px !important;
-  height:190px !important;
+  width:190px;
+  height:190px;
   object-fit:contain;
 }
 
-.writeTitle{
-  font-size:clamp(18px,2.2vw,28px);
+.itemLabel{
+  margin-top:10px;
+  font-size:clamp(18px,2vw,30px);
   font-weight:bold;
-  color:#6b3a00;
+  color:#355c4a;
+  background:#f5df9e;
+  padding:5px 18px;
+  border-radius:18px;
+}
+
+.writeTitle{
+  font-size:clamp(18px,2vw,28px);
+  font-weight:bold;
   margin-bottom:12px;
-  text-align:center;
+  color:#6b3a00;
 }
 
 #drawCanvas{
@@ -208,7 +200,6 @@ html,body{
   border:4px solid #6aa5b8;
   border-radius:20px;
   touch-action:none;
-  box-shadow:inset 0 0 0 3px #f8f2df;
 }
 
 .controls{
@@ -221,7 +212,7 @@ button{
   border:none;
   border-radius:16px;
   padding:9px 20px;
-  font-size:clamp(15px,2vw,21px);
+  font-size:18px;
   font-weight:bold;
   cursor:pointer;
 }
@@ -244,33 +235,17 @@ button{
   height:100%;
   background:#edf7ee;
   transform-origin:left center;
-  transform-style:preserve-3d;
-  z-index:20;
   display:none;
+  z-index:20;
 }
 
 .pageFlip.show{
   display:block;
-  animation:turnNotebookPage .75s ease-in-out forwards;
+  animation:flip .7s ease-in-out forwards;
 }
 
-.pageFlip::before,
-.pageFlip::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  backface-visibility:hidden;
-  background:#edf7ee;
-}
-
-.pageFlip::after{
-  transform:rotateY(180deg);
-  background:#fff5df;
-}
-
-@keyframes turnNotebookPage{
+@keyframes flip{
   0%{transform:rotateY(0deg)}
-  40%{transform:rotateY(-80deg)}
   100%{transform:rotateY(-180deg)}
 }
 
@@ -283,6 +258,7 @@ button{
   justify-content:center;
   flex-direction:column;
   color:white;
+  z-index:1000;
 }
 
 .playAgain{
@@ -293,9 +269,23 @@ button{
 
 @media(max-width:768px){
 
+  .notebook{
+    width:98vw;
+    height:78vh;
+  }
+
+  .objectGrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .itemBox img{
+    width:45px;
+    height:45px;
+  }
+
   .singleItem img{
-    width:170px !important;
-    height:170px !important;
+    width:170px;
+    height:170px;
   }
 
 }
@@ -370,6 +360,7 @@ Count the pictures and write the number on the right page.
 <audio id="clapSound" src="assets/claps.mp3"></audio>
 
 <script>
+
 const originalPages=[
 {count:8,name:"football",img:"football.png"},
 {count:4,name:"cars",img:"car.png"},
@@ -391,123 +382,138 @@ const itemLabel=document.getElementById("itemLabel");
 const pageFlip=document.getElementById("pageFlip");
 
 setTimeout(()=>{
-document.getElementById("logoScreen").style.display="none";
-document.getElementById("game").style.display="flex";
-loadPage();
+  document.getElementById("logoScreen").style.display="none";
+  document.getElementById("game").style.display="flex";
+  loadPage();
 },5000);
 
 function loadPage(){
 
-objectGrid.innerHTML="";
+  objectGrid.innerHTML="";
 
-const page=pages[current];
+  const page=pages[current];
 
-itemLabel.textContent=page.name;
+  itemLabel.textContent=page.name;
 
-if(page.count===1){
+  if(page.count===1){
 
-objectGrid.style.display="flex";
-objectGrid.style.justifyContent="center";
-objectGrid.style.alignItems="center";
+    objectGrid.style.display="flex";
+    objectGrid.style.justifyContent="center";
+    objectGrid.style.alignItems="center";
 
-const single=document.createElement("div");
-single.className="singleItem";
+    const single=document.createElement("div");
+    single.className="singleItem";
 
-const img=document.createElement("img");
-img.src="assets/"+page.img;
+    const img=document.createElement("img");
 
-if(page.img==="fruits.png"){
-img.style.width="290px";
-img.style.height="290px";
-}
+    img.src="assets/"+page.img;
 
-else if(page.img==="ice-cream.png"){
-img.style.width="280px";
-img.style.height="280px";
-}
+    if(page.img==="fruits.png"){
+      img.style.width="320px";
+      img.style.height="320px";
+    }
 
-else if(page.img==="elephant.png"){
-img.style.width="220px";
-img.style.height="220px";
-}
+    else if(page.img==="ice-cream.png"){
+      img.style.width="300px";
+      img.style.height="300px";
+    }
 
-else{
-img.style.width="190px";
-img.style.height="190px";
-}
+    else if(page.img==="elephant.png"){
+      img.style.width="230px";
+      img.style.height="230px";
+    }
 
-single.appendChild(img);
-objectGrid.appendChild(single);
+    else{
+      img.style.width="190px";
+      img.style.height="190px";
+    }
 
-}else{
+    single.appendChild(img);
 
-objectGrid.style.display="grid";
-objectGrid.style.gridTemplateColumns=window.innerWidth<=768?"repeat(3,1fr)":"repeat(4,1fr)";
+    objectGrid.appendChild(single);
 
-for(let i=0;i<page.count;i++){
+  }
 
-const box=document.createElement("div");
-box.className="itemBox";
+  else{
 
-const img=document.createElement("img");
-img.src="assets/"+page.img";
+    objectGrid.style.display="grid";
 
-box.appendChild(img);
-box.appendChild(img);
+    objectGrid.style.gridTemplateColumns=
+    window.innerWidth<=768
+    ?"repeat(3,1fr)"
+    :"repeat(4,1fr)";
 
-objectGrid.appendChild(box);
+    for(let i=0;i<page.count;i++){
 
-}
+      const box=document.createElement("div");
+      box.className="itemBox";
 
-}
+      const img=document.createElement("img");
+
+      img.src="assets/"+page.img;
+
+      box.appendChild(img);
+
+      objectGrid.appendChild(box);
+
+    }
+
+  }
 
 }
 
 function nextPage(){
 
-document.getElementById("rightSound").play();
+  document.getElementById("rightSound").play();
 
-pageFlip.classList.remove("show");
-void pageFlip.offsetWidth;
-pageFlip.classList.add("show");
+  pageFlip.classList.remove("show");
 
-setTimeout(()=>{
+  void pageFlip.offsetWidth;
 
-current++;
+  pageFlip.classList.add("show");
 
-if(current>=pages.length){
+  setTimeout(()=>{
 
-document.getElementById("game").style.display="none";
-document.getElementById("finalScreen").style.display="flex";
+    current++;
 
-document.getElementById("clapSound").play();
+    if(current>=pages.length){
 
-}else{
+      document.getElementById("game").style.display="none";
 
-loadPage();
+      document.getElementById("finalScreen").style.display="flex";
 
-pageFlip.classList.remove("show");
+      document.getElementById("clapSound").play();
 
-}
+    }
 
-},700);
+    else{
+
+      loadPage();
+
+      pageFlip.classList.remove("show");
+
+    }
+
+  },700);
 
 }
 
 function playAgain(){
 
-pages=[...originalPages].sort(()=>Math.random()-0.5);
+  pages=[...originalPages].sort(()=>Math.random()-0.5);
 
-current=0;
+  current=0;
 
-document.getElementById("finalScreen").style.display="none";
-document.getElementById("game").style.display="flex";
+  document.getElementById("finalScreen").style.display="none";
 
-loadPage();
+  document.getElementById("game").style.display="flex";
+
+  loadPage();
 
 }
 
 const canvas=document.getElementById("drawCanvas");
+
 const ctx=canvas.getContext("2d");
 
 ctx.lineWidth=10;
@@ -518,47 +524,49 @@ let drawing=false;
 
 function getPos(e){
 
-const rect=canvas.getBoundingClientRect();
+  const rect=canvas.getBoundingClientRect();
 
-const point=e.touches?e.touches[0]:e;
+  const point=e.touches?e.touches[0]:e;
 
-return{
-x:(point.clientX-rect.left)*(canvas.width/rect.width),
-y:(point.clientY-rect.top)*(canvas.height/rect.height)
-};
+  return{
+    x:(point.clientX-rect.left)*(canvas.width/rect.width),
+    y:(point.clientY-rect.top)*(canvas.height/rect.height)
+  };
 
 }
 
 function startDraw(e){
 
-drawing=true;
+  drawing=true;
 
-const pos=getPos(e);
+  const pos=getPos(e);
 
-ctx.beginPath();
-ctx.moveTo(pos.x,pos.y);
+  ctx.beginPath();
+
+  ctx.moveTo(pos.x,pos.y);
 
 }
 
 function draw(e){
 
-if(!drawing)return;
+  if(!drawing)return;
 
-e.preventDefault();
+  e.preventDefault();
 
-const pos=getPos(e);
+  const pos=getPos(e);
 
-ctx.lineTo(pos.x,pos.y);
-ctx.stroke();
+  ctx.lineTo(pos.x,pos.y);
+
+  ctx.stroke();
 
 }
 
 function stopDraw(){
-drawing=false;
+  drawing=false;
 }
 
 function clearCanvas(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
 canvas.addEventListener("mousedown",startDraw);
