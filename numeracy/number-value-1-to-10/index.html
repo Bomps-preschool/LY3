@@ -178,7 +178,8 @@ html,body{
 .writeTitle{
   font-size:clamp(18px,2vw,28px);
   font-weight:bold;
-  margin-bottom:12px;
+  margin-bottom:22px;
+  margin-top:-28px;
   color:#6b3a00;
 }
 
@@ -274,6 +275,10 @@ button{
   .objectGrid{grid-template-columns:repeat(3,1fr)}
   .itemBox img{width:45px;height:45px}
   .singleItem img{width:170px;height:170px}
+  .writeTitle{
+    margin-top:-18px;
+    margin-bottom:16px;
+  }
 }
 </style>
 </head>
@@ -365,6 +370,7 @@ function preloadImages(){
     "football.png","car.png","teddy.png","cycle.png","fruits.png",
     "honeybee.png","star.png","elephant.png","ice-cream.png","umbrella.png"
   ];
+
   files.forEach(file=>{
     const img=new Image();
     img.src="assets/"+file;
@@ -476,25 +482,39 @@ function playAgain(){
 
 function createCrackers(){
   const final=document.getElementById("finalScreen");
-  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
 
-  for(let burst=0;burst<22;burst++){
+  const colors=[
+    "#ff4d4d",
+    "#ffd93d",
+    "#6bff95",
+    "#4dc3ff",
+    "#ff73d9",
+    "#ffffff",
+    "#ff9f43",
+    "#b892ff"
+  ];
+
+  for(let burst=0;burst<40;burst++){
     const cx=Math.random()*100;
     const cy=Math.random()*80+5;
 
-    for(let i=0;i<36;i++){
+    for(let i=0;i<50;i++){
       const c=document.createElement("div");
       c.className="cracker";
       c.style.left=cx+"vw";
       c.style.top=cy+"vh";
+
+      c.style.width=(8+Math.random()*10)+"px";
+      c.style.height=c.style.width;
+
       c.style.background=colors[Math.floor(Math.random()*colors.length)];
 
-      const angle=(Math.PI*2*i)/36;
-      const distance=90+Math.random()*140;
+      const angle=(Math.PI*2*i)/50;
+      const distance=140+Math.random()*220;
 
       c.style.setProperty("--x",Math.cos(angle)*distance+"px");
       c.style.setProperty("--y",Math.sin(angle)*distance+"px");
-      c.style.animationDelay=(burst*.10)+"s";
+      c.style.animationDelay=(burst*0.08)+"s";
 
       final.appendChild(c);
     }
