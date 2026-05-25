@@ -6,11 +6,7 @@
 <title>Count and Write Scrapbook Game</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 html,body{
   width:100%;
@@ -31,9 +27,7 @@ html,body{
   z-index:999;
 }
 
-#logoScreen img{
-  width:min(60vw,350px);
-}
+#logoScreen img{width:min(60vw,350px)}
 
 #game{
   display:none;
@@ -121,13 +115,8 @@ html,body{
   position:relative;
 }
 
-.leftPage{
-  background:#fff5df;
-}
-
-.rightPage{
-  background:#edf7ee;
-}
+.leftPage{background:#fff5df}
+.rightPage{background:#edf7ee}
 
 .pageTitle{
   position:absolute;
@@ -217,15 +206,8 @@ button{
   cursor:pointer;
 }
 
-.clearBtn{
-  background:#d68b73;
-  color:white;
-}
-
-.nextBtn{
-  background:#7aa874;
-  color:white;
-}
+.clearBtn{background:#d68b73;color:white}
+.nextBtn{background:#7aa874;color:white}
 
 .pageFlip{
   position:absolute;
@@ -258,36 +240,40 @@ button{
   justify-content:center;
   flex-direction:column;
   color:white;
+  overflow:hidden;
   z-index:1000;
+}
+
+.final h1{
+  font-size:clamp(42px,7vw,82px);
+  z-index:2;
 }
 
 .playAgain{
   margin-top:24px;
   background:#f5df9e;
   color:#5a3500;
+  z-index:2;
+}
+
+.cracker{
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  animation:cracker 1.8s ease-out forwards;
+}
+
+@keyframes cracker{
+  0%{transform:translate(0,0) scale(.5);opacity:1}
+  100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
 }
 
 @media(max-width:768px){
-
-  .notebook{
-    width:98vw;
-    height:78vh;
-  }
-
-  .objectGrid{
-    grid-template-columns:repeat(3,1fr);
-  }
-
-  .itemBox img{
-    width:45px;
-    height:45px;
-  }
-
-  .singleItem img{
-    width:170px;
-    height:170px;
-  }
-
+  .notebook{width:98vw;height:78vh}
+  .objectGrid{grid-template-columns:repeat(3,1fr)}
+  .itemBox img{width:45px;height:45px}
+  .singleItem img{width:170px;height:170px}
 }
 </style>
 </head>
@@ -299,79 +285,62 @@ button{
 </div>
 
 <div id="game">
+  <div class="header">Count the pictures and write the number on the right page.</div>
 
-<div class="header">
-Count the pictures and write the number on the right page.
-</div>
+  <div class="stage">
+    <div class="notebook">
 
-<div class="stage">
+      <div class="page leftPage">
+        <div class="pageTitle">Count</div>
+        <div class="objectGrid" id="objectGrid"></div>
+        <div class="itemLabel" id="itemLabel"></div>
+      </div>
 
-<div class="notebook">
+      <div class="page rightPage">
+        <div class="writeTitle">Write the number here</div>
+        <canvas id="drawCanvas" width="420" height="300"></canvas>
+        <div class="controls">
+          <button class="clearBtn" onclick="clearCanvasWithSound()">Clear</button>
+          <button class="nextBtn" onclick="nextPage()">Next Page</button>
+        </div>
+      </div>
 
-<div class="page leftPage">
+      <div class="spiral">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+      </div>
 
-<div class="pageTitle">Count</div>
+      <div class="pageFlip" id="pageFlip"></div>
 
-<div class="objectGrid" id="objectGrid"></div>
-
-<div class="itemLabel" id="itemLabel"></div>
-
-</div>
-
-<div class="page rightPage">
-
-<div class="pageTitle">Write</div>
-
-<div class="writeTitle">Write the number here</div>
-
-<canvas id="drawCanvas" width="420" height="300"></canvas>
-
-<div class="controls">
-<button class="clearBtn" onclick="clearCanvas()">Clear</button>
-<button class="nextBtn" onclick="nextPage()">Next Page</button>
-</div>
-
-</div>
-
-<div class="spiral">
-<div class="ring"></div>
-<div class="ring"></div>
-<div class="ring"></div>
-<div class="ring"></div>
-<div class="ring"></div>
-<div class="ring"></div>
-</div>
-
-<div class="pageFlip" id="pageFlip"></div>
-
-</div>
-
-</div>
-
+    </div>
+  </div>
 </div>
 
 <div class="final" id="finalScreen">
-<h1>🎉 Congratulations 🎉</h1>
-<button class="playAgain" onclick="playAgain()">Play Again</button>
+  <h1>🎉 Congratulations 🎉</h1>
+  <button class="playAgain" onclick="playAgain()">Play Again</button>
 </div>
 
-<audio id="rightSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/claps.mp3"></audio>
+<audio id="rightSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
 
 <script>
-
 const originalPages=[
-{count:8,name:"football",img:"football.png"},
-{count:4,name:"cars",img:"car.png"},
-{count:9,name:"teddy bears",img:"teddy.png"},
-{count:3,name:"cycles",img:"cycle.png"},
-{count:1,name:"fruits",img:"fruits.png"},
-{count:10,name:"bees",img:"honeybee.png"},
-{count:2,name:"stars",img:"star.png"},
-{count:1,name:"elephant",img:"elephant.png"},
-{count:1,name:"ice-cream",img:"ice-cream.png"},
-{count:7,name:"umbrellas",img:"umbrella.png"}
+  {count:8,name:"football",img:"football.png"},
+  {count:4,name:"cars",img:"car.png"},
+  {count:9,name:"teddy bears",img:"teddy.png"},
+  {count:3,name:"cycles",img:"cycle.png"},
+  {count:1,name:"fruits",img:"fruits.png"},
+  {count:10,name:"bees",img:"honeybee.png"},
+  {count:2,name:"stars",img:"star.png"},
+  {count:1,name:"elephant",img:"elephant.png"},
+  {count:1,name:"ice-cream",img:"ice-cream.png"},
+  {count:7,name:"umbrellas",img:"umbrella.png"}
 ];
 
 let pages=[...originalPages];
@@ -381,22 +350,50 @@ const objectGrid=document.getElementById("objectGrid");
 const itemLabel=document.getElementById("itemLabel");
 const pageFlip=document.getElementById("pageFlip");
 
+const canvas=document.getElementById("drawCanvas");
+const ctx=canvas.getContext("2d");
+
+ctx.lineWidth=10;
+ctx.lineCap="round";
+ctx.lineJoin="round";
+ctx.strokeStyle="#333";
+
+let drawing=false;
+
+function preloadImages(){
+  const files=[
+    "football.png","car.png","teddy.png","cycle.png","fruits.png",
+    "honeybee.png","star.png","elephant.png","ice-cream.png","umbrella.png"
+  ];
+  files.forEach(file=>{
+    const img=new Image();
+    img.src="assets/"+file;
+  });
+}
+
+preloadImages();
+
 setTimeout(()=>{
   document.getElementById("logoScreen").style.display="none";
   document.getElementById("game").style.display="flex";
   loadPage();
 },5000);
 
-function loadPage(){
+function playSound(id){
+  const sound=document.getElementById(id);
+  if(!sound)return;
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
 
+function loadPage(){
+  clearCanvas();
   objectGrid.innerHTML="";
 
   const page=pages[current];
-
   itemLabel.textContent=page.name;
 
   if(page.count===1){
-
     objectGrid.style.display="flex";
     objectGrid.style.justifyContent="center";
     objectGrid.style.alignItems="center";
@@ -405,160 +402,129 @@ function loadPage(){
     single.className="singleItem";
 
     const img=document.createElement("img");
-
     img.src="assets/"+page.img;
 
     if(page.img==="fruits.png"){
       img.style.width="320px";
       img.style.height="320px";
-    }
-
-    else if(page.img==="ice-cream.png"){
+    }else if(page.img==="ice-cream.png"){
       img.style.width="300px";
       img.style.height="300px";
-    }
-
-    else if(page.img==="elephant.png"){
+    }else if(page.img==="elephant.png"){
       img.style.width="230px";
       img.style.height="230px";
-    }
-
-    else{
+    }else{
       img.style.width="190px";
       img.style.height="190px";
     }
 
     single.appendChild(img);
-
     objectGrid.appendChild(single);
 
-  }
-
-  else{
-
+  }else{
     objectGrid.style.display="grid";
-
-    objectGrid.style.gridTemplateColumns=
-    window.innerWidth<=768
-    ?"repeat(3,1fr)"
-    :"repeat(4,1fr)";
+    objectGrid.style.gridTemplateColumns=window.innerWidth<=768 ? "repeat(3,1fr)" : "repeat(4,1fr)";
 
     for(let i=0;i<page.count;i++){
-
       const box=document.createElement("div");
       box.className="itemBox";
 
       const img=document.createElement("img");
-
       img.src="assets/"+page.img;
 
       box.appendChild(img);
-
       objectGrid.appendChild(box);
-
     }
-
   }
-
 }
 
 function nextPage(){
-
-  document.getElementById("rightSound").play();
+  playSound("rightSound");
+  clearCanvas();
 
   pageFlip.classList.remove("show");
-
   void pageFlip.offsetWidth;
-
   pageFlip.classList.add("show");
 
   setTimeout(()=>{
-
     current++;
 
     if(current>=pages.length){
-
-      document.getElementById("game").style.display="none";
-
-      document.getElementById("finalScreen").style.display="flex";
-
-      document.getElementById("clapSound").play();
-
-    }
-
-    else{
-
+      showFinal();
+    }else{
       loadPage();
-
       pageFlip.classList.remove("show");
-
     }
-
   },700);
+}
 
+function showFinal(){
+  document.getElementById("game").style.display="none";
+  document.getElementById("finalScreen").style.display="flex";
+  playSound("clapSound");
+  createCrackers();
 }
 
 function playAgain(){
-
+  document.querySelectorAll(".cracker").forEach(c=>c.remove());
   pages=[...originalPages].sort(()=>Math.random()-0.5);
-
   current=0;
-
   document.getElementById("finalScreen").style.display="none";
-
   document.getElementById("game").style.display="flex";
-
   loadPage();
-
 }
 
-const canvas=document.getElementById("drawCanvas");
+function createCrackers(){
+  const final=document.getElementById("finalScreen");
+  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
 
-const ctx=canvas.getContext("2d");
+  for(let burst=0;burst<22;burst++){
+    const cx=Math.random()*100;
+    const cy=Math.random()*80+5;
 
-ctx.lineWidth=10;
-ctx.lineCap="round";
-ctx.strokeStyle="#333";
+    for(let i=0;i<36;i++){
+      const c=document.createElement("div");
+      c.className="cracker";
+      c.style.left=cx+"vw";
+      c.style.top=cy+"vh";
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
 
-let drawing=false;
+      const angle=(Math.PI*2*i)/36;
+      const distance=90+Math.random()*140;
+
+      c.style.setProperty("--x",Math.cos(angle)*distance+"px");
+      c.style.setProperty("--y",Math.sin(angle)*distance+"px");
+      c.style.animationDelay=(burst*.10)+"s";
+
+      final.appendChild(c);
+    }
+  }
+}
 
 function getPos(e){
-
   const rect=canvas.getBoundingClientRect();
-
   const point=e.touches?e.touches[0]:e;
 
   return{
     x:(point.clientX-rect.left)*(canvas.width/rect.width),
     y:(point.clientY-rect.top)*(canvas.height/rect.height)
   };
-
 }
 
 function startDraw(e){
-
+  e.preventDefault();
   drawing=true;
-
   const pos=getPos(e);
-
   ctx.beginPath();
-
   ctx.moveTo(pos.x,pos.y);
-
 }
 
 function draw(e){
-
   if(!drawing)return;
-
   e.preventDefault();
-
   const pos=getPos(e);
-
   ctx.lineTo(pos.x,pos.y);
-
   ctx.stroke();
-
 }
 
 function stopDraw(){
@@ -567,6 +533,11 @@ function stopDraw(){
 
 function clearCanvas(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+function clearCanvasWithSound(){
+  playSound("wrongSound");
+  clearCanvas();
 }
 
 canvas.addEventListener("mousedown",startDraw);
@@ -578,6 +549,10 @@ canvas.addEventListener("touchstart",startDraw,{passive:false});
 canvas.addEventListener("touchmove",draw,{passive:false});
 canvas.addEventListener("touchend",stopDraw);
 
+canvas.addEventListener("pointerdown",startDraw);
+canvas.addEventListener("pointermove",draw);
+canvas.addEventListener("pointerup",stopDraw);
+canvas.addEventListener("pointercancel",stopDraw);
 </script>
 
 </body>
