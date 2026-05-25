@@ -27,7 +27,9 @@ html,body{
   z-index:999;
 }
 
-#logoScreen img{width:min(60vw,350px)}
+#logoScreen img{
+  width:min(60vw,350px);
+}
 
 #game{
   display:none;
@@ -166,10 +168,6 @@ html,body{
   object-fit:contain;
 }
 
-.fallbackEmoji{
-  font-size:clamp(42px,5.8vw,76px);
-}
-
 .itemLabel{
   margin-top:12px;
   font-size:clamp(20px,2.5vw,34px);
@@ -190,8 +188,8 @@ html,body{
 }
 
 .singleItem img{
-  width:150px !important;
-  height:150px !important;
+  width:190px !important;
+  height:190px !important;
   object-fit:contain;
 }
 
@@ -226,11 +224,17 @@ button{
   font-size:clamp(15px,2vw,21px);
   font-weight:bold;
   cursor:pointer;
-  box-shadow:0 4px 8px rgba(0,0,0,.15);
 }
 
-.clearBtn{background:#d68b73;color:white}
-.nextBtn{background:#7aa874;color:white}
+.clearBtn{
+  background:#d68b73;
+  color:white;
+}
+
+.nextBtn{
+  background:#7aa874;
+  color:white;
+}
 
 .pageFlip{
   position:absolute;
@@ -257,7 +261,6 @@ button{
   inset:0;
   backface-visibility:hidden;
   background:#edf7ee;
-  box-shadow:inset 18px 0 25px rgba(0,0,0,.12),0 8px 18px rgba(0,0,0,.18);
 }
 
 .pageFlip::after{
@@ -279,60 +282,22 @@ button{
   align-items:center;
   justify-content:center;
   flex-direction:column;
-  text-align:center;
   color:white;
-  overflow:hidden;
-  z-index:1000;
 }
 
-.final h1{font-size:clamp(42px,7vw,82px);z-index:2}
-.final p{font-size:clamp(24px,4vw,42px);z-index:2}
-.playAgain{margin-top:24px;background:#f5df9e;color:#5a3500;z-index:2}
-
-.cracker{
-  position:absolute;
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  animation:cracker 1.7s ease-out forwards;
-}
-
-@keyframes cracker{
-  0%{transform:translate(0,0) scale(.4);opacity:1}
-  100%{transform:translate(var(--x),var(--y)) scale(1.8);opacity:0}
+.playAgain{
+  margin-top:24px;
+  background:#f5df9e;
+  color:#5a3500;
 }
 
 @media(max-width:768px){
-  .header{height:44px;font-size:15px}
-  .stage{padding:6px}
-  .notebook{width:98vw;height:78vh;border-width:4px}
-  .page{padding:18px 14px}
-  .objectGrid{
-    width:84%;
-    grid-template-columns:repeat(3,1fr);
-    gap:6px;
-    margin-left:-8px;
-  }
-  .itemBox img{width:40px;height:40px}
-  .fallbackEmoji{font-size:40px}
-  .singleItem img{width:125px!important;height:125px!important}
-  #drawCanvas{width:36vw;height:25vh}
-  .controls{gap:7px;margin-top:8px}
-  button{padding:7px 12px}
-  .writeTitle{font-size:14px}
-  .itemLabel{font-size:16px}
-  .spiral{width:20px}
-  .ring{width:18px;height:18px;border-width:4px}
-}
 
-@media(max-height:560px){
-  .header{height:36px;font-size:13px}
-  .notebook{height:82vh}
-  .itemBox img{width:32px;height:32px}
-  .fallbackEmoji{font-size:32px}
-  .singleItem img{width:95px!important;height:95px!important}
-  #drawCanvas{height:21vh}
-  .pageTitle{font-size:14px;top:8px}
+  .singleItem img{
+    width:170px !important;
+    height:170px !important;
+  }
+
 }
 </style>
 </head>
@@ -340,301 +305,271 @@ button{
 <body>
 
 <div id="logoScreen">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+  <img src="assets/innovine-logo.png">
 </div>
 
 <div id="game">
-  <div class="header">Count the pictures and write the number on the right page.</div>
 
-  <div class="stage">
-    <div class="notebook">
-      <div class="page leftPage">
-        <div class="pageTitle">Count</div>
-        <div class="objectGrid" id="objectGrid"></div>
-        <div class="itemLabel" id="itemLabel"></div>
-      </div>
+<div class="header">
+Count the pictures and write the number on the right page.
+</div>
 
-      <div class="page rightPage">
-        <div class="pageTitle">Write</div>
-        <div class="writeTitle">Write the number here</div>
-        <canvas id="drawCanvas" width="420" height="300"></canvas>
-        <div class="controls">
-          <button class="clearBtn" onclick="clearCanvasWithSound()">Clear</button>
-          <button class="nextBtn" onclick="nextPage()">Next Page</button>
-        </div>
-      </div>
+<div class="stage">
 
-      <div class="spiral">
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-        <div class="ring"></div>
-      </div>
+<div class="notebook">
 
-      <div class="pageFlip" id="pageFlip"></div>
-    </div>
-  </div>
+<div class="page leftPage">
+
+<div class="pageTitle">Count</div>
+
+<div class="objectGrid" id="objectGrid"></div>
+
+<div class="itemLabel" id="itemLabel"></div>
+
+</div>
+
+<div class="page rightPage">
+
+<div class="pageTitle">Write</div>
+
+<div class="writeTitle">Write the number here</div>
+
+<canvas id="drawCanvas" width="420" height="300"></canvas>
+
+<div class="controls">
+<button class="clearBtn" onclick="clearCanvas()">Clear</button>
+<button class="nextBtn" onclick="nextPage()">Next Page</button>
+</div>
+
+</div>
+
+<div class="spiral">
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+<div class="ring"></div>
+</div>
+
+<div class="pageFlip" id="pageFlip"></div>
+
+</div>
+
+</div>
+
 </div>
 
 <div class="final" id="finalScreen">
-  <h1>🎉 Congratulations! 🎉</h1>
-  <p>Great counting work!</p>
-  <button class="playAgain" onclick="playAgain()">Play Again</button>
+<h1>🎉 Congratulations 🎉</h1>
+<button class="playAgain" onclick="playAgain()">Play Again</button>
 </div>
 
-<audio id="rightSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
+<audio id="rightSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/claps.mp3"></audio>
 
 <script>
-document.addEventListener("touchmove",function(e){
-  if(!e.target.closest("#drawCanvas")){
-    e.preventDefault();
-  }
-},{passive:false});
-
 const originalPages=[
-  {count:8, name:"football", img:"football.png", emoji:"⚽"},
-  {count:4, name:"cars", img:"car.png", emoji:"🚗"},
-  {count:9, name:"teddy bears", img:"teddy.png", emoji:"🧸"},
-  {count:3, name:"cycles", img:"cycle.png", emoji:"🚲"},
-  {count:1, name:"fruits", img:"fruits.png", emoji:"🍎"},
-  {count:10, name:"bees", img:"honeybee.png", emoji:"🐝"},
-  {count:2, name:"stars", img:"star.png", emoji:"⭐"},
-  {count:1, name:"elephant", img:"elephant.png", emoji:"🐘"},
-  {count:1, name:"ice-cream", img:"ice-cream.png", emoji:"🍦"},
-  {count:7, name:"umbrellas", img:"umbrella.png", emoji:"☂️"}
+{count:8,name:"football",img:"football.png"},
+{count:4,name:"cars",img:"car.png"},
+{count:9,name:"teddy bears",img:"teddy.png"},
+{count:3,name:"cycles",img:"cycle.png"},
+{count:1,name:"fruits",img:"fruits.png"},
+{count:10,name:"bees",img:"honeybee.png"},
+{count:2,name:"stars",img:"star.png"},
+{count:1,name:"elephant",img:"elephant.png"},
+{count:1,name:"ice-cream",img:"ice-cream.png"},
+{count:7,name:"umbrellas",img:"umbrella.png"}
 ];
 
 let pages=[...originalPages];
 let current=0;
-let turning=false;
 
-let objectGrid;
-let itemLabel;
-let pageFlip;
-let canvas;
-let ctx;
-let drawing=false;
+const objectGrid=document.getElementById("objectGrid");
+const itemLabel=document.getElementById("itemLabel");
+const pageFlip=document.getElementById("pageFlip");
 
-window.addEventListener("load",()=>{
-  objectGrid=document.getElementById("objectGrid");
-  itemLabel=document.getElementById("itemLabel");
-  pageFlip=document.getElementById("pageFlip");
-  canvas=document.getElementById("drawCanvas");
-  ctx=canvas.getContext("2d");
-
-  ctx.lineWidth=10;
-  ctx.lineCap="round";
-  ctx.lineJoin="round";
-  ctx.strokeStyle="#333";
-
-  addCanvasEvents();
-
-  setTimeout(()=>{
-    document.getElementById("logoScreen").style.display="none";
-    document.getElementById("game").style.display="flex";
-    loadPage();
-  },5000);
-});
-
-function playSound(id){
-  const s=document.getElementById(id);
-  if(!s)return;
-  s.currentTime=0;
-  s.play().catch(()=>{});
-}
+setTimeout(()=>{
+document.getElementById("logoScreen").style.display="none";
+document.getElementById("game").style.display="flex";
+loadPage();
+},5000);
 
 function loadPage(){
-  if(!objectGrid || !itemLabel)return;
 
-  clearCanvas();
-  objectGrid.innerHTML="";
+objectGrid.innerHTML="";
 
-  const page=pages[current];
-  itemLabel.textContent=page.name;
+const page=pages[current];
 
-  if(page.count===1){
-    objectGrid.style.display="flex";
-    objectGrid.style.justifyContent="center";
-    objectGrid.style.alignItems="center";
+itemLabel.textContent=page.name;
 
-    const single=document.createElement("div");
-    single.className="singleItem";
+if(page.count===1){
 
-    const img=document.createElement("img");
-    img.src="assets/"+page.img;
-    img.alt=page.name;
+objectGrid.style.display="flex";
+objectGrid.style.justifyContent="center";
+objectGrid.style.alignItems="center";
 
-    if(page.img==="fruits.png"){
-      img.style.width="180px";
-      img.style.height="180px";
-    }
+const single=document.createElement("div");
+single.className="singleItem";
 
-    if(page.img==="ice-cream.png"){
-      img.style.width="170px";
-      img.style.height="170px";
-    }
+const img=document.createElement("img");
+img.src="assets/"+page.img;
 
-    if(page.img==="elephant.png"){
-      img.style.width="170px";
-      img.style.height="170px";
-    }
+if(page.img==="fruits.png"){
+img.style.width="290px";
+img.style.height="290px";
+}
 
-    img.onerror=()=>{
-      single.innerHTML=`<span class="fallbackEmoji">${page.emoji}</span>`;
-    };
+else if(page.img==="ice-cream.png"){
+img.style.width="280px";
+img.style.height="280px";
+}
 
-    single.appendChild(img);
-    objectGrid.appendChild(single);
-  }else{
-    objectGrid.style.display="grid";
-    objectGrid.style.gridTemplateColumns=window.innerWidth<=768 ? "repeat(3,1fr)" : "repeat(4,1fr)";
+else if(page.img==="elephant.png"){
+img.style.width="220px";
+img.style.height="220px";
+}
 
-    for(let i=0;i<page.count;i++){
-      const box=document.createElement("div");
-      box.className="itemBox";
+else{
+img.style.width="190px";
+img.style.height="190px";
+}
 
-      const img=document.createElement("img");
-      img.src="assets/"+page.img;
-      img.alt=page.name;
+single.appendChild(img);
+objectGrid.appendChild(single);
 
-      img.onerror=()=>{
-        box.innerHTML=`<span class="fallbackEmoji">${page.emoji}</span>`;
-      };
+}else{
 
-      box.appendChild(img);
-      objectGrid.appendChild(box);
-    }
-  }
+objectGrid.style.display="grid";
+objectGrid.style.gridTemplateColumns=window.innerWidth<=768?"repeat(3,1fr)":"repeat(4,1fr)";
+
+for(let i=0;i<page.count;i++){
+
+const box=document.createElement("div");
+box.className="itemBox";
+
+const img=document.createElement("img");
+img.src="assets/"+page.img";
+
+box.appendChild(img);
+box.appendChild(img);
+
+objectGrid.appendChild(box);
+
+}
+
+}
+
 }
 
 function nextPage(){
-  if(turning)return;
-  turning=true;
 
-  playSound("rightSound");
+document.getElementById("rightSound").play();
 
-  pageFlip.classList.remove("show");
-  void pageFlip.offsetWidth;
-  pageFlip.classList.add("show");
+pageFlip.classList.remove("show");
+void pageFlip.offsetWidth;
+pageFlip.classList.add("show");
 
-  setTimeout(()=>{
-    current++;
+setTimeout(()=>{
 
-    if(current>=pages.length){
-      showFinal();
-    }else{
-      loadPage();
-      pageFlip.classList.remove("show");
-      turning=false;
-    }
-  },720);
+current++;
+
+if(current>=pages.length){
+
+document.getElementById("game").style.display="none";
+document.getElementById("finalScreen").style.display="flex";
+
+document.getElementById("clapSound").play();
+
+}else{
+
+loadPage();
+
+pageFlip.classList.remove("show");
+
 }
 
-function showFinal(){
-  document.getElementById("game").style.display="none";
-  const final=document.getElementById("finalScreen");
-  final.style.display="flex";
-  playSound("clapSound");
-  createCrackers();
-  turning=false;
+},700);
+
 }
 
 function playAgain(){
-  document.querySelectorAll(".cracker").forEach(c=>c.remove());
-  pages=[...originalPages].sort(()=>Math.random()-0.5);
-  current=0;
-  turning=false;
-  document.getElementById("finalScreen").style.display="none";
-  document.getElementById("game").style.display="flex";
-  pageFlip.classList.remove("show");
-  loadPage();
+
+pages=[...originalPages].sort(()=>Math.random()-0.5);
+
+current=0;
+
+document.getElementById("finalScreen").style.display="none";
+document.getElementById("game").style.display="flex";
+
+loadPage();
+
 }
 
-function createCrackers(){
-  const final=document.getElementById("finalScreen");
-  const colors=["#ff4d4d","#ffd93d","#6bff95","#4dc3ff","#ff73d9","#ffffff"];
+const canvas=document.getElementById("drawCanvas");
+const ctx=canvas.getContext("2d");
 
-  for(let burst=0;burst<18;burst++){
-    const cx=Math.random()*100;
-    const cy=Math.random()*80+5;
+ctx.lineWidth=10;
+ctx.lineCap="round";
+ctx.strokeStyle="#333";
 
-    for(let i=0;i<32;i++){
-      const c=document.createElement("div");
-      c.className="cracker";
-      c.style.left=cx+"vw";
-      c.style.top=cy+"vh";
-      c.style.background=colors[Math.floor(Math.random()*colors.length)];
-
-      const angle=(Math.PI*2*i)/32;
-      const distance=80+Math.random()*130;
-
-      c.style.setProperty("--x",Math.cos(angle)*distance+"px");
-      c.style.setProperty("--y",Math.sin(angle)*distance+"px");
-      c.style.animationDelay=(burst*.12)+"s";
-
-      final.appendChild(c);
-    }
-  }
-}
-
-function addCanvasEvents(){
-  canvas.addEventListener("mousedown",startDraw);
-  canvas.addEventListener("mousemove",draw);
-  canvas.addEventListener("mouseup",stopDraw);
-  canvas.addEventListener("mouseleave",stopDraw);
-
-  canvas.addEventListener("touchstart",startDraw,{passive:false});
-  canvas.addEventListener("touchmove",draw,{passive:false});
-  canvas.addEventListener("touchend",stopDraw);
-
-  canvas.addEventListener("pointerdown",startDraw);
-  canvas.addEventListener("pointermove",draw);
-  canvas.addEventListener("pointerup",stopDraw);
-  canvas.addEventListener("pointercancel",stopDraw);
-}
+let drawing=false;
 
 function getPos(e){
-  const r=canvas.getBoundingClientRect();
-  const p=e.touches?e.touches[0]:e;
 
-  return{
-    x:(p.clientX-r.left)*(canvas.width/r.width),
-    y:(p.clientY-r.top)*(canvas.height/r.height)
-  };
+const rect=canvas.getBoundingClientRect();
+
+const point=e.touches?e.touches[0]:e;
+
+return{
+x:(point.clientX-rect.left)*(canvas.width/rect.width),
+y:(point.clientY-rect.top)*(canvas.height/rect.height)
+};
+
 }
 
 function startDraw(e){
-  e.preventDefault();
-  drawing=true;
-  const p=getPos(e);
-  ctx.beginPath();
-  ctx.moveTo(p.x,p.y);
+
+drawing=true;
+
+const pos=getPos(e);
+
+ctx.beginPath();
+ctx.moveTo(pos.x,pos.y);
+
 }
 
 function draw(e){
-  if(!drawing)return;
-  e.preventDefault();
-  const p=getPos(e);
-  ctx.lineTo(p.x,p.y);
-  ctx.stroke();
+
+if(!drawing)return;
+
+e.preventDefault();
+
+const pos=getPos(e);
+
+ctx.lineTo(pos.x,pos.y);
+ctx.stroke();
+
 }
 
-function stopDraw(){drawing=false}
+function stopDraw(){
+drawing=false;
+}
 
 function clearCanvas(){
-  if(ctx && canvas){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
+ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-function clearCanvasWithSound(){
-  playSound("wrongSound");
-  clearCanvas();
-}
+canvas.addEventListener("mousedown",startDraw);
+canvas.addEventListener("mousemove",draw);
+canvas.addEventListener("mouseup",stopDraw);
+canvas.addEventListener("mouseleave",stopDraw);
+
+canvas.addEventListener("touchstart",startDraw,{passive:false});
+canvas.addEventListener("touchmove",draw,{passive:false});
+canvas.addEventListener("touchend",stopDraw);
+
 </script>
 
 </body>
