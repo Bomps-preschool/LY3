@@ -6,7 +6,9 @@
 <title>Number Names Ice Cream Game</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -22,11 +24,13 @@ body{
   display:none;
 }
 
-.active{display:flex}
+.active{
+  display:flex;
+}
 
-/* LOGO */
+/* LOGO SCREEN */
 #logoScreen{
-  background:#fff;
+  background:#ffffff;
   align-items:center;
   justify-content:center;
 }
@@ -36,69 +40,68 @@ body{
   max-width:75%;
 }
 
-/* GAME */
+/* GAME SCREEN */
 #gameScreen{
   flex-direction:column;
 }
 
-/* SMALL TOP HEADER */
+/* SMALL HEADER */
 .header{
-  height:64px;
+  height:58px;
   width:100%;
   text-align:center;
   background:#fff1b8;
   border-bottom:3px solid #f2c86b;
-  padding:4px 8px;
+  padding:3px 8px;
 }
 
 .header h1{
   margin:0;
-  font-size:28px;
+  font-size:26px;
   line-height:1.1;
 }
 
 .header p{
-  margin:2px 0 0;
-  font-size:14px;
+  margin:1px 0 0;
+  font-size:13px;
   line-height:1.1;
 }
 
-/* GAME AREA */
+/* MAIN GAME AREA */
 .gameArea{
   width:100%;
-  height:calc(100vh - 64px);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  padding:10px 22px;
+  height:calc(100vh - 58px);
+  display:grid;
+  grid-template-rows:26% 46% 26%;
+  gap:1%;
+  padding:8px 18px;
 }
 
 /* ANIMAL ROWS */
 .row{
   width:100%;
-  height:24%;
+  height:100%;
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:16px;
-  z-index:2;
+  grid-template-columns:repeat(5, 1fr);
+  gap:14px;
 }
 
 .card{
-  background:rgba(255,255,255,0.94);
+  background:rgba(255,255,255,0.96);
   border:4px solid #f4c976;
-  border-radius:24px;
+  border-radius:22px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:6px;
+  padding:4px;
   cursor:pointer;
   box-shadow:0 5px 10px rgba(0,0,0,0.08);
   overflow:hidden;
 }
 
 .card img{
-  width:92%;
-  height:92%;
+  max-width:100%;
+  max-height:100%;
   object-fit:contain;
 }
 
@@ -124,10 +127,10 @@ body{
   100%{transform:translateX(0)}
 }
 
-/* CENTER CART SPACE */
+/* CART AREA */
 .middleArea{
   width:100%;
-  height:46%;
+  height:100%;
   position:relative;
   display:flex;
   align-items:center;
@@ -137,9 +140,9 @@ body{
 
 .cartWrap{
   position:absolute;
-  width:min(560px,42vw);
-  height:min(380px,42vh);
-  left:-620px;
+  width:430px;
+  height:270px;
+  left:-480px;
   opacity:0;
   z-index:5;
 }
@@ -152,10 +155,10 @@ body{
 
 .cartNumber{
   position:absolute;
-  top:42%;
+  top:43%;
   left:50%;
   transform:translate(-50%,-50%);
-  font-size:clamp(64px,7vw,105px);
+  font-size:78px;
   font-weight:bold;
   color:#2f7edb;
   text-shadow:4px 4px #ffffff;
@@ -176,13 +179,27 @@ body{
 }
 
 @keyframes cartIn{
-  from{left:-620px;opacity:0}
-  to{left:50%;transform:translateX(-50%);opacity:1}
+  from{
+    left:-480px;
+    opacity:0;
+  }
+  to{
+    left:50%;
+    transform:translateX(-50%);
+    opacity:1;
+  }
 }
 
 @keyframes cartOut{
-  from{left:50%;transform:translateX(-50%);opacity:1}
-  to{left:115%;opacity:0}
+  from{
+    left:50%;
+    transform:translateX(-50%);
+    opacity:1;
+  }
+  to{
+    left:115%;
+    opacity:0;
+  }
 }
 
 /* END SCREEN */
@@ -195,7 +212,7 @@ body{
 }
 
 #endScreen h1{
-  font-size:52px;
+  font-size:50px;
   margin-bottom:8px;
 }
 
@@ -214,10 +231,11 @@ button{
   cursor:pointer;
 }
 
-/* MOBILE */
+/* MOBILE / SMALL SCREENS */
 @media(max-width:800px){
+
   .header{
-    height:56px;
+    height:52px;
   }
 
   .header h1{
@@ -229,32 +247,29 @@ button{
   }
 
   .gameArea{
-    height:calc(100vh - 56px);
-    padding:8px;
+    height:calc(100vh - 52px);
+    grid-template-rows:25% 48% 25%;
+    padding:6px;
+    gap:1%;
   }
 
   .row{
-    height:23%;
-    gap:7px;
+    gap:6px;
   }
 
   .card{
-    border-radius:15px;
+    border-radius:14px;
     border-width:3px;
     padding:3px;
   }
 
-  .middleArea{
-    height:48%;
-  }
-
   .cartWrap{
-    width:280px;
-    height:210px;
+    width:250px;
+    height:165px;
   }
 
   .cartNumber{
-    font-size:52px;
+    font-size:48px;
   }
 }
 </style>
@@ -411,6 +426,7 @@ function checkAnswer(card, selectedWord){
 
     correctSound.currentTime = 0;
     clapSound.currentTime = 0;
+
     correctSound.play();
     clapSound.play();
 
@@ -422,7 +438,7 @@ function checkAnswer(card, selectedWord){
       showQuestion();
     }, 3200);
 
-  } else {
+  }else{
     wrongAttempts++;
 
     wrongSound.currentTime = 0;
