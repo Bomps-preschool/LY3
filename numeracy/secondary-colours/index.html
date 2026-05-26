@@ -21,8 +21,6 @@ html,body{
   color:#563b59;
 }
 
-/* ================= SCREENS ================= */
-
 .screen{
   width:100vw;
   height:100dvh;
@@ -33,8 +31,7 @@ html,body{
   display:flex;
 }
 
-/* ================= LOGO ================= */
-
+/* LOGO */
 #logoScreen{
   background:white;
   justify-content:center;
@@ -45,90 +42,82 @@ html,body{
   width:min(320px,70vw);
 }
 
-/* ================= GAME SCREEN ================= */
-
+/* GAME */
 #gameScreen{
   flex-direction:column;
 }
 
-/* ================= HEADER ================= */
-
+/* HEADER */
 .header{
-  height:80px;
+  height:70px;
   background:#fff1df;
   border-bottom:4px solid #caa8ff;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  padding:4px 10px;
+  padding:3px 10px;
 }
 
 .header h1{
-  font-size:clamp(28px,3vw,52px);
+  font-size:clamp(26px,3vw,46px);
   line-height:1;
 }
 
 .header p{
-  font-size:clamp(12px,1.2vw,18px);
+  font-size:clamp(11px,1.1vw,16px);
   margin-top:2px;
 }
 
-/* ================= GAME AREA ================= */
-
+/* GAME AREA */
 .gameArea{
   flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-evenly;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
   align-items:center;
-  padding:10px;
+  justify-items:center;
+  padding:10px 18px 14px;
+  gap:8px;
 }
 
-/* ================= MESSAGE ================= */
-
+/* SMALL INSTRUCTION */
 .message{
-  font-size:clamp(14px,1.4vw,22px);
+  font-size:clamp(13px,1.35vw,20px);
   font-weight:bold;
   text-align:center;
-  background:rgba(255,255,255,.82);
+  background:rgba(255,255,255,.86);
   border:3px solid #c9a7ff;
-  border-radius:18px;
-  padding:6px 18px;
-  min-width:320px;
-  max-width:650px;
+  border-radius:16px;
+  padding:6px 20px;
+  min-width:260px;
+  max-width:520px;
 }
 
-/* ================= MIXING LINE ================= */
-
+/* BUCKET ROW */
 .bucketLine{
   width:100%;
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:28px;
+  gap:34px;
 }
 
-/* ================= PAINT BUCKETS ================= */
-
+/* BIG BUCKETS */
 .bucketBox{
-  width:min(290px,26vw);
-  height:min(290px,38vh);
+  width:min(330px,24vw);
+  height:min(330px,42vh);
   display:flex;
   justify-content:center;
   align-items:center;
   cursor:pointer;
   transition:.3s;
+  touch-action:manipulation;
 }
 
 .bucketBox img{
   width:100%;
   height:100%;
   object-fit:contain;
-}
-
-.bucketBox:hover{
-  transform:scale(1.03);
 }
 
 .tapGlow{
@@ -141,23 +130,20 @@ html,body{
   100%{transform:scale(1)}
 }
 
-/* ================= SYMBOLS ================= */
-
 .plus,
 .equals{
-  font-size:clamp(44px,5vw,72px);
+  font-size:clamp(44px,5vw,76px);
   font-weight:bold;
   color:#755383;
 }
 
-/* ================= RESULT BUCKET ================= */
-
+/* SIMPLE RESULT BOX */
 .emptyBucket{
-  width:min(270px,24vw);
-  height:min(230px,30vh);
+  width:min(310px,23vw);
+  height:min(270px,34vh);
   background:#fffdf7;
   border:7px solid #c9a7ff;
-  border-radius:32px;
+  border-radius:34px;
   position:relative;
   overflow:hidden;
   box-shadow:0 10px 22px rgba(0,0,0,.12);
@@ -167,7 +153,7 @@ html,body{
   position:absolute;
   inset:0;
   overflow:hidden;
-  border-radius:24px;
+  border-radius:26px;
 }
 
 .fillBottom,
@@ -198,8 +184,6 @@ html,body{
   z-index:5;
 }
 
-/* ================= PAINT DROPS ================= */
-
 .pourDrop{
   position:absolute;
   width:28px;
@@ -223,44 +207,40 @@ html,body{
   }
 }
 
-/* ================= OPTIONS ================= */
-
+/* OPTIONS */
 .optionsPanel{
   width:100%;
   display:none;
   justify-content:center;
   align-items:center;
-  gap:24px;
+  gap:22px;
 }
 
 .option{
-  width:min(230px,28vw);
+  width:min(220px,26vw);
   background:#fffaf5;
   border:4px solid #c9a7ff;
-  border-radius:28px;
-  padding:12px;
+  border-radius:26px;
+  padding:10px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:10px;
+  gap:8px;
   cursor:pointer;
   transition:.25s;
-}
-
-.option:hover{
-  transform:translateY(-4px);
+  touch-action:manipulation;
 }
 
 .circle{
-  width:74px;
-  height:74px;
+  width:66px;
+  height:66px;
   border-radius:50%;
   border:5px solid white;
   box-shadow:0 5px 12px rgba(0,0,0,.18);
 }
 
 .optionName{
-  font-size:clamp(22px,3vw,38px);
+  font-size:clamp(20px,2.6vw,34px);
   font-weight:bold;
 }
 
@@ -285,8 +265,7 @@ html,body{
   100%{transform:translateX(0)}
 }
 
-/* ================= END SCREEN ================= */
-
+/* END */
 #endScreen{
   background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);
   flex-direction:column;
@@ -294,6 +273,7 @@ html,body{
   align-items:center;
   position:relative;
   overflow:hidden;
+  text-align:center;
 }
 
 #endScreen h1{
@@ -319,8 +299,6 @@ html,body{
   z-index:5;
 }
 
-/* ================= SPARKLES ================= */
-
 .sparkle{
   position:absolute;
   width:34px;
@@ -338,8 +316,6 @@ html,body{
     opacity:0;
   }
 }
-
-/* ================= BURSTS ================= */
 
 .burst{
   position:absolute;
@@ -366,26 +342,28 @@ html,body{
   }
 }
 
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:900px){
-
+/* TABLET */
+@media(max-width:1000px){
   .header{
     height:62px;
   }
 
   .header h1{
-    font-size:22px;
+    font-size:24px;
   }
 
   .header p{
-    font-size:10px;
+    font-size:11px;
+  }
+
+  .gameArea{
+    padding:8px;
   }
 
   .message{
     font-size:13px;
     padding:5px 14px;
-    min-width:240px;
+    min-width:230px;
   }
 
   .bucketLine{
@@ -393,13 +371,13 @@ html,body{
   }
 
   .bucketBox{
-    width:23vw;
-    height:23vw;
+    width:25vw;
+    height:25vw;
   }
 
   .emptyBucket{
-    width:24vw;
-    height:20vw;
+    width:25vw;
+    height:22vw;
   }
 
   .plus,
@@ -426,8 +404,8 @@ html,body{
   }
 }
 
-@media(max-width:600px){
-
+/* MOBILE PORTRAIT */
+@media(max-width:600px) and (orientation:portrait){
   .header{
     height:64px;
   }
@@ -440,6 +418,20 @@ html,body{
     font-size:9px;
   }
 
+  .gameArea{
+    padding:6px;
+    gap:6px;
+  }
+
+  .message{
+    font-size:12px;
+    max-width:90vw;
+  }
+
+  .bucketLine{
+    gap:4px;
+  }
+
   .bucketBox{
     width:24vw;
     height:24vw;
@@ -447,11 +439,13 @@ html,body{
 
   .emptyBucket{
     width:25vw;
-    height:21vw;
+    height:22vw;
+    border-width:4px;
+    border-radius:18px;
   }
 
-  .message{
-    font-size:12px;
+  .bucketSmile{
+    font-size:22px;
   }
 }
 </style>
@@ -459,13 +453,9 @@ html,body{
 
 <body>
 
-<!-- ================= LOGO SCREEN ================= -->
-
 <div id="logoScreen" class="screen active">
-  <img src="assets/innovine-logo.png">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
-
-<!-- ================= GAME SCREEN ================= -->
 
 <div id="gameScreen" class="screen">
 
@@ -476,9 +466,7 @@ html,body{
 
   <div class="gameArea">
 
-    <div class="message" id="message">
-      Tap the first paint bucket.
-    </div>
+    <div class="message" id="message">Tap the first paint bucket.</div>
 
     <div class="bucketLine">
 
@@ -491,14 +479,11 @@ html,body{
       <div class="equals">=</div>
 
       <div class="emptyBucket" id="emptyBucket">
-
         <div class="paintArea">
           <div class="fillBottom" id="fillBottom"></div>
           <div class="fillTop" id="fillTop"></div>
         </div>
-
         <div class="bucketSmile">😊</div>
-
       </div>
 
     </div>
@@ -508,40 +493,21 @@ html,body{
   </div>
 </div>
 
-<!-- ================= END SCREEN ================= -->
-
 <div id="endScreen" class="screen">
-
   <h1>Excellent!</h1>
   <p>You made all secondary colours!</p>
-
-  <button class="playAgain" onclick="restartGame()">
-    Play Again
-  </button>
-
+  <button class="playAgain" onclick="restartGame()">Play Again</button>
 </div>
-
-<!-- ================= AUDIO ================= -->
 
 <audio id="correctSound" src="assets/correct.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
 <audio id="clapSound" src="assets/claps.mp3"></audio>
 
 <script>
-
 const questions = [
-  {
-    colours:["red","yellow"],
-    answer:"orange"
-  },
-  {
-    colours:["yellow","blue"],
-    answer:"green"
-  },
-  {
-    colours:["red","blue"],
-    answer:"purple"
-  }
+  { colours:["red","yellow"], answer:"orange" },
+  { colours:["yellow","blue"], answer:"green" },
+  { colours:["red","blue"], answer:"purple" }
 ];
 
 const bucketImages = {
@@ -565,6 +531,8 @@ let tapped = [];
 let canTap = true;
 let canAnswer = false;
 let wrongAttempts = 0;
+let sparkleInterval = null;
+let burstInterval = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
@@ -583,19 +551,13 @@ const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const clapSound = document.getElementById("clapSound");
 
-/* ================= START ================= */
-
 window.onload = function(){
-
   setTimeout(()=>{
     logoScreen.classList.remove("active");
     gameScreen.classList.add("active");
     startGame();
   },5000);
-
 };
-
-/* ================= SOUND ================= */
 
 function playSound(sound){
   sound.pause();
@@ -603,15 +565,13 @@ function playSound(sound){
   sound.play().catch(()=>{});
 }
 
-/* ================= GAME ================= */
-
 function startGame(){
+  stopCelebration();
   currentIndex = 0;
   showQuestion();
 }
 
 function showQuestion(){
-
   if(currentIndex >= questions.length){
     showEndScreen();
     return;
@@ -632,160 +592,95 @@ function showQuestion(){
 
   message.textContent = "Tap the first paint bucket.";
 
-  bucket1.innerHTML = `
-    <img src="assets/${bucketImages[currentQuestion.colours[0]]}">
-  `;
+  bucket1.innerHTML = `<img src="assets/${bucketImages[currentQuestion.colours[0]]}" alt="${currentQuestion.colours[0]} bucket">`;
+  bucket2.innerHTML = `<img src="assets/${bucketImages[currentQuestion.colours[1]]}" alt="${currentQuestion.colours[1]} bucket">`;
 
-  bucket2.innerHTML = `
-    <img src="assets/${bucketImages[currentQuestion.colours[1]]}">
-  `;
-
-  bucket1.onclick = ()=>{
-    tapBucket(bucket1,currentQuestion.colours[0]);
-  };
-
-  bucket2.onclick = ()=>{
-    tapBucket(bucket2,currentQuestion.colours[1]);
-  };
-
+  bucket1.onclick = () => tapBucket(bucket1,currentQuestion.colours[0]);
+  bucket2.onclick = () => tapBucket(bucket2,currentQuestion.colours[1]);
 }
 
-/* ================= BUCKET TAPPING ================= */
-
 function tapBucket(bucket, colour){
-
   if(!canTap || tapped.includes(colour)) return;
 
   tapped.push(colour);
 
   bucket.classList.add("tapGlow");
-
-  setTimeout(()=>{
-    bucket.classList.remove("tapGlow");
-  },700);
+  setTimeout(()=>bucket.classList.remove("tapGlow"),700);
 
   pourPaint(colour);
 
   if(tapped.length === 1){
-
     fillBottom.style.height = "50%";
     fillBottom.style.background = colourHex[colour];
-
     message.textContent = "Tap the second paint bucket.";
-
   }
 
   if(tapped.length === 2){
-
     canTap = false;
 
     setTimeout(()=>{
-
       fillTop.style.height = "50%";
       fillTop.style.background = colourHex[colour];
-
       message.textContent = "Choose the new colour.";
-
       showOptions();
-
     },500);
-
   }
-
 }
 
-/* ================= POUR EFFECT ================= */
-
 function pourPaint(colour){
-
   const drop = document.createElement("div");
-
   drop.className = "pourDrop";
   drop.style.background = colourHex[colour];
 
   document.getElementById("emptyBucket").appendChild(drop);
 
-  setTimeout(()=>{
-    drop.remove();
-  },800);
-
+  setTimeout(()=>drop.remove(),800);
 }
 
-/* ================= OPTIONS ================= */
-
 function showOptions(){
-
   canAnswer = true;
-
   optionsPanel.style.display = "flex";
 
-  ["orange","green","purple"]
-  .sort(()=>Math.random()-0.5)
-  .forEach(colour=>{
-
+  ["orange","green","purple"].sort(()=>Math.random()-0.5).forEach(colour=>{
     const option = document.createElement("div");
-
     option.className = "option";
     option.dataset.answer = colour;
 
     option.innerHTML = `
-      <div class="circle"
-        style="background:${colourHex[colour]}"></div>
-
+      <div class="circle" style="background:${colourHex[colour]}"></div>
       <div class="optionName">${colour}</div>
     `;
 
-    option.onclick = ()=>{
-      checkAnswer(option,colour);
-    };
-
+    option.onclick = () => checkAnswer(option,colour);
     optionsPanel.appendChild(option);
-
   });
-
 }
 
-/* ================= CHECK ANSWER ================= */
-
 function checkAnswer(option, selected){
-
   if(!canAnswer) return;
 
   if(selected === currentQuestion.answer){
-
     canAnswer = false;
 
     playSound(correctSound);
-
-    setTimeout(()=>{
-      playSound(clapSound);
-    },120);
+    setTimeout(()=>playSound(clapSound),120);
 
     option.classList.add("correct");
-
     message.textContent = "Good job!";
 
     setTimeout(()=>{
-
       fillTop.style.height = "0%";
-
       fillBottom.style.height = "100%";
-      fillBottom.style.background =
-      colourHex[currentQuestion.answer];
-
+      fillBottom.style.background = colourHex[currentQuestion.answer];
     },400);
 
     setTimeout(()=>{
-
       currentIndex++;
       showQuestion();
-
     },1800);
 
   }else{
-
     wrongAttempts++;
-
     playSound(wrongSound);
 
     option.classList.add("wrong");
@@ -795,134 +690,92 @@ function checkAnswer(option, selected){
     },400);
 
     if(wrongAttempts >= 2){
-
-      const correctOption =
-      document.querySelector(
-        `[data-answer="${currentQuestion.answer}"]`
-      );
-
+      const correctOption = document.querySelector(`[data-answer="${currentQuestion.answer}"]`);
       if(correctOption){
         correctOption.classList.add("glow");
       }
-
     }
-
   }
-
 }
-
-/* ================= END SCREEN ================= */
 
 function showEndScreen(){
-
   gameScreen.classList.remove("active");
   endScreen.classList.add("active");
-
-  createCelebration();
-
+  startCelebration();
 }
 
-function createCelebration(){
+function startCelebration(){
+  stopCelebration();
 
-  setInterval(()=>{
-
+  sparkleInterval = setInterval(()=>{
     const sparkle = document.createElement("img");
-
     sparkle.className = "sparkle";
     sparkle.src = "assets/sparkle.png";
-
-    sparkle.style.left =
-      Math.random()*100 + "vw";
-
+    sparkle.style.left = Math.random()*100 + "vw";
     sparkle.style.top = "-30px";
 
     const size = 24 + Math.random()*24;
-
     sparkle.style.width = size + "px";
     sparkle.style.height = size + "px";
 
     endScreen.appendChild(sparkle);
 
-    setTimeout(()=>{
-      sparkle.remove();
-    },3000);
-
+    setTimeout(()=>sparkle.remove(),3000);
   },70);
 
-  setInterval(()=>{
-
+  burstInterval = setInterval(()=>{
     createBurst(
       Math.random()*window.innerWidth,
       Math.random()*window.innerHeight*.7
     );
-
   },220);
-
 }
 
 function createBurst(x,y){
-
   const burst = document.createElement("div");
-
   burst.className = "burst";
-
   burst.style.left = x + "px";
   burst.style.top = y + "px";
 
-  const colours = [
-    "#ffd45c",
-    "#ff7aa8",
-    "#9ee7ff",
-    "#8df2a6",
-    "#d9b3ff",
-    "#ff9f43"
-  ];
+  const colours = ["#ffd45c","#ff7aa8","#9ee7ff","#8df2a6","#d9b3ff","#ff9f43"];
 
   for(let i=0;i<16;i++){
-
     const dot = document.createElement("span");
+    const angle = (Math.PI*2*i)/16;
+    const distance = 50 + Math.random()*40;
 
-    const angle =
-      (Math.PI*2*i)/16;
-
-    const distance =
-      50 + Math.random()*40;
-
-    dot.style.background =
-      colours[Math.floor(
-        Math.random()*colours.length
-      )];
-
-    dot.style.setProperty(
-      "--x",
-      Math.cos(angle)*distance + "px"
-    );
-
-    dot.style.setProperty(
-      "--y",
-      Math.sin(angle)*distance + "px"
-    );
+    dot.style.background = colours[Math.floor(Math.random()*colours.length)];
+    dot.style.setProperty("--x", Math.cos(angle)*distance + "px");
+    dot.style.setProperty("--y", Math.sin(angle)*distance + "px");
 
     burst.appendChild(dot);
-
   }
 
   endScreen.appendChild(burst);
 
-  setTimeout(()=>{
-    burst.remove();
-  },1200);
-
+  setTimeout(()=>burst.remove(),1200);
 }
 
-/* ================= RESTART ================= */
+function stopCelebration(){
+  if(sparkleInterval){
+    clearInterval(sparkleInterval);
+    sparkleInterval = null;
+  }
+
+  if(burstInterval){
+    clearInterval(burstInterval);
+    burstInterval = null;
+  }
+
+  document.querySelectorAll(".sparkle,.burst").forEach(el=>el.remove());
+}
 
 function restartGame(){
-
-  location.reload();
-
+  stopCelebration();
+  endScreen.classList.remove("active");
+  gameScreen.classList.add("active");
+  startGame();
 }
-
 </script>
 
 </body>
