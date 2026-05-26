@@ -6,9 +6,7 @@
 <title>Number Names Ice Cream Game</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -24,93 +22,83 @@ body{
   display:none;
 }
 
-.active{
-  display:flex;
-}
+.active{display:flex}
 
-/* LOGO SCREEN */
+/* LOGO */
 #logoScreen{
-  background:#ffffff;
+  background:#fff;
   align-items:center;
   justify-content:center;
 }
 
 #logoScreen img{
-  width:280px;
+  width:260px;
   max-width:75%;
 }
 
-/* GAME SCREEN */
+/* GAME */
 #gameScreen{
   flex-direction:column;
 }
 
-/* SMALL HEADER */
+/* SMALL TOP HEADER */
 .header{
+  height:64px;
   width:100%;
   text-align:center;
   background:#fff1b8;
   border-bottom:3px solid #f2c86b;
   padding:4px 8px;
-  height:72px;
 }
 
 .header h1{
   margin:0;
-  font-size:clamp(20px,2.8vw,32px);
+  font-size:28px;
   line-height:1.1;
 }
 
 .header p{
   margin:2px 0 0;
-  font-size:clamp(11px,1.2vw,16px);
-  line-height:1.2;
+  font-size:14px;
+  line-height:1.1;
 }
 
 /* GAME AREA */
 .gameArea{
   width:100%;
-  height:calc(100vh - 72px);
-  position:relative;
-  padding:10px 20px;
+  height:calc(100vh - 64px);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:10px 22px;
 }
 
 /* ANIMAL ROWS */
 .row{
   width:100%;
-  height:22%;
+  height:24%;
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  gap:14px;
-  position:relative;
-  z-index:3;
+  gap:16px;
+  z-index:2;
 }
 
-.bottomRow{
-  position:absolute;
-  left:20px;
-  right:20px;
-  bottom:8px;
-  width:calc(100% - 40px);
-}
-
-/* ANIMAL CARDS */
 .card{
-  background:rgba(255,255,255,0.92);
+  background:rgba(255,255,255,0.94);
   border:4px solid #f4c976;
   border-radius:24px;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:4px;
+  padding:6px;
   cursor:pointer;
   box-shadow:0 5px 10px rgba(0,0,0,0.08);
-  transition:0.2s ease;
+  overflow:hidden;
 }
 
 .card img{
-  width:100%;
-  height:100%;
+  width:92%;
+  height:92%;
   object-fit:contain;
 }
 
@@ -136,26 +124,24 @@ body{
   100%{transform:translateX(0)}
 }
 
-/* ICE CREAM CART */
-.cartArea{
-  position:absolute;
-  top:31%;
-  left:0;
+/* CENTER CART SPACE */
+.middleArea{
   width:100%;
-  height:38%;
+  height:46%;
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  pointer-events:none;
-  z-index:2;
+  overflow:hidden;
 }
 
 .cartWrap{
   position:absolute;
-  width:min(520px,40vw);
-  height:min(390px,36vh);
-  left:-560px;
+  width:min(560px,42vw);
+  height:min(380px,42vh);
+  left:-620px;
   opacity:0;
+  z-index:5;
 }
 
 .cartWrap img{
@@ -169,10 +155,10 @@ body{
   top:42%;
   left:50%;
   transform:translate(-50%,-50%);
-  font-size:clamp(56px,6vw,96px);
+  font-size:clamp(64px,7vw,105px);
   font-weight:bold;
-  color:#4f86c6;
-  text-shadow:3px 3px #ffffff;
+  color:#2f7edb;
+  text-shadow:4px 4px #ffffff;
 }
 
 .cartIn{
@@ -190,32 +176,13 @@ body{
 }
 
 @keyframes cartIn{
-  from{
-    left:-560px;
-    opacity:0;
-  }
-  to{
-    left:50%;
-    transform:translateX(-50%);
-    opacity:1;
-  }
+  from{left:-620px;opacity:0}
+  to{left:50%;transform:translateX(-50%);opacity:1}
 }
 
 @keyframes cartOut{
-  from{
-    left:50%;
-    transform:translateX(-50%);
-    opacity:1;
-  }
-  to{
-    left:110%;
-    opacity:0;
-  }
-}
-
-/* NO CENTER MESSAGE */
-.message{
-  display:none !important;
+  from{left:50%;transform:translateX(-50%);opacity:1}
+  to{left:115%;opacity:0}
 }
 
 /* END SCREEN */
@@ -228,12 +195,12 @@ body{
 }
 
 #endScreen h1{
-  font-size:54px;
+  font-size:52px;
   margin-bottom:8px;
 }
 
 #endScreen p{
-  font-size:28px;
+  font-size:26px;
 }
 
 button{
@@ -249,10 +216,8 @@ button{
 
 /* MOBILE */
 @media(max-width:800px){
-
   .header{
-    height:62px;
-    padding:4px 6px;
+    height:56px;
   }
 
   .header h1{
@@ -264,20 +229,13 @@ button{
   }
 
   .gameArea{
-    height:calc(100vh - 62px);
+    height:calc(100vh - 56px);
     padding:8px;
   }
 
   .row{
-    height:21%;
+    height:23%;
     gap:7px;
-  }
-
-  .bottomRow{
-    left:8px;
-    right:8px;
-    width:calc(100% - 16px);
-    bottom:6px;
   }
 
   .card{
@@ -286,18 +244,17 @@ button{
     padding:3px;
   }
 
-  .cartArea{
-    top:31%;
-    height:38%;
+  .middleArea{
+    height:48%;
   }
 
   .cartWrap{
-    width:260px;
-    height:200px;
+    width:280px;
+    height:210px;
   }
 
   .cartNumber{
-    font-size:50px;
+    font-size:52px;
   }
 }
 </style>
@@ -320,16 +277,14 @@ button{
 
     <div class="row" id="topRow"></div>
 
-    <div class="cartArea">
+    <div class="middleArea">
       <div class="cartWrap" id="cartWrap">
         <img src="assets/icecream-cart.png" alt="Ice Cream Cart">
         <div class="cartNumber" id="cartNumber">1</div>
       </div>
     </div>
 
-    <div class="message" id="message"></div>
-
-    <div class="row bottomRow" id="bottomRow"></div>
+    <div class="row" id="bottomRow"></div>
 
   </div>
 </div>
@@ -448,7 +403,7 @@ function showQuestion(){
   }, 3000);
 }
 
-function checkAnswer(card,selectedWord){
+function checkAnswer(card, selectedWord){
   if(!canClick) return;
 
   if(selectedWord === currentAnswer.word){
@@ -456,7 +411,6 @@ function checkAnswer(card,selectedWord){
 
     correctSound.currentTime = 0;
     clapSound.currentTime = 0;
-
     correctSound.play();
     clapSound.play();
 
@@ -468,7 +422,7 @@ function checkAnswer(card,selectedWord){
       showQuestion();
     }, 3200);
 
-  }else{
+  } else {
     wrongAttempts++;
 
     wrongSound.currentTime = 0;
