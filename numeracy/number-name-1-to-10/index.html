@@ -14,7 +14,7 @@ body {
   margin: 0;
   font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
   overflow: hidden;
-  background: linear-gradient(#ccefff, #fff4cf);
+  background: linear-gradient(#ccefff, #fff5d6);
   color: #4b3b2f;
 }
 
@@ -28,7 +28,6 @@ body {
   display: flex;
 }
 
-/* LOGO SCREEN */
 #logoScreen {
   background: white;
   align-items: center;
@@ -40,7 +39,6 @@ body {
   max-width: 75%;
 }
 
-/* GAME SCREEN */
 #gameScreen {
   flex-direction: column;
   position: relative;
@@ -48,132 +46,61 @@ body {
 
 .header {
   text-align: center;
-  padding: 10px 12px;
+  padding: 8px 12px;
   background: #fff3b8;
   border-bottom: 4px solid #f2c86b;
   width: 100%;
-  z-index: 2;
+  z-index: 5;
 }
 
 .header h1 {
   margin: 0;
-  font-size: clamp(24px, 4vw, 40px);
+  font-size: clamp(24px, 4vw, 38px);
 }
 
 .header p {
-  margin: 5px 0 0;
-  font-size: clamp(15px, 2vw, 22px);
-}
-
-.cloud {
-  position: absolute;
-  background: white;
-  border-radius: 50px;
-  opacity: 0.7;
-  z-index: 0;
-}
-
-.cloud::before,
-.cloud::after {
-  content: "";
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-}
-
-.cloud1 {
-  width: 150px;
-  height: 45px;
-  top: 120px;
-  left: 50px;
-}
-
-.cloud1::before {
-  width: 60px;
-  height: 60px;
-  top: -25px;
-  left: 25px;
-}
-
-.cloud1::after {
-  width: 75px;
-  height: 75px;
-  top: -35px;
-  right: 20px;
-}
-
-.cloud2 {
-  width: 180px;
-  height: 50px;
-  top: 170px;
-  right: 70px;
-}
-
-.cloud2::before {
-  width: 70px;
-  height: 70px;
-  top: -28px;
-  left: 30px;
-}
-
-.cloud2::after {
-  width: 85px;
-  height: 85px;
-  top: -40px;
-  right: 25px;
+  margin: 4px 0 0;
+  font-size: clamp(15px, 2vw, 21px);
 }
 
 .gameArea {
   width: 100%;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 86px);
   position: relative;
-  padding: 15px;
+  padding: 14px 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  z-index: 1;
+  align-items: center;
 }
 
-.animalsGrid {
-  width: 72%;
+.sideGrid {
+  width: 32%;
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(5, 1fr);
+  gap: 10px;
+  z-index: 3;
 }
 
 .card {
-  background: rgba(255,255,255,0.82);
+  background: rgba(255,255,255,0.88);
   border: 3px solid #f3cf89;
-  border-radius: 22px;
+  border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.08);
   transition: 0.25s ease;
 }
 
 .card img {
-  width: 88px;
-  height: 88px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-}
-
-.board {
-  margin-top: 5px;
-  min-width: 105px;
-  background: #fffdf8;
-  border: 3px dashed #bca78c;
-  border-radius: 13px;
-  padding: 7px 10px;
-  text-align: center;
-  font-size: clamp(19px, 2.3vw, 30px);
-  font-weight: bold;
-  letter-spacing: 1px;
+  max-height: 118px;
 }
 
 .card.correct {
@@ -198,37 +125,21 @@ body {
   100% { transform: translateX(0); }
 }
 
-/* BALLOON */
-.balloonArea {
-  width: 26%;
+.centerArea {
+  width: 30%;
   height: 100%;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 2;
 }
 
 .balloonWrap {
   position: absolute;
   width: 230px;
   height: 330px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  left: 120%;
+  left: 50%;
+  bottom: -360px;
+  transform: translateX(-50%);
   opacity: 0;
-}
-
-.balloonWrap.floatIn {
-  animation: balloonIn 1.5s ease forwards;
-}
-
-.balloonWrap.floatOut {
-  animation: balloonOut 1.3s ease forwards;
-}
-
-.balloonWrap.gentleFloat {
-  animation: gentleFloat 2.5s ease-in-out infinite;
 }
 
 .balloonWrap img {
@@ -248,51 +159,63 @@ body {
   text-shadow: 2px 2px white;
 }
 
-@keyframes balloonIn {
+.floatIn {
+  animation: floatIn 3s ease forwards;
+}
+
+.holdCenter {
+  bottom: 34%;
+  opacity: 1;
+  animation: gentleFloat 3s ease-in-out infinite;
+}
+
+.floatOut {
+  animation: floatOut 3s ease forwards;
+}
+
+@keyframes floatIn {
   from {
-    left: 120%;
+    bottom: -360px;
     opacity: 0;
   }
   to {
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 34%;
     opacity: 1;
   }
 }
 
-@keyframes balloonOut {
+@keyframes floatOut {
   from {
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 34%;
     opacity: 1;
   }
   to {
-    left: -130%;
+    bottom: 110%;
     opacity: 0;
   }
 }
 
 @keyframes gentleFloat {
   0% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-10px); }
+  50% { transform: translateX(-50%) translateY(-8px); }
   100% { transform: translateX(-50%) translateY(0); }
 }
 
 .message {
   position: absolute;
-  bottom: 25px;
-  right: 30px;
-  width: 250px;
-  text-align: center;
-  background: rgba(255,255,255,0.9);
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.95);
   border: 3px solid #f2c86b;
   border-radius: 20px;
-  padding: 12px;
+  padding: 10px 22px;
   font-size: 24px;
   font-weight: bold;
+  text-align: center;
+  z-index: 5;
 }
 
-/* END SCREEN */
 #endScreen {
   align-items: center;
   justify-content: center;
@@ -321,63 +244,43 @@ button {
   cursor: pointer;
 }
 
-/* MOBILE */
 @media (max-width: 768px) {
   .gameArea {
-    flex-direction: column;
     padding: 8px;
   }
 
-  .animalsGrid {
-    width: 100%;
-    height: 68%;
-    grid-template-columns: repeat(5, 1fr);
+  .sideGrid {
+    width: 34%;
     gap: 7px;
   }
 
+  .centerArea {
+    width: 28%;
+  }
+
   .card {
-    padding: 5px;
     border-radius: 16px;
+    padding: 4px;
   }
 
   .card img {
-    width: 55px;
-    height: 55px;
-  }
-
-  .board {
-    min-width: 66px;
-    font-size: 16px;
-    padding: 5px;
-  }
-
-  .balloonArea {
-    width: 100%;
-    height: 28%;
+    max-height: 80px;
   }
 
   .balloonWrap {
-    width: 150px;
-    height: 220px;
+    width: 135px;
+    height: 200px;
   }
 
   .balloonNumber {
-    top: 52px;
-    font-size: 44px;
+    top: 48px;
+    font-size: 42px;
   }
 
   .message {
-    bottom: 5px;
-    right: 50%;
-    transform: translateX(50%);
-    width: 230px;
-    font-size: 18px;
-    padding: 8px;
-  }
-
-  .cloud1,
-  .cloud2 {
-    opacity: 0.45;
+    font-size: 17px;
+    padding: 8px 14px;
+    bottom: 6px;
   }
 }
 </style>
@@ -392,21 +295,20 @@ button {
 <div id="gameScreen" class="screen">
   <div class="header">
     <h1>Number Names Balloon Game</h1>
-    <p>Look at the number on the balloon. Tap the correct number name.</p>
+    <p>Look at the number on the balloon. Tap the matching animal board.</p>
   </div>
 
-  <div class="cloud cloud1"></div>
-  <div class="cloud cloud2"></div>
-
   <div class="gameArea">
-    <div class="animalsGrid" id="animalsGrid"></div>
+    <div class="sideGrid" id="leftGrid"></div>
 
-    <div class="balloonArea">
+    <div class="centerArea">
       <div class="balloonWrap" id="balloonWrap">
         <img src="assets/balloon.png" alt="Balloon">
         <div class="balloonNumber" id="balloonNumber">1</div>
       </div>
     </div>
+
+    <div class="sideGrid" id="rightGrid"></div>
 
     <div class="message" id="message">Look at the balloon!</div>
   </div>
@@ -424,16 +326,16 @@ button {
 
 <script>
 const numbers = [
-  { number: 1, word: "one", image: "rabbit.png" },
-  { number: 2, word: "two", image: "bear.png" },
-  { number: 3, word: "three", image: "cat.png" },
-  { number: 4, word: "four", image: "penguin.png" },
-  { number: 5, word: "five", image: "duck.png" },
-  { number: 6, word: "six", image: "deer.png" },
-  { number: 7, word: "seven", image: "koala.png" },
-  { number: 8, word: "eight", image: "giraffe.png" },
-  { number: 9, word: "nine", image: "monkey.png" },
-  { number: 10, word: "ten", image: "tiger.png" }
+  { number: 1, word: "one", image: "one.png" },
+  { number: 2, word: "two", image: "two.png" },
+  { number: 3, word: "three", image: "three.png" },
+  { number: 4, word: "four", image: "four.png" },
+  { number: 5, word: "five", image: "five.png" },
+  { number: 6, word: "six", image: "six.png" },
+  { number: 7, word: "seven", image: "seven.png" },
+  { number: 8, word: "eight", image: "eight.png" },
+  { number: 9, word: "nine", image: "nine.png" },
+  { number: 10, word: "ten", image: "ten.png" }
 ];
 
 let questionOrder = [];
@@ -441,11 +343,13 @@ let currentIndex = 0;
 let currentAnswer = null;
 let wrongAttempts = 0;
 let canClick = false;
+let holdTimer = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
 const endScreen = document.getElementById("endScreen");
-const animalsGrid = document.getElementById("animalsGrid");
+const leftGrid = document.getElementById("leftGrid");
+const rightGrid = document.getElementById("rightGrid");
 const balloonWrap = document.getElementById("balloonWrap");
 const balloonNumber = document.getElementById("balloonNumber");
 const message = document.getElementById("message");
@@ -474,26 +378,33 @@ function startGame() {
 }
 
 function renderAnimals() {
-  animalsGrid.innerHTML = "";
+  leftGrid.innerHTML = "";
+  rightGrid.innerHTML = "";
 
   const shuffledCards = shuffle([...numbers]);
+  const leftCards = shuffledCards.slice(0, 5);
+  const rightCards = shuffledCards.slice(5, 10);
 
-  shuffledCards.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.dataset.word = item.word;
+  leftCards.forEach(item => leftGrid.appendChild(createCard(item)));
+  rightCards.forEach(item => rightGrid.appendChild(createCard(item)));
+}
 
-    card.innerHTML = `
-      <img src="assets/${item.image}" alt="${item.word}">
-      <div class="board">${item.word}</div>
-    `;
+function createCard(item) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.word = item.word;
 
-    card.addEventListener("click", () => checkAnswer(card, item.word));
-    animalsGrid.appendChild(card);
-  });
+  card.innerHTML = `
+    <img src="assets/${item.image}" alt="${item.word}">
+  `;
+
+  card.addEventListener("click", () => checkAnswer(card, item.word));
+  return card;
 }
 
 function showQuestion() {
+  clearTimeout(holdTimer);
+
   if (currentIndex >= questionOrder.length) {
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
@@ -514,10 +425,17 @@ function showQuestion() {
   balloonWrap.className = "balloonWrap floatIn";
 
   setTimeout(() => {
-    balloonWrap.className = "balloonWrap gentleFloat";
+    balloonWrap.className = "balloonWrap holdCenter";
     canClick = true;
-    message.textContent = "Tap the correct board!";
-  }, 1600);
+    message.textContent = "Tap the matching animal board!";
+
+    holdTimer = setTimeout(() => {
+      if (canClick) {
+        message.textContent = "Take your time and tap the answer!";
+      }
+    }, 10000);
+
+  }, 3000);
 }
 
 function checkAnswer(card, selectedWord) {
@@ -525,6 +443,7 @@ function checkAnswer(card, selectedWord) {
 
   if (selectedWord === currentAnswer.word) {
     canClick = false;
+    clearTimeout(holdTimer);
 
     rightSound.currentTime = 0;
     clapSound.currentTime = 0;
@@ -539,7 +458,7 @@ function checkAnswer(card, selectedWord) {
     setTimeout(() => {
       currentIndex++;
       showQuestion();
-    }, 1500);
+    }, 3200);
 
   } else {
     wrongAttempts++;
