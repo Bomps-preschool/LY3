@@ -6,7 +6,9 @@
 <title>Magic Paint Mixing Lab</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 html,body{
   margin:0;
@@ -14,8 +16,8 @@ html,body{
   height:100%;
   overflow:hidden;
   font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
-  background:linear-gradient(135deg,#e8d7ff,#ffd9df,#d8fff0);
-  color:#4b3448;
+  background:linear-gradient(135deg,#ead8ff,#ffe0ea,#d9fff1);
+  color:#51374d;
 }
 
 .screen{
@@ -24,10 +26,13 @@ html,body{
   display:none;
 }
 
-.active{display:flex}
+.active{
+  display:flex;
+}
 
+/* LOGO SCREEN */
 #logoScreen{
-  background:white;
+  background:#ffffff;
   align-items:center;
   justify-content:center;
 }
@@ -36,16 +41,18 @@ html,body{
   width:min(280px,70vw);
 }
 
+/* GAME SCREEN */
 #gameScreen{
   flex-direction:column;
 }
 
+/* HEADER */
 .header{
   height:64px;
-  background:#fff0df;
-  border-bottom:4px solid #c9a7ff;
+  background:#fff1df;
+  border-bottom:4px solid #d1b1ff;
   text-align:center;
-  padding:5px 10px;
+  padding:4px 10px;
   flex-shrink:0;
 }
 
@@ -56,140 +63,175 @@ html,body{
 
 .header p{
   margin:2px 0 0;
-  font-size:clamp(12px,1.5vw,17px);
+  font-size:clamp(12px,1.5vw,16px);
 }
 
+/* MAIN AREA */
 .gameArea{
   height:calc(100dvh - 64px);
   display:grid;
   grid-template-columns:28% 44% 28%;
-  gap:10px;
+  gap:12px;
   padding:12px;
 }
 
-.leftPanel,.rightPanel{
-  background:rgba(255,255,255,0.75);
-  border:4px solid #c9a7ff;
+/* PANELS */
+.leftPanel,
+.rightPanel{
+  background:rgba(255,255,255,0.76);
+  border:4px solid #d1b1ff;
   border-radius:28px;
   padding:12px;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  flex-direction:column;
 }
 
-.questionText,.optionsTitle{
+.questionText,
+.optionsTitle{
   font-size:clamp(18px,2vw,26px);
   font-weight:bold;
   text-align:center;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
+/* BUCKETS */
 .bucketRow{
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:14px;
+  gap:16px;
   flex-wrap:wrap;
 }
 
 .bucketImg{
-  width:min(145px,10vw);
-  height:min(145px,20vh);
+  width:min(150px,11vw);
+  height:min(150px,20vh);
   object-fit:contain;
 }
 
 .plus{
   font-size:44px;
   font-weight:bold;
-  color:#684b72;
+  color:#6c4d75;
 }
 
+/* CENTER */
 .centerPanel{
-  position:relative;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  flex-direction:column;
-  gap:8px;
+  position:relative;
 }
 
 .bowlBox{
   width:min(430px,90%);
-  height:min(350px,48vh);
+  height:min(360px,50vh);
   position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
-.bowlBox img.bowl{
+.bowl{
   width:100%;
   height:100%;
   object-fit:contain;
 }
 
-.bowlBox.glow{
-  animation:bowlGlow 1.2s ease;
+/* BOWL GLOW */
+.bowlGlow{
+  animation:bowlGlow 1.3s ease;
 }
 
 @keyframes bowlGlow{
-  0%{filter:drop-shadow(0 0 0px #ffffff)}
-  50%{filter:drop-shadow(0 0 28px #fff176)}
-  100%{filter:drop-shadow(0 0 0px #ffffff)}
+  0%{
+    filter:drop-shadow(0 0 0px #ffffff);
+  }
+
+  50%{
+    filter:drop-shadow(0 0 28px #fff6a5);
+  }
+
+  100%{
+    filter:drop-shadow(0 0 0px #ffffff);
+  }
 }
 
-.magicBubble{
-  position:absolute;
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.9);
-  animation:bubbleUp 1.2s ease forwards;
-  pointer-events:none;
-}
-
-@keyframes bubbleUp{
-  0%{transform:translateY(30px) scale(.4);opacity:0}
-  30%{opacity:1}
-  100%{transform:translateY(-120px) scale(1.2);opacity:0}
-}
-
+/* MAGIC WAND */
 .wand{
   position:absolute;
   width:120px;
   right:2%;
   top:2%;
   transform:rotate(-25deg);
-  z-index:5;
+  z-index:10;
 }
 
-.wand.mix{
+.wandMove{
   animation:wandTap .8s ease;
 }
 
 @keyframes wandTap{
-  0%{transform:rotate(-25deg) translateY(0)}
-  50%{transform:rotate(-8deg) translateY(35px)}
-  100%{transform:rotate(-25deg) translateY(0)}
+  0%{
+    transform:rotate(-25deg) translateY(0);
+  }
+
+  50%{
+    transform:rotate(-8deg) translateY(35px);
+  }
+
+  100%{
+    transform:rotate(-25deg) translateY(0);
+  }
 }
 
+/* BUBBLES */
+.bubble{
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,0.92);
+  pointer-events:none;
+  animation:bubbleUp 1.3s linear forwards;
+}
+
+@keyframes bubbleUp{
+  0%{
+    transform:translateY(30px) scale(.4);
+    opacity:0;
+  }
+
+  20%{
+    opacity:1;
+  }
+
+  100%{
+    transform:translateY(-130px) scale(1.2);
+    opacity:0;
+  }
+}
+
+/* MIX BUTTON */
 .mixButton{
+  margin-top:10px;
   border:none;
-  background:#9ee8c9;
-  color:#4b3448;
-  border-radius:22px;
-  padding:12px 34px;
+  background:#a7ecd0;
+  color:#51374d;
+  border-radius:24px;
+  padding:12px 36px;
   font-size:clamp(20px,2vw,28px);
   font-weight:bold;
+  border:4px solid #75ceb1;
   cursor:pointer;
-  border:4px solid #70caaa;
 }
 
 .mixButton:disabled{
   opacity:.55;
 }
 
+/* OPTIONS */
 .optionGrid{
   width:100%;
   display:flex;
@@ -198,30 +240,30 @@ html,body{
 }
 
 .option{
-  border:4px solid #c9a7ff;
-  border-radius:24px;
   background:#fffaf5;
-  padding:10px;
+  border:4px solid #d1b1ff;
+  border-radius:22px;
+  padding:12px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:12px;
-  cursor:pointer;
   font-size:clamp(18px,2vw,26px);
   font-weight:bold;
+  cursor:pointer;
 }
 
 .colourCircle{
-  width:58px;
-  height:58px;
+  width:60px;
+  height:60px;
   border-radius:50%;
   border:4px solid white;
-  box-shadow:0 5px 10px rgba(0,0,0,.15);
+  box-shadow:0 5px 10px rgba(0,0,0,.14);
 }
 
 .option.correct{
-  background:#dcffd8;
-  border-color:#7acb73;
+  background:#d9ffd8;
+  border-color:#7ecf7a;
 }
 
 .option.wrong{
@@ -229,19 +271,20 @@ html,body{
 }
 
 .option.glow{
-  box-shadow:0 0 18px 7px #9ee8c9;
+  box-shadow:0 0 18px 6px #9be7c9;
 }
 
 @keyframes wiggle{
   0%{transform:translateX(0)}
   25%{transform:translateX(-8px)}
   50%{transform:translateX(8px)}
-  75%{transform:translateX(-6px)}
+  75%{transform:translateX(-5px)}
   100%{transform:translateX(0)}
 }
 
+/* END SCREEN */
 #endScreen{
-  background:linear-gradient(135deg,#e8d7ff,#ffd9df,#d8fff0);
+  background:linear-gradient(135deg,#ead8ff,#ffe0ea,#d9fff1);
   align-items:center;
   justify-content:center;
   flex-direction:column;
@@ -251,13 +294,13 @@ html,body{
 }
 
 #endScreen h1{
-  font-size:clamp(38px,7vw,76px);
+  font-size:clamp(42px,7vw,78px);
   margin:0 0 10px;
   z-index:2;
 }
 
 #endScreen p{
-  font-size:clamp(20px,3vw,34px);
+  font-size:clamp(22px,3vw,34px);
   z-index:2;
 }
 
@@ -266,28 +309,40 @@ html,body{
   padding:14px 34px;
   border:none;
   border-radius:18px;
-  background:#9ee8c9;
-  color:#4b3448;
+  background:#a7ecd0;
+  color:#51374d;
   font-weight:bold;
   cursor:pointer;
   z-index:2;
 }
 
-.fallingSparkle{
+/* SPARKLES */
+.sparkle{
   position:absolute;
-  width:34px;
-  height:34px;
-  animation:sparkleFall 3s linear forwards;
+  width:32px;
+  height:32px;
   pointer-events:none;
+  animation:sparkleFall 3s linear forwards;
 }
 
 @keyframes sparkleFall{
-  0%{transform:translateY(-30px) scale(1);opacity:1}
-  100%{transform:translateY(110dvh) scale(.5);opacity:0}
+  0%{
+    transform:translateY(-30px) scale(1);
+    opacity:1;
+  }
+
+  100%{
+    transform:translateY(110dvh) scale(.4);
+    opacity:0;
+  }
 }
 
+/* RESPONSIVE */
 @media(max-width:900px){
-  .header{height:58px}
+
+  .header{
+    height:58px;
+  }
 
   .gameArea{
     height:calc(100dvh - 58px);
@@ -296,20 +351,13 @@ html,body{
     padding:8px;
   }
 
-  .leftPanel,.rightPanel{
-    padding:6px;
-    border-radius:20px;
-  }
-
   .bucketImg{
     width:82px;
     height:82px;
   }
 
-  .plus{font-size:30px}
-
-  .bowlBox{
-    height:32vh;
+  .plus{
+    font-size:30px;
   }
 
   .wand{
@@ -324,8 +372,8 @@ html,body{
 
   .option{
     flex-direction:column;
-    padding:7px;
     width:32%;
+    padding:7px;
   }
 
   .colourCircle{
@@ -335,17 +383,18 @@ html,body{
 }
 
 @media(max-width:600px) and (orientation:portrait){
-  .header h1{font-size:19px}
-  .header p{font-size:11px}
-  .questionText,.optionsTitle{font-size:16px}
 
-  .gameArea{
-    grid-template-rows:24% 42% 32%;
+  .header h1{
+    font-size:19px;
+  }
+
+  .header p{
+    font-size:11px;
   }
 
   .bucketImg{
-    width:70px;
-    height:70px;
+    width:68px;
+    height:68px;
   }
 
   .mixButton{
@@ -357,11 +406,14 @@ html,body{
 
 <body>
 
+<!-- LOGO -->
 <div id="logoScreen" class="screen active">
   <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
+<!-- GAME -->
 <div id="gameScreen" class="screen">
+
   <div class="header">
     <h1>Magic Paint Mixing Lab</h1>
     <p>Mix the colours and tap the correct new colour.</p>
@@ -369,36 +421,64 @@ html,body{
 
   <div class="gameArea">
 
+    <!-- LEFT -->
     <div class="leftPanel">
       <div class="questionText">Mix these colours</div>
       <div class="bucketRow" id="bucketRow"></div>
     </div>
 
+    <!-- CENTER -->
     <div class="centerPanel">
+
       <div class="bowlBox" id="bowlBox">
-        <img class="bowl" src="assets/mixing-bowl.png" alt="Magic Mixing Bowl">
-        <img class="wand" id="wand" src="assets/magic-wand.png" alt="Magic Wand">
+
+        <img class="bowl" src="assets/mixing-bowl.png" alt="Mixing Bowl">
+
+        <img class="wand" id="wand"
+        src="assets/magic-wand.png"
+        alt="Magic Wand">
+
       </div>
-      <button class="mixButton" id="mixButton" onclick="mixColours()">Mix</button>
+
+      <button class="mixButton"
+      id="mixButton"
+      onclick="mixColours()">
+      Mix
+      </button>
+
     </div>
 
+    <!-- RIGHT -->
     <div class="rightPanel">
-      <div class="optionsTitle">Choose the new colour</div>
+
+      <div class="optionsTitle">
+        Choose the new colour
+      </div>
+
       <div class="optionGrid" id="optionGrid"></div>
+
     </div>
 
   </div>
 </div>
 
+<!-- END -->
 <div id="endScreen" class="screen">
+
   <h1>Magic Colour Scientist!</h1>
+
   <p>You mixed all the colours.</p>
-  <button class="playAgain" onclick="restartGame()">Play Again</button>
+
+  <button class="playAgain" onclick="restartGame()">
+    Play Again
+  </button>
+
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
+<!-- AUDIO -->
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/claps.mp3"></audio>
 
 <script>
 const questions = [
@@ -414,22 +494,18 @@ const questions = [
   { colours:["red","blue"], answer:"purple" }
 ];
 
-const colourHex = {
-  red:"#ef3b45",
-  yellow:"#f4e84a",
-  blue:"#2385c7",
-  orange:"#f7941e",
-  green:"#35b85a",
-  purple:"#713ca6"
-};
-
 const bucketImages = {
   red:"red-bucket.png",
   yellow:"yellow-bucket.png",
   blue:"blue-bucket.png"
 };
 
-let order = [];
+const colourHex = {
+  orange:"#f7941e",
+  green:"#35b85a",
+  purple:"#713ca6"
+};
+
 let currentIndex = 0;
 let currentQuestion = null;
 let mixed = false;
@@ -440,21 +516,27 @@ let sparkleTimer = null;
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
 const endScreen = document.getElementById("endScreen");
+
 const bucketRow = document.getElementById("bucketRow");
 const optionGrid = document.getElementById("optionGrid");
-const mixButton = document.getElementById("mixButton");
-const wand = document.getElementById("wand");
+
 const bowlBox = document.getElementById("bowlBox");
+const wand = document.getElementById("wand");
+const mixButton = document.getElementById("mixButton");
 
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const clapSound = document.getElementById("clapSound");
 
-window.onload = function(){
-  setTimeout(()=>{
+window.onload = () => {
+
+  setTimeout(() => {
+
     logoScreen.classList.remove("active");
     gameScreen.classList.add("active");
+
     startGame();
+
   },5000);
 };
 
@@ -464,122 +546,170 @@ function playSound(sound){
   sound.play().catch(()=>{});
 }
 
-function shuffle(array){
-  return array.sort(()=>Math.random()-0.5);
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
 }
 
 function startGame(){
-  stopSparkles();
+
   currentIndex = 0;
-  order = shuffle([...questions]);
+
+  questions.sort(()=>Math.random()-0.5);
+
   showQuestion();
 }
 
 function showQuestion(){
-  if(currentIndex >= order.length){
+
+  if(currentIndex >= questions.length){
+
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
+
     startSparkles();
+
     return;
   }
 
-  currentQuestion = order[currentIndex];
+  currentQuestion = questions[currentIndex];
+
   mixed = false;
   canAnswer = false;
   wrongAttempts = 0;
 
   mixButton.disabled = false;
-  bowlBox.classList.remove("glow");
 
   renderBuckets();
   renderOptions();
 }
 
 function renderBuckets(){
+
   bucketRow.innerHTML = "";
 
   currentQuestion.colours.forEach((colour,index)=>{
+
     const img = document.createElement("img");
-    img.className = "bucketImg";
+
     img.src = "assets/" + bucketImages[colour];
-    img.alt = colour + " bucket";
+    img.className = "bucketImg";
+
     bucketRow.appendChild(img);
 
     if(index === 0){
+
       const plus = document.createElement("div");
+
       plus.className = "plus";
       plus.textContent = "+";
+
       bucketRow.appendChild(plus);
     }
   });
 }
 
 function renderOptions(){
+
   optionGrid.innerHTML = "";
 
   shuffle(["orange","green","purple"]).forEach(colour=>{
+
     const option = document.createElement("div");
+
     option.className = "option";
     option.dataset.answer = colour;
+
     option.innerHTML = `
-      <div class="colourCircle" style="background:${colourHex[colour]}"></div>
+      <div class="colourCircle"
+      style="background:${colourHex[colour]}"></div>
+
       <div>${colour}</div>
     `;
-    option.onclick = ()=>checkAnswer(option, colour);
+
+    option.onclick = ()=>checkAnswer(option,colour);
+
     optionGrid.appendChild(option);
   });
 }
 
 function mixColours(){
+
   if(mixed) return;
 
   mixed = true;
   canAnswer = false;
+
   mixButton.disabled = true;
 
-  wand.classList.add("mix");
-  bowlBox.classList.add("glow");
+  wand.classList.add("wandMove");
+  bowlBox.classList.add("bowlGlow");
+
   createBubbles();
 
   setTimeout(()=>{
-    wand.classList.remove("mix");
-    bowlBox.classList.remove("glow");
+
+    wand.classList.remove("wandMove");
+    bowlBox.classList.remove("bowlGlow");
+
     canAnswer = true;
+
   },1200);
 }
 
 function createBubbles(){
-  for(let i=0;i<12;i++){
+
+  for(let i=0;i<14;i++){
+
     setTimeout(()=>{
+
       const bubble = document.createElement("div");
-      bubble.className = "magicBubble";
-      bubble.style.left = (35 + Math.random()*30) + "%";
-      bubble.style.top = (45 + Math.random()*20) + "%";
-      bubble.style.width = bubble.style.height = (8 + Math.random()*16) + "px";
+
+      bubble.className = "bubble";
+
+      bubble.style.left = (38 + Math.random()*24) + "%";
+      bubble.style.top = (52 + Math.random()*10) + "%";
+
+      const size = 8 + Math.random()*18;
+
+      bubble.style.width = size + "px";
+      bubble.style.height = size + "px";
+
       bowlBox.appendChild(bubble);
+
       setTimeout(()=>bubble.remove(),1300);
+
     },i*70);
   }
 }
 
-function checkAnswer(option, selected){
+function checkAnswer(option,selected){
+
   if(!canAnswer) return;
 
   if(selected === currentQuestion.answer){
+
     canAnswer = false;
 
     playSound(correctSound);
-    setTimeout(()=>playSound(clapSound),150);
+
+    setTimeout(()=>{
+      playSound(clapSound);
+    },150);
 
     option.classList.add("correct");
 
     setTimeout(()=>{
+
       currentIndex++;
+
       showQuestion();
+
     },1200);
 
   }else{
+
     wrongAttempts++;
+
     playSound(wrongSound);
 
     option.classList.add("wrong");
@@ -589,40 +719,68 @@ function checkAnswer(option, selected){
     },600);
 
     if(wrongAttempts >= 2){
-      const correctOption = document.querySelector(`[data-answer="${currentQuestion.answer}"]`);
-      if(correctOption) correctOption.classList.add("glow");
+
+      const correctOption =
+      document.querySelector(`[data-answer="${currentQuestion.answer}"]`);
+
+      if(correctOption){
+        correctOption.classList.add("glow");
+      }
     }
   }
 }
 
 function startSparkles(){
+
   stopSparkles();
 
   sparkleTimer = setInterval(()=>{
+
     const sparkle = document.createElement("img");
-    sparkle.className = "fallingSparkle";
+
+    sparkle.className = "sparkle";
+
     sparkle.src = "assets/sparkle.png";
-    sparkle.style.left = Math.random()*100 + "vw";
+
+    sparkle.style.left =
+    Math.random()*100 + "vw";
+
     sparkle.style.top = "-30px";
-    sparkle.style.width = sparkle.style.height = (26 + Math.random()*24) + "px";
+
+    const size = 26 + Math.random()*22;
+
+    sparkle.style.width = size + "px";
+    sparkle.style.height = size + "px";
+
     endScreen.appendChild(sparkle);
 
-    setTimeout(()=>sparkle.remove(),3200);
+    setTimeout(()=>{
+      sparkle.remove();
+    },3000);
+
   },120);
 }
 
 function stopSparkles(){
+
   if(sparkleTimer){
+
     clearInterval(sparkleTimer);
+
     sparkleTimer = null;
   }
-  document.querySelectorAll(".fallingSparkle").forEach(s=>s.remove());
+
+  document.querySelectorAll(".sparkle")
+  .forEach(s=>s.remove());
 }
 
 function restartGame(){
+
   stopSparkles();
+
   endScreen.classList.remove("active");
   gameScreen.classList.add("active");
+
   startGame();
 }
 </script>
