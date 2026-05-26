@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Names Balloon Game</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
+  overflow: hidden;
+  background: linear-gradient(#ccefff, #fff4cf);
+  color: #4b3b2f;
+}
+
+.screen {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+}
+
+.active {
+  display: flex;
+}
+
+/* LOGO SCREEN */
+#logoScreen {
+  background: white;
+  align-items: center;
+  justify-content: center;
+}
+
+#logoScreen img {
+  width: 280px;
+  max-width: 75%;
+}
+
+/* GAME SCREEN */
+#gameScreen {
+  flex-direction: column;
+  position: relative;
+}
+
+.header {
+  text-align: center;
+  padding: 10px 12px;
+  background: #fff3b8;
+  border-bottom: 4px solid #f2c86b;
+  width: 100%;
+  z-index: 2;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 40px);
+}
+
+.header p {
+  margin: 5px 0 0;
+  font-size: clamp(15px, 2vw, 22px);
+}
+
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50px;
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud1 {
+  width: 150px;
+  height: 45px;
+  top: 120px;
+  left: 50px;
+}
+
+.cloud1::before {
+  width: 60px;
+  height: 60px;
+  top: -25px;
+  left: 25px;
+}
+
+.cloud1::after {
+  width: 75px;
+  height: 75px;
+  top: -35px;
+  right: 20px;
+}
+
+.cloud2 {
+  width: 180px;
+  height: 50px;
+  top: 170px;
+  right: 70px;
+}
+
+.cloud2::before {
+  width: 70px;
+  height: 70px;
+  top: -28px;
+  left: 30px;
+}
+
+.cloud2::after {
+  width: 85px;
+  height: 85px;
+  top: -40px;
+  right: 25px;
+}
+
+.gameArea {
+  width: 100%;
+  height: calc(100vh - 90px);
+  position: relative;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.animalsGrid {
+  width: 72%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: rgba(255,255,255,0.82);
+  border: 3px solid #f3cf89;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 8px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  transition: 0.25s ease;
+}
+
+.card img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+.board {
+  margin-top: 5px;
+  min-width: 105px;
+  background: #fffdf8;
+  border: 3px dashed #bca78c;
+  border-radius: 13px;
+  padding: 7px 10px;
+  text-align: center;
+  font-size: clamp(19px, 2.3vw, 30px);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.card.correct {
+  background: #d9ffd7;
+  border-color: #6fc06f;
+  transform: scale(1.04);
+}
+
+.card.glow {
+  box-shadow: 0 0 18px 8px #8fe58f;
+}
+
+.card.wrong {
+  animation: wiggle 0.35s ease;
+}
+
+@keyframes wiggle {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  50% { transform: translateX(7px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+/* BALLOON */
+.balloonArea {
+  width: 26%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.balloonWrap {
+  position: absolute;
+  width: 230px;
+  height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 120%;
+  opacity: 0;
+}
+
+.balloonWrap.floatIn {
+  animation: balloonIn 1.5s ease forwards;
+}
+
+.balloonWrap.floatOut {
+  animation: balloonOut 1.3s ease forwards;
+}
+
+.balloonWrap.gentleFloat {
+  animation: gentleFloat 2.5s ease-in-out infinite;
+}
+
+.balloonWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.balloonNumber {
+  position: absolute;
+  top: 78px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 68px;
+  font-weight: bold;
+  color: #4f86c6;
+  text-shadow: 2px 2px white;
+}
+
+@keyframes balloonIn {
+  from {
+    left: 120%;
+    opacity: 0;
+  }
+  to {
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+}
+
+@keyframes balloonOut {
+  from {
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+  to {
+    left: -130%;
+    opacity: 0;
+  }
+}
+
+@keyframes gentleFloat {
+  0% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-10px); }
+  100% { transform: translateX(-50%) translateY(0); }
+}
+
+.message {
+  position: absolute;
+  bottom: 25px;
+  right: 30px;
+  width: 250px;
+  text-align: center;
+  background: rgba(255,255,255,0.9);
+  border: 3px solid #f2c86b;
+  border-radius: 20px;
+  padding: 12px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* END SCREEN */
+#endScreen {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  background: linear-gradient(#ccefff, #fff4cf);
+}
+
+#endScreen h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+#endScreen p {
+  font-size: 26px;
+}
+
+button {
+  font-size: 24px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 18px;
+  background: #f2c86b;
+  color: #4b3b2f;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .gameArea {
+    flex-direction: column;
+    padding: 8px;
+  }
+
+  .animalsGrid {
+    width: 100%;
+    height: 68%;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 7px;
+  }
+
+  .card {
+    padding: 5px;
+    border-radius: 16px;
+  }
+
+  .card img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .board {
+    min-width: 66px;
+    font-size: 16px;
+    padding: 5px;
+  }
+
+  .balloonArea {
+    width: 100%;
+    height: 28%;
+  }
+
+  .balloonWrap {
+    width: 150px;
+    height: 220px;
+  }
+
+  .balloonNumber {
+    top: 52px;
+    font-size: 44px;
+  }
+
+  .message {
+    bottom: 5px;
+    right: 50%;
+    transform: translateX(50%);
+    width: 230px;
+    font-size: 18px;
+    padding: 8px;
+  }
+
+  .cloud1,
+  .cloud2 {
+    opacity: 0.45;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="logoScreen" class="screen active">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+</div>
+
+<div id="gameScreen" class="screen">
+  <div class="header">
+    <h1>Number Names Balloon Game</h1>
+    <p>Look at the number on the balloon. Tap the correct number name.</p>
+  </div>
+
+  <div class="cloud cloud1"></div>
+  <div class="cloud cloud2"></div>
+
+  <div class="gameArea">
+    <div class="animalsGrid" id="animalsGrid"></div>
+
+    <div class="balloonArea">
+      <div class="balloonWrap" id="balloonWrap">
+        <img src="assets/balloon.png" alt="Balloon">
+        <div class="balloonNumber" id="balloonNumber">1</div>
+      </div>
+    </div>
+
+    <div class="message" id="message">Look at the balloon!</div>
+  </div>
+</div>
+
+<div id="endScreen" class="screen">
+  <h1>Excellent!</h1>
+  <p>You matched all number names.</p>
+  <button onclick="restartGame()">Play Again</button>
+</div>
+
+<audio id="rightSound" src="assets/right.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/clap.mp3"></audio>
+
+<script>
+const numbers = [
+  { number: 1, word: "one", image: "rabbit.png" },
+  { number: 2, word: "two", image: "bear.png" },
+  { number: 3, word: "three", image: "cat.png" },
+  { number: 4, word: "four", image: "penguin.png" },
+  { number: 5, word: "five", image: "duck.png" },
+  { number: 6, word: "six", image: "deer.png" },
+  { number: 7, word: "seven", image: "koala.png" },
+  { number: 8, word: "eight", image: "giraffe.png" },
+  { number: 9, word: "nine", image: "monkey.png" },
+  { number: 10, word: "ten", image: "tiger.png" }
+];
+
+let questionOrder = [];
+let currentIndex = 0;
+let currentAnswer = null;
+let wrongAttempts = 0;
+let canClick = false;
+
+const logoScreen = document.getElementById("logoScreen");
+const gameScreen = document.getElementById("gameScreen");
+const endScreen = document.getElementById("endScreen");
+const animalsGrid = document.getElementById("animalsGrid");
+const balloonWrap = document.getElementById("balloonWrap");
+const balloonNumber = document.getElementById("balloonNumber");
+const message = document.getElementById("message");
+
+const rightSound = document.getElementById("rightSound");
+const wrongSound = document.getElementById("wrongSound");
+const clapSound = document.getElementById("clapSound");
+
+window.onload = function () {
+  setTimeout(() => {
+    logoScreen.classList.remove("active");
+    gameScreen.classList.add("active");
+    startGame();
+  }, 5000);
+};
+
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+  currentIndex = 0;
+  questionOrder = shuffle([...numbers]);
+  renderAnimals();
+  showQuestion();
+}
+
+function renderAnimals() {
+  animalsGrid.innerHTML = "";
+
+  const shuffledCards = shuffle([...numbers]);
+
+  shuffledCards.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.word = item.word;
+
+    card.innerHTML = `
+      <img src="assets/${item.image}" alt="${item.word}">
+      <div class="board">${item.word}</div>
+    `;
+
+    card.addEventListener("click", () => checkAnswer(card, item.word));
+    animalsGrid.appendChild(card);
+  });
+}
+
+function showQuestion() {
+  if (currentIndex >= questionOrder.length) {
+    gameScreen.classList.remove("active");
+    endScreen.classList.add("active");
+    return;
+  }
+
+  canClick = false;
+  wrongAttempts = 0;
+  currentAnswer = questionOrder[currentIndex];
+
+  document.querySelectorAll(".card").forEach(card => {
+    card.classList.remove("correct", "wrong", "glow");
+  });
+
+  balloonNumber.textContent = currentAnswer.number;
+  message.textContent = "Look at the balloon!";
+
+  balloonWrap.className = "balloonWrap floatIn";
+
+  setTimeout(() => {
+    balloonWrap.className = "balloonWrap gentleFloat";
+    canClick = true;
+    message.textContent = "Tap the correct board!";
+  }, 1600);
+}
+
+function checkAnswer(card, selectedWord) {
+  if (!canClick) return;
+
+  if (selectedWord === currentAnswer.word) {
+    canClick = false;
+
+    rightSound.currentTime = 0;
+    clapSound.currentTime = 0;
+    rightSound.play();
+    clapSound.play();
+
+    card.classList.add("correct");
+    message.textContent = "Good job!";
+
+    balloonWrap.className = "balloonWrap floatOut";
+
+    setTimeout(() => {
+      currentIndex++;
+      showQuestion();
+    }, 1500);
+
+  } else {
+    wrongAttempts++;
+
+    wrongSound.currentTime = 0;
+    wrongSound.play();
+
+    card.classList.add("wrong");
+    message.textContent = "Try again!";
+
+    setTimeout(() => {
+      card.classList.remove("wrong");
+    }, 500);
+
+    if (wrongAttempts >= 2) {
+      const correctCard = document.querySelector(`[data-word="${currentAnswer.word}"]`);
+      correctCard.classList.add("glow");
+      message.textContent = "Look carefully and try again!";
+    }
+  }
+}
+
+function restartGame() {
+  endScreen.classList.remove("active");
+  gameScreen.classList.add("active");
+  startGame();
+}
+</script>
+
+</body>
+</html>
