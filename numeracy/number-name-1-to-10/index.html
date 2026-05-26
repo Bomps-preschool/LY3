@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Number Names Balloon Game</title>
 
 <style>
@@ -12,9 +12,9 @@
 
 body {
   margin: 0;
-  font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
   overflow: hidden;
-  background: linear-gradient(#ccefff, #fff5d6);
+  font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
+  background: linear-gradient(#d8f6ff, #fff4cc);
   color: #4b3b2f;
 }
 
@@ -28,8 +28,9 @@ body {
   display: flex;
 }
 
+/* Logo Screen */
 #logoScreen {
-  background: white;
+  background: #ffffff;
   align-items: center;
   justify-content: center;
 }
@@ -39,68 +40,68 @@ body {
   max-width: 75%;
 }
 
+/* Game Screen */
 #gameScreen {
   flex-direction: column;
   position: relative;
 }
 
 .header {
-  text-align: center;
-  padding: 8px 12px;
-  background: #fff3b8;
-  border-bottom: 4px solid #f2c86b;
   width: 100%;
-  z-index: 5;
+  text-align: center;
+  background: #fff1b8;
+  border-bottom: 4px solid #f2c86b;
+  padding: 8px 10px;
+  z-index: 10;
 }
 
 .header h1 {
   margin: 0;
-  font-size: clamp(24px, 4vw, 38px);
+  font-size: clamp(26px, 4vw, 44px);
 }
 
 .header p {
   margin: 4px 0 0;
-  font-size: clamp(15px, 2vw, 21px);
+  font-size: clamp(16px, 2vw, 24px);
 }
 
 .gameArea {
+  height: calc(100vh - 95px);
   width: 100%;
-  height: calc(100vh - 86px);
   position: relative;
-  padding: 14px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 14px 24px;
 }
 
+/* Left and Right Animal Columns */
 .sideGrid {
-  width: 32%;
+  width: 27%;
   height: 100%;
   display: grid;
-  grid-template-columns: 1fr;
   grid-template-rows: repeat(5, 1fr);
   gap: 10px;
-  z-index: 3;
+  z-index: 5;
 }
 
 .card {
-  background: rgba(255,255,255,0.88);
-  border: 3px solid #f3cf89;
-  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 4px solid #f4c976;
+  border-radius: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 6px;
   box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-  transition: 0.25s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .card img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  max-height: 118px;
 }
 
 .card.correct {
@@ -109,37 +110,41 @@ body {
   transform: scale(1.04);
 }
 
-.card.glow {
-  box-shadow: 0 0 18px 8px #8fe58f;
-}
-
 .card.wrong {
   animation: wiggle 0.35s ease;
 }
 
+.card.glow {
+  box-shadow: 0 0 20px 8px #8fe58f;
+}
+
 @keyframes wiggle {
   0% { transform: translateX(0); }
-  25% { transform: translateX(-7px); }
-  50% { transform: translateX(7px); }
-  75% { transform: translateX(-5px); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-6px); }
   100% { transform: translateX(0); }
 }
 
+/* Center Balloon Area */
 .centerArea {
-  width: 30%;
+  width: 42%;
   height: 100%;
   position: relative;
-  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .balloonWrap {
   position: absolute;
-  width: 230px;
-  height: 330px;
+  width: min(330px, 70%);
+  height: min(470px, 82%);
   left: 50%;
-  bottom: -360px;
+  bottom: -520px;
   transform: translateX(-50%);
   opacity: 0;
+  pointer-events: none;
 }
 
 .balloonWrap img {
@@ -150,13 +155,13 @@ body {
 
 .balloonNumber {
   position: absolute;
-  top: 78px;
+  top: 24%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 68px;
+  font-size: clamp(58px, 8vw, 96px);
   font-weight: bold;
   color: #4f86c6;
-  text-shadow: 2px 2px white;
+  text-shadow: 3px 3px #ffffff;
 }
 
 .floatIn {
@@ -164,9 +169,9 @@ body {
 }
 
 .holdCenter {
-  bottom: 34%;
+  bottom: 20%;
   opacity: 1;
-  animation: gentleFloat 3s ease-in-out infinite;
+  animation: gentleFloat 4s ease-in-out infinite;
 }
 
 .floatOut {
@@ -175,18 +180,18 @@ body {
 
 @keyframes floatIn {
   from {
-    bottom: -360px;
+    bottom: -520px;
     opacity: 0;
   }
   to {
-    bottom: 34%;
+    bottom: 20%;
     opacity: 1;
   }
 }
 
 @keyframes floatOut {
   from {
-    bottom: 34%;
+    bottom: 20%;
     opacity: 1;
   }
   to {
@@ -197,45 +202,46 @@ body {
 
 @keyframes gentleFloat {
   0% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-8px); }
+  50% { transform: translateX(-50%) translateY(-10px); }
   100% { transform: translateX(-50%) translateY(0); }
 }
 
 .message {
   position: absolute;
-  bottom: 20px;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255,255,255,0.95);
-  border: 3px solid #f2c86b;
-  border-radius: 20px;
-  padding: 10px 22px;
-  font-size: 24px;
+  background: rgba(255,255,255,0.96);
+  border: 4px solid #f2c86b;
+  border-radius: 24px;
+  padding: 10px 26px;
+  font-size: clamp(18px, 2.2vw, 28px);
   font-weight: bold;
   text-align: center;
-  z-index: 5;
+  z-index: 20;
 }
 
+/* End Screen */
 #endScreen {
+  background: linear-gradient(#d8f6ff, #fff4cc);
   align-items: center;
   justify-content: center;
   flex-direction: column;
   text-align: center;
-  background: linear-gradient(#ccefff, #fff4cf);
 }
 
 #endScreen h1 {
-  font-size: 48px;
-  margin-bottom: 10px;
+  font-size: 54px;
+  margin-bottom: 8px;
 }
 
 #endScreen p {
-  font-size: 26px;
+  font-size: 28px;
 }
 
 button {
   font-size: 24px;
-  padding: 14px 32px;
+  padding: 14px 34px;
   border: none;
   border-radius: 18px;
   background: #f2c86b;
@@ -244,43 +250,40 @@ button {
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
+/* Mobile and Tablet */
+@media (max-width: 900px) {
   .gameArea {
     padding: 8px;
   }
 
   .sideGrid {
-    width: 34%;
+    width: 30%;
     gap: 7px;
   }
 
   .centerArea {
-    width: 28%;
+    width: 36%;
   }
 
   .card {
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 4px;
   }
 
-  .card img {
-    max-height: 80px;
-  }
-
   .balloonWrap {
-    width: 135px;
-    height: 200px;
+    width: 170px;
+    height: 250px;
   }
 
   .balloonNumber {
-    top: 48px;
-    font-size: 42px;
+    top: 23%;
+    font-size: 48px;
   }
 
   .message {
+    bottom: 6px;
     font-size: 17px;
     padding: 8px 14px;
-    bottom: 6px;
   }
 }
 </style>
@@ -343,7 +346,7 @@ let currentIndex = 0;
 let currentAnswer = null;
 let wrongAttempts = 0;
 let canClick = false;
-let holdTimer = null;
+let hintTimer = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
@@ -385,8 +388,13 @@ function renderAnimals() {
   const leftCards = shuffledCards.slice(0, 5);
   const rightCards = shuffledCards.slice(5, 10);
 
-  leftCards.forEach(item => leftGrid.appendChild(createCard(item)));
-  rightCards.forEach(item => rightGrid.appendChild(createCard(item)));
+  leftCards.forEach(item => {
+    leftGrid.appendChild(createCard(item));
+  });
+
+  rightCards.forEach(item => {
+    rightGrid.appendChild(createCard(item));
+  });
 }
 
 function createCard(item) {
@@ -403,7 +411,7 @@ function createCard(item) {
 }
 
 function showQuestion() {
-  clearTimeout(holdTimer);
+  clearTimeout(hintTimer);
 
   if (currentIndex >= questionOrder.length) {
     gameScreen.classList.remove("active");
@@ -429,9 +437,9 @@ function showQuestion() {
     canClick = true;
     message.textContent = "Tap the matching animal board!";
 
-    holdTimer = setTimeout(() => {
+    hintTimer = setTimeout(() => {
       if (canClick) {
-        message.textContent = "Take your time and tap the answer!";
+        message.textContent = "The balloon is waiting. Tap the answer!";
       }
     }, 10000);
 
@@ -443,10 +451,11 @@ function checkAnswer(card, selectedWord) {
 
   if (selectedWord === currentAnswer.word) {
     canClick = false;
-    clearTimeout(holdTimer);
+    clearTimeout(hintTimer);
 
     rightSound.currentTime = 0;
     clapSound.currentTime = 0;
+
     rightSound.play();
     clapSound.play();
 
@@ -471,11 +480,13 @@ function checkAnswer(card, selectedWord) {
 
     setTimeout(() => {
       card.classList.remove("wrong");
-    }, 500);
+    }, 600);
 
     if (wrongAttempts >= 2) {
       const correctCard = document.querySelector(`[data-word="${currentAnswer.word}"]`);
-      correctCard.classList.add("glow");
+      if (correctCard) {
+        correctCard.classList.add("glow");
+      }
       message.textContent = "Look carefully and try again!";
     }
   }
