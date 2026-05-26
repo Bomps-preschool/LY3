@@ -6,17 +6,22 @@
 <title>Magic Paint Mixing Lab</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 html,body{
-  margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
   font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
-  background:linear-gradient(135deg,#f4e4ff,#ffe6f0,#dcfff2);
-  color:#51374d;
+  background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);
+  color:#563b59;
 }
+
+/* ================= SCREENS ================= */
 
 .screen{
   width:100vw;
@@ -24,86 +29,96 @@ html,body{
   display:none;
 }
 
-.active{display:flex}
+.active{
+  display:flex;
+}
 
-/* LOGO */
+/* ================= LOGO ================= */
+
 #logoScreen{
-  background:#fff;
-  align-items:center;
+  background:white;
   justify-content:center;
+  align-items:center;
 }
 
 #logoScreen img{
-  width:min(280px,70vw);
+  width:min(320px,70vw);
 }
 
-/* GAME SCREEN */
+/* ================= GAME SCREEN ================= */
+
 #gameScreen{
   flex-direction:column;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
+
 .header{
-  height:78px;
-  background:#fff0df;
-  border-bottom:4px solid #c9a7ff;
-  text-align:center;
+  height:80px;
+  background:#fff1df;
+  border-bottom:4px solid #caa8ff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
   padding:4px 10px;
-  flex-shrink:0;
 }
 
 .header h1{
-  margin:0;
-  font-size:clamp(25px,3.1vw,42px);
-  line-height:1.1;
+  font-size:clamp(28px,3vw,52px);
+  line-height:1;
 }
 
 .header p{
-  margin:2px 0 0;
-  font-size:clamp(13px,1.45vw,20px);
-  line-height:1.1;
-  white-space:nowrap;
+  font-size:clamp(12px,1.2vw,18px);
+  margin-top:2px;
 }
 
-/* MAIN AREA */
+/* ================= GAME AREA ================= */
+
 .gameArea{
-  height:calc(100dvh - 78px);
+  flex:1;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:space-evenly;
-  padding:12px;
+  align-items:center;
+  padding:10px;
 }
 
-/* QUESTION */
+/* ================= MESSAGE ================= */
+
 .message{
-  font-size:clamp(28px,4vw,52px);
+  font-size:clamp(14px,1.4vw,22px);
   font-weight:bold;
   text-align:center;
-  background:rgba(255,255,255,.72);
-  border:4px solid #c9a7ff;
-  border-radius:28px;
-  padding:12px 42px;
+  background:rgba(255,255,255,.82);
+  border:3px solid #c9a7ff;
+  border-radius:18px;
+  padding:6px 18px;
+  min-width:320px;
+  max-width:650px;
 }
 
-/* MIXING LINE */
+/* ================= MIXING LINE ================= */
+
 .bucketLine{
   width:100%;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   gap:28px;
 }
 
+/* ================= PAINT BUCKETS ================= */
+
 .bucketBox{
-  width:min(175px,18vw);
-  height:min(175px,25vh);
+  width:min(290px,26vw);
+  height:min(290px,38vh);
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   cursor:pointer;
-  position:relative;
-  touch-action:manipulation;
+  transition:.3s;
 }
 
 .bucketBox img{
@@ -112,154 +127,154 @@ html,body{
   object-fit:contain;
 }
 
-.plus,.equals{
-  font-size:clamp(34px,5vw,62px);
-  font-weight:bold;
-  color:#6c4d75;
-}
-
-/* PROPER EMPTY BUCKET */
-.emptyBucket{
-  width:min(220px,22vw);
-  height:min(190px,27vh);
-  position:relative;
-  overflow:hidden;
-  border:7px solid #b99ce0;
-  border-top:0;
-  border-radius:0 0 42px 42px;
-  background:#fffdf7;
-  box-shadow:0 12px 22px rgba(0,0,0,.15);
-}
-
-/* bucket rim */
-.emptyBucket::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:108%;
-  height:36px;
-  border:7px solid #b99ce0;
-  border-radius:50%;
-  background:#fffdf7;
-  z-index:5;
-}
-
-/* bucket handle */
-.emptyBucket::after{
-  content:"";
-  position:absolute;
-  top:-44px;
-  left:17%;
-  width:66%;
-  height:82px;
-  border:7px solid #b99ce0;
-  border-bottom:0;
-  border-radius:80px 80px 0 0;
-  z-index:1;
-}
-
-/* two colour layers */
-.fillTop,
-.fillBottom{
-  position:absolute;
-  left:0;
-  width:100%;
-  height:0%;
-  transition:height .55s ease, background .45s ease;
-  z-index:2;
-}
-
-.fillBottom{
-  bottom:0;
-}
-
-.fillTop{
-  bottom:50%;
-}
-
-/* face */
-.bucketFace{
-  position:absolute;
-  width:100%;
-  text-align:center;
-  bottom:35%;
-  font-size:36px;
-  z-index:6;
-}
-
-/* drops */
-.pourDrop{
-  position:absolute;
-  width:26px;
-  height:58px;
-  border-radius:18px;
-  top:10%;
-  left:50%;
-  transform:translateX(-50%);
-  animation:pour .7s ease forwards;
-  z-index:10;
-}
-
-@keyframes pour{
-  from{top:8%;opacity:1}
-  to{top:72%;opacity:0}
+.bucketBox:hover{
+  transform:scale(1.03);
 }
 
 .tapGlow{
-  animation:tapGlow .8s ease;
+  animation:tapGlow .7s ease;
 }
 
 @keyframes tapGlow{
   0%{transform:scale(1)}
-  50%{transform:scale(1.06)}
+  50%{transform:scale(1.08)}
   100%{transform:scale(1)}
 }
 
-/* OPTIONS */
+/* ================= SYMBOLS ================= */
+
+.plus,
+.equals{
+  font-size:clamp(44px,5vw,72px);
+  font-weight:bold;
+  color:#755383;
+}
+
+/* ================= RESULT BUCKET ================= */
+
+.emptyBucket{
+  width:min(270px,24vw);
+  height:min(230px,30vh);
+  background:#fffdf7;
+  border:7px solid #c9a7ff;
+  border-radius:32px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
+}
+
+.paintArea{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  border-radius:24px;
+}
+
+.fillBottom,
+.fillTop{
+  position:absolute;
+  width:100%;
+  left:0;
+  transition:.5s;
+}
+
+.fillBottom{
+  bottom:0;
+  height:0%;
+}
+
+.fillTop{
+  bottom:50%;
+  height:0%;
+}
+
+.bucketSmile{
+  position:absolute;
+  width:100%;
+  top:50%;
+  transform:translateY(-50%);
+  text-align:center;
+  font-size:42px;
+  z-index:5;
+}
+
+/* ================= PAINT DROPS ================= */
+
+.pourDrop{
+  position:absolute;
+  width:28px;
+  height:58px;
+  border-radius:20px;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  animation:dropFall .8s linear forwards;
+  z-index:10;
+}
+
+@keyframes dropFall{
+  from{
+    top:-10px;
+    opacity:1;
+  }
+  to{
+    top:78%;
+    opacity:0;
+  }
+}
+
+/* ================= OPTIONS ================= */
+
 .optionsPanel{
   width:100%;
   display:none;
   justify-content:center;
+  align-items:center;
   gap:24px;
 }
 
 .option{
-  width:min(235px,28vw);
-  padding:14px;
+  width:min(230px,28vw);
   background:#fffaf5;
   border:4px solid #c9a7ff;
   border-radius:28px;
+  padding:12px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:8px;
+  gap:10px;
   cursor:pointer;
-  font-size:clamp(22px,3vw,38px);
-  font-weight:bold;
-  touch-action:manipulation;
+  transition:.25s;
+}
+
+.option:hover{
+  transform:translateY(-4px);
 }
 
 .circle{
-  width:72px;
-  height:72px;
+  width:74px;
+  height:74px;
   border-radius:50%;
   border:5px solid white;
   box-shadow:0 5px 12px rgba(0,0,0,.18);
 }
 
-.option.correct{
-  background:#dcffd8;
-  border-color:#72c96d;
+.optionName{
+  font-size:clamp(22px,3vw,38px);
+  font-weight:bold;
 }
 
-.option.wrong{
-  animation:wiggle .35s ease;
+.option.correct{
+  background:#dfffd9;
+  border-color:#77cf74;
 }
 
 .option.glow{
-  box-shadow:0 0 18px 8px #9ee8c9;
+  box-shadow:0 0 18px #98e7c7;
+}
+
+.option.wrong{
+  animation:wiggle .4s ease;
 }
 
 @keyframes wiggle{
@@ -270,63 +285,66 @@ html,body{
   100%{transform:translateX(0)}
 }
 
-/* END SCREEN */
+/* ================= END SCREEN ================= */
+
 #endScreen{
-  background:linear-gradient(135deg,#f4e4ff,#ffe6f0,#dcfff2);
-  align-items:center;
-  justify-content:center;
+  background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);
   flex-direction:column;
-  text-align:center;
+  justify-content:center;
+  align-items:center;
   position:relative;
   overflow:hidden;
 }
 
 #endScreen h1{
-  font-size:clamp(42px,7vw,78px);
-  margin:0 0 10px;
+  font-size:clamp(52px,8vw,90px);
   z-index:5;
 }
 
 #endScreen p{
-  font-size:clamp(22px,3vw,34px);
+  font-size:clamp(24px,3vw,38px);
   z-index:5;
 }
 
 .playAgain{
-  font-size:clamp(20px,2.5vw,28px);
+  margin-top:20px;
   padding:14px 34px;
+  font-size:clamp(20px,2vw,30px);
   border:none;
   border-radius:18px;
-  background:#a7ecd0;
-  color:#51374d;
+  background:#a8ecd1;
+  color:#563b59;
   font-weight:bold;
   cursor:pointer;
   z-index:5;
 }
 
-/* SPARKLES */
+/* ================= SPARKLES ================= */
+
 .sparkle{
   position:absolute;
   width:34px;
   height:34px;
-  pointer-events:none;
   animation:sparkleFall 3s linear forwards;
-  z-index:2;
 }
 
 @keyframes sparkleFall{
-  0%{transform:translateY(-30px) scale(1);opacity:1}
-  100%{transform:translateY(110dvh) scale(.4);opacity:0}
+  from{
+    transform:translateY(-30px) scale(1);
+    opacity:1;
+  }
+  to{
+    transform:translateY(110vh) scale(.4);
+    opacity:0;
+  }
 }
 
-/* CRACKER BURSTS */
+/* ================= BURSTS ================= */
+
 .burst{
   position:absolute;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  pointer-events:none;
-  z-index:3;
+  width:10px;
+  height:10px;
 }
 
 .burst span{
@@ -348,28 +366,26 @@ html,body{
   }
 }
 
-/* RESPONSIVE */
+/* ================= RESPONSIVE ================= */
+
 @media(max-width:900px){
+
   .header{
-    height:58px;
+    height:62px;
   }
 
   .header h1{
-    font-size:20px;
+    font-size:22px;
   }
 
   .header p{
-    font-size:11px;
-  }
-
-  .gameArea{
-    height:calc(100dvh - 58px);
-    padding:8px;
+    font-size:10px;
   }
 
   .message{
-    font-size:22px;
-    padding:8px 20px;
+    font-size:13px;
+    padding:5px 14px;
+    min-width:240px;
   }
 
   .bucketLine{
@@ -377,33 +393,18 @@ html,body{
   }
 
   .bucketBox{
-    width:22vw;
-    height:22vw;
+    width:23vw;
+    height:23vw;
   }
 
   .emptyBucket{
     width:24vw;
-    height:22vw;
-    border-width:5px;
+    height:20vw;
   }
 
-  .emptyBucket::before{
-    height:24px;
-    border-width:5px;
-  }
-
-  .emptyBucket::after{
-    top:-30px;
-    height:58px;
-    border-width:5px;
-  }
-
-  .bucketFace{
-    font-size:22px;
-  }
-
-  .plus,.equals{
-    font-size:28px;
+  .plus,
+  .equals{
+    font-size:30px;
   }
 
   .optionsPanel{
@@ -413,36 +414,30 @@ html,body{
   .option{
     width:30vw;
     padding:8px;
-    font-size:18px;
   }
 
   .circle{
     width:42px;
     height:42px;
   }
+
+  .optionName{
+    font-size:18px;
+  }
 }
 
-@media(max-width:600px) and (orientation:portrait){
+@media(max-width:600px){
+
   .header{
-    height:66px;
+    height:64px;
   }
 
   .header h1{
-    font-size:19px;
+    font-size:18px;
   }
 
   .header p{
-    font-size:10px;
-    white-space:normal;
-  }
-
-  .gameArea{
-    height:calc(100dvh - 66px);
-    justify-content:space-around;
-  }
-
-  .bucketLine{
-    gap:5px;
+    font-size:9px;
   }
 
   .bucketBox{
@@ -452,7 +447,11 @@ html,body{
 
   .emptyBucket{
     width:25vw;
-    height:23vw;
+    height:21vw;
+  }
+
+  .message{
+    font-size:12px;
   }
 }
 </style>
@@ -460,51 +459,89 @@ html,body{
 
 <body>
 
+<!-- ================= LOGO SCREEN ================= -->
+
 <div id="logoScreen" class="screen active">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+  <img src="assets/innovine-logo.png">
 </div>
 
+<!-- ================= GAME SCREEN ================= -->
+
 <div id="gameScreen" class="screen">
+
   <div class="header">
     <h1>Magic Paint Mixing Lab</h1>
     <p>Tap both paint buckets and see the new colour.</p>
   </div>
 
   <div class="gameArea">
-    <div class="message" id="message">Tap the first paint bucket.</div>
+
+    <div class="message" id="message">
+      Tap the first paint bucket.
+    </div>
 
     <div class="bucketLine">
+
       <div class="bucketBox" id="bucket1"></div>
+
       <div class="plus">+</div>
+
       <div class="bucketBox" id="bucket2"></div>
+
       <div class="equals">=</div>
 
       <div class="emptyBucket" id="emptyBucket">
-        <div class="fillBottom" id="fillBottom"></div>
-        <div class="fillTop" id="fillTop"></div>
-        <div class="bucketFace">😊</div>
+
+        <div class="paintArea">
+          <div class="fillBottom" id="fillBottom"></div>
+          <div class="fillTop" id="fillTop"></div>
+        </div>
+
+        <div class="bucketSmile">😊</div>
+
       </div>
+
     </div>
 
     <div class="optionsPanel" id="optionsPanel"></div>
+
   </div>
 </div>
 
+<!-- ================= END SCREEN ================= -->
+
 <div id="endScreen" class="screen">
+
   <h1>Excellent!</h1>
-  <p>You made all secondary colours.</p>
-  <button class="playAgain" onclick="restartGame()">Play Again</button>
+  <p>You made all secondary colours!</p>
+
+  <button class="playAgain" onclick="restartGame()">
+    Play Again
+  </button>
+
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
+<!-- ================= AUDIO ================= -->
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/claps.mp3"></audio>
 
 <script>
+
 const questions = [
-  { colours:["red","yellow"], answer:"orange" },
-  { colours:["yellow","blue"], answer:"green" },
-  { colours:["red","blue"], answer:"purple" }
+  {
+    colours:["red","yellow"],
+    answer:"orange"
+  },
+  {
+    colours:["yellow","blue"],
+    answer:"green"
+  },
+  {
+    colours:["red","blue"],
+    answer:"purple"
+  }
 ];
 
 const bucketImages = {
@@ -528,8 +565,6 @@ let tapped = [];
 let canTap = true;
 let canAnswer = false;
 let wrongAttempts = 0;
-let sparkleTimer = null;
-let burstTimer = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
@@ -537,7 +572,6 @@ const endScreen = document.getElementById("endScreen");
 
 const bucket1 = document.getElementById("bucket1");
 const bucket2 = document.getElementById("bucket2");
-const emptyBucket = document.getElementById("emptyBucket");
 
 const fillBottom = document.getElementById("fillBottom");
 const fillTop = document.getElementById("fillTop");
@@ -549,13 +583,19 @@ const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const clapSound = document.getElementById("clapSound");
 
+/* ================= START ================= */
+
 window.onload = function(){
+
   setTimeout(()=>{
     logoScreen.classList.remove("active");
     gameScreen.classList.add("active");
     startGame();
   },5000);
+
 };
+
+/* ================= SOUND ================= */
 
 function playSound(sound){
   sound.pause();
@@ -563,202 +603,326 @@ function playSound(sound){
   sound.play().catch(()=>{});
 }
 
+/* ================= GAME ================= */
+
 function startGame(){
-  stopCelebration();
   currentIndex = 0;
   showQuestion();
 }
 
 function showQuestion(){
+
   if(currentIndex >= questions.length){
-    gameScreen.classList.remove("active");
-    endScreen.classList.add("active");
-    startCelebration();
+    showEndScreen();
     return;
   }
 
   currentQuestion = questions[currentIndex];
+
   tapped = [];
   canTap = true;
   canAnswer = false;
   wrongAttempts = 0;
 
   fillBottom.style.height = "0%";
-  fillBottom.style.background = "transparent";
-
   fillTop.style.height = "0%";
-  fillTop.style.background = "transparent";
 
   optionsPanel.style.display = "none";
   optionsPanel.innerHTML = "";
 
   message.textContent = "Tap the first paint bucket.";
 
-  bucket1.innerHTML = `<img src="assets/${bucketImages[currentQuestion.colours[0]]}" alt="${currentQuestion.colours[0]} bucket">`;
-  bucket2.innerHTML = `<img src="assets/${bucketImages[currentQuestion.colours[1]]}" alt="${currentQuestion.colours[1]} bucket">`;
+  bucket1.innerHTML = `
+    <img src="assets/${bucketImages[currentQuestion.colours[0]]}">
+  `;
 
-  bucket1.onclick = () => tapBucket(bucket1,currentQuestion.colours[0]);
-  bucket2.onclick = () => tapBucket(bucket2,currentQuestion.colours[1]);
+  bucket2.innerHTML = `
+    <img src="assets/${bucketImages[currentQuestion.colours[1]]}">
+  `;
+
+  bucket1.onclick = ()=>{
+    tapBucket(bucket1,currentQuestion.colours[0]);
+  };
+
+  bucket2.onclick = ()=>{
+    tapBucket(bucket2,currentQuestion.colours[1]);
+  };
+
 }
 
+/* ================= BUCKET TAPPING ================= */
+
 function tapBucket(bucket, colour){
+
   if(!canTap || tapped.includes(colour)) return;
 
   tapped.push(colour);
 
   bucket.classList.add("tapGlow");
-  setTimeout(()=>bucket.classList.remove("tapGlow"),800);
+
+  setTimeout(()=>{
+    bucket.classList.remove("tapGlow");
+  },700);
 
   pourPaint(colour);
 
   if(tapped.length === 1){
+
     fillBottom.style.height = "50%";
     fillBottom.style.background = colourHex[colour];
-    message.textContent = "Now tap the second paint bucket.";
+
+    message.textContent = "Tap the second paint bucket.";
+
   }
 
   if(tapped.length === 2){
+
     canTap = false;
 
     setTimeout(()=>{
+
       fillTop.style.height = "50%";
       fillTop.style.background = colourHex[colour];
-      message.textContent = "What colour did we make?";
+
+      message.textContent = "Choose the new colour.";
+
       showOptions();
-    },550);
+
+    },500);
+
   }
+
 }
+
+/* ================= POUR EFFECT ================= */
 
 function pourPaint(colour){
+
   const drop = document.createElement("div");
+
   drop.className = "pourDrop";
   drop.style.background = colourHex[colour];
-  emptyBucket.appendChild(drop);
-  setTimeout(()=>drop.remove(),800);
+
+  document.getElementById("emptyBucket").appendChild(drop);
+
+  setTimeout(()=>{
+    drop.remove();
+  },800);
+
 }
+
+/* ================= OPTIONS ================= */
 
 function showOptions(){
+
   canAnswer = true;
+
   optionsPanel.style.display = "flex";
 
-  ["orange","green","purple"].sort(()=>Math.random()-0.5).forEach(colour=>{
+  ["orange","green","purple"]
+  .sort(()=>Math.random()-0.5)
+  .forEach(colour=>{
+
     const option = document.createElement("div");
+
     option.className = "option";
     option.dataset.answer = colour;
+
     option.innerHTML = `
-      <div class="circle" style="background:${colourHex[colour]}"></div>
-      <div>${colour}</div>
+      <div class="circle"
+        style="background:${colourHex[colour]}"></div>
+
+      <div class="optionName">${colour}</div>
     `;
-    option.onclick = () => checkAnswer(option,colour);
+
+    option.onclick = ()=>{
+      checkAnswer(option,colour);
+    };
+
     optionsPanel.appendChild(option);
+
   });
+
 }
 
+/* ================= CHECK ANSWER ================= */
+
 function checkAnswer(option, selected){
+
   if(!canAnswer) return;
 
   if(selected === currentQuestion.answer){
+
     canAnswer = false;
 
     playSound(correctSound);
-    setTimeout(()=>playSound(clapSound),150);
+
+    setTimeout(()=>{
+      playSound(clapSound);
+    },120);
 
     option.classList.add("correct");
+
     message.textContent = "Good job!";
 
     setTimeout(()=>{
+
       fillTop.style.height = "0%";
-      fillBottom.style.height = "85%";
-      fillBottom.style.background = colourHex[currentQuestion.answer];
+
+      fillBottom.style.height = "100%";
+      fillBottom.style.background =
+      colourHex[currentQuestion.answer];
+
     },400);
 
     setTimeout(()=>{
+
       currentIndex++;
       showQuestion();
+
     },1800);
 
   }else{
+
     wrongAttempts++;
 
     playSound(wrongSound);
 
     option.classList.add("wrong");
-    setTimeout(()=>option.classList.remove("wrong"),600);
+
+    setTimeout(()=>{
+      option.classList.remove("wrong");
+    },400);
 
     if(wrongAttempts >= 2){
-      const correctOption = document.querySelector(`[data-answer="${currentQuestion.answer}"]`);
-      if(correctOption) correctOption.classList.add("glow");
+
+      const correctOption =
+      document.querySelector(
+        `[data-answer="${currentQuestion.answer}"]`
+      );
+
+      if(correctOption){
+        correctOption.classList.add("glow");
+      }
+
     }
+
   }
+
 }
 
-function startCelebration(){
-  stopCelebration();
+/* ================= END SCREEN ================= */
 
-  sparkleTimer = setInterval(()=>{
+function showEndScreen(){
+
+  gameScreen.classList.remove("active");
+  endScreen.classList.add("active");
+
+  createCelebration();
+
+}
+
+function createCelebration(){
+
+  setInterval(()=>{
+
     const sparkle = document.createElement("img");
+
     sparkle.className = "sparkle";
     sparkle.src = "assets/sparkle.png";
-    sparkle.style.left = Math.random()*100 + "vw";
-    sparkle.style.top = "-35px";
 
-    const size = 28 + Math.random()*26;
+    sparkle.style.left =
+      Math.random()*100 + "vw";
+
+    sparkle.style.top = "-30px";
+
+    const size = 24 + Math.random()*24;
+
     sparkle.style.width = size + "px";
     sparkle.style.height = size + "px";
 
     endScreen.appendChild(sparkle);
-    setTimeout(()=>sparkle.remove(),3200);
-  },80);
 
-  burstTimer = setInterval(()=>{
-    createBurst(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.75);
-  },260);
+    setTimeout(()=>{
+      sparkle.remove();
+    },3000);
+
+  },70);
+
+  setInterval(()=>{
+
+    createBurst(
+      Math.random()*window.innerWidth,
+      Math.random()*window.innerHeight*.7
+    );
+
+  },220);
+
 }
 
 function createBurst(x,y){
+
   const burst = document.createElement("div");
+
   burst.className = "burst";
+
   burst.style.left = x + "px";
   burst.style.top = y + "px";
 
-  const colours = ["#ffd45c","#ff7aa8","#9ee7ff","#8df2a6","#d9b3ff","#ff9f43"];
+  const colours = [
+    "#ffd45c",
+    "#ff7aa8",
+    "#9ee7ff",
+    "#8df2a6",
+    "#d9b3ff",
+    "#ff9f43"
+  ];
 
   for(let i=0;i<16;i++){
-    const dot = document.createElement("span");
-    const angle = (Math.PI * 2 * i) / 16;
-    const distance = 55 + Math.random()*45;
 
-    dot.style.background = colours[Math.floor(Math.random()*colours.length)];
-    dot.style.setProperty("--x", Math.cos(angle)*distance + "px");
-    dot.style.setProperty("--y", Math.sin(angle)*distance + "px");
+    const dot = document.createElement("span");
+
+    const angle =
+      (Math.PI*2*i)/16;
+
+    const distance =
+      50 + Math.random()*40;
+
+    dot.style.background =
+      colours[Math.floor(
+        Math.random()*colours.length
+      )];
+
+    dot.style.setProperty(
+      "--x",
+      Math.cos(angle)*distance + "px"
+    );
+
+    dot.style.setProperty(
+      "--y",
+      Math.sin(angle)*distance + "px"
+    );
 
     burst.appendChild(dot);
+
   }
 
   endScreen.appendChild(burst);
-  setTimeout(()=>burst.remove(),1200);
+
+  setTimeout(()=>{
+    burst.remove();
+  },1200);
+
 }
 
-function stopCelebration(){
-  if(sparkleTimer){
-    clearInterval(sparkleTimer);
-    sparkleTimer = null;
-  }
-
-  if(burstTimer){
-    clearInterval(burstTimer);
-    burstTimer = null;
-  }
-
-  document.querySelectorAll(".sparkle,.burst").forEach(el=>el.remove());
-}
+/* ================= RESTART ================= */
 
 function restartGame(){
-  stopCelebration();
-  endScreen.classList.remove("active");
-  gameScreen.classList.add("active");
-  startGame();
+
+  location.reload();
+
 }
+
 </script>
 
 </body>
