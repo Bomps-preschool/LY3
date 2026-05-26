@@ -6,12 +6,12 @@
 <title>Number Names Ice Cream Game</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
-body{
+html,body{
   margin:0;
+  width:100%;
+  height:100%;
   overflow:hidden;
   font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
   background:linear-gradient(#dff8ff,#fff5cf);
@@ -20,32 +20,26 @@ body{
 
 .screen{
   width:100vw;
-  height:100vh;
+  height:100dvh;
   display:none;
 }
 
-.active{
-  display:flex;
-}
+.active{display:flex}
 
-/* LOGO SCREEN */
 #logoScreen{
-  background:#ffffff;
+  background:white;
   align-items:center;
   justify-content:center;
 }
 
 #logoScreen img{
-  width:260px;
-  max-width:75%;
+  width:min(280px,70vw);
 }
 
-/* GAME SCREEN */
 #gameScreen{
   flex-direction:column;
 }
 
-/* SMALL HEADER */
 .header{
   height:58px;
   width:100%;
@@ -53,36 +47,35 @@ body{
   background:#fff1b8;
   border-bottom:3px solid #f2c86b;
   padding:3px 8px;
+  flex-shrink:0;
 }
 
 .header h1{
   margin:0;
-  font-size:26px;
+  font-size:clamp(18px,2.5vw,28px);
   line-height:1.1;
 }
 
 .header p{
   margin:1px 0 0;
-  font-size:13px;
+  font-size:clamp(10px,1.2vw,14px);
   line-height:1.1;
 }
 
-/* MAIN GAME AREA */
 .gameArea{
   width:100%;
-  height:calc(100vh - 58px);
+  height:calc(100dvh - 58px);
   display:grid;
-  grid-template-rows:26% 46% 26%;
+  grid-template-rows:25% 48% 25%;
   gap:1%;
   padding:8px 18px;
 }
 
-/* ANIMAL ROWS */
 .row{
   width:100%;
   height:100%;
   display:grid;
-  grid-template-columns:repeat(5, 1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:14px;
 }
 
@@ -97,6 +90,7 @@ body{
   cursor:pointer;
   box-shadow:0 5px 10px rgba(0,0,0,0.08);
   overflow:hidden;
+  touch-action:manipulation;
 }
 
 .card img{
@@ -127,7 +121,6 @@ body{
   100%{transform:translateX(0)}
 }
 
-/* CART AREA */
 .middleArea{
   width:100%;
   height:100%;
@@ -140,9 +133,9 @@ body{
 
 .cartWrap{
   position:absolute;
-  width:430px;
-  height:270px;
-  left:-480px;
+  width:min(430px,42vw);
+  height:min(270px,36vh);
+  left:-520px;
   opacity:0;
   z-index:5;
 }
@@ -158,10 +151,10 @@ body{
   top:43%;
   left:50%;
   transform:translate(-50%,-50%);
-  font-size:78px;
+  font-size:clamp(48px,6vw,82px);
   font-weight:bold;
   color:#2f7edb;
-  text-shadow:4px 4px #ffffff;
+  text-shadow:4px 4px white;
 }
 
 .cartIn{
@@ -179,49 +172,38 @@ body{
 }
 
 @keyframes cartIn{
-  from{
-    left:-480px;
-    opacity:0;
-  }
-  to{
-    left:50%;
-    transform:translateX(-50%);
-    opacity:1;
-  }
+  from{left:-520px;opacity:0}
+  to{left:50%;transform:translateX(-50%);opacity:1}
 }
 
 @keyframes cartOut{
-  from{
-    left:50%;
-    transform:translateX(-50%);
-    opacity:1;
-  }
-  to{
-    left:115%;
-    opacity:0;
-  }
+  from{left:50%;transform:translateX(-50%);opacity:1}
+  to{left:115%;opacity:0}
 }
 
-/* END SCREEN */
 #endScreen{
   background:linear-gradient(#dff8ff,#fff5cf);
   align-items:center;
   justify-content:center;
   flex-direction:column;
   text-align:center;
+  position:relative;
+  overflow:hidden;
 }
 
 #endScreen h1{
-  font-size:50px;
-  margin-bottom:8px;
+  font-size:clamp(42px,7vw,76px);
+  margin:0 0 10px;
+  z-index:2;
 }
 
 #endScreen p{
-  font-size:26px;
+  font-size:clamp(22px,3vw,34px);
+  z-index:2;
 }
 
 button{
-  font-size:24px;
+  font-size:clamp(20px,2.5vw,28px);
   padding:14px 34px;
   border:none;
   border-radius:18px;
@@ -229,26 +211,32 @@ button{
   color:#4b3b2f;
   font-weight:bold;
   cursor:pointer;
+  z-index:2;
 }
 
-/* MOBILE / SMALL SCREENS */
-@media(max-width:800px){
+.sparkle{
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#ffd45c;
+  animation:sparkleFall 2.8s linear forwards;
+  pointer-events:none;
+}
 
+@keyframes sparkleFall{
+  0%{transform:translateY(-20px) scale(1);opacity:1}
+  100%{transform:translateY(110dvh) scale(.3);opacity:0}
+}
+
+@media(max-width:900px){
   .header{
     height:52px;
   }
 
-  .header h1{
-    font-size:20px;
-  }
-
-  .header p{
-    font-size:11px;
-  }
-
   .gameArea{
-    height:calc(100vh - 52px);
-    grid-template-rows:25% 48% 25%;
+    height:calc(100dvh - 52px);
+    grid-template-rows:24% 50% 24%;
     padding:6px;
     gap:1%;
   }
@@ -264,12 +252,66 @@ button{
   }
 
   .cartWrap{
-    width:250px;
-    height:165px;
+    width:min(290px,50vw);
+    height:min(190px,32vh);
   }
 
   .cartNumber{
-    font-size:48px;
+    font-size:clamp(42px,8vw,58px);
+  }
+}
+
+@media(max-width:600px) and (orientation:portrait){
+  .header{
+    height:62px;
+  }
+
+  .header h1{
+    font-size:19px;
+  }
+
+  .header p{
+    font-size:11px;
+  }
+
+  .gameArea{
+    height:calc(100dvh - 62px);
+    grid-template-rows:24% 48% 24%;
+    padding:6px;
+  }
+
+  .row{
+    gap:5px;
+  }
+
+  .cartWrap{
+    width:78vw;
+    height:34vh;
+  }
+}
+
+@media(max-height:500px) and (orientation:landscape){
+  .header{
+    height:46px;
+  }
+
+  .header h1{
+    font-size:20px;
+  }
+
+  .header p{
+    font-size:11px;
+  }
+
+  .gameArea{
+    height:calc(100dvh - 46px);
+    grid-template-rows:24% 50% 24%;
+    padding:5px 12px;
+  }
+
+  .cartWrap{
+    width:300px;
+    height:180px;
   }
 }
 </style>
@@ -282,14 +324,12 @@ button{
 </div>
 
 <div id="gameScreen" class="screen">
-
   <div class="header">
     <h1>Number Names Ice Cream Game</h1>
     <p>Look at the number on the cart. Tap the matching animal board.</p>
   </div>
 
   <div class="gameArea">
-
     <div class="row" id="topRow"></div>
 
     <div class="middleArea">
@@ -300,7 +340,6 @@ button{
     </div>
 
     <div class="row" id="bottomRow"></div>
-
   </div>
 </div>
 
@@ -310,9 +349,9 @@ button{
   <button onclick="restartGame()">Play Again</button>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/claps.mp3"></audio>
+<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
 
 <script>
 const numbers = [
@@ -333,6 +372,7 @@ let currentIndex = 0;
 let currentAnswer = null;
 let wrongAttempts = 0;
 let canClick = false;
+let sparkleTimer = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
@@ -354,11 +394,18 @@ window.onload = function(){
   }, 5000);
 };
 
+function playSound(sound){
+  sound.pause();
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
+
 function shuffle(array){
   return array.sort(() => Math.random() - 0.5);
 }
 
 function startGame(){
+  stopSparkles();
   currentIndex = 0;
   questionOrder = shuffle([...numbers]);
   renderAnimals();
@@ -384,7 +431,6 @@ function createCard(item){
   const card = document.createElement("div");
   card.className = "card";
   card.dataset.word = item.word;
-
   card.innerHTML = `<img src="assets/${item.image}" alt="${item.word}">`;
 
   card.addEventListener("click", () => {
@@ -398,6 +444,7 @@ function showQuestion(){
   if(currentIndex >= questionOrder.length){
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
+    startSparkles();
     return;
   }
 
@@ -424,11 +471,8 @@ function checkAnswer(card, selectedWord){
   if(selectedWord === currentAnswer.word){
     canClick = false;
 
-    correctSound.currentTime = 0;
-    clapSound.currentTime = 0;
-
-    correctSound.play();
-    clapSound.play();
+    playSound(correctSound);
+    setTimeout(() => playSound(clapSound), 150);
 
     card.classList.add("correct");
     cartWrap.className = "cartWrap cartOut";
@@ -438,11 +482,9 @@ function checkAnswer(card, selectedWord){
       showQuestion();
     }, 3200);
 
-  }else{
+  } else {
     wrongAttempts++;
-
-    wrongSound.currentTime = 0;
-    wrongSound.play();
+    playSound(wrongSound);
 
     card.classList.add("wrong");
 
@@ -459,7 +501,33 @@ function checkAnswer(card, selectedWord){
   }
 }
 
+function startSparkles(){
+  stopSparkles();
+
+  sparkleTimer = setInterval(() => {
+    const sparkle = document.createElement("div");
+    sparkle.className = "sparkle";
+    sparkle.style.left = Math.random() * 100 + "vw";
+    sparkle.style.top = "-20px";
+    sparkle.style.background = ["#ffd45c","#ffb6c1","#9ee7ff","#b8f7b0","#d9b3ff"][Math.floor(Math.random()*5)];
+    sparkle.style.width = sparkle.style.height = (8 + Math.random()*10) + "px";
+    endScreen.appendChild(sparkle);
+
+    setTimeout(() => sparkle.remove(), 3000);
+  }, 90);
+}
+
+function stopSparkles(){
+  if(sparkleTimer){
+    clearInterval(sparkleTimer);
+    sparkleTimer = null;
+  }
+
+  document.querySelectorAll(".sparkle").forEach(s => s.remove());
+}
+
 function restartGame(){
+  stopSparkles();
   endScreen.classList.remove("active");
   gameScreen.classList.add("active");
   startGame();
