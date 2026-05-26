@@ -1,289 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Number Names Balloon Game</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Names Ice Cream Cart Game</title>
 
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
+  background:linear-gradient(#dff8ff,#fff5cf);
+  color:#4b3b2f;
 }
 
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
-  background: linear-gradient(#d8f6ff, #fff4cc);
-  color: #4b3b2f;
+.screen{
+  width:100vw;
+  height:100vh;
+  display:none;
 }
 
-.screen {
-  width: 100vw;
-  height: 100vh;
-  display: none;
+.active{display:flex}
+
+#logoScreen{
+  background:white;
+  align-items:center;
+  justify-content:center;
 }
 
-.active {
-  display: flex;
+#logoScreen img{
+  width:280px;
+  max-width:75%;
 }
 
-/* Logo Screen */
-#logoScreen {
-  background: #ffffff;
-  align-items: center;
-  justify-content: center;
+#gameScreen{
+  flex-direction:column;
 }
 
-#logoScreen img {
-  width: 280px;
-  max-width: 75%;
+.header{
+  width:100%;
+  text-align:center;
+  background:#fff1b8;
+  border-bottom:4px solid #f2c86b;
+  padding:8px 10px;
 }
 
-/* Game Screen */
-#gameScreen {
-  flex-direction: column;
-  position: relative;
+.header h1{
+  margin:0;
+  font-size:clamp(26px,4vw,42px);
 }
 
-.header {
-  width: 100%;
-  text-align: center;
-  background: #fff1b8;
-  border-bottom: 4px solid #f2c86b;
-  padding: 8px 10px;
-  z-index: 10;
+.header p{
+  margin:4px 0 0;
+  font-size:clamp(16px,2vw,23px);
 }
 
-.header h1 {
-  margin: 0;
-  font-size: clamp(26px, 4vw, 44px);
+.gameArea{
+  width:100%;
+  height:calc(100vh - 95px);
+  position:relative;
+  padding:12px 20px;
 }
 
-.header p {
-  margin: 4px 0 0;
-  font-size: clamp(16px, 2vw, 24px);
+.row{
+  width:100%;
+  height:32%;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
+  position:relative;
+  z-index:3;
 }
 
-.gameArea {
-  height: calc(100vh - 95px);
-  width: 100%;
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 24px;
+.bottomRow{
+  position:absolute;
+  left:20px;
+  right:20px;
+  bottom:12px;
+  width:calc(100% - 40px);
 }
 
-/* Left and Right Animal Columns */
-.sideGrid {
-  width: 27%;
-  height: 100%;
-  display: grid;
-  grid-template-rows: repeat(5, 1fr);
-  gap: 10px;
-  z-index: 5;
+.card{
+  background:rgba(255,255,255,0.92);
+  border:4px solid #f4c976;
+  border-radius:26px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px;
+  cursor:pointer;
+  box-shadow:0 6px 12px rgba(0,0,0,0.08);
 }
 
-.card {
-  background: rgba(255, 255, 255, 0.92);
-  border: 4px solid #f4c976;
-  border-radius: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 6px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease, background 0.2s ease;
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
 
-.card img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.card.correct{
+  background:#d9ffd7;
+  border-color:#6fc06f;
+  transform:scale(1.04);
 }
 
-.card.correct {
-  background: #d9ffd7;
-  border-color: #6fc06f;
-  transform: scale(1.04);
+.card.wrong{
+  animation:wiggle .35s ease;
 }
 
-.card.wrong {
-  animation: wiggle 0.35s ease;
+.card.glow{
+  box-shadow:0 0 20px 8px #8fe58f;
 }
 
-.card.glow {
-  box-shadow: 0 0 20px 8px #8fe58f;
+@keyframes wiggle{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-8px)}
+  50%{transform:translateX(8px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
 }
 
-@keyframes wiggle {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  50% { transform: translateX(8px); }
-  75% { transform: translateX(-6px); }
-  100% { transform: translateX(0); }
+.cartArea{
+  position:absolute;
+  top:34%;
+  left:0;
+  width:100%;
+  height:30%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
 }
 
-/* Center Balloon Area */
-.centerArea {
-  width: 42%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cartWrap{
+  position:absolute;
+  width:min(390px,32vw);
+  height:min(300px,28vh);
+  left:-420px;
+  opacity:0;
 }
 
-.balloonWrap {
-  position: absolute;
-  width: min(330px, 70%);
-  height: min(470px, 82%);
-  left: 50%;
-  bottom: -520px;
-  transform: translateX(-50%);
-  opacity: 0;
-  pointer-events: none;
+.cartWrap img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
 }
 
-.balloonWrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.cartNumber{
+  position:absolute;
+  top:39%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:clamp(56px,6vw,92px);
+  font-weight:bold;
+  color:#4f86c6;
+  text-shadow:3px 3px white;
 }
 
-.balloonNumber {
-  position: absolute;
-  top: 24%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(58px, 8vw, 96px);
-  font-weight: bold;
-  color: #4f86c6;
-  text-shadow: 3px 3px #ffffff;
+.cartIn{
+  animation:cartIn 3s ease forwards;
 }
 
-.floatIn {
-  animation: floatIn 3s ease forwards;
+.cartCenter{
+  left:50%;
+  transform:translateX(-50%);
+  opacity:1;
 }
 
-.holdCenter {
-  bottom: 20%;
-  opacity: 1;
-  animation: gentleFloat 4s ease-in-out infinite;
+.cartOut{
+  animation:cartOut 3s ease forwards;
 }
 
-.floatOut {
-  animation: floatOut 3s ease forwards;
+@keyframes cartIn{
+  from{left:-420px;opacity:0}
+  to{left:50%;transform:translateX(-50%);opacity:1}
 }
 
-@keyframes floatIn {
-  from {
-    bottom: -520px;
-    opacity: 0;
+@keyframes cartOut{
+  from{left:50%;transform:translateX(-50%);opacity:1}
+  to{left:110%;opacity:0}
+}
+
+.message{
+  position:absolute;
+  left:50%;
+  top:64%;
+  transform:translateX(-50%);
+  background:rgba(255,255,255,.96);
+  border:4px solid #f2c86b;
+  border-radius:24px;
+  padding:10px 28px;
+  font-size:clamp(18px,2.2vw,28px);
+  font-weight:bold;
+  text-align:center;
+  z-index:5;
+}
+
+#endScreen{
+  background:linear-gradient(#dff8ff,#fff5cf);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+#endScreen h1{
+  font-size:54px;
+  margin-bottom:8px;
+}
+
+#endScreen p{
+  font-size:28px;
+}
+
+button{
+  font-size:24px;
+  padding:14px 34px;
+  border:none;
+  border-radius:18px;
+  background:#f2c86b;
+  color:#4b3b2f;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+@media(max-width:800px){
+  .gameArea{padding:8px}
+  .row{
+    height:30%;
+    gap:7px;
   }
-  to {
-    bottom: 20%;
-    opacity: 1;
+  .bottomRow{
+    left:8px;
+    right:8px;
+    width:calc(100% - 16px);
   }
-}
-
-@keyframes floatOut {
-  from {
-    bottom: 20%;
-    opacity: 1;
+  .card{
+    border-radius:16px;
+    border-width:3px;
+    padding:4px;
   }
-  to {
-    bottom: 110%;
-    opacity: 0;
+  .cartWrap{
+    width:210px;
+    height:170px;
   }
-}
-
-@keyframes gentleFloat {
-  0% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-10px); }
-  100% { transform: translateX(-50%) translateY(0); }
-}
-
-.message {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.96);
-  border: 4px solid #f2c86b;
-  border-radius: 24px;
-  padding: 10px 26px;
-  font-size: clamp(18px, 2.2vw, 28px);
-  font-weight: bold;
-  text-align: center;
-  z-index: 20;
-}
-
-/* End Screen */
-#endScreen {
-  background: linear-gradient(#d8f6ff, #fff4cc);
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-#endScreen h1 {
-  font-size: 54px;
-  margin-bottom: 8px;
-}
-
-#endScreen p {
-  font-size: 28px;
-}
-
-button {
-  font-size: 24px;
-  padding: 14px 34px;
-  border: none;
-  border-radius: 18px;
-  background: #f2c86b;
-  color: #4b3b2f;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* Mobile and Tablet */
-@media (max-width: 900px) {
-  .gameArea {
-    padding: 8px;
+  .cartNumber{
+    font-size:46px;
   }
-
-  .sideGrid {
-    width: 30%;
-    gap: 7px;
-  }
-
-  .centerArea {
-    width: 36%;
-  }
-
-  .card {
-    border-radius: 18px;
-    padding: 4px;
-  }
-
-  .balloonWrap {
-    width: 170px;
-    height: 250px;
-  }
-
-  .balloonNumber {
-    top: 23%;
-    font-size: 48px;
-  }
-
-  .message {
-    bottom: 6px;
-    font-size: 17px;
-    padding: 8px 14px;
+  .message{
+    top:65%;
+    font-size:17px;
+    padding:8px 14px;
   }
 }
 </style>
@@ -297,23 +266,23 @@ button {
 
 <div id="gameScreen" class="screen">
   <div class="header">
-    <h1>Number Names Balloon Game</h1>
-    <p>Look at the number on the balloon. Tap the matching animal board.</p>
+    <h1>Number Names Ice Cream Game</h1>
+    <p>Look at the number on the cart. Tap the matching animal board.</p>
   </div>
 
   <div class="gameArea">
-    <div class="sideGrid" id="leftGrid"></div>
+    <div class="row" id="topRow"></div>
 
-    <div class="centerArea">
-      <div class="balloonWrap" id="balloonWrap">
-        <img src="assets/balloon.png" alt="Balloon">
-        <div class="balloonNumber" id="balloonNumber">1</div>
+    <div class="cartArea">
+      <div class="cartWrap" id="cartWrap">
+        <img src="assets/icecream-cart.png" alt="Ice Cream Cart">
+        <div class="cartNumber" id="cartNumber">1</div>
       </div>
     </div>
 
-    <div class="sideGrid" id="rightGrid"></div>
+    <div class="message" id="message">Look at the cart!</div>
 
-    <div class="message" id="message">Look at the balloon!</div>
+    <div class="row bottomRow" id="bottomRow"></div>
   </div>
 </div>
 
@@ -323,22 +292,22 @@ button {
   <button onclick="restartGame()">Play Again</button>
 </div>
 
-<audio id="rightSound" src="assets/right.mp3"></audio>
+<audio id="correctSound" src="assets/correct.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/clap.mp3"></audio>
+<audio id="clapSound" src="assets/claps.mp3"></audio>
 
 <script>
 const numbers = [
-  { number: 1, word: "one", image: "one.png" },
-  { number: 2, word: "two", image: "two.png" },
-  { number: 3, word: "three", image: "three.png" },
-  { number: 4, word: "four", image: "four.png" },
-  { number: 5, word: "five", image: "five.png" },
-  { number: 6, word: "six", image: "six.png" },
-  { number: 7, word: "seven", image: "seven.png" },
-  { number: 8, word: "eight", image: "eight.png" },
-  { number: 9, word: "nine", image: "nine.png" },
-  { number: 10, word: "ten", image: "ten.png" }
+  { number: 1, word: "one", image: "bear.png" },
+  { number: 2, word: "two", image: "koala.png" },
+  { number: 3, word: "three", image: "rabbit.png" },
+  { number: 4, word: "four", image: "monkey.png" },
+  { number: 5, word: "five", image: "penguin.png" },
+  { number: 6, word: "six", image: "giraffe.png" },
+  { number: 7, word: "seven", image: "duck.png" },
+  { number: 8, word: "eight", image: "cat.png" },
+  { number: 9, word: "nine", image: "tiger.png" },
+  { number: 10, word: "ten", image: "deer.png" }
 ];
 
 let questionOrder = [];
@@ -346,22 +315,21 @@ let currentIndex = 0;
 let currentAnswer = null;
 let wrongAttempts = 0;
 let canClick = false;
-let hintTimer = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
 const endScreen = document.getElementById("endScreen");
-const leftGrid = document.getElementById("leftGrid");
-const rightGrid = document.getElementById("rightGrid");
-const balloonWrap = document.getElementById("balloonWrap");
-const balloonNumber = document.getElementById("balloonNumber");
+const topRow = document.getElementById("topRow");
+const bottomRow = document.getElementById("bottomRow");
+const cartWrap = document.getElementById("cartWrap");
+const cartNumber = document.getElementById("cartNumber");
 const message = document.getElementById("message");
 
-const rightSound = document.getElementById("rightSound");
+const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const clapSound = document.getElementById("clapSound");
 
-window.onload = function () {
+window.onload = function(){
   setTimeout(() => {
     logoScreen.classList.remove("active");
     gameScreen.classList.add("active");
@@ -369,51 +337,39 @@ window.onload = function () {
   }, 5000);
 };
 
-function shuffle(array) {
+function shuffle(array){
   return array.sort(() => Math.random() - 0.5);
 }
 
-function startGame() {
+function startGame(){
   currentIndex = 0;
   questionOrder = shuffle([...numbers]);
   renderAnimals();
   showQuestion();
 }
 
-function renderAnimals() {
-  leftGrid.innerHTML = "";
-  rightGrid.innerHTML = "";
+function renderAnimals(){
+  topRow.innerHTML = "";
+  bottomRow.innerHTML = "";
 
   const shuffledCards = shuffle([...numbers]);
-  const leftCards = shuffledCards.slice(0, 5);
-  const rightCards = shuffledCards.slice(5, 10);
-
-  leftCards.forEach(item => {
-    leftGrid.appendChild(createCard(item));
-  });
-
-  rightCards.forEach(item => {
-    rightGrid.appendChild(createCard(item));
-  });
+  shuffledCards.slice(0,5).forEach(item => topRow.appendChild(createCard(item)));
+  shuffledCards.slice(5,10).forEach(item => bottomRow.appendChild(createCard(item)));
 }
 
-function createCard(item) {
+function createCard(item){
   const card = document.createElement("div");
   card.className = "card";
   card.dataset.word = item.word;
 
-  card.innerHTML = `
-    <img src="assets/${item.image}" alt="${item.word}">
-  `;
+  card.innerHTML = `<img src="assets/${item.image}" alt="${item.word}">`;
 
   card.addEventListener("click", () => checkAnswer(card, item.word));
   return card;
 }
 
-function showQuestion() {
-  clearTimeout(hintTimer);
-
-  if (currentIndex >= questionOrder.length) {
+function showQuestion(){
+  if(currentIndex >= questionOrder.length){
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
     return;
@@ -424,45 +380,36 @@ function showQuestion() {
   currentAnswer = questionOrder[currentIndex];
 
   document.querySelectorAll(".card").forEach(card => {
-    card.classList.remove("correct", "wrong", "glow");
+    card.classList.remove("correct","wrong","glow");
   });
 
-  balloonNumber.textContent = currentAnswer.number;
-  message.textContent = "Look at the balloon!";
+  cartNumber.textContent = currentAnswer.number;
+  message.textContent = "Look at the cart!";
 
-  balloonWrap.className = "balloonWrap floatIn";
+  cartWrap.className = "cartWrap cartIn";
 
   setTimeout(() => {
-    balloonWrap.className = "balloonWrap holdCenter";
+    cartWrap.className = "cartWrap cartCenter";
     canClick = true;
     message.textContent = "Tap the matching animal board!";
-
-    hintTimer = setTimeout(() => {
-      if (canClick) {
-        message.textContent = "The balloon is waiting. Tap the answer!";
-      }
-    }, 10000);
-
   }, 3000);
 }
 
-function checkAnswer(card, selectedWord) {
-  if (!canClick) return;
+function checkAnswer(card, selectedWord){
+  if(!canClick) return;
 
-  if (selectedWord === currentAnswer.word) {
+  if(selectedWord === currentAnswer.word){
     canClick = false;
-    clearTimeout(hintTimer);
 
-    rightSound.currentTime = 0;
+    correctSound.currentTime = 0;
     clapSound.currentTime = 0;
-
-    rightSound.play();
+    correctSound.play();
     clapSound.play();
 
     card.classList.add("correct");
     message.textContent = "Good job!";
 
-    balloonWrap.className = "balloonWrap floatOut";
+    cartWrap.className = "cartWrap cartOut";
 
     setTimeout(() => {
       currentIndex++;
@@ -482,17 +429,15 @@ function checkAnswer(card, selectedWord) {
       card.classList.remove("wrong");
     }, 600);
 
-    if (wrongAttempts >= 2) {
+    if(wrongAttempts >= 2){
       const correctCard = document.querySelector(`[data-word="${currentAnswer.word}"]`);
-      if (correctCard) {
-        correctCard.classList.add("glow");
-      }
+      if(correctCard) correctCard.classList.add("glow");
       message.textContent = "Look carefully and try again!";
     }
   }
 }
 
-function restartGame() {
+function restartGame(){
   endScreen.classList.remove("active");
   gameScreen.classList.add("active");
   startGame();
