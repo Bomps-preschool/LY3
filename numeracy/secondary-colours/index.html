@@ -6,11 +6,7 @@
 <title>Magic Paint Mixing Lab</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 html,body{
   width:100%;
@@ -27,90 +23,83 @@ html,body{
   display:none;
 }
 
-.active{
-  display:flex;
-}
+.active{display:flex}
 
-/* LOGO */
 #logoScreen{
   background:white;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
 }
 
 #logoScreen img{
   width:min(320px,70vw);
 }
 
-/* GAME */
 #gameScreen{
   flex-direction:column;
 }
 
-/* HEADER */
 .header{
-  height:70px;
+  height:58px;
   background:#fff1df;
   border-bottom:4px solid #caa8ff;
   display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
-  padding:3px 10px;
+  justify-content:center;
 }
 
 .header h1{
-  font-size:clamp(26px,3vw,46px);
+  font-size:clamp(22px,2.5vw,36px);
   line-height:1;
 }
 
 .header p{
-  font-size:clamp(11px,1.1vw,16px);
-  margin-top:2px;
+  font-size:clamp(9px,1vw,14px);
+  line-height:1;
+  margin-top:3px;
 }
 
-/* GAME AREA */
 .gameArea{
-  flex:1;
+  height:calc(100dvh - 58px);
   display:grid;
-  grid-template-rows:auto 1fr auto;
-  align-items:center;
-  justify-items:center;
-  padding:10px 18px 14px;
+  grid-template-rows:38px 1fr 150px;
+  padding:8px 16px 12px;
   gap:8px;
+  align-items:center;
 }
 
 /* SMALL INSTRUCTION */
 .message{
-  font-size:clamp(13px,1.35vw,20px);
+  justify-self:center;
+  font-size:clamp(11px,1vw,16px);
   font-weight:bold;
+  background:rgba(255,255,255,.88);
+  border:2px solid #c9a7ff;
+  border-radius:14px;
+  padding:4px 16px;
+  min-width:220px;
+  max-width:420px;
   text-align:center;
-  background:rgba(255,255,255,.86);
-  border:3px solid #c9a7ff;
-  border-radius:16px;
-  padding:6px 20px;
-  min-width:260px;
-  max-width:520px;
 }
 
-/* BUCKET ROW */
+/* BIG MAIN BUCKET AREA */
 .bucketLine{
   width:100%;
+  height:100%;
   display:flex;
-  justify-content:center;
   align-items:center;
-  gap:34px;
+  justify-content:center;
+  gap:32px;
 }
 
-/* BIG BUCKETS */
 .bucketBox{
-  width:min(330px,24vw);
-  height:min(330px,42vh);
+  width:min(360px,27vw);
+  height:min(360px,50vh);
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   cursor:pointer;
-  transition:.3s;
   touch-action:manipulation;
 }
 
@@ -120,27 +109,15 @@ html,body{
   object-fit:contain;
 }
 
-.tapGlow{
-  animation:tapGlow .7s ease;
-}
-
-@keyframes tapGlow{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.08)}
-  100%{transform:scale(1)}
-}
-
-.plus,
-.equals{
-  font-size:clamp(44px,5vw,76px);
+.plus,.equals{
+  font-size:clamp(46px,5vw,78px);
   font-weight:bold;
   color:#755383;
 }
 
-/* SIMPLE RESULT BOX */
 .emptyBucket{
-  width:min(310px,23vw);
-  height:min(270px,34vh);
+  width:min(330px,25vw);
+  height:min(280px,38vh);
   background:#fffdf7;
   border:7px solid #c9a7ff;
   border-radius:34px;
@@ -156,8 +133,7 @@ html,body{
   border-radius:26px;
 }
 
-.fillBottom,
-.fillTop{
+.fillBottom,.fillTop{
   position:absolute;
   width:100%;
   left:0;
@@ -177,19 +153,19 @@ html,body{
 .bucketSmile{
   position:absolute;
   width:100%;
+  text-align:center;
   top:50%;
   transform:translateY(-50%);
-  text-align:center;
   font-size:42px;
   z-index:5;
 }
 
 .pourDrop{
   position:absolute;
-  width:28px;
-  height:58px;
+  width:30px;
+  height:62px;
   border-radius:20px;
-  top:-10px;
+  top:-12px;
   left:50%;
   transform:translateX(-50%);
   animation:dropFall .8s linear forwards;
@@ -197,50 +173,53 @@ html,body{
 }
 
 @keyframes dropFall{
-  from{
-    top:-10px;
-    opacity:1;
-  }
-  to{
-    top:78%;
-    opacity:0;
-  }
+  from{top:-12px;opacity:1}
+  to{top:78%;opacity:0}
 }
 
-/* OPTIONS */
+.tapGlow{
+  animation:tapGlow .7s ease;
+}
+
+@keyframes tapGlow{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
+
+/* SMALLER OPTIONS */
 .optionsPanel{
-  width:100%;
   display:none;
   justify-content:center;
   align-items:center;
-  gap:22px;
+  gap:18px;
 }
 
 .option{
-  width:min(220px,26vw);
+  width:min(190px,24vw);
+  height:130px;
   background:#fffaf5;
   border:4px solid #c9a7ff;
-  border-radius:26px;
-  padding:10px;
+  border-radius:24px;
+  padding:8px;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:8px;
+  justify-content:center;
+  gap:6px;
   cursor:pointer;
-  transition:.25s;
-  touch-action:manipulation;
 }
 
 .circle{
-  width:66px;
-  height:66px;
+  width:52px;
+  height:52px;
   border-radius:50%;
-  border:5px solid white;
+  border:4px solid white;
   box-shadow:0 5px 12px rgba(0,0,0,.18);
 }
 
 .optionName{
-  font-size:clamp(20px,2.6vw,34px);
+  font-size:clamp(18px,2.3vw,30px);
   font-weight:bold;
 }
 
@@ -249,12 +228,12 @@ html,body{
   border-color:#77cf74;
 }
 
-.option.glow{
-  box-shadow:0 0 18px #98e7c7;
+.option.wrong{
+  animation:wiggle .35s ease;
 }
 
-.option.wrong{
-  animation:wiggle .4s ease;
+.option.glow{
+  box-shadow:0 0 18px #98e7c7;
 }
 
 @keyframes wiggle{
@@ -265,29 +244,28 @@ html,body{
   100%{transform:translateX(0)}
 }
 
-/* END */
 #endScreen{
   background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);
   flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+  text-align:center;
   position:relative;
   overflow:hidden;
-  text-align:center;
 }
 
 #endScreen h1{
-  font-size:clamp(52px,8vw,90px);
+  font-size:clamp(48px,8vw,90px);
   z-index:5;
 }
 
 #endScreen p{
-  font-size:clamp(24px,3vw,38px);
+  font-size:clamp(22px,3vw,36px);
   z-index:5;
 }
 
 .playAgain{
-  margin-top:20px;
+  margin-top:18px;
   padding:14px 34px;
   font-size:clamp(20px,2vw,30px);
   border:none;
@@ -307,14 +285,8 @@ html,body{
 }
 
 @keyframes sparkleFall{
-  from{
-    transform:translateY(-30px) scale(1);
-    opacity:1;
-  }
-  to{
-    transform:translateY(110vh) scale(.4);
-    opacity:0;
-  }
+  from{transform:translateY(-30px) scale(1);opacity:1}
+  to{transform:translateY(110vh) scale(.4);opacity:0}
 }
 
 .burst{
@@ -332,120 +304,70 @@ html,body{
 }
 
 @keyframes burstMove{
-  from{
-    transform:translate(0,0) scale(1);
-    opacity:1;
-  }
-  to{
-    transform:translate(var(--x),var(--y)) scale(.2);
-    opacity:0;
-  }
+  from{transform:translate(0,0) scale(1);opacity:1}
+  to{transform:translate(var(--x),var(--y)) scale(.2);opacity:0}
 }
 
-/* TABLET */
-@media(max-width:1000px){
-  .header{
-    height:62px;
-  }
-
-  .header h1{
-    font-size:24px;
-  }
-
-  .header p{
-    font-size:11px;
-  }
+@media(max-width:900px){
+  .header{height:52px}
+  .header h1{font-size:20px}
+  .header p{font-size:9px}
 
   .gameArea{
-    padding:8px;
-  }
-
-  .message{
-    font-size:13px;
-    padding:5px 14px;
-    min-width:230px;
-  }
-
-  .bucketLine{
-    gap:8px;
-  }
-
-  .bucketBox{
-    width:25vw;
-    height:25vw;
-  }
-
-  .emptyBucket{
-    width:25vw;
-    height:22vw;
-  }
-
-  .plus,
-  .equals{
-    font-size:30px;
-  }
-
-  .optionsPanel{
-    gap:8px;
-  }
-
-  .option{
-    width:30vw;
-    padding:8px;
-  }
-
-  .circle{
-    width:42px;
-    height:42px;
-  }
-
-  .optionName{
-    font-size:18px;
-  }
-}
-
-/* MOBILE PORTRAIT */
-@media(max-width:600px) and (orientation:portrait){
-  .header{
-    height:64px;
-  }
-
-  .header h1{
-    font-size:18px;
-  }
-
-  .header p{
-    font-size:9px;
-  }
-
-  .gameArea{
+    height:calc(100dvh - 52px);
+    grid-template-rows:30px 1fr 120px;
     padding:6px;
     gap:6px;
   }
 
   .message{
-    font-size:12px;
-    max-width:90vw;
+    font-size:10px;
+    padding:3px 12px;
+    min-width:190px;
   }
 
   .bucketLine{
-    gap:4px;
+    gap:6px;
   }
 
   .bucketBox{
-    width:24vw;
-    height:24vw;
+    width:27vw;
+    height:27vw;
   }
 
   .emptyBucket{
-    width:25vw;
-    height:22vw;
+    width:26vw;
+    height:23vw;
     border-width:4px;
     border-radius:18px;
   }
 
+  .plus,.equals{
+    font-size:28px;
+  }
+
   .bucketSmile{
     font-size:22px;
+  }
+
+  .optionsPanel{
+    gap:6px;
+  }
+
+  .option{
+    width:30vw;
+    height:95px;
+    padding:5px;
+    border-radius:16px;
+  }
+
+  .circle{
+    width:38px;
+    height:38px;
+  }
+
+  .optionName{
+    font-size:16px;
   }
 }
 </style>
@@ -458,24 +380,18 @@ html,body{
 </div>
 
 <div id="gameScreen" class="screen">
-
   <div class="header">
     <h1>Magic Paint Mixing Lab</h1>
     <p>Tap both paint buckets and see the new colour.</p>
   </div>
 
   <div class="gameArea">
-
     <div class="message" id="message">Tap the first paint bucket.</div>
 
     <div class="bucketLine">
-
       <div class="bucketBox" id="bucket1"></div>
-
       <div class="plus">+</div>
-
       <div class="bucketBox" id="bucket2"></div>
-
       <div class="equals">=</div>
 
       <div class="emptyBucket" id="emptyBucket">
@@ -485,11 +401,9 @@ html,body{
         </div>
         <div class="bucketSmile">😊</div>
       </div>
-
     </div>
 
     <div class="optionsPanel" id="optionsPanel"></div>
-
   </div>
 </div>
 
@@ -540,10 +454,8 @@ const endScreen = document.getElementById("endScreen");
 
 const bucket1 = document.getElementById("bucket1");
 const bucket2 = document.getElementById("bucket2");
-
 const fillBottom = document.getElementById("fillBottom");
 const fillTop = document.getElementById("fillTop");
-
 const optionsPanel = document.getElementById("optionsPanel");
 const message = document.getElementById("message");
 
@@ -578,7 +490,6 @@ function showQuestion(){
   }
 
   currentQuestion = questions[currentIndex];
-
   tapped = [];
   canTap = true;
   canAnswer = false;
@@ -603,7 +514,6 @@ function tapBucket(bucket, colour){
   if(!canTap || tapped.includes(colour)) return;
 
   tapped.push(colour);
-
   bucket.classList.add("tapGlow");
   setTimeout(()=>bucket.classList.remove("tapGlow"),700);
 
@@ -719,15 +629,11 @@ function startCelebration(){
     sparkle.style.height = size + "px";
 
     endScreen.appendChild(sparkle);
-
     setTimeout(()=>sparkle.remove(),3000);
   },70);
 
   burstInterval = setInterval(()=>{
-    createBurst(
-      Math.random()*window.innerWidth,
-      Math.random()*window.innerHeight*.7
-    );
+    createBurst(Math.random()*window.innerWidth, Math.random()*window.innerHeight*.7);
   },220);
 }
 
@@ -752,7 +658,6 @@ function createBurst(x,y){
   }
 
   endScreen.appendChild(burst);
-
   setTimeout(()=>burst.remove(),1200);
 }
 
