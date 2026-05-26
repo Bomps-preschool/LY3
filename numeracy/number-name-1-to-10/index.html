@@ -6,7 +6,9 @@
 <title>Number Names Ice Cream Cart Game</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -22,7 +24,9 @@ body{
   display:none;
 }
 
-.active{display:flex}
+.active{
+  display:flex;
+}
 
 #logoScreen{
   background:white;
@@ -64,9 +68,10 @@ body{
   padding:12px 20px;
 }
 
+/* TOP AND BOTTOM ROWS */
 .row{
   width:100%;
-  height:32%;
+  height:26%;
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:14px;
@@ -78,10 +83,11 @@ body{
   position:absolute;
   left:20px;
   right:20px;
-  bottom:12px;
+  bottom:24px;
   width:calc(100% - 40px);
 }
 
+/* ANIMAL CARDS */
 .card{
   background:rgba(255,255,255,0.92);
   border:4px solid #f4c976;
@@ -92,6 +98,7 @@ body{
   padding:6px;
   cursor:pointer;
   box-shadow:0 6px 12px rgba(0,0,0,0.08);
+  transition:0.2s ease;
 }
 
 .card img{
@@ -122,12 +129,13 @@ body{
   100%{transform:translateX(0)}
 }
 
+/* CART AREA */
 .cartArea{
   position:absolute;
-  top:34%;
+  top:28%;
   left:0;
   width:100%;
-  height:30%;
+  height:28%;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -136,9 +144,9 @@ body{
 
 .cartWrap{
   position:absolute;
-  width:min(390px,32vw);
-  height:min(300px,28vh);
-  left:-420px;
+  width:min(420px,34vw);
+  height:min(320px,30vh);
+  left:-450px;
   opacity:0;
 }
 
@@ -150,10 +158,10 @@ body{
 
 .cartNumber{
   position:absolute;
-  top:39%;
+  top:42%;
   left:50%;
   transform:translate(-50%,-50%);
-  font-size:clamp(56px,6vw,92px);
+  font-size:clamp(56px,6vw,96px);
   font-weight:bold;
   color:#4f86c6;
   text-shadow:3px 3px white;
@@ -174,30 +182,35 @@ body{
 }
 
 @keyframes cartIn{
-  from{left:-420px;opacity:0}
-  to{left:50%;transform:translateX(-50%);opacity:1}
+  from{
+    left:-450px;
+    opacity:0;
+  }
+  to{
+    left:50%;
+    transform:translateX(-50%);
+    opacity:1;
+  }
 }
 
 @keyframes cartOut{
-  from{left:50%;transform:translateX(-50%);opacity:1}
-  to{left:110%;opacity:0}
+  from{
+    left:50%;
+    transform:translateX(-50%);
+    opacity:1;
+  }
+  to{
+    left:110%;
+    opacity:0;
+  }
 }
 
+/* MESSAGE HIDDEN */
 .message{
-  position:absolute;
-  left:50%;
-  top:64%;
-  transform:translateX(-50%);
-  background:rgba(255,255,255,.96);
-  border:4px solid #f2c86b;
-  border-radius:24px;
-  padding:10px 28px;
-  font-size:clamp(18px,2.2vw,28px);
-  font-weight:bold;
-  text-align:center;
-  z-index:5;
+  display:none;
 }
 
+/* END SCREEN */
 #endScreen{
   background:linear-gradient(#dff8ff,#fff5cf);
   align-items:center;
@@ -226,33 +239,42 @@ button{
   cursor:pointer;
 }
 
+/* MOBILE */
 @media(max-width:800px){
-  .gameArea{padding:8px}
+
+  .gameArea{
+    padding:8px;
+  }
+
   .row{
-    height:30%;
+    height:24%;
     gap:7px;
   }
+
   .bottomRow{
     left:8px;
     right:8px;
     width:calc(100% - 16px);
+    bottom:14px;
   }
+
   .card{
     border-radius:16px;
     border-width:3px;
     padding:4px;
   }
+
+  .cartArea{
+    top:30%;
+  }
+
   .cartWrap{
-    width:210px;
-    height:170px;
+    width:230px;
+    height:180px;
   }
+
   .cartNumber{
-    font-size:46px;
-  }
-  .message{
-    top:65%;
-    font-size:17px;
-    padding:8px 14px;
+    font-size:50px;
   }
 }
 </style>
@@ -260,19 +282,25 @@ button{
 
 <body>
 
+<!-- LOGO SCREEN -->
 <div id="logoScreen" class="screen active">
   <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
+<!-- GAME SCREEN -->
 <div id="gameScreen" class="screen">
+
   <div class="header">
     <h1>Number Names Ice Cream Game</h1>
     <p>Look at the number on the cart. Tap the matching animal board.</p>
   </div>
 
   <div class="gameArea">
+
+    <!-- TOP ROW -->
     <div class="row" id="topRow"></div>
 
+    <!-- CART -->
     <div class="cartArea">
       <div class="cartWrap" id="cartWrap">
         <img src="assets/icecream-cart.png" alt="Ice Cream Cart">
@@ -280,18 +308,23 @@ button{
       </div>
     </div>
 
-    <div class="message" id="message">Look at the cart!</div>
+    <!-- HIDDEN MESSAGE -->
+    <div class="message" id="message"></div>
 
+    <!-- BOTTOM ROW -->
     <div class="row bottomRow" id="bottomRow"></div>
+
   </div>
 </div>
 
+<!-- END SCREEN -->
 <div id="endScreen" class="screen">
   <h1>Excellent!</h1>
   <p>You matched all number names.</p>
   <button onclick="restartGame()">Play Again</button>
 </div>
 
+<!-- AUDIO -->
 <audio id="correctSound" src="assets/correct.mp3"></audio>
 <audio id="wrongSound" src="assets/wrong.mp3"></audio>
 <audio id="clapSound" src="assets/claps.mp3"></audio>
@@ -319,22 +352,28 @@ let canClick = false;
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
 const endScreen = document.getElementById("endScreen");
+
 const topRow = document.getElementById("topRow");
 const bottomRow = document.getElementById("bottomRow");
+
 const cartWrap = document.getElementById("cartWrap");
 const cartNumber = document.getElementById("cartNumber");
-const message = document.getElementById("message");
 
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const clapSound = document.getElementById("clapSound");
 
 window.onload = function(){
+
   setTimeout(() => {
+
     logoScreen.classList.remove("active");
     gameScreen.classList.add("active");
+
     startGame();
-  }, 5000);
+
+  },5000);
+
 };
 
 function shuffle(array){
@@ -342,104 +381,147 @@ function shuffle(array){
 }
 
 function startGame(){
+
   currentIndex = 0;
+
   questionOrder = shuffle([...numbers]);
+
   renderAnimals();
+
   showQuestion();
 }
 
 function renderAnimals(){
+
   topRow.innerHTML = "";
   bottomRow.innerHTML = "";
 
   const shuffledCards = shuffle([...numbers]);
-  shuffledCards.slice(0,5).forEach(item => topRow.appendChild(createCard(item)));
-  shuffledCards.slice(5,10).forEach(item => bottomRow.appendChild(createCard(item)));
+
+  shuffledCards.slice(0,5).forEach(item => {
+    topRow.appendChild(createCard(item));
+  });
+
+  shuffledCards.slice(5,10).forEach(item => {
+    bottomRow.appendChild(createCard(item));
+  });
+
 }
 
 function createCard(item){
+
   const card = document.createElement("div");
+
   card.className = "card";
+
   card.dataset.word = item.word;
 
-  card.innerHTML = `<img src="assets/${item.image}" alt="${item.word}">`;
+  card.innerHTML = `
+    <img src="assets/${item.image}" alt="${item.word}">
+  `;
 
-  card.addEventListener("click", () => checkAnswer(card, item.word));
+  card.addEventListener("click", () => {
+    checkAnswer(card,item.word);
+  });
+
   return card;
 }
 
 function showQuestion(){
+
   if(currentIndex >= questionOrder.length){
+
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
+
     return;
   }
 
   canClick = false;
+
   wrongAttempts = 0;
+
   currentAnswer = questionOrder[currentIndex];
 
   document.querySelectorAll(".card").forEach(card => {
+
     card.classList.remove("correct","wrong","glow");
+
   });
 
   cartNumber.textContent = currentAnswer.number;
-  message.textContent = "Look at the cart!";
 
   cartWrap.className = "cartWrap cartIn";
 
   setTimeout(() => {
+
     cartWrap.className = "cartWrap cartCenter";
+
     canClick = true;
-    message.textContent = "Tap the matching animal board!";
-  }, 3000);
+
+  },3000);
 }
 
-function checkAnswer(card, selectedWord){
+function checkAnswer(card,selectedWord){
+
   if(!canClick) return;
 
   if(selectedWord === currentAnswer.word){
+
     canClick = false;
 
     correctSound.currentTime = 0;
     clapSound.currentTime = 0;
+
     correctSound.play();
     clapSound.play();
 
     card.classList.add("correct");
-    message.textContent = "Good job!";
 
     cartWrap.className = "cartWrap cartOut";
 
     setTimeout(() => {
-      currentIndex++;
-      showQuestion();
-    }, 3200);
 
-  } else {
+      currentIndex++;
+
+      showQuestion();
+
+    },3200);
+
+  }else{
+
     wrongAttempts++;
 
     wrongSound.currentTime = 0;
     wrongSound.play();
 
     card.classList.add("wrong");
-    message.textContent = "Try again!";
 
     setTimeout(() => {
+
       card.classList.remove("wrong");
-    }, 600);
+
+    },600);
 
     if(wrongAttempts >= 2){
+
       const correctCard = document.querySelector(`[data-word="${currentAnswer.word}"]`);
-      if(correctCard) correctCard.classList.add("glow");
-      message.textContent = "Look carefully and try again!";
+
+      if(correctCard){
+
+        correctCard.classList.add("glow");
+
+      }
     }
   }
 }
 
 function restartGame(){
+
   endScreen.classList.remove("active");
+
   gameScreen.classList.add("active");
+
   startGame();
 }
 </script>
