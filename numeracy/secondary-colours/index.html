@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secondary Colours Game</title>
+<title>Magic Paint Mixing Lab</title>
 
 <style>
 *{box-sizing:border-box}
@@ -14,8 +14,8 @@ html,body{
   height:100%;
   overflow:hidden;
   font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
-  background:linear-gradient(135deg,#f3e7ff,#ffe4ef,#dcfff2);
-  color:#50364d;
+  background:linear-gradient(135deg,#f4e4ff,#ffe6f0,#dcfff2);
+  color:#51374d;
 }
 
 .screen{
@@ -26,8 +26,9 @@ html,body{
 
 .active{display:flex}
 
+/* LOGO */
 #logoScreen{
-  background:white;
+  background:#fff;
   align-items:center;
   justify-content:center;
 }
@@ -36,37 +37,56 @@ html,body{
   width:min(280px,70vw);
 }
 
+/* GAME SCREEN */
 #gameScreen{
   flex-direction:column;
 }
 
+/* HEADER */
 .header{
-  height:64px;
+  height:78px;
   background:#fff0df;
   border-bottom:4px solid #c9a7ff;
   text-align:center;
-  padding:5px 10px;
+  padding:4px 10px;
+  flex-shrink:0;
 }
 
 .header h1{
   margin:0;
-  font-size:clamp(22px,3vw,34px);
+  font-size:clamp(25px,3.1vw,42px);
+  line-height:1.1;
 }
 
 .header p{
   margin:2px 0 0;
-  font-size:clamp(12px,1.5vw,17px);
+  font-size:clamp(13px,1.45vw,20px);
+  line-height:1.1;
+  white-space:nowrap;
 }
 
+/* MAIN AREA */
 .gameArea{
-  height:calc(100dvh - 64px);
+  height:calc(100dvh - 78px);
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:space-around;
-  padding:16px;
+  justify-content:space-evenly;
+  padding:12px;
 }
 
+/* QUESTION */
+.message{
+  font-size:clamp(28px,4vw,52px);
+  font-weight:bold;
+  text-align:center;
+  background:rgba(255,255,255,.72);
+  border:4px solid #c9a7ff;
+  border-radius:28px;
+  padding:12px 42px;
+}
+
+/* MIXING LINE */
 .bucketLine{
   width:100%;
   display:flex;
@@ -76,13 +96,14 @@ html,body{
 }
 
 .bucketBox{
-  width:min(190px,24vw);
-  height:min(190px,28vh);
+  width:min(175px,18vw);
+  height:min(175px,25vh);
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
   position:relative;
+  touch-action:manipulation;
 }
 
 .bucketBox img{
@@ -92,67 +113,98 @@ html,body{
 }
 
 .plus,.equals{
-  font-size:clamp(34px,5vw,60px);
+  font-size:clamp(34px,5vw,62px);
   font-weight:bold;
   color:#6c4d75;
 }
 
+/* PROPER EMPTY BUCKET */
 .emptyBucket{
-  width:min(190px,24vw);
-  height:min(190px,28vh);
-  border:5px solid #bca3d8;
-  border-radius:24px 24px 34px 34px;
-  background:#fffaf5;
+  width:min(220px,22vw);
+  height:min(190px,27vh);
   position:relative;
   overflow:hidden;
-  box-shadow:0 8px 16px rgba(0,0,0,.12);
+  border:7px solid #b99ce0;
+  border-top:0;
+  border-radius:0 0 42px 42px;
+  background:#fffdf7;
+  box-shadow:0 12px 22px rgba(0,0,0,.15);
 }
 
+/* bucket rim */
 .emptyBucket::before{
   content:"";
   position:absolute;
-  top:-20px;
-  left:22%;
-  width:56%;
-  height:42px;
-  border:6px solid #bca3d8;
-  border-bottom:none;
-  border-radius:50px 50px 0 0;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:108%;
+  height:36px;
+  border:7px solid #b99ce0;
+  border-radius:50%;
+  background:#fffdf7;
+  z-index:5;
 }
 
-.fill{
+/* bucket handle */
+.emptyBucket::after{
+  content:"";
+  position:absolute;
+  top:-44px;
+  left:17%;
+  width:66%;
+  height:82px;
+  border:7px solid #b99ce0;
+  border-bottom:0;
+  border-radius:80px 80px 0 0;
+  z-index:1;
+}
+
+/* two colour layers */
+.fillTop,
+.fillBottom{
   position:absolute;
   left:0;
-  bottom:0;
   width:100%;
   height:0%;
-  transition:height .6s ease, background .6s ease;
+  transition:height .55s ease, background .45s ease;
+  z-index:2;
 }
 
+.fillBottom{
+  bottom:0;
+}
+
+.fillTop{
+  bottom:50%;
+}
+
+/* face */
 .bucketFace{
   position:absolute;
   width:100%;
   text-align:center;
   bottom:35%;
-  font-size:34px;
-  z-index:2;
+  font-size:36px;
+  z-index:6;
 }
 
+/* drops */
 .pourDrop{
   position:absolute;
-  width:28px;
-  height:60px;
-  border-radius:20px;
-  top:25%;
+  width:26px;
+  height:58px;
+  border-radius:18px;
+  top:10%;
   left:50%;
   transform:translateX(-50%);
   animation:pour .7s ease forwards;
-  z-index:5;
+  z-index:10;
 }
 
 @keyframes pour{
-  from{top:20%;opacity:1}
-  to{top:80%;opacity:0}
+  from{top:8%;opacity:1}
+  to{top:72%;opacity:0}
 }
 
 .tapGlow{
@@ -165,33 +217,35 @@ html,body{
   100%{transform:scale(1)}
 }
 
+/* OPTIONS */
 .optionsPanel{
   width:100%;
   display:none;
   justify-content:center;
-  gap:18px;
+  gap:24px;
 }
 
 .option{
-  width:min(210px,28vw);
+  width:min(235px,28vw);
   padding:14px;
   background:#fffaf5;
   border:4px solid #c9a7ff;
-  border-radius:26px;
+  border-radius:28px;
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:8px;
   cursor:pointer;
-  font-size:clamp(18px,2.4vw,30px);
+  font-size:clamp(22px,3vw,38px);
   font-weight:bold;
+  touch-action:manipulation;
 }
 
 .circle{
-  width:70px;
-  height:70px;
+  width:72px;
+  height:72px;
   border-radius:50%;
-  border:4px solid white;
+  border:5px solid white;
   box-shadow:0 5px 12px rgba(0,0,0,.18);
 }
 
@@ -216,18 +270,9 @@ html,body{
   100%{transform:translateX(0)}
 }
 
-.message{
-  font-size:clamp(20px,2.6vw,34px);
-  font-weight:bold;
-  text-align:center;
-  background:rgba(255,255,255,.75);
-  padding:10px 24px;
-  border-radius:22px;
-  border:3px solid #c9a7ff;
-}
-
+/* END SCREEN */
 #endScreen{
-  background:linear-gradient(135deg,#f3e7ff,#ffe4ef,#dcfff2);
+  background:linear-gradient(135deg,#f4e4ff,#ffe6f0,#dcfff2);
   align-items:center;
   justify-content:center;
   flex-direction:column;
@@ -239,12 +284,12 @@ html,body{
 #endScreen h1{
   font-size:clamp(42px,7vw,78px);
   margin:0 0 10px;
-  z-index:2;
+  z-index:5;
 }
 
 #endScreen p{
   font-size:clamp(22px,3vw,34px);
-  z-index:2;
+  z-index:5;
 }
 
 .playAgain{
@@ -256,15 +301,17 @@ html,body{
   color:#51374d;
   font-weight:bold;
   cursor:pointer;
-  z-index:2;
+  z-index:5;
 }
 
+/* SPARKLES */
 .sparkle{
   position:absolute;
-  width:32px;
-  height:32px;
+  width:34px;
+  height:34px;
   pointer-events:none;
   animation:sparkleFall 3s linear forwards;
+  z-index:2;
 }
 
 @keyframes sparkleFall{
@@ -272,27 +319,91 @@ html,body{
   100%{transform:translateY(110dvh) scale(.4);opacity:0}
 }
 
-@media(max-width:800px){
-  .header{height:58px}
-  .header h1{font-size:20px}
-  .header p{font-size:11px}
+/* CRACKER BURSTS */
+.burst{
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:3;
+}
+
+.burst span{
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  animation:burstMove 1.1s ease-out forwards;
+}
+
+@keyframes burstMove{
+  from{
+    transform:translate(0,0) scale(1);
+    opacity:1;
+  }
+  to{
+    transform:translate(var(--x),var(--y)) scale(.2);
+    opacity:0;
+  }
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .header{
+    height:58px;
+  }
+
+  .header h1{
+    font-size:20px;
+  }
+
+  .header p{
+    font-size:11px;
+  }
 
   .gameArea{
     height:calc(100dvh - 58px);
     padding:8px;
   }
 
+  .message{
+    font-size:22px;
+    padding:8px 20px;
+  }
+
   .bucketLine{
     gap:8px;
   }
 
-  .bucketBox,.emptyBucket{
+  .bucketBox{
+    width:22vw;
+    height:22vw;
+  }
+
+  .emptyBucket{
     width:24vw;
-    height:24vw;
+    height:22vw;
+    border-width:5px;
+  }
+
+  .emptyBucket::before{
+    height:24px;
+    border-width:5px;
+  }
+
+  .emptyBucket::after{
+    top:-30px;
+    height:58px;
+    border-width:5px;
   }
 
   .bucketFace{
-    font-size:24px;
+    font-size:22px;
+  }
+
+  .plus,.equals{
+    font-size:28px;
   }
 
   .optionsPanel{
@@ -302,11 +413,46 @@ html,body{
   .option{
     width:30vw;
     padding:8px;
+    font-size:18px;
   }
 
   .circle{
-    width:45px;
-    height:45px;
+    width:42px;
+    height:42px;
+  }
+}
+
+@media(max-width:600px) and (orientation:portrait){
+  .header{
+    height:66px;
+  }
+
+  .header h1{
+    font-size:19px;
+  }
+
+  .header p{
+    font-size:10px;
+    white-space:normal;
+  }
+
+  .gameArea{
+    height:calc(100dvh - 66px);
+    justify-content:space-around;
+  }
+
+  .bucketLine{
+    gap:5px;
+  }
+
+  .bucketBox{
+    width:24vw;
+    height:24vw;
+  }
+
+  .emptyBucket{
+    width:25vw;
+    height:23vw;
   }
 }
 </style>
@@ -334,7 +480,8 @@ html,body{
       <div class="equals">=</div>
 
       <div class="emptyBucket" id="emptyBucket">
-        <div class="fill" id="fill"></div>
+        <div class="fillBottom" id="fillBottom"></div>
+        <div class="fillTop" id="fillTop"></div>
         <div class="bucketFace">😊</div>
       </div>
     </div>
@@ -382,14 +529,19 @@ let canTap = true;
 let canAnswer = false;
 let wrongAttempts = 0;
 let sparkleTimer = null;
+let burstTimer = null;
 
 const logoScreen = document.getElementById("logoScreen");
 const gameScreen = document.getElementById("gameScreen");
 const endScreen = document.getElementById("endScreen");
+
 const bucket1 = document.getElementById("bucket1");
 const bucket2 = document.getElementById("bucket2");
 const emptyBucket = document.getElementById("emptyBucket");
-const fill = document.getElementById("fill");
+
+const fillBottom = document.getElementById("fillBottom");
+const fillTop = document.getElementById("fillTop");
+
 const optionsPanel = document.getElementById("optionsPanel");
 const message = document.getElementById("message");
 
@@ -412,7 +564,7 @@ function playSound(sound){
 }
 
 function startGame(){
-  stopSparkles();
+  stopCelebration();
   currentIndex = 0;
   showQuestion();
 }
@@ -421,7 +573,7 @@ function showQuestion(){
   if(currentIndex >= questions.length){
     gameScreen.classList.remove("active");
     endScreen.classList.add("active");
-    startSparkles();
+    startCelebration();
     return;
   }
 
@@ -431,10 +583,15 @@ function showQuestion(){
   canAnswer = false;
   wrongAttempts = 0;
 
-  fill.style.height = "0%";
-  fill.style.background = "transparent";
+  fillBottom.style.height = "0%";
+  fillBottom.style.background = "transparent";
+
+  fillTop.style.height = "0%";
+  fillTop.style.background = "transparent";
+
   optionsPanel.style.display = "none";
   optionsPanel.innerHTML = "";
+
   message.textContent = "Tap the first paint bucket.";
 
   bucket1.innerHTML = `<img src="assets/${bucketImages[currentQuestion.colours[0]]}" alt="${currentQuestion.colours[0]} bucket">`;
@@ -448,14 +605,15 @@ function tapBucket(bucket, colour){
   if(!canTap || tapped.includes(colour)) return;
 
   tapped.push(colour);
+
   bucket.classList.add("tapGlow");
   setTimeout(()=>bucket.classList.remove("tapGlow"),800);
 
   pourPaint(colour);
 
   if(tapped.length === 1){
-    fill.style.height = "45%";
-    fill.style.background = colourHex[colour];
+    fillBottom.style.height = "50%";
+    fillBottom.style.background = colourHex[colour];
     message.textContent = "Now tap the second paint bucket.";
   }
 
@@ -463,11 +621,11 @@ function tapBucket(bucket, colour){
     canTap = false;
 
     setTimeout(()=>{
-      fill.style.height = "85%";
-      fill.style.background = colourHex[currentQuestion.answer];
+      fillTop.style.height = "50%";
+      fillTop.style.background = colourHex[colour];
       message.textContent = "What colour did we make?";
       showOptions();
-    },700);
+    },550);
   }
 }
 
@@ -506,14 +664,22 @@ function checkAnswer(option, selected){
     setTimeout(()=>playSound(clapSound),150);
 
     option.classList.add("correct");
+    message.textContent = "Good job!";
+
+    setTimeout(()=>{
+      fillTop.style.height = "0%";
+      fillBottom.style.height = "85%";
+      fillBottom.style.background = colourHex[currentQuestion.answer];
+    },400);
 
     setTimeout(()=>{
       currentIndex++;
       showQuestion();
-    },1400);
+    },1800);
 
   }else{
     wrongAttempts++;
+
     playSound(wrongSound);
 
     option.classList.add("wrong");
@@ -526,33 +692,69 @@ function checkAnswer(option, selected){
   }
 }
 
-function startSparkles(){
-  stopSparkles();
+function startCelebration(){
+  stopCelebration();
 
   sparkleTimer = setInterval(()=>{
     const sparkle = document.createElement("img");
     sparkle.className = "sparkle";
     sparkle.src = "assets/sparkle.png";
     sparkle.style.left = Math.random()*100 + "vw";
-    sparkle.style.top = "-30px";
-    const size = 26 + Math.random()*22;
+    sparkle.style.top = "-35px";
+
+    const size = 28 + Math.random()*26;
     sparkle.style.width = size + "px";
     sparkle.style.height = size + "px";
+
     endScreen.appendChild(sparkle);
-    setTimeout(()=>sparkle.remove(),3000);
-  },120);
+    setTimeout(()=>sparkle.remove(),3200);
+  },80);
+
+  burstTimer = setInterval(()=>{
+    createBurst(Math.random()*window.innerWidth, Math.random()*window.innerHeight*0.75);
+  },260);
 }
 
-function stopSparkles(){
+function createBurst(x,y){
+  const burst = document.createElement("div");
+  burst.className = "burst";
+  burst.style.left = x + "px";
+  burst.style.top = y + "px";
+
+  const colours = ["#ffd45c","#ff7aa8","#9ee7ff","#8df2a6","#d9b3ff","#ff9f43"];
+
+  for(let i=0;i<16;i++){
+    const dot = document.createElement("span");
+    const angle = (Math.PI * 2 * i) / 16;
+    const distance = 55 + Math.random()*45;
+
+    dot.style.background = colours[Math.floor(Math.random()*colours.length)];
+    dot.style.setProperty("--x", Math.cos(angle)*distance + "px");
+    dot.style.setProperty("--y", Math.sin(angle)*distance + "px");
+
+    burst.appendChild(dot);
+  }
+
+  endScreen.appendChild(burst);
+  setTimeout(()=>burst.remove(),1200);
+}
+
+function stopCelebration(){
   if(sparkleTimer){
     clearInterval(sparkleTimer);
     sparkleTimer = null;
   }
-  document.querySelectorAll(".sparkle").forEach(s=>s.remove());
+
+  if(burstTimer){
+    clearInterval(burstTimer);
+    burstTimer = null;
+  }
+
+  document.querySelectorAll(".sparkle,.burst").forEach(el=>el.remove());
 }
 
 function restartGame(){
-  stopSparkles();
+  stopCelebration();
   endScreen.classList.remove("active");
   gameScreen.classList.add("active");
   startGame();
