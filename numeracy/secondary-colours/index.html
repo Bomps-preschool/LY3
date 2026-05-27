@@ -21,7 +21,7 @@ html,body{width:100%;height:100%;font-family:"Comic Sans MS","Arial Rounded MT B
 .bucketBox{width:min(35vw,200px);height:min(35vw,200px);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .bucketBox img{width:100%;height:100%;object-fit:contain;}
 .plus,.equals{font-size:clamp(46px,5vw,78px);color:#755383;font-weight:bold;}
-.emptyBucket{width:min(420px,60vw);height:min(280px,40vw);background: url('/mnt/data/ad13f93e-0c29-4506-a8fc-fad439ac1c56.png') no-repeat center/contain;border:7px solid #c9a7ff;border-radius:34px;position:relative;overflow:hidden;}
+.emptyBucket{width:min(420px,60vw);height:min(280px,40vw);background: url('assets/empty-bucket.png') no-repeat center/contain;border:7px solid #c9a7ff;border-radius:34px;position:relative;overflow:hidden;}
 .paintArea{position:absolute;inset:0;overflow:hidden;border-radius:26px;}
 .fillBottom,.fillTop{position:absolute;width:100%;left:0;transition:.5s;height:0%;bottom:0;}
 .fillTop{bottom:50%;}
@@ -37,7 +37,7 @@ html,body{width:100%;height:100%;font-family:"Comic Sans MS","Arial Rounded MT B
 </style>
 </head>
 <body>
-<div id="logoScreen" class="screen active"><img src="/mnt/data/ad13f93e-0c29-4506-a8fc-fad439ac1c56.png" alt="Innovine Logo"></div>
+<div id="logoScreen" class="screen active"><img src="assets/innovine-logo.png" alt="Innovine Logo"></div>
 <div id="gameScreen" class="screen">
 <div class="header"><h1>Magic Paint Mixing Lab</h1><p>Tap both paint buckets and see the new colour.</p></div>
 <div class="gameArea">
@@ -63,19 +63,19 @@ html,body{width:100%;height:100%;font-family:"Comic Sans MS","Arial Rounded MT B
 <p>You made all secondary colours!</p>
 <button class="playAgain" onclick="restartGame()">Play Again</button>
 </div>
-<audio id="correctSound" src="/mnt/data/ad13f93e-0c29-4506-a8fc-fad439ac1c56.png"></audio>
-<audio id="wrongSound" src="wrong.mp3"></audio>
-<audio id="clapSound" src="claps.mp3"></audio>
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapSound" src="assets/claps.mp3"></audio>
 <script>
 const questions=[{colours:["red","yellow"], answer:"orange"},{colours:["yellow","blue"], answer:"green"},{colours:["red","blue"], answer:"purple"}];
-const bucketImages={red:"red-bucket.png",yellow:"yellow-bucket.png",blue:"blue-bucket.png"};
+const bucketImages={red:"assets/red-bucket.png",yellow:"assets/yellow-bucket.png",blue:"assets/blue-bucket.png"};
 const colourHex={red:"#ef3b45",yellow:"#f4e84a",blue:"#2385c7",orange:"#f7941e",green:"#35b85a",purple:"#713ca6"};
 let currentIndex=0,currentQuestion,tapped=[],canTap=true,canAnswer=false,wrongAttempts=0;
 const logoScreen=document.getElementById("logoScreen"),gameScreen=document.getElementById("gameScreen"),endScreen=document.getElementById("endScreen"),bucket1=document.getElementById("bucket1"),bucket2=document.getElementById("bucket2"),fillBottom=document.getElementById("fillBottom"),fillTop=document.getElementById("fillTop"),optionsPanel=document.getElementById("optionsPanel"),message=document.getElementById("message"),correctSound=document.getElementById("correctSound"),wrongSound=document.getElementById("wrongSound"),clapSound=document.getElementById("clapSound");
 window.addEventListener("load",()=>{setTimeout(()=>{logoScreen.classList.remove("active");gameScreen.classList.add("active");startGame();},1500);});
 function playSound(s){s.pause();s.currentTime=0;s.play().catch(()=>{});}
 function startGame(){currentIndex=0;showQuestion();}
-function showQuestion(){if(currentIndex>=questions.length){return;}currentQuestion=questions[currentIndex];tapped=[];canTap=true;canAnswer=false;wrongAttempts=0;fillBottom.style.height="0%";fillTop.style.height="0%";fillBottom.style.background="";fillTop.style.background="";optionsPanel.style.display="none";optionsPanel.innerHTML="";message.textContent="Tap the first paint bucket.";bucket1.innerHTML=`<img src="/mnt/data/ad13f93e-0c29-4506-a8fc-fad439ac1c56.png">`;bucket2.innerHTML=`<img src="/mnt/data/ad13f93e-0c29-4506-a8fc-fad439ac1c56.png">`;bucket1.onclick=()=>tapBucket(bucket1,currentQuestion.colours[0]);bucket2.onclick=()=>tapBucket(bucket2,currentQuestion.colours[1]);}
+function showQuestion(){if(currentIndex>=questions.length){return;}currentQuestion=questions[currentIndex];tapped=[];canTap=true;canAnswer=false;wrongAttempts=0;fillBottom.style.height="0%";fillTop.style.height="0%";fillBottom.style.background="";fillTop.style.background="";optionsPanel.style.display="none";optionsPanel.innerHTML="";message.textContent="Tap the first paint bucket.";bucket1.innerHTML=`<img src="${bucketImages[currentQuestion.colours[0]]}">`;bucket2.innerHTML=`<img src="${bucketImages[currentQuestion.colours[1]]}">`;bucket1.onclick=()=>tapBucket(bucket1,currentQuestion.colours[0]);bucket2.onclick=()=>tapBucket(bucket2,currentQuestion.colours[1]);}
 function tapBucket(bucket,colour){if(!canTap||tapped.includes(colour))return;tapped.push(colour);bucket.classList.add("tapGlow");setTimeout(()=>bucket.classList.remove("tapGlow"),700);pourPaint(colour);if(tapped.length===1){fillBottom.style.height="50%";fillBottom.style.background=colourHex[colour];message.textContent="Tap the second paint bucket.";}else if(tapped.length===2){canTap=false;setTimeout(()=>{fillTop.style.height="50%";fillTop.style.bottom="50%";fillTop.style.background=colourHex[colour];message.textContent="Choose the new colour.";showOptions();},500);}}
 function pourPaint(colour){const drop=document.createElement("div");drop.className="pourDrop";drop.style.background=colourHex[colour];document.getElementById("emptyBucket").appendChild(drop);setTimeout(()=>drop.remove(),800);}
 function showOptions(){canAnswer=true;optionsPanel.style.display="flex";["orange","green","purple"].sort(()=>Math.random()-0.5).forEach(c=>{const opt=document.createElement("div");opt.className="option";opt.dataset.answer=c;opt.innerHTML=`<div class="circle" style="background:${colourHex[c]}"></div><div class="optionName">${c}</div>`;opt.onclick=()=>checkAnswer(opt,c);optionsPanel.appendChild(opt);});}
