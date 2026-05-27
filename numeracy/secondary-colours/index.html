@@ -6,7 +6,7 @@
 <title>Magic Paint Mixing Lab</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);color:#563b59;}
+html,body{width:100%;height:100%;font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);color:#563b59;overflow-x:hidden;}
 
 .screen{width:100vw;height:100vh;display:none;flex-direction:column;align-items:center;justify-content:flex-start;}
 .active{display:flex;}
@@ -61,8 +61,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 }
 
 .bucketBox{
-  width:min(35vw,300px);
-  height:min(35vw,300px);
+  width:min(35vw,200px);
+  height:min(35vw,200px);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -73,14 +73,13 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 .plus,.equals{font-size:clamp(46px,5vw,78px);color:#755383;font-weight:bold;}
 
 .emptyBucket{
-  width:min(420px,32vw);
-  height:min(360px,40vh);
-  background:#fffdf7;
+  width:min(420px,60vw);
+  height:min(280px,40vw);
+  background: url('empty-bucket.png') no-repeat center/contain;
   border:7px solid #c9a7ff;
   border-radius:34px;
   position:relative;
   overflow:hidden;
-  box-shadow:0 10px 22px rgba(0,0,0,.12);
 }
 
 .paintArea{position:absolute;inset:0;overflow:hidden;border-radius:26px;}
@@ -104,7 +103,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 }
 
 .optionsPanel{display:none;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;}
-.option{width:min(190px,24vw);height:130px;background:#fffaf5;border:4px solid #c9a7ff;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:8px;}
+.option{width:min(150px,24vw);height:110px;background:#fffaf5;border:4px solid #c9a7ff;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:8px;}
 .circle{width:52px;height:52px;border-radius:50%;border:4px solid white;box-shadow:0 5px 12px rgba(0,0,0,.18);}
 .optionName{font-size:clamp(18px,2.3vw,30px);font-weight:bold;}
 .option.correct{background:#dfffd9;border-color:#77cf74;}
@@ -131,7 +130,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 
 @media(max-width:900px){
   .bucketBox{width:70vw;height:70vw;}
-  .emptyBucket{width:65vw;height:50vw;}
+  .emptyBucket{width:90vw;height:50vw;}
   .bucketLine{gap:16px;flex-wrap:wrap;}
   .message{font-size:10px;padding:3px 8px;min-width:120px;}
   .optionsPanel{gap:12px;flex-wrap:wrap;}
@@ -143,7 +142,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 <body>
 
 <div id="logoScreen" class="screen active">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+  <img src="innovine-logo.png" alt="Innovine Logo">
 </div>
 
 <div id="gameScreen" class="screen">
@@ -180,9 +179,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
   <button class="playAgain" onclick="restartGame()">Play Again</button>
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-<audio id="clapSound" src="assets/claps.mp3"></audio>
+<audio id="correctSound" src="correct.mp3"></audio>
+<audio id="wrongSound" src="wrong.mp3"></audio>
+<audio id="clapSound" src="claps.mp3"></audio>
 
 <script>
 const questions=[
@@ -190,6 +189,7 @@ const questions=[
   {colours:["yellow","blue"], answer:"green"},
   {colours:["red","blue"], answer:"purple"}
 ];
+
 const bucketImages={red:"red-bucket.png",yellow:"yellow-bucket.png",blue:"blue-bucket.png"};
 const colourHex={red:"#ef3b45",yellow:"#f4e84a",blue:"#2385c7",orange:"#f7941e",green:"#35b85a",purple:"#713ca6"};
 
@@ -225,8 +225,8 @@ function showQuestion(){
   fillBottom.style.height="0%"; fillTop.style.height="0%"; fillBottom.style.background=""; fillTop.style.background="";
   optionsPanel.style.display="none"; optionsPanel.innerHTML="";
   message.textContent="Tap the first paint bucket.";
-  bucket1.innerHTML=`<img src="assets/${bucketImages[currentQuestion.colours[0]]}" alt="${currentQuestion.colours[0]} bucket">`;
-  bucket2.innerHTML=`<img src="assets/${bucketImages[currentQuestion.colours[1]]}" alt="${currentQuestion.colours[1]} bucket">`;
+  bucket1.innerHTML=`<img src="${bucketImages[currentQuestion.colours[0]]}">`;
+  bucket2.innerHTML=`<img src="${bucketImages[currentQuestion.colours[1]]}">`;
   bucket1.onclick=()=>tapBucket(bucket1,currentQuestion.colours[0]);
   bucket2.onclick=()=>tapBucket(bucket2,currentQuestion.colours[1]);
 }
@@ -269,11 +269,11 @@ function checkAnswer(option,selected){
   }
 }
 
-// Sparkles/Confetti top to bottom with rotation
+// Sparkles/Confetti
 function showSparkles(){
   for(let i=0;i<30;i++){
     const sparkle=document.createElement("img");
-    sparkle.src="assets/sparkle.png";
+    sparkle.src="sparkle.png";
     sparkle.className="sparkle";
     sparkle.style.left=Math.random()*window.innerWidth+"px";
     sparkle.style.top="-30px";
