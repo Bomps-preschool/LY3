@@ -21,7 +21,7 @@ html,body{width:100%;height:100%;font-family:"Comic Sans MS","Arial Rounded MT B
 .bucketBox{width:min(35vw,200px);height:min(35vw,200px);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .bucketBox img{width:100%;height:100%;object-fit:contain;}
 .plus,.equals{font-size:clamp(46px,5vw,78px);color:#755383;font-weight:bold;}
-.emptyBucket{width:min(420px,60vw);height:min(280px,40vw);background:url('empty-bucket.png') no-repeat center/contain;border:7px solid #c9a7ff;border-radius:34px;position:relative;overflow:hidden;}
+.emptyBucket{width:min(420px,60vw);height:min(280px,40vw);background: url('empty-bucket.png') no-repeat center/contain;border:7px solid #c9a7ff;border-radius:34px;position:relative;overflow:hidden;}
 .paintArea{position:absolute;inset:0;overflow:hidden;border-radius:26px;}
 .fillBottom,.fillTop{position:absolute;width:100%;left:0;transition:.5s;height:0%;bottom:0;}
 .bucketSmile{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:42px;z-index:5;}
@@ -33,52 +33,71 @@ html,body{width:100%;height:100%;font-family:"Comic Sans MS","Arial Rounded MT B
 .option.wrong{animation:wiggle .35s ease;}
 .option.glow{box-shadow:0 0 18px #98e7c7;}
 @keyframes wiggle{0%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-6px)}100%{transform:translateX(0)}}
-/* Sparkles / Confetti */
 .sparkle{position:absolute;width:20px;height:20px;animation:sparkleFall 1.5s linear forwards;}
 @keyframes sparkleFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(360deg);opacity:0;}}
 #endScreen{background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
 #endScreen h1{font-size:clamp(48px,8vw,90px);}
 #endScreen p{font-size:clamp(22px,3vw,36px);}
 .playAgain{margin-top:18px;padding:14px 34px;font-size:clamp(20px,2vw,30px);border:none;border-radius:18px;background:#a8ecd1;color:#563b59;font-weight:bold;cursor:pointer;}
-@media(max-width:900px){
-.bucketBox{width:70vw;height:70vw;}
-.emptyBucket{width:90vw;height:50vw;}
-.bucketLine{gap:16px;flex-wrap:wrap;}
-.message{font-size:10px;padding:3px 8px;min-width:120px;}
-.optionsPanel{gap:12px;flex-wrap:wrap;}
-.header{padding:12px 0;}
-.header p{margin-top:6px;}
-}
+@media(max-width:900px){.bucketBox{width:70vw;height:70vw;}.emptyBucket{width:90vw;height:50vw;}.bucketLine{gap:16px;flex-wrap:wrap;}.message{font-size:10px;padding:3px 8px;min-width:120px;}.optionsPanel{gap:12px;flex-wrap:wrap;}.header{padding:12px 0;}.header p{margin-top:6px;}}
 </style>
 </head>
 <body>
-<div id="logoScreen" class="screen active"><img src="innovine-logo.png" alt="Innovine Logo"></div>
+
+<div id="logoScreen" class="screen active">
+<img src="innovine-logo.png" alt="Innovine Logo">
+</div>
+
 <div id="gameScreen" class="screen">
-<div class="header"><h1>Magic Paint Mixing Lab</h1><p>Tap both paint buckets and see the new colour.</p></div>
+<div class="header">
+<h1>Magic Paint Mixing Lab</h1>
+<p>Tap both paint buckets and see the new colour.</p>
+</div>
+
 <div class="gameArea">
 <div class="message" id="message">Tap the first paint bucket.</div>
+
 <div class="bucketLine">
-<div class="bucketBox" id="bucket1"></div><div class="plus">+</div><div class="bucketBox" id="bucket2"></div><div class="equals">=</div>
+<div class="bucketBox" id="bucket1"></div>
+<div class="plus">+</div>
+<div class="bucketBox" id="bucket2"></div>
+<div class="equals">=</div>
+
 <div class="emptyBucket" id="emptyBucket">
-<div class="paintArea"><div class="fillBottom" id="fillBottom"></div><div class="fillTop" id="fillTop"></div></div>
+<div class="paintArea">
+<div class="fillBottom" id="fillBottom"></div>
+<div class="fillTop" id="fillTop"></div>
+</div>
 <div class="bucketSmile">😊</div>
 </div>
 </div>
+
 <div class="optionsPanel" id="optionsPanel"></div>
 </div>
 </div>
-<div id="endScreen" class="screen"><h1>Excellent!</h1><p>You made all secondary colours!</p><button class="playAgain" onclick="restartGame()">Play Again</button></div>
+
+<div id="endScreen" class="screen">
+<h1>Excellent!</h1>
+<p>You made all secondary colours!</p>
+<button class="playAgain" onclick="restartGame()">Play Again</button>
+</div>
+
 <audio id="correctSound" src="correct.mp3"></audio>
 <audio id="wrongSound" src="wrong.mp3"></audio>
 <audio id="clapSound" src="claps.mp3"></audio>
+
 <script>
 const questions=[
-{colours:["red","yellow"], answer:"orange"},
-{colours:["yellow","blue"], answer:"green"},
-{colours:["red","blue"], answer:"purple"}];
+  {colours:["red","yellow"], answer:"orange"},
+  {colours:["yellow","blue"], answer:"green"},
+  {colours:["red","blue"], answer:"purple"}
+];
+
 const bucketImages={red:"red-bucket.png",yellow:"yellow-bucket.png",blue:"blue-bucket.png"};
 const colourHex={red:"#ef3b45",yellow:"#f4e84a",blue:"#2385c7",orange:"#f7941e",green:"#35b85a",purple:"#713ca6"};
+
 let currentIndex=0,currentQuestion,tapped=[],canTap=true,canAnswer=false,wrongAttempts=0;
+
 const logoScreen=document.getElementById("logoScreen");
 const gameScreen=document.getElementById("gameScreen");
 const endScreen=document.getElementById("endScreen");
@@ -91,61 +110,89 @@ const message=document.getElementById("message");
 const correctSound=document.getElementById("correctSound");
 const wrongSound=document.getElementById("wrongSound");
 const clapSound=document.getElementById("clapSound");
+
 window.addEventListener("load",()=>{
-setTimeout(()=>{
-logoScreen.classList.remove("active");
-gameScreen.classList.add("active");
-startGame();
-},1500);
+  setTimeout(()=>{
+    logoScreen.classList.remove("active");
+    gameScreen.classList.add("active");
+    startGame();
+  },1500);
 });
+
 function playSound(s){s.pause();s.currentTime=0;s.play().catch(()=>{});}
 function startGame(){currentIndex=0;showQuestion();}
+
 function showQuestion(){
-if(currentIndex>=questions.length){showEndScreen();return;}
-currentQuestion=questions[currentIndex];tapped=[];canTap=true;canAnswer=false;wrongAttempts=0;
-fillBottom.style.height="0%"; fillTop.style.height="0%"; fillBottom.style.background=""; fillTop.style.background="";
-optionsPanel.style.display="none"; optionsPanel.innerHTML="";
-message.textContent="Tap the first paint bucket.";
-bucket1.innerHTML=`<img src="${bucketImages[currentQuestion.colours[0]]}">`;
-bucket2.innerHTML=`<img src="${bucketImages[currentQuestion.colours[1]]}">`;
-bucket1.onclick=()=>tapBucket(bucket1,currentQuestion.colours[0]);
-bucket2.onclick=()=>tapBucket(bucket2,currentQuestion.colours[1]);
+  if(currentIndex>=questions.length){showEndScreen();return;}
+  currentQuestion=questions[currentIndex];tapped=[];canTap=true;canAnswer=false;wrongAttempts=0;
+  fillBottom.style.height="0%"; fillTop.style.height="0%"; fillBottom.style.background=""; fillTop.style.background="";
+  optionsPanel.style.display="none"; optionsPanel.innerHTML="";
+  message.textContent="Tap the first paint bucket.";
+  bucket1.innerHTML=`<img src="${bucketImages[currentQuestion.colours[0]]}">`;
+  bucket2.innerHTML=`<img src="${bucketImages[currentQuestion.colours[1]]}">`;
+  bucket1.onclick=()=>tapBucket(bucket1,currentQuestion.colours[0]);
+  bucket2.onclick=()=>tapBucket(bucket2,currentQuestion.colours[1]);
 }
+
 function tapBucket(bucket,colour){
-if(!canTap||tapped.includes(colour)) return;
-tapped.push(colour); bucket.classList.add("tapGlow"); setTimeout(()=>bucket.classList.remove("tapGlow"),700);
-if(tapped.length===1){fillBottom.style.height="50%"; fillBottom.style.background=colourHex[colour];message.textContent="Tap the second paint bucket.";}
-else if(tapped.length===2){fillTop.style.height="50%"; fillTop.style.background=colourHex[colour];canTap=false; setTimeout(showOptions,500);}
+  if(!canTap || tapped.includes(colour)) return;
+  tapped.push(colour); 
+  bucket.classList.add("tapGlow"); 
+  setTimeout(()=>bucket.classList.remove("tapGlow"),700);
+
+  if(tapped.length === 1){
+    fillBottom.style.height = "50%";
+    fillBottom.style.background = colourHex[colour];
+    message.textContent = "Tap the second paint bucket.";
+  } else if(tapped.length === 2){
+    fillTop.style.height = "50%";
+    fillTop.style.bottom = "50%"; // ensures top half starts where bottom ends
+    fillTop.style.background = colourHex[colour];
+    canTap = false;
+    setTimeout(showOptions,500);
+  }
 }
-function showOptions(){canAnswer=true; optionsPanel.style.display="flex";
-["orange","green","purple"].sort(()=>Math.random()-0.5).forEach(c=>{
-const opt=document.createElement("div"); opt.className="option"; opt.dataset.answer=c;
-opt.innerHTML=`<div class="circle" style="background:${colourHex[c]}"></div><div class="optionName">${c}</div>`;
-opt.onclick=()=>checkAnswer(opt,c); optionsPanel.appendChild(opt);
-});
+
+function showOptions(){
+  canAnswer=true; optionsPanel.style.display="flex";
+  ["orange","green","purple"].sort(()=>Math.random()-0.5).forEach(c=>{
+    const opt=document.createElement("div"); opt.className="option"; opt.dataset.answer=c;
+    opt.innerHTML=`<div class="circle" style="background:${colourHex[c]}"></div><div class="optionName">${c}</div>`;
+    opt.onclick=()=>checkAnswer(opt,c); optionsPanel.appendChild(opt);
+  });
 }
+
 function checkAnswer(option,selected){
-if(!canAnswer) return;
-if(selected===currentQuestion.answer){
-canAnswer=false; playSound(correctSound); setTimeout(()=>playSound(clapSound),120);
-option.classList.add("correct"); message.textContent="Good job!";
-fillBottom.style.height="100%"; fillTop.style.height="0%"; fillBottom.style.background=colourHex[currentQuestion.answer];
-showSparkles(); setTimeout(()=>{currentIndex++;showQuestion();},1500);}
-else{wrongAttempts++; playSound(wrongSound); option.classList.add("wrong");
-setTimeout(()=>option.classList.remove("wrong"),400);
-if(wrongAttempts>=2){const copt=document.querySelector(`[data-answer="${currentQuestion.answer}"]`); if(copt)copt.classList.add("glow");}}
+  if(!canAnswer) return;
+  if(selected===currentQuestion.answer){
+    canAnswer=false; playSound(correctSound); setTimeout(()=>playSound(clapSound),120);
+    option.classList.add("correct"); message.textContent="Good job!";
+    fillBottom.style.height="100%"; fillTop.style.height="0%";
+    fillBottom.style.background=colourHex[currentQuestion.answer];
+    showSparkles();
+    setTimeout(()=>{currentIndex++;showQuestion();},1500);
+  } else {
+    wrongAttempts++; playSound(wrongSound); option.classList.add("wrong");
+    setTimeout(()=>option.classList.remove("wrong"),400);
+    if(wrongAttempts>=2){const copt=document.querySelector(`[data-answer="${currentQuestion.answer}"]`); if(copt)copt.classList.add("glow");}
+  }
 }
+
 function showSparkles(){
-for(let i=0;i<30;i++){
-const sparkle=document.createElement("img");
-sparkle.src="sparkle.png"; sparkle.className="sparkle";
-sparkle.style.left=Math.random()*window.innerWidth+"px";
-sparkle.style.top="-30px";
-sparkle.style.width=15+Math.random()*15+"px";
-sparkle.style.height=15+Math.random()*15+"px";
-sparkle.style.transform=`rotate(${Math.random()*360}deg)`;
-document.body.appendChild(sparkle); setTimeout(()=>sparkle.remove(),1500);}
+  for(let i=0;i<30;i++){
+    const sparkle=document.createElement("img");
+    sparkle.src="sparkle.png";
+    sparkle.className="sparkle";
+    sparkle.style.left=Math.random()*window.innerWidth+"px";
+    sparkle.style.top="-30px";
+    sparkle.style.width=15+Math.random()*15+"px";
+    sparkle.style.height=15+Math.random()*15+"px";
+    sparkle.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(sparkle);
+    setTimeout(()=>sparkle.remove(),1500);
+  }
 }
+
 function showEndScreen(){gameScreen.classList.remove("active"); endScreen.classList.add("active");}
 function restartGame(){endScreen.classList.remove("active"); gameScreen.classList.add("active"); startGame();}
 </script>
