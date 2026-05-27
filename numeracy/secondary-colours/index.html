@@ -17,7 +17,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 #gameScreen{flex-direction:column;width:100%;align-items:center;}
 .header{
   width:100%;
-  padding:16px 0;
+  padding:20px 0;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -26,7 +26,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
   box-shadow:0 2px 5px rgba(0,0,0,0.08);
 }
 .header h1{font-size:clamp(22px,2.5vw,36px);line-height:1;}
-.header p{font-size:clamp(12px,1.2vw,16px);line-height:1.3;margin-top:8px;}
+.header p{font-size:clamp(12px,1.2vw,16px);line-height:1.3;margin-top:12px;}
 
 .gameArea{
   flex:1;
@@ -112,16 +112,16 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:"Comic Sans MS","Ar
 .option.glow{box-shadow:0 0 18px #98e7c7;}
 @keyframes wiggle{0%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-6px)}100%{transform:translateX(0)}}
 
-/* Sparkles */
+/* Sparkles / Confetti */
 .sparkle{
   position:absolute;
-  width:24px;
-  height:24px;
+  width:20px;
+  height:20px;
   animation:sparkleFall 1.5s linear forwards;
 }
 @keyframes sparkleFall{
-  0%{transform:translateY(0) scale(1);opacity:1;}
-  100%{transform:translateY(100vh) scale(0.5);opacity:0;}
+  0%{transform:translateY(0) rotate(0deg); opacity:1;}
+  100%{transform:translateY(100vh) rotate(360deg); opacity:0;}
 }
 
 #endScreen{background:linear-gradient(135deg,#f7e4ff,#ffe6f2,#dcfff4);flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;}
@@ -269,16 +269,17 @@ function checkAnswer(option,selected){
   }
 }
 
-// Celebration sparkles
+// Sparkles/Confetti top to bottom with rotation
 function showSparkles(){
-  for(let i=0;i<25;i++){
+  for(let i=0;i<30;i++){
     const sparkle=document.createElement("img");
     sparkle.src="assets/sparkle.png";
     sparkle.className="sparkle";
     sparkle.style.left=Math.random()*window.innerWidth+"px";
     sparkle.style.top="-30px";
-    sparkle.style.width=20+Math.random()*20+"px";
-    sparkle.style.height=20+Math.random()*20+"px";
+    sparkle.style.width=15+Math.random()*15+"px";
+    sparkle.style.height=15+Math.random()*15+"px";
+    sparkle.style.transform=`rotate(${Math.random()*360}deg)`;
     document.body.appendChild(sparkle);
     setTimeout(()=>sparkle.remove(),1500);
   }
