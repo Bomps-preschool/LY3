@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Ready For School</title>
+<style>
+body, html { margin:0; padding:0; height:100%; width:100%; font-family: Arial, sans-serif; background: linear-gradient(135deg,#fceabb,#f8b500); display:flex; justify-content:center; align-items:center; }
+#gameContainer { width:100%; max-width:600px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; }
+.slide { display:none; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%; position:relative; }
+.active { display:flex; }
+.headerBox { background:#fff3e0; padding:15px; border-radius:10px; margin-top:10px; width:90%; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+.headerBox h1 { font-size:1.5rem; margin:0; color:#333; }
+.instructionBox { background:#fff; padding:10px; border-radius:10px; border:2px dashed #ff9e80; margin:10px 0; width:90%; box-shadow:0 0 5px rgba(0,0,0,0.1);}
+.instructionBox p { font-size:1.2rem; color:#444; margin:0; }
+.questionFrame { background:#fff; border-radius:15px; border:3px solid #ffb74d; padding:15px; width:90%; max-width:500px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 0 10px rgba(0,0,0,0.2); margin-bottom:20px; }
+.boyImage { width:100%; max-width:300px; margin-bottom:15px; }
+.options { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; }
+.option img { width:120px; cursor:pointer; border:3px solid #ffcc80; border-radius:10px; transition: transform 0.2s, box-shadow 0.2s; }
+.option img:hover { transform: scale(1.05); box-shadow:0 0 10px rgba(0,0,0,0.2); }
+.wiggle { animation: wiggle 0.3s; }
+@keyframes wiggle {0%{transform:rotate(0deg);}25%{transform:rotate(10deg);}50%{transform:rotate(-10deg);}75%{transform:rotate(10deg);}100%{transform:rotate(0deg);}}
+.glow { box-shadow:0 0 15px 5px yellow; border:2px solid yellow; }
+.playAgainBtn { padding:10px 20px; font-size:1.2rem; background:#4db6ac; color:#fff; border:none; border-radius:10px; cursor:pointer; margin-top:20px; }
+.playAgainBtn:hover { background:#26a69a; }
+#confettiCanvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.logo { width:150px; margin-top:50px; }
+</style>
+</head>
+<body>
+<div id="gameContainer">
+
+<!-- Slide 0: Logo -->
+<div class="slide active" id="slide0">
+  <img src="assets/innovine-logo.png" class="logo" alt="Innovine Logo">
+</div>
+
+<!-- Slide 1: Shirt -->
+<div class="slide" id="slide1">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/shirt-slide-image.png" class="boyImage" alt="Boy Shirt">
+    <div class="options">
+      <div class="option"><img src="assets/blue-shirt.png" data-answer="false"></div>
+      <div class="option"><img src="assets/white-shirt.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 2: Pants -->
+<div class="slide" id="slide2">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/pants-slide-image.png" class="boyImage" alt="Boy Pants">
+    <div class="options">
+      <div class="option"><img src="assets/shorts.png" data-answer="false"></div>
+      <div class="option"><img src="assets/pants.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 3: Socks -->
+<div class="slide" id="slide3">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/socks-slide-image.png" class="boyImage" alt="Boy Socks">
+    <div class="options">
+      <div class="option"><img src="assets/blue-socks.png" data-answer="false"></div>
+      <div class="option"><img src="assets/white-socks.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 4: Shoes -->
+<div class="slide" id="slide4">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/shoe-slide-image.png" class="boyImage" alt="Boy Shoes">
+    <div class="options">
+      <div class="option"><img src="assets/colourful-shoes.png" data-answer="false"></div>
+      <div class="option"><img src="assets/black-shoes.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 5: Tie -->
+<div class="slide" id="slide5">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/tie-slide-image.png" class="boyImage" alt="Boy Tie">
+    <div class="options">
+      <div class="option"><img src="assets/sun-glasse.png" data-answer="false"></div>
+      <div class="option"><img src="assets/tie.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: Bag -->
+<div class="slide" id="slide6">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/bag-slide-image.png" class="boyImage" alt="Boy Bag">
+    <div class="options">
+      <div class="option"><img src="assets/green-bag.png" data-answer="false"></div>
+      <div class="option"><img src="assets/blue-bag.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Final Slide -->
+<div class="slide" id="slide7">
+  <img src="assets/im-ready.png" class="boyImage" style="width:200px; margin-top:50px;" alt="Im Ready">
+  <h1>Good Job!</h1>
+  <button class="playAgainBtn">Play Again</button>
+  <canvas id="confettiCanvas"></canvas>
+</div>
+
+<audio id="correctAudio" src="assets/correct.mp3"></audio>
+<audio id="wrongAudio" src="assets/wrong.mp3"></audio>
+<audio id="clapAudio" src="assets/freesound_community-claps-44774.mp3"></audio>
+
+<script>
+let slides=document.querySelectorAll('.slide');
+let currentSlide=0;
+let wrongAttempts=0;
+
+setTimeout(()=>{showSlide(1)},2000);
+
+function showSlide(idx){
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[idx].classList.add('active');
+  currentSlide=idx;
+  wrongAttempts=0;
+  if(idx>=1 && idx<=6) setupOptions(slides[idx]);
+}
+
+function setupOptions(slide){
+  const options=slide.querySelectorAll('.option img');
+  options.forEach(opt=>{
+    opt.onclick=()=>{
+      if(opt.dataset.answer==="true"){
+        document.getElementById('correctAudio').play();
+        opt.style.border='3px solid green';
+        setTimeout(()=>{
+          if(currentSlide<6) showSlide(currentSlide+1);
+          else { showSlide(7); startConfetti(); }
+        },700);
+      } else{
+        wrongAttempts++;
+        document.getElementById('wrongAudio').play();
+        opt.classList.add('wiggle');
+        setTimeout(()=>opt.classList.remove('wiggle'),300);
+        if(wrongAttempts>=2) options.forEach(o=>{if(o.dataset.answer==="true") o.classList.add('glow');});
+      }
+    }
+  });
+}
+
+document.querySelector('.playAgainBtn').onclick=()=>{
+  slides.forEach(s=>s.classList.remove('active'));
+  stopConfetti();
+  showSlide(1);
+}
+
+let confettiInterval;
+function startConfetti(){
+  slides[7].querySelector('#confettiCanvas').style.display='block';
+  const canvas=slides[7].querySelector('#confettiCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth;
+  canvas.height=canvas.offsetHeight;
+  const confetti=[];
+  for(let i=0;i<150;i++) confetti.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*50+10,color:`hsl(${Math.random()*360},100%,50%)`,tilt:Math.random()*10-10,tiltAngleInc:Math.random()*0.07+0.05});
+  confettiInterval=setInterval(()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(c=>{
+      ctx.beginPath();
+      ctx.lineWidth=c.r/2;
+      ctx.strokeStyle=c.color;
+      ctx.moveTo(c.x+c.tilt+c.r/4,c.y);
+      ctx.lineTo(c.x+c.tilt,c.y+c.tilt+c.r/4);
+      ctx.stroke();
+      c.tiltAngle+=c.tiltAngleInc;
+      c.y+=(Math.cos(c.d)+3+c.r/2)/2;
+      c.tilt=Math.sin(c.tiltAngle)*15;
+      if(c.y>canvas.height){c.y=-10;c.x=Math.random()*canvas.width;}
+    });
+  },20);
+}
+
+function stopConfetti(){ clearInterval(confettiInterval); slides[7].querySelector('#confettiCanvas').style.display='none'; }
+</script>
+</body>
+</html>
