@@ -652,16 +652,10 @@ playLetterSound();
 /* PLAY SOUND */
 
 function playLetterSound(){
-
-const q =
-questions[current];
-
-letterAudio.src =
-q.sound;
-
-letterAudio.play()
-.catch(() => {});
-
+  const q = questions[current];
+  letterAudio.src = q.sound;
+  letterAudio.volume = 1; // max volume
+  letterAudio.play().catch(() => {});
 }
 
 soundBtn.onclick =
