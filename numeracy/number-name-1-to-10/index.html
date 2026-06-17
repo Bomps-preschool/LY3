@@ -3,536 +3,263 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Number Names Ice Cream Game</title>
-
+<title>Sentence Express Station - 3 Bogeys</title>
 <style>
-*{box-sizing:border-box}
-
-html,body{
+body{
   margin:0;
-  width:100%;
-  height:100%;
+  font-family:Arial;
   overflow:hidden;
-  font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
-  background:linear-gradient(#dff8ff,#fff5cf);
-  color:#4b3b2f;
+  background:#000;
 }
 
-.screen{
-  width:100vw;
-  height:100dvh;
-  display:none;
-}
-
-.active{display:flex}
-
-#logoScreen{
+/* SPLASH */
+#splash{
+  position:fixed;top:0;left:0;width:100%;height:100%;
   background:white;
-  align-items:center;
-  justify-content:center;
+  display:flex;justify-content:center;align-items:center;
+  z-index:999;
 }
 
-#logoScreen img{
-  width:min(280px,70vw);
-}
-
-#gameScreen{
-  flex-direction:column;
-}
-
-.header{
-  height:58px;
-  width:100%;
-  text-align:center;
-  background:#fff1b8;
-  border-bottom:3px solid #f2c86b;
-  padding:3px 8px;
-  flex-shrink:0;
-}
-
-.header h1{
-  margin:0;
-  font-size:clamp(18px,2.5vw,28px);
-  line-height:1.1;
-}
-
-.header p{
-  margin:1px 0 0;
-  font-size:clamp(10px,1.2vw,14px);
-  line-height:1.1;
-}
-
-.gameArea{
-  width:100%;
-  height:calc(100dvh - 58px);
-  display:grid;
-  grid-template-rows:25% 48% 25%;
-  gap:1%;
-  padding:8px 18px;
-}
-
-.row{
-  width:100%;
-  height:100%;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:14px;
-}
-
-.card{
-  background:rgba(255,255,255,0.96);
-  border:4px solid #f4c976;
-  border-radius:22px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:4px;
-  cursor:pointer;
-  box-shadow:0 5px 10px rgba(0,0,0,0.08);
-  overflow:hidden;
-  touch-action:manipulation;
-}
-
-.card img{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-}
-
-.card.correct{
-  background:#d9ffd7;
-  border-color:#6fc06f;
-  transform:scale(1.03);
-}
-
-.card.wrong{
-  animation:wiggle .35s ease;
-}
-
-.card.glow{
-  box-shadow:0 0 18px 7px #8fe58f;
-}
-
-@keyframes wiggle{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-8px)}
-  50%{transform:translateX(8px)}
-  75%{transform:translateX(-6px)}
-  100%{transform:translateX(0)}
-}
-
-.middleArea{
-  width:100%;
-  height:100%;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-.cartWrap{
+/* INSTRUCTIONS */
+#instructions{
+  display:none;
   position:absolute;
-  width:min(430px,42vw);
-  height:min(270px,36vh);
-  left:-520px;
-  opacity:0;
-  z-index:5;
-}
-
-.cartWrap img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-
-.cartNumber{
-  position:absolute;
-  top:43%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  font-size:clamp(48px,6vw,82px);
+  top:0;width:100%;
+  background:#fff3cd;
+  padding:12px;
   font-weight:bold;
-  color:#2f7edb;
-  text-shadow:4px 4px white;
+  text-align:center;
+  z-index:10;
 }
 
-.cartIn{
-  animation:cartIn 3s ease forwards;
+/* GAME AREA */
+#game{
+  display:none;
+  width:100%;
+  height:100vh;
+  background:url('assets/background.png') center/cover no-repeat;
+  position:relative;
 }
 
-.cartCenter{
+/* SCORE */
+#score{
+  position:absolute;top:60px;left:10px;
+  background:white;padding:10px;border-radius:10px;font-weight:bold;
+}
+
+/* STAR BOARD */
+#starBoard{
+  position:absolute;top:60px;right:10px;
+  background:white;padding:10px;border-radius:10px;
+}
+
+/* TRAIN */
+#train{
+  position:absolute;bottom:50px;
+  width:90%;
+  left:-100%;
+  transition:1.5s ease;
+}
+
+#train img{
+  width:100%;
+}
+
+/* TICKET */
+#ticket{
+  position:absolute;
+  bottom:200px;
   left:50%;
   transform:translateX(-50%);
-  opacity:1;
-}
-
-.cartOut{
-  animation:cartOut 3s ease forwards;
-}
-
-@keyframes cartIn{
-  from{left:-520px;opacity:0}
-  to{left:50%;transform:translateX(-50%);opacity:1}
-}
-
-@keyframes cartOut{
-  from{left:50%;transform:translateX(-50%);opacity:1}
-  to{left:115%;opacity:0}
-}
-
-#endScreen{
-  background:linear-gradient(#dff8ff,#fff5cf);
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
+  width:260px;
+  min-height:140px;
+  background:url('assets/ticket.png') center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;
   text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-
-#endScreen h1{
-  font-size:clamp(42px,7vw,76px);
-  margin:0 0 10px;
-  z-index:2;
-}
-
-#endScreen p{
-  font-size:clamp(22px,3vw,34px);
-  z-index:2;
-}
-
-button{
-  font-size:clamp(20px,2.5vw,28px);
-  padding:14px 34px;
-  border:none;
-  border-radius:18px;
-  background:#f2c86b;
-  color:#4b3b2f;
+  padding:20px;
   font-weight:bold;
+  font-size:22px;
   cursor:pointer;
-  z-index:2;
+  z-index:5;
+  user-select:none;
 }
 
-.sparkle{
+/* FEEDBACK */
+#msg{
   position:absolute;
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:#ffd45c;
-  animation:sparkleFall 2.8s linear forwards;
-  pointer-events:none;
+  top:120px;width:100%;
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  color:black;
 }
 
-@keyframes sparkleFall{
-  0%{transform:translateY(-20px) scale(1);opacity:1}
-  100%{transform:translateY(110dvh) scale(.3);opacity:0}
-}
-
-@media(max-width:900px){
-  .header{
-    height:52px;
-  }
-
-  .gameArea{
-    height:calc(100dvh - 52px);
-    grid-template-rows:24% 50% 24%;
-    padding:6px;
-    gap:1%;
-  }
-
-  .row{
-    gap:6px;
-  }
-
-  .card{
-    border-radius:14px;
-    border-width:3px;
-    padding:3px;
-  }
-
-  .cartWrap{
-    width:min(290px,50vw);
-    height:min(190px,32vh);
-  }
-
-  .cartNumber{
-    font-size:clamp(42px,8vw,58px);
-  }
-}
-
-@media(max-width:600px) and (orientation:portrait){
-  .header{
-    height:62px;
-  }
-
-  .header h1{
-    font-size:19px;
-  }
-
-  .header p{
-    font-size:11px;
-  }
-
-  .gameArea{
-    height:calc(100dvh - 62px);
-    grid-template-rows:24% 48% 24%;
-    padding:6px;
-  }
-
-  .row{
-    gap:5px;
-  }
-
-  .cartWrap{
-    width:78vw;
-    height:34vh;
-  }
-}
-
-@media(max-height:500px) and (orientation:landscape){
-  .header{
-    height:46px;
-  }
-
-  .header h1{
-    font-size:20px;
-  }
-
-  .header p{
-    font-size:11px;
-  }
-
-  .gameArea{
-    height:calc(100dvh - 46px);
-    grid-template-rows:24% 50% 24%;
-    padding:5px 12px;
-  }
-
-  .cartWrap{
-    width:300px;
-    height:180px;
-  }
+/* CORRECT/WRONG ANIMATIONS */
+.glow{box-shadow:0 0 15px gold;}
+.shake{animation:shake 0.3s;}
+@keyframes shake{
+0%{transform:translateX(-5px);}
+50%{transform:translateX(5px);}
+100%{transform:translateX(0);}
 }
 </style>
 </head>
-
 <body>
 
-<div id="logoScreen" class="screen active">
-  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+<!-- SPLASH -->
+<div id="splash">
+  <img src="assets/innovinelogo.png" style="width:300px;">
 </div>
 
-<div id="gameScreen" class="screen">
-  <div class="header">
-    <h1>Number Names 1 to 10 </h1>
-    <p>Look at the number on the cart. Tap the matching animal board.</p>
-  </div>
-
-  <div class="gameArea">
-    <div class="row" id="topRow"></div>
-
-    <div class="middleArea">
-      <div class="cartWrap" id="cartWrap">
-        <img src="assets/icecream-cart.png" alt="Ice Cream Cart">
-        <div class="cartNumber" id="cartNumber">1</div>
-      </div>
-    </div>
-
-    <div class="row" id="bottomRow"></div>
-  </div>
+<!-- INSTRUCTIONS -->
+<div id="instructions">
+🚂 Sentence Express Station: Drag the ticket to the correct bogey (Statement, Question, Exclamation)!
 </div>
 
-<div id="endScreen" class="screen">
-  <h1>Excellent!</h1>
-  <p>You matched all number names.</p>
-  <button onclick="restartGame()">Play Again</button>
+<!-- GAME -->
+<div id="game">
+<div id="score">Score: 0</div>
+<div id="starBoard">⭐⭐⭐</div>
+<div id="msg"></div>
+
+<div id="train">
+  <img src="assets/train-3bogeys.png" alt="Train with 3 bogeys">
 </div>
 
-<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
-<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
+<div id="ticket"></div>
+</div>
+
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+<audio id="whistle" src="assets/whistle.mp3"></audio>
+<audio id="clap" src="assets/clapping.mp3"></audio>
 
 <script>
-const numbers = [
-  { number: 1, word: "one", image: "bear.png" },
-  { number: 2, word: "two", image: "koala.png" },
-  { number: 3, word: "three", image: "rabbit.png" },
-  { number: 4, word: "four", image: "monkey.png" },
-  { number: 5, word: "five", image: "penguin.png" },
-  { number: 6, word: "six", image: "giraffe.png" },
-  { number: 7, word: "seven", image: "duck.png" },
-  { number: 8, word: "eight", image: "cat.png" },
-  { number: 9, word: "nine", image: "tiger.png" },
-  { number: 10, word: "ten", image: "deer.png" }
+// SENTENCES
+const sentences = [
+{type:"statement",text:"The giraffee is a tall animal."},
+{type:"statement",text:"My brother plays football every evening."},
+{type:"statement",text:"We visited the zoo yesterday."},
+{type:"statement",text:"The flowers are blooming in the garden."},
+{type:"statement",text:"I enjoy reading storybooks."},
+{type:"question",text:"When is your birthday?"},
+{type:"question",text:"Why is the sky blue?"},
+{type:"question",text:"Can you help me?"},
+{type:"question",text:"Why are you laughing?"},
+{type:"question",text:"Did you finish your homework?"},
+{type:"exclamation",text:"What a beautiful rainbow!"},
+{type:"exclamation",text:"Hurray! We won the match!"},
+{type:"exclamation",text:"Wow! This cake is delicious!"},
+{type:"exclamation",text:"Oh no! I lost my pencil!"},
+{type:"exclamation",text:"What an amazing performance!"}
 ];
 
-let questionOrder = [];
-let currentIndex = 0;
-let currentAnswer = null;
-let wrongAttempts = 0;
-let canClick = false;
-let sparkleTimer = null;
-
-const logoScreen = document.getElementById("logoScreen");
-const gameScreen = document.getElementById("gameScreen");
-const endScreen = document.getElementById("endScreen");
-const topRow = document.getElementById("topRow");
-const bottomRow = document.getElementById("bottomRow");
-const cartWrap = document.getElementById("cartWrap");
-const cartNumber = document.getElementById("cartNumber");
-
-const correctSound = document.getElementById("correctSound");
-const wrongSound = document.getElementById("wrongSound");
-const clapSound = document.getElementById("clapSound");
-
-window.onload = function(){
-  setTimeout(() => {
-    logoScreen.classList.remove("active");
-    gameScreen.classList.add("active");
-    startGame();
-  }, 5000);
-};
-
-function playSound(sound){
-  sound.pause();
-  sound.currentTime = 0;
-  sound.play().catch(() => {});
-}
-
+// SHUFFLE FUNCTION
 function shuffle(array){
-  return array.sort(() => Math.random() - 0.5);
+  return array.sort(()=>Math.random()-0.5);
 }
 
-function startGame(){
-  stopSparkles();
-  currentIndex = 0;
-  questionOrder = shuffle([...numbers]);
-  renderAnimals();
-  showQuestion();
+let index=0;
+let attempts=0;
+let currentSentence = null;
+
+const ticket=document.getElementById("ticket");
+const train=document.getElementById("train");
+const msg=document.getElementById("msg");
+const scoreEl=document.getElementById("score");
+let score=0;
+
+// SPLASH SCREEN
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+  document.getElementById("instructions").style.display="block";
+  document.getElementById("game").style.display="block";
+  startRound();
+},5000);
+
+// START ROUND
+function startRound(){
+  attempts=0;
+  const remaining = shuffle(sentences.slice());
+  currentSentence = remaining[index % remaining.length];
+  ticket.innerText = currentSentence.text;
+  msg.innerText = "";
+  ticket.style.left="50%";
+  ticket.style.top="200px";
+
+  // Train arrives
+  train.style.left="5%";
+  setTimeout(()=>{train.style.left="50%";},100);
 }
 
-function renderAnimals(){
-  topRow.innerHTML = "";
-  bottomRow.innerHTML = "";
+// DRAG TICKET
+let dragging=false;
+ticket.addEventListener("mousedown",dragStart);
+ticket.addEventListener("touchstart",dragStart);
 
-  const shuffledCards = shuffle([...numbers]);
-
-  shuffledCards.slice(0,5).forEach(item => {
-    topRow.appendChild(createCard(item));
-  });
-
-  shuffledCards.slice(5,10).forEach(item => {
-    bottomRow.appendChild(createCard(item));
-  });
+function dragStart(e){
+  e.preventDefault();
+  dragging=true;
+  document.addEventListener("mousemove",dragMove);
+  document.addEventListener("mouseup",dragEnd);
+  document.addEventListener("touchmove",dragMove);
+  document.addEventListener("touchend",dragEnd);
 }
 
-function createCard(item){
-  const card = document.createElement("div");
-  card.className = "card";
-  card.dataset.word = item.word;
-  card.innerHTML = `<img src="assets/${item.image}" alt="${item.word}">`;
-
-  card.addEventListener("click", () => {
-    checkAnswer(card,item.word);
-  });
-
-  return card;
+function dragMove(e){
+  if(!dragging) return;
+  let x = e.touches?e.touches[0].clientX:e.clientX;
+  let y = e.touches?e.touches[0].clientY:e.clientY;
+  ticket.style.left=(x-130)+"px";
+  ticket.style.top=(y-70)+"px";
 }
 
-function showQuestion(){
-  if(currentIndex >= questionOrder.length){
-    gameScreen.classList.remove("active");
-    endScreen.classList.add("active");
-    startSparkles();
-    return;
+function dragEnd(e){
+  dragging=false;
+  document.removeEventListener("mousemove",dragMove);
+  document.removeEventListener("mouseup",dragEnd);
+  document.removeEventListener("touchmove",dragMove);
+  document.removeEventListener("touchend",dragEnd);
+
+  // DETECT DROP
+  checkDrop();
+}
+
+// CHECK DROP LOGIC
+function checkDrop(){
+  const ticketRect = ticket.getBoundingClientRect();
+  const trainRect = train.getBoundingClientRect();
+  const bogeyWidth = trainRect.width/3;
+
+  let droppedType = null;
+
+  if(ticketRect.left + ticketRect.width/2 < trainRect.left + bogeyWidth){
+    droppedType="statement";
+  }else if(ticketRect.left + ticketRect.width/2 < trainRect.left + 2*bogeyWidth){
+    droppedType="question";
+  }else{
+    droppedType="exclamation";
   }
 
-  canClick = false;
-  wrongAttempts = 0;
-  currentAnswer = questionOrder[currentIndex];
-
-  document.querySelectorAll(".card").forEach(card => {
-    card.classList.remove("correct","wrong","glow");
-  });
-
-  cartNumber.textContent = currentAnswer.number;
-  cartWrap.className = "cartWrap cartIn";
-
-  setTimeout(() => {
-    cartWrap.className = "cartWrap cartCenter";
-    canClick = true;
-  }, 3000);
-}
-
-function checkAnswer(card, selectedWord){
-  if(!canClick) return;
-
-  if(selectedWord === currentAnswer.word){
-    canClick = false;
-
-    playSound(correctSound);
-    setTimeout(() => playSound(clapSound), 150);
-
-    card.classList.add("correct");
-    cartWrap.className = "cartWrap cartOut";
-
-    setTimeout(() => {
-      currentIndex++;
-      showQuestion();
-    }, 3200);
-
-  } else {
-    wrongAttempts++;
-    playSound(wrongSound);
-
-    card.classList.add("wrong");
-
-    setTimeout(() => {
-      card.classList.remove("wrong");
-    }, 600);
-
-    if(wrongAttempts >= 2){
-      const correctCard = document.querySelector(`[data-word="${currentAnswer.word}"]`);
-      if(correctCard){
-        correctCard.classList.add("glow");
-      }
+  if(droppedType===currentSentence.type){
+    document.getElementById("correct").play();
+    document.getElementById("whistle").play();
+    document.getElementById("clap").play();
+    score++;
+    scoreEl.innerText="Score: "+score;
+    train.style.left="105%"; // train leaves
+    setTimeout(()=>{index++; startRound(); train.style.left="-100%";},1000);
+  }else{
+    document.getElementById("wrong").play();
+    attempts++;
+    msg.innerText="Try Again!";
+    if(attempts>=2){
+      msg.innerText="Correct: "+currentSentence.type.toUpperCase();
     }
+    ticket.style.left="50%";
+    ticket.style.top="200px";
   }
-}
-
-function startSparkles(){
-  stopSparkles();
-
-  sparkleTimer = setInterval(() => {
-    const sparkle = document.createElement("div");
-    sparkle.className = "sparkle";
-    sparkle.style.left = Math.random() * 100 + "vw";
-    sparkle.style.top = "-20px";
-    sparkle.style.background = ["#ffd45c","#ffb6c1","#9ee7ff","#b8f7b0","#d9b3ff"][Math.floor(Math.random()*5)];
-    sparkle.style.width = sparkle.style.height = (8 + Math.random()*10) + "px";
-    endScreen.appendChild(sparkle);
-
-    setTimeout(() => sparkle.remove(), 3000);
-  }, 90);
-}
-
-function stopSparkles(){
-  if(sparkleTimer){
-    clearInterval(sparkleTimer);
-    sparkleTimer = null;
-  }
-
-  document.querySelectorAll(".sparkle").forEach(s => s.remove());
-}
-
-function restartGame(){
-  stopSparkles();
-  endScreen.classList.remove("active");
-  gameScreen.classList.add("active");
-  startGame();
 }
 </script>
-
 </body>
 </html>
