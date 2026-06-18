@@ -7,11 +7,20 @@
 
 <style>
 
+/* 🌈 BACKGROUND ANIMATION */
 body{
   margin:0;
   font-family:Arial;
   overflow:hidden;
-  background:#e8f6ff;
+  background: linear-gradient(270deg,#e8f6ff,#fff7e6,#e3fdfd);
+  background-size:600% 600%;
+  animation:bgMove 10s ease infinite;
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
 
 /* SPLASH */
@@ -36,28 +45,36 @@ body{
 
 /* TITLE */
 #title{
-  font-size:28px;
+  font-size:30px;
   font-weight:bold;
   color:#2e7d32;
   margin-top:10px;
+  animation:fadeIn 1s ease;
 }
 
-/* NEW INSTRUCTION */
+/* INSTRUCTION */
 #subInstruction{
   font-size:18px;
   margin:8px;
   color:#444;
 }
 
-/* IMAGE */
+/* IMAGE ANIMATION */
 #mainImg{
   width:80%;
   max-width:350px;
   height:300px;
   object-fit:contain;
   border-radius:15px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.2);
   margin-top:10px;
+  animation:float 2s ease-in-out infinite;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+@keyframes float{
+  0%{transform:translateY(0px)}
+  50%{transform:translateY(-10px)}
+  100%{transform:translateY(0px)}
 }
 
 /* BUTTONS */
@@ -69,13 +86,18 @@ body{
 }
 
 .btn{
-  width:120px;
+  width:130px;
   padding:15px;
   font-size:20px;
   font-weight:bold;
   border-radius:15px;
   cursor:pointer;
   border:none;
+  transition:0.2s;
+}
+
+.btn:hover{
+  transform:scale(1.05);
 }
 
 .person{background:#ffd166;}
@@ -96,18 +118,7 @@ body{
   border-radius:12px;
 }
 
-/* GLOW */
-.glow{
-  animation: glow 0.8s ease;
-}
-
-@keyframes glow{
-  0%{box-shadow:0 0 0px green;}
-  50%{box-shadow:0 0 25px green;}
-  100%{box-shadow:0 0 0px green;}
-}
-
-/* END SCREEN */
+/* END SCREEN - CENTER FIXED */
 #end{
   display:none;
   width:100%;
@@ -115,9 +126,24 @@ body{
   justify-content:center;
   align-items:center;
   flex-direction:column;
-  font-size:40px;
+  font-size:50px;
   font-weight:bold;
   color:#2e7d32;
+  text-align:center;
+}
+
+/* 🎊 CONFETTI */
+.confetti{
+  position:absolute;
+  width:10px;
+  height:10px;
+  top:0;
+  animation:fall 2.5s linear forwards;
+}
+
+@keyframes fall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
 }
 
 </style>
@@ -133,10 +159,8 @@ body{
 <!-- GAME -->
 <div id="game">
 
-  <!-- TITLE -->
   <div id="title">Naming Words Game</div>
 
-  <!-- NEW INSTRUCTION (UPDATED) -->
   <div id="subInstruction">
     Look at the picture and click on the correct naming word
   </div>
@@ -155,8 +179,12 @@ body{
 
 <!-- END -->
 <div id="end">
-🎉 Good Job 🎉
+🎉 GOOD JOB 🎉
 </div>
+
+<!-- AUDIO -->
+<audio id="clap" src="assets/claps.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
 
 <script>
 
@@ -183,32 +211,43 @@ function loadGame(){
   if(i>=data.length){
     document.getElementById("game").style.display="none";
     document.getElementById("end").style.display="flex";
+
+    startConfetti();
     return;
   }
 
   locked=false;
 
   let img=document.getElementById("mainImg");
-  img.classList.remove("glow");
+  img.style.opacity=0;
 
-  img.src=data[i].img;
+  setTimeout(()=>{
+    img.src=data[i].img;
+    img.style.opacity=1;
+  },200);
 }
 
 function check(ans){
 
   if(locked) return;
 
+  let img=document.getElementById("mainImg");
+
   if(ans===data[i].ans){
 
-    let img=document.getElementById("mainImg");
-    img.classList.add("glow");
+    document.getElementById("clap").play();
+
+    img.style.transform="scale(1.1)";
+    setTimeout(()=>img.style.transform="scale(1)",300);
 
     setTimeout(()=>{
       i++;
       loadGame();
-    },900);
+    },800);
 
   }else{
+
+    document.getElementById("wrong").play();
 
     locked=true;
     document.getElementById("msg").style.display="block";
@@ -217,6 +256,23 @@ function check(ans){
       document.getElementById("msg").style.display="none";
       locked=false;
     },2000);
+  }
+}
+
+/* 🎊 CONFETTI + CRACKER EFFECT */
+function startConfetti(){
+
+  for(let i=0;i<120;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=["#ff4d6d","#ffd166","#06d6a0","#4dabf7","#b197fc"][Math.floor(Math.random()*5)];
+    c.style.animationDuration=(1+Math.random()*2)+"s";
+
+    document.body.appendChild(c);
+
+    setTimeout(()=>c.remove(),3000);
   }
 }
 
