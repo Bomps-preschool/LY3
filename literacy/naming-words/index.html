@@ -7,7 +7,7 @@
 
 <style>
 
-/* 🌈 NEW ELEGANT BACKGROUND */
+/* 🌈 BACKGROUND */
 body{
   margin:0;
   font-family:Arial;
@@ -36,7 +36,7 @@ body{
   z-index:10;
 }
 
-/* GAME */
+/* GAME SCREEN */
 #game{
   display:none;
   width:100vw;
@@ -118,41 +118,41 @@ body{
   border-radius:12px;
 }
 
-/* ✨ GLOW */
-.glow{
-  animation: glow 0.8s ease;
-}
-
-@keyframes glow{
-  0%{box-shadow:0 0 0px green;}
-  50%{box-shadow:0 0 25px green;}
-  100%{box-shadow:0 0 0px green;}
-}
-
-/* 🎉 END SCREEN (CENTER FIXED) */
+/* 🎯 END SCREEN FIX (IMPORTANT) */
 #end{
   display:none;
+  position:absolute;
   width:100%;
   height:100%;
-  position:absolute;
   top:0;
   left:0;
 
-  display:flex;
+  background:white;
+
+  flex-direction:column;
   justify-content:center;
   align-items:center;
-  flex-direction:column;
 
-  font-size:55px;
+  font-size:60px;
   font-weight:bold;
   color:#2e7d32;
   text-align:center;
-  animation:pop 1s ease;
+
+  z-index:999;
 }
 
-@keyframes pop{
-  from{transform:scale(0.5);opacity:0;}
-  to{transform:scale(1);opacity:1;}
+/* CONFETTI */
+.confetti{
+  position:absolute;
+  width:10px;
+  height:10px;
+  top:0;
+  animation:fall 2.5s linear forwards;
+}
+
+@keyframes fall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
 }
 
 </style>
@@ -193,80 +193,90 @@ body{
 
 <script>
 
+let i = 0;
+let locked = false;
+
+/* SPLASH START */
 setTimeout(()=>{
   document.getElementById("splash").style.display="none";
   document.getElementById("game").style.display="block";
+  document.getElementById("end").style.display="none"; // IMPORTANT FIX
   loadGame();
 },3000);
 
-/* 🧠 DATA WITH AUDIO QUESTIONS */
 const data = [
-  {img:"assets/teacher.png", ans:"person", audio:"Teacher belongs to which naming word?"},
-  {img:"assets/school.png", ans:"place", audio:"School belongs to which naming word?"},
-  {img:"assets/book.png", ans:"thing", audio:"Book belongs to which naming word?"},
-  {img:"assets/doctor.png", ans:"person", audio:"Doctor belongs to which naming word?"},
-  {img:"assets/park.png", ans:"place", audio:"Park belongs to which naming word?"},
-  {img:"assets/ball.png", ans:"thing", audio:"Ball belongs to which naming word?"}
+  {img:"assets/teacher.png", ans:"person"},
+  {img:"assets/school.png", ans:"place"},
+  {img:"assets/book.png", ans:"thing"},
+  {img:"assets/doctor.png", ans:"person"},
+  {img:"assets/park.png", ans:"place"},
+  {img:"assets/ball.png", ans:"thing"}
 ];
 
-let i=0;
-let locked=false;
-
-/* SPEECH */
-function speak(text){
-  let msg=new SpeechSynthesisUtterance(text);
-  msg.rate=0.9;
-  window.speechSynthesis.speak(msg);
-}
-
-/* LOAD GAME */
 function loadGame(){
 
-  if(i>=data.length){
+  if(i >= data.length){
+
     document.getElementById("game").style.display="none";
-    document.getElementById("end").style.display="flex";
-    speak("Good job");
+    document.getElementById("end").style.display="flex"; // ONLY HERE
+
+    startConfetti();
     return;
   }
 
-  locked=false;
+  locked = false;
 
-  let img=document.getElementById("mainImg");
-  img.classList.remove("glow");
+  let img = document.getElementById("mainImg");
+  img.style.opacity = 0;
 
-  img.src=data[i].img;
-
-  // 🔊 NEW AUDIO INSTRUCTION
-  speak(data[i].audio);
+  setTimeout(()=>{
+    img.src = data[i].img;
+    img.style.opacity = 1;
+  },200);
 }
 
-/* ANSWER CHECK */
 function check(ans){
 
   if(locked) return;
 
-  if(ans===data[i].ans){
+  if(ans === data[i].ans){
 
-    let img=document.getElementById("mainImg");
-    img.classList.add("glow");
+    let img = document.getElementById("mainImg");
+    img.style.transform = "scale(1.1)";
 
-    speak("Correct");
+    setTimeout(()=> img.style.transform="scale(1)",300);
 
-    setTimeout(()=>{
-      i++;
-      loadGame();
-    },900);
+    i++;
+    loadGame();
 
-  }else{
+  } else {
 
-    locked=true;
+    locked = true;
+
     document.getElementById("msg").style.display="block";
-    speak("Try again");
 
     setTimeout(()=>{
       document.getElementById("msg").style.display="none";
-      locked=false;
+      locked = false;
     },2000);
+  }
+}
+
+/* CONFETTI */
+function startConfetti(){
+
+  for(let j=0;j<120;j++){
+    let c = document.createElement("div");
+    c.className = "confetti";
+
+    c.style.left = Math.random()*100 + "vw";
+    c.style.background = ["#ff4d6d","#ffd166","#06d6a0","#4dabf7","#b197fc"][Math.floor(Math.random()*5)];
+
+    c.style.animationDuration = (1+Math.random()*2) + "s";
+
+    document.body.appendChild(c);
+
+    setTimeout(()=>c.remove(),3000);
   }
 }
 
