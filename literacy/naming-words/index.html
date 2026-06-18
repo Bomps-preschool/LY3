@@ -42,10 +42,11 @@ body{
   margin-top:10px;
 }
 
-#instruction{
-  font-size:20px;
-  margin:10px;
-  color:#ff4d6d;
+/* NEW INSTRUCTION */
+#subInstruction{
+  font-size:18px;
+  margin:8px;
+  color:#444;
 }
 
 /* IMAGE */
@@ -132,9 +133,13 @@ body{
 <!-- GAME -->
 <div id="game">
 
+  <!-- TITLE -->
   <div id="title">Naming Words Game</div>
 
-  <div id="instruction">Listen and Choose</div>
+  <!-- NEW INSTRUCTION (UPDATED) -->
+  <div id="subInstruction">
+    Look at the picture and click on the correct naming word
+  </div>
 
   <img id="mainImg" src="">
 
@@ -162,29 +167,22 @@ setTimeout(()=>{
 },3000);
 
 const data = [
-  {img:"assets/teacher.png", ans:"person", text:"Teacher is a person"},
-  {img:"assets/school.png", ans:"place", text:"School is a place"},
-  {img:"assets/book.png", ans:"thing", text:"Book is a thing"},
-  {img:"assets/doctor.png", ans:"person", text:"Doctor is a person"},
-  {img:"assets/park.png", ans:"place", text:"Park is a place"},
-  {img:"assets/ball.png", ans:"thing", text:"Ball is a thing"}
+  {img:"assets/teacher.png", ans:"person"},
+  {img:"assets/school.png", ans:"place"},
+  {img:"assets/book.png", ans:"thing"},
+  {img:"assets/doctor.png", ans:"person"},
+  {img:"assets/park.png", ans:"place"},
+  {img:"assets/ball.png", ans:"thing"}
 ];
 
 let i=0;
 let locked=false;
-
-function speak(text){
-  let msg=new SpeechSynthesisUtterance(text);
-  msg.rate=0.9;
-  window.speechSynthesis.speak(msg);
-}
 
 function loadGame(){
 
   if(i>=data.length){
     document.getElementById("game").style.display="none";
     document.getElementById("end").style.display="flex";
-    speak("Good job");
     return;
   }
 
@@ -194,9 +192,6 @@ function loadGame(){
   img.classList.remove("glow");
 
   img.src=data[i].img;
-  document.getElementById("instruction").innerText=data[i].text;
-
-  speak(data[i].text);
 }
 
 function check(ans){
@@ -208,18 +203,15 @@ function check(ans){
     let img=document.getElementById("mainImg");
     img.classList.add("glow");
 
-    speak("Correct");
-
     setTimeout(()=>{
       i++;
       loadGame();
-    },1000);
+    },900);
 
   }else{
 
     locked=true;
     document.getElementById("msg").style.display="block";
-    speak("Try again");
 
     setTimeout(()=>{
       document.getElementById("msg").style.display="none";
