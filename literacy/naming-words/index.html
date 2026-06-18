@@ -7,7 +7,7 @@
 
 <style>
 
-/* 🌈 BACKGROUND (UPDATED) */
+/* 🌈 BACKGROUND */
 body{
   margin:0;
   font-family:Arial;
@@ -45,7 +45,6 @@ body{
   margin-top:10px;
 }
 
-/* INSTRUCTION */
 #subInstruction{
   font-size:18px;
   margin:8px;
@@ -142,6 +141,28 @@ body{
   100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
 }
 
+/* 🟢 GREEN GLOW */
+.correctGlow{
+  animation:greenGlow 0.8s ease;
+}
+
+@keyframes greenGlow{
+  0%{box-shadow:0 0 0px rgba(0,255,0,0);}
+  50%{box-shadow:0 0 30px rgba(0,255,0,1);}
+  100%{box-shadow:0 0 0px rgba(0,255,0,0);}
+}
+
+/* 🔴 RED GLOW */
+.wrongGlow{
+  animation:redGlow 0.8s ease;
+}
+
+@keyframes redGlow{
+  0%{box-shadow:0 0 0px rgba(255,0,0,0);}
+  50%{box-shadow:0 0 30px rgba(255,0,0,1);}
+  100%{box-shadow:0 0 0px rgba(255,0,0,0);}
+}
+
 </style>
 </head>
 
@@ -187,7 +208,7 @@ body{
 let i = 0;
 let locked = false;
 
-/* START GAME */
+/* START */
 setTimeout(()=>{
   document.getElementById("splash").style.display="none";
   document.getElementById("game").style.display="block";
@@ -195,7 +216,7 @@ setTimeout(()=>{
   loadGame();
 },3000);
 
-/* DATA + AUDIO INSTRUCTION */
+/* DATA */
 const data = [
   {img:"assets/teacher.png", ans:"person", audio:"Teacher belongs to which naming word?"},
   {img:"assets/school.png", ans:"place", audio:"School belongs to which naming word?"},
@@ -205,6 +226,13 @@ const data = [
   {img:"assets/ball.png", ans:"thing", audio:"Ball belongs to which naming word?"}
 ];
 
+/* SPEECH */
+function speak(text){
+  let msg = new SpeechSynthesisUtterance(text);
+  msg.rate = 0.9;
+  window.speechSynthesis.speak(msg);
+}
+
 /* LOAD GAME */
 function loadGame(){
 
@@ -213,32 +241,24 @@ function loadGame(){
     document.getElementById("game").style.display="none";
     document.getElementById("end").style.display="flex";
 
-    startConfetti();
     speak("Good job");
-
+    startConfetti();
     return;
   }
 
   locked = false;
 
   let img = document.getElementById("mainImg");
+  img.classList.remove("correctGlow","wrongGlow");
   img.style.opacity = 0;
 
   setTimeout(()=>{
     img.src = data[i].img;
     img.style.opacity = 1;
 
-    // 🔊 AUDIO INSTRUCTION PER IMAGE
     speak(data[i].audio);
 
   },200);
-}
-
-/* SPEECH */
-function speak(text){
-  let msg = new SpeechSynthesisUtterance(text);
-  msg.rate = 0.9;
-  window.speechSynthesis.speak(msg);
 }
 
 /* ANSWER */
@@ -246,17 +266,17 @@ function check(ans){
 
   if(locked) return;
 
+  let img = document.getElementById("mainImg");
+
   if(ans === data[i].ans){
 
-    // 🔊 CLAP SOUND
     document.getElementById("clap").play();
 
-    let img = document.getElementById("mainImg");
-    img.style.transform = "scale(1.1)";
+    img.classList.add("correctGlow");
 
-    setTimeout(()=> img.style.transform="scale(1)",300);
+    setTimeout(()=> img.classList.remove("correctGlow"),800);
 
-    // ⛔ FIX: WAIT FOR CLAP TO FINISH BEFORE NEXT QUESTION
+    // WAIT FOR CLAP BEFORE NEXT QUESTION
     document.getElementById("clap").onended = function(){
       i++;
       loadGame();
@@ -264,8 +284,11 @@ function check(ans){
 
   } else {
 
-    // 🔊 WRONG SOUND
     document.getElementById("wrong").play();
+
+    img.classList.add("wrongGlow");
+
+    setTimeout(()=> img.classList.remove("wrongGlow"),800);
 
     locked = true;
 
@@ -278,7 +301,7 @@ function check(ans){
   }
 }
 
-/* 🎊 CONFETTI */
+/* CONFETTI */
 function startConfetti(){
 
   for(let j=0;j<120;j++){
