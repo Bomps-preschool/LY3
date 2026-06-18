@@ -141,25 +141,29 @@ body{
   100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
 }
 
-/* 🟢 GREEN GLOW */
+/* 🟢 STRONG GREEN GLOW */
 .correctGlow{
-  animation:greenGlow 0.8s ease;
+  animation:greenGlow 1s ease-in-out 1;
+  border-radius:15px;
 }
 
 @keyframes greenGlow{
   0%{box-shadow:0 0 0px rgba(0,255,0,0);}
-  50%{box-shadow:0 0 30px rgba(0,255,0,1);}
+  30%{box-shadow:0 0 25px rgba(0,255,0,1);}
+  60%{box-shadow:0 0 35px rgba(0,255,0,0.9);}
   100%{box-shadow:0 0 0px rgba(0,255,0,0);}
 }
 
-/* 🔴 RED GLOW */
+/* 🔴 STRONG RED GLOW */
 .wrongGlow{
-  animation:redGlow 0.8s ease;
+  animation:redGlow 1s ease-in-out 1;
+  border-radius:15px;
 }
 
 @keyframes redGlow{
   0%{box-shadow:0 0 0px rgba(255,0,0,0);}
-  50%{box-shadow:0 0 30px rgba(255,0,0,1);}
+  30%{box-shadow:0 0 25px rgba(255,0,0,1);}
+  60%{box-shadow:0 0 35px rgba(255,0,0,0.9);}
   100%{box-shadow:0 0 0px rgba(255,0,0,0);}
 }
 
@@ -243,12 +247,14 @@ function loadGame(){
 
     speak("Good job");
     startConfetti();
+
     return;
   }
 
   locked = false;
 
   let img = document.getElementById("mainImg");
+
   img.classList.remove("correctGlow","wrongGlow");
   img.style.opacity = 0;
 
@@ -270,11 +276,13 @@ function check(ans){
 
   if(ans === data[i].ans){
 
+    // 🔊 CLAP SOUND
     document.getElementById("clap").play();
 
+    // 🟢 GREEN GLOW
     img.classList.add("correctGlow");
 
-    setTimeout(()=> img.classList.remove("correctGlow"),800);
+    setTimeout(()=> img.classList.remove("correctGlow"),1000);
 
     // WAIT FOR CLAP BEFORE NEXT QUESTION
     document.getElementById("clap").onended = function(){
@@ -284,11 +292,13 @@ function check(ans){
 
   } else {
 
+    // 🔊 WRONG SOUND
     document.getElementById("wrong").play();
 
+    // 🔴 RED GLOW
     img.classList.add("wrongGlow");
 
-    setTimeout(()=> img.classList.remove("wrongGlow"),800);
+    setTimeout(()=> img.classList.remove("wrongGlow"),1000);
 
     locked = true;
 
