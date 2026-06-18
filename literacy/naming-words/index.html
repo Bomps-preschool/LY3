@@ -7,12 +7,10 @@
 
 <style>
 
-/* 🌈 BACKGROUND */
 body{
   margin:0;
   font-family:Arial;
   overflow:hidden;
-
   background: linear-gradient(135deg,#e0f7ff,#fff7e6,#e3fdfd,#fef6ff);
   background-size:400% 400%;
   animation:bgMove 10s ease infinite;
@@ -24,7 +22,6 @@ body{
   100%{background-position:0% 50%}
 }
 
-/* SPLASH */
 #splash{
   position:absolute;
   width:100%;
@@ -36,7 +33,6 @@ body{
   z-index:10;
 }
 
-/* GAME */
 #game{
   display:none;
   width:100vw;
@@ -44,7 +40,6 @@ body{
   text-align:center;
 }
 
-/* TITLE */
 #title{
   font-size:30px;
   font-weight:bold;
@@ -58,7 +53,6 @@ body{
   color:#444;
 }
 
-/* IMAGE */
 #mainImg{
   width:80%;
   max-width:350px;
@@ -76,7 +70,6 @@ body{
   100%{transform:translateY(0px)}
 }
 
-/* BUTTONS */
 .btnRow{
   display:flex;
   justify-content:center;
@@ -98,7 +91,6 @@ body{
 .place{background:#06d6a0;}
 .thing{background:#4dabf7;}
 
-/* TRY AGAIN */
 #msg{
   position:absolute;
   top:45%;
@@ -112,7 +104,6 @@ body{
   border-radius:12px;
 }
 
-/* END SCREEN */
 #end{
   display:none;
   position:absolute;
@@ -120,13 +111,10 @@ body{
   height:100%;
   top:0;
   left:0;
-
   background:white;
-
   flex-direction:column;
   justify-content:center;
   align-items:center;
-
   font-size:60px;
   font-weight:bold;
   color:#2e7d32;
@@ -134,7 +122,6 @@ body{
   z-index:999;
 }
 
-/* CONFETTI */
 .confetti{
   position:absolute;
   width:10px;
@@ -179,103 +166,131 @@ body{
 
 </div>
 
-<!-- END SCREEN -->
+<!-- END -->
 <div id="end">
 🎉 GOOD JOB 🎉
 </div>
 
-<!-- 🔊 AUDIO -->
+<!-- AUDIO -->
 <audio id="clap" src="assets/claps.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 
 <script>
 
-let i = 0;
-let locked = false;
+let i=0;
+let locked=false;
 
-/* START GAME */
 setTimeout(()=>{
   document.getElementById("splash").style.display="none";
   document.getElementById("game").style.display="block";
-  document.getElementById("end").style.display="none";
   loadGame();
 },3000);
 
+/* ✅ UPDATED DATA WITH AUDIO INSTRUCTION */
 const data = [
-  {img:"assets/teacher.png", ans:"person"},
-  {img:"assets/school.png", ans:"place"},
-  {img:"assets/book.png", ans:"thing"},
-  {img:"assets/doctor.png", ans:"person"},
-  {img:"assets/park.png", ans:"place"},
-  {img:"assets/ball.png", ans:"thing"}
+  {
+    img:"assets/teacher.png",
+    ans:"person",
+    audio:"Teacher belongs to which naming word?"
+  },
+  {
+    img:"assets/school.png",
+    ans:"place",
+    audio:"School belongs to which naming word?"
+  },
+  {
+    img:"assets/book.png",
+    ans:"thing",
+    audio:"Book belongs to which naming word?"
+  },
+  {
+    img:"assets/doctor.png",
+    ans:"person",
+    audio:"Doctor belongs to which naming word?"
+  },
+  {
+    img:"assets/park.png",
+    ans:"place",
+    audio:"Park belongs to which naming word?"
+  },
+  {
+    img:"assets/ball.png",
+    ans:"thing",
+    audio:"Ball belongs to which naming word?"
+  }
 ];
+
+function speak(text){
+  let msg = new SpeechSynthesisUtterance(text);
+  msg.rate = 0.9;
+  window.speechSynthesis.speak(msg);
+}
 
 function loadGame(){
 
   if(i >= data.length){
-
     document.getElementById("game").style.display="none";
     document.getElementById("end").style.display="flex";
-
     startConfetti();
+    speak("Good job");
     return;
   }
 
-  locked = false;
+  locked=false;
 
-  let img = document.getElementById("mainImg");
-  img.style.opacity = 0;
+  let img=document.getElementById("mainImg");
+  img.style.opacity=0;
 
   setTimeout(()=>{
-    img.src = data[i].img;
-    img.style.opacity = 1;
+    img.src=data[i].img;
+    img.style.opacity=1;
+
+    // 🔊 NEW: AUDIO INSTRUCTION PER IMAGE
+    speak(data[i].audio);
+
   },200);
 }
 
-/* ANSWER CHECK */
 function check(ans){
 
   if(locked) return;
 
   if(ans === data[i].ans){
 
-    // 🔊 CLAP SOUND
     document.getElementById("clap").play();
 
-    let img = document.getElementById("mainImg");
-    img.style.transform = "scale(1.1)";
+    let img=document.getElementById("mainImg");
+    img.style.transform="scale(1.1)";
 
-    setTimeout(()=> img.style.transform="scale(1)",300);
+    setTimeout(()=>img.style.transform="scale(1)",300);
 
     i++;
     loadGame();
 
-  } else {
+  }else{
 
-    // 🔊 WRONG SOUND
     document.getElementById("wrong").play();
-
-    locked = true;
+    locked=true;
 
     document.getElementById("msg").style.display="block";
 
     setTimeout(()=>{
       document.getElementById("msg").style.display="none";
-      locked = false;
+      locked=false;
     },2000);
   }
 }
 
-/* 🎊 CONFETTI */
+/* CONFETTI */
 function startConfetti(){
 
   for(let j=0;j<120;j++){
-    let c = document.createElement("div");
-    c.className = "confetti";
+    let c=document.createElement("div");
+    c.className="confetti";
 
-    c.style.left = Math.random()*100 + "vw";
-    c.style.background = ["#ff4d6d","#ffd166","#06d6a0","#4dabf7","#b197fc"][Math.floor(Math.random()*5)];
-    c.style.animationDuration = (1+Math.random()*2) + "s";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=["#ff4d6d","#ffd166","#06d6a0","#4dabf7","#b197fc"][Math.floor(Math.random()*5)];
+    c.style.animationDuration=(1+Math.random()*2)+"s";
 
     document.body.appendChild(c);
 
