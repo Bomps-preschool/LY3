@@ -7,20 +7,14 @@
 
 <style>
 
+/* 🌈 BACKGROUND (UPDATED) */
 body{
   margin:0;
   font-family:Arial;
   overflow:hidden;
 
-  background: linear-gradient(135deg,#e0f7ff,#fff7e6,#e3fdfd,#fef6ff);
-  background-size:400% 400%;
-  animation:bgMove 10s ease infinite;
-}
-
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
+  background: url("assets/designer.png") no-repeat center center fixed;
+  background-size:cover;
 }
 
 /* SPLASH */
@@ -51,6 +45,7 @@ body{
   margin-top:10px;
 }
 
+/* INSTRUCTION */
 #subInstruction{
   font-size:18px;
   margin:8px;
@@ -192,7 +187,7 @@ body{
 let i = 0;
 let locked = false;
 
-/* START */
+/* START GAME */
 setTimeout(()=>{
   document.getElementById("splash").style.display="none";
   document.getElementById("game").style.display="block";
@@ -200,7 +195,7 @@ setTimeout(()=>{
   loadGame();
 },3000);
 
-/* DATA WITH AUDIO INSTRUCTION */
+/* DATA + AUDIO INSTRUCTION */
 const data = [
   {img:"assets/teacher.png", ans:"person", audio:"Teacher belongs to which naming word?"},
   {img:"assets/school.png", ans:"place", audio:"School belongs to which naming word?"},
@@ -219,6 +214,8 @@ function loadGame(){
     document.getElementById("end").style.display="flex";
 
     startConfetti();
+    speak("Good job");
+
     return;
   }
 
@@ -231,7 +228,8 @@ function loadGame(){
     img.src = data[i].img;
     img.style.opacity = 1;
 
-    speak(data[i].audio); // 🔊 instruction plays AFTER image loads
+    // 🔊 AUDIO INSTRUCTION PER IMAGE
+    speak(data[i].audio);
 
   },200);
 }
@@ -250,6 +248,7 @@ function check(ans){
 
   if(ans === data[i].ans){
 
+    // 🔊 CLAP SOUND
     document.getElementById("clap").play();
 
     let img = document.getElementById("mainImg");
@@ -257,7 +256,7 @@ function check(ans){
 
     setTimeout(()=> img.style.transform="scale(1)",300);
 
-    // ⭐ FIX: WAIT FOR CLAP TO FINISH BEFORE NEXT SLIDE
+    // ⛔ FIX: WAIT FOR CLAP TO FINISH BEFORE NEXT QUESTION
     document.getElementById("clap").onended = function(){
       i++;
       loadGame();
@@ -265,6 +264,7 @@ function check(ans){
 
   } else {
 
+    // 🔊 WRONG SOUND
     document.getElementById("wrong").play();
 
     locked = true;
@@ -278,7 +278,7 @@ function check(ans){
   }
 }
 
-/* CONFETTI */
+/* 🎊 CONFETTI */
 function startConfetti(){
 
   for(let j=0;j<120;j++){
