@@ -141,29 +141,25 @@ body{
   100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
 }
 
-/* 🟢 STRONG GREEN GLOW */
+/* 🟢 GREEN GLOW */
 .correctGlow{
-  animation:greenGlow 1s ease-in-out 1;
-  border-radius:15px;
+  animation:greenGlow 1s ease-in-out;
 }
 
 @keyframes greenGlow{
   0%{box-shadow:0 0 0px rgba(0,255,0,0);}
-  30%{box-shadow:0 0 25px rgba(0,255,0,1);}
-  60%{box-shadow:0 0 35px rgba(0,255,0,0.9);}
+  50%{box-shadow:0 0 35px rgba(0,255,0,1);}
   100%{box-shadow:0 0 0px rgba(0,255,0,0);}
 }
 
-/* 🔴 STRONG RED GLOW */
+/* 🔴 RED GLOW */
 .wrongGlow{
-  animation:redGlow 1s ease-in-out 1;
-  border-radius:15px;
+  animation:redGlow 1s ease-in-out;
 }
 
 @keyframes redGlow{
   0%{box-shadow:0 0 0px rgba(255,0,0,0);}
-  30%{box-shadow:0 0 25px rgba(255,0,0,1);}
-  60%{box-shadow:0 0 35px rgba(255,0,0,0.9);}
+  50%{box-shadow:0 0 35px rgba(255,0,0,1);}
   100%{box-shadow:0 0 0px rgba(255,0,0,0);}
 }
 
@@ -172,12 +168,10 @@ body{
 
 <body>
 
-<!-- SPLASH -->
 <div id="splash">
   <img src="assets/innovine-logo.png" width="220">
 </div>
 
-<!-- GAME -->
 <div id="game">
 
   <div id="title">Naming Words Game</div>
@@ -198,12 +192,10 @@ body{
 
 </div>
 
-<!-- END -->
 <div id="end">
 🎉 GOOD JOB 🎉
 </div>
 
-<!-- AUDIO -->
 <audio id="clap" src="assets/claps.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 
@@ -212,7 +204,6 @@ body{
 let i = 0;
 let locked = false;
 
-/* START */
 setTimeout(()=>{
   document.getElementById("splash").style.display="none";
   document.getElementById("game").style.display="block";
@@ -220,7 +211,6 @@ setTimeout(()=>{
   loadGame();
 },3000);
 
-/* DATA */
 const data = [
   {img:"assets/teacher.png", ans:"person", audio:"Teacher belongs to which naming word?"},
   {img:"assets/school.png", ans:"place", audio:"School belongs to which naming word?"},
@@ -230,24 +220,19 @@ const data = [
   {img:"assets/ball.png", ans:"thing", audio:"Ball belongs to which naming word?"}
 ];
 
-/* SPEECH */
 function speak(text){
   let msg = new SpeechSynthesisUtterance(text);
   msg.rate = 0.9;
   window.speechSynthesis.speak(msg);
 }
 
-/* LOAD GAME */
 function loadGame(){
 
   if(i >= data.length){
-
     document.getElementById("game").style.display="none";
     document.getElementById("end").style.display="flex";
-
     speak("Good job");
     startConfetti();
-
     return;
   }
 
@@ -267,7 +252,7 @@ function loadGame(){
   },200);
 }
 
-/* ANSWER */
+/* ⭐ FIXED GLOW LOGIC (ONLY IMPORTANT CHANGE) */
 function check(ans){
 
   if(locked) return;
@@ -276,15 +261,17 @@ function check(ans){
 
   if(ans === data[i].ans){
 
-    // 🔊 CLAP SOUND
+    locked = true;
+
+    document.getElementById("clap").currentTime = 0;
     document.getElementById("clap").play();
 
-    // 🟢 GREEN GLOW
     img.classList.add("correctGlow");
 
-    setTimeout(()=> img.classList.remove("correctGlow"),1000);
+    setTimeout(()=>{
+      img.classList.remove("correctGlow");
+    },1000);
 
-    // WAIT FOR CLAP BEFORE NEXT QUESTION
     document.getElementById("clap").onended = function(){
       i++;
       loadGame();
@@ -292,26 +279,26 @@ function check(ans){
 
   } else {
 
-    // 🔊 WRONG SOUND
-    document.getElementById("wrong").play();
-
-    // 🔴 RED GLOW
-    img.classList.add("wrongGlow");
-
-    setTimeout(()=> img.classList.remove("wrongGlow"),1000);
-
     locked = true;
 
-    document.getElementById("msg").style.display="block";
+    document.getElementById("wrong").currentTime = 0;
+    document.getElementById("wrong").play();
+
+    img.classList.add("wrongGlow");
 
     setTimeout(()=>{
-      document.getElementById("msg").style.display="none";
-      locked = false;
-    },2000);
+      img.classList.remove("wrongGlow");
+      document.getElementById("msg").style.display="block";
+
+      setTimeout(()=>{
+        document.getElementById("msg").style.display="none";
+        locked = false;
+      },1500);
+
+    },800);
   }
 }
 
-/* CONFETTI */
 function startConfetti(){
 
   for(let j=0;j<120;j++){
