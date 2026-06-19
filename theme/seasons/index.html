@@ -8,95 +8,103 @@
 <style>
 body{
     margin:0;
-    font-family: Comic Sans MS, sans-serif;
+    font-family: Comic Sans MS;
     background:#eaf6f6;
     overflow:hidden;
 }
 
-/* --------- SLIDES --------- */
-.slide{
+/* ---------- SCREENS ---------- */
+.screen{
     display:none;
     width:100%;
     height:100vh;
     text-align:center;
-    padding:20px;
-    box-sizing:border-box;
 }
 
-#logoSlide{
+/* ---------- LOGO ---------- */
+#logoScreen{
     display:flex;
     justify-content:center;
     align-items:center;
     background:white;
 }
 
-/* --------- INSTRUCTIONS --------- */
-#instruction{
-    font-size:22px;
-    margin:10px;
-    color:#333;
+/* ---------- GAME ---------- */
+#gameScreen{
+    padding:20px;
 }
 
-/* --------- BOXES --------- */
+/* INSTRUCTION */
+h2{
+    margin:10px;
+    font-size:22px;
+}
+
+/* BOXES */
 .box-container{
     display:flex;
     justify-content:center;
-    gap:20px;
+    gap:25px;
     margin-top:20px;
     flex-wrap:wrap;
 }
 
 .box{
-    width:140px;
-    height:140px;
-    border:3px dashed #555;
-    border-radius:12px;
+    width:150px;
+    height:150px;
+    border:3px dashed #666;
+    border-radius:15px;
     display:flex;
     justify-content:center;
     align-items:center;
     background:white;
 }
 
-/* --------- OBJECTS --------- */
+/* OBJECTS */
 .objects{
     display:flex;
     justify-content:center;
-    gap:15px;
     flex-wrap:wrap;
-    margin-top:30px;
+    gap:15px;
+    margin-top:40px;
 }
 
 .obj{
-    width:110px;
-    height:110px;
-    cursor:pointer;
+    width:120px;
+    height:120px;
     background:white;
-    border-radius:10px;
+    border-radius:12px;
     display:flex;
-    justify-content:center;
+    flex-direction:column;
     align-items:center;
+    justify-content:center;
+    cursor:pointer;
 }
 
 .obj img{
-    width:90%;
+    width:80%;
 }
 
-/* --------- WELL DONE --------- */
-#endSlide{
+.label{
+    font-size:14px;
+    margin-top:5px;
+}
+
+/* END SCREEN */
+#endScreen{
     display:flex;
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    background:#fff;
 }
 
-/* --------- CONFETTI --------- */
+/* CONFETTI */
 .confetti{
     position:absolute;
     width:8px;
     height:8px;
     top:-10px;
-    animation: fall 3s linear forwards;
+    animation:fall 3s linear forwards;
 }
 
 @keyframes fall{
@@ -110,17 +118,15 @@ body{
 
 <body>
 
-<!-- ================= LOGO ================= -->
-<div id="logoSlide" class="slide" style="display:flex;">
+<!-- ---------- LOGO SCREEN ---------- -->
+<div id="logoScreen" class="screen" style="display:flex;">
     <img src="assets/innovine-logo.png" style="width:250px;">
 </div>
 
-<!-- ================= GAME ================= -->
-<div id="gameSlide" class="slide">
+<!-- ---------- GAME SCREEN ---------- -->
+<div id="gameScreen" class="screen">
 
-    <div id="instruction">
-        Tap an object → then tap the correct season box
-    </div>
+    <h2>Tap an object → then tap correct season box</h2>
 
     <!-- BOXES -->
     <div class="box-container">
@@ -137,82 +143,104 @@ body{
 
     <!-- OBJECTS -->
     <div class="objects">
-        <div class="obj" data-type="summer"><img src="assets/sunglasses.png"><div class="label">Sunglasses</div></div>
-        <div class="obj" data-type="rainy"><img src="assets/raincoat.png"><div class="label">Raincoat</div></div>
-        <div class="obj" data-type="summer"><img src="assets/icecream.png"><div class="label">Ice Cream</div></div>
-        <div class="obj" data-type="winter"><img src="assets/jacket.png"><div class="label">Jacket</div></div>
-    </div>
 
+        <div class="obj" data-type="summer">
+            <img src="assets/sunglasses.png">
+            <div class="label">Sunglasses</div>
+        </div>
+
+        <div class="obj" data-type="rainy">
+            <img src="assets/raincoat.png">
+            <div class="label">Raincoat</div>
+        </div>
+
+        <div class="obj" data-type="rainy">
+            <img src="assets/umbrella.png">
+            <div class="label">Umbrella</div>
+        </div>
+
+        <div class="obj" data-type="summer">
+            <img src="assets/ice-cream.png">
+            <div class="label">Ice Cream</div>
+        </div>
+
+        <div class="obj" data-type="winter">
+            <img src="assets/winter-hat.png">
+            <div class="label">Winter Hat</div>
+        </div>
+
+    </div>
 </div>
 
-<!-- ================= END ================= -->
-<div id="endSlide" class="slide">
+<!-- ---------- END SCREEN ---------- -->
+<div id="endScreen" class="screen">
     <h1>🎉 Well Done!</h1>
 </div>
 
-<!-- ================= AUDIO ================= -->
-<audio id="correctSound" src="assets/right.mp3"></audio>
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<!-- ---------- AUDIO ---------- -->
+<audio id="right" src="assets/right.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+<audio id="clap" src="assets/claps.mp3"></audio>
 
 <script>
 
-let selectedObject = null;
-let correctCount = 0;
-let total = document.querySelectorAll('.obj').length;
+let selected = null;
+let correct = 0;
 
-const logo = document.getElementById("logoSlide");
-const game = document.getElementById("gameSlide");
-const end = document.getElementById("endSlide");
+const logo = document.getElementById("logoScreen");
+const game = document.getElementById("gameScreen");
+const end = document.getElementById("endScreen");
 
 setTimeout(()=>{
     logo.style.display="none";
     game.style.display="block";
 },5000);
 
-// -------- OBJECT SELECT --------
-document.querySelectorAll(".obj").forEach(obj=>{
-    obj.addEventListener("click",()=>{
-        selectedObject = obj;
-        obj.style.outline="3px solid #4CAF50";
+/* ---------- SELECT OBJECT ---------- */
+document.querySelectorAll(".obj").forEach(o=>{
+    o.addEventListener("click",()=>{
+        selected = o;
+        o.style.border="3px solid green";
     });
 });
 
-// -------- BOX SELECT --------
-document.querySelectorAll(".box").forEach(box=>{
-    box.addEventListener("click",()=>{
+/* ---------- BOX CLICK ---------- */
+document.querySelectorAll(".box").forEach(b=>{
+    b.addEventListener("click",()=>{
 
-        if(!selectedObject) return;
+        if(!selected) return;
 
-        let objType = selectedObject.dataset.type;
-        let boxType = box.dataset.box;
+        let type = selected.dataset.type;
+        let box = b.dataset.box;
 
-        if(objType === boxType){
-            document.getElementById("correctSound").play();
-            selectedObject.style.visibility="hidden";
-            correctCount++;
+        if(type === box){
+            document.getElementById("right").play();
+            selected.style.visibility="hidden";
+            correct++;
+        } else {
+            document.getElementById("wrong").play();
         }
-        else{
-            document.getElementById("wrongSound").play();
-        }
 
-        selectedObject.style.outline="none";
-        selectedObject=null;
+        selected.style.border="none";
+        selected=null;
 
-        if(correctCount === total){
+        if(correct === document.querySelectorAll(".obj").length){
             showEnd();
         }
     });
 });
 
-// -------- END + CONFETTI --------
+/* ---------- END ---------- */
 function showEnd(){
     game.style.display="none";
     end.style.display="flex";
     startConfetti();
+    document.getElementById("clap").play();
 }
 
+/* ---------- CONFETTI FIXED ---------- */
 function startConfetti(){
-    for(let i=0;i<120;i++){
+    for(let i=0;i<150;i++){
         let c = document.createElement("div");
         c.classList.add("confetti");
         c.style.left = Math.random()*100 + "vw";
@@ -220,7 +248,7 @@ function startConfetti(){
         c.style.animationDuration = (2+Math.random()*3)+"s";
         document.body.appendChild(c);
 
-        setTimeout(()=>c.remove(),4000);
+        setTimeout(()=>c.remove(),5000);
     }
 }
 
