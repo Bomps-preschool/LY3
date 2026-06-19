@@ -2,15 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Fixed Timing</title>
+<title>Season Game Premium</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
     margin:0;
     font-family: Comic Sans MS;
-    background:#eaf6f6;
     overflow:hidden;
+}
+
+/* 🌈 BACKGROUND SYSTEM */
+#bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:-2;
+    animation:seasonShift 25s infinite linear;
+}
+
+@keyframes seasonShift {
+    0%   { background: linear-gradient(#ffeaa7, #ffffff); }
+    25%  { background: linear-gradient(#dfe6e9, #ffffff); }
+    50%  { background: linear-gradient(#74b9ff, #ffffff); }
+    75%  { background: linear-gradient(#b2bec3, #ffffff); }
+    100% { background: linear-gradient(#ffeaa7, #ffffff); }
+}
+
+/* 🌦 FLOATING ICONS */
+.particle{
+    position:absolute;
+    font-size:18px;
+    opacity:0.3;
+    z-index:-1;
+    animation:floatDown linear infinite;
+}
+
+@keyframes floatDown{
+    from{transform:translateY(-10vh);}
+    to{transform:translateY(110vh);}
 }
 
 /* LOGO */
@@ -82,6 +112,9 @@ body{
 
 <body>
 
+<!-- 🌈 BACKGROUND -->
+<div id="bg"></div>
+
 <!-- LOGO -->
 <div id="logo">
     <img src="assets/innovine-logo.png" width="250">
@@ -114,31 +147,7 @@ body{
 
 <script>
 
-/* ---------------- SPEECH ---------------- */
-function speak(text){
-    speechSynthesis.cancel();
-    let msg = new SpeechSynthesisUtterance(text);
-    msg.rate = 0.9;
-    speechSynthesis.speak(msg);
-}
-
-/* ---------------- START ---------------- */
-window.onload = ()=>{
-    setTimeout(()=>{
-        document.getElementById("logo").style.opacity = 0;
-
-        setTimeout(()=>{
-            document.getElementById("logo").style.display = "none";
-            document.getElementById("game").style.display = "block";
-            setTimeout(()=>document.getElementById("game").style.opacity = 1,50);
-
-            loadGame();
-        },1200);
-
-    },5000);
-};
-
-/* ---------------- GAME DATA ---------------- */
+/* 🎯 YOUR ORIGINAL GAME DATA (UNCHANGED) */
 const objects = [
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy"},
@@ -151,17 +160,30 @@ const objects = [
 let index = 0;
 let current = null;
 
-/* ---------------- LOAD GAME ---------------- */
+/* 🌤 START GAME AFTER LOGO */
+window.onload = ()=>{
+    setTimeout(()=>{
+        document.getElementById("logo").style.opacity = 0;
+
+        setTimeout(()=>{
+            document.getElementById("logo").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            setTimeout(()=>document.getElementById("game").style.opacity = 1,50);
+
+            createParticles();
+            loadGame();
+        },1200);
+
+    },5000);
+};
+
+/* 🎮 LOAD GAME */
 function loadGame(){
 
     if(index >= objects.length){
         document.getElementById("game").style.display="none";
         document.getElementById("end").style.display="flex";
-
-        playClapThenNext(() => {
-            burstConfetti();
-        });
-
+        document.getElementById("clap").play();
         return;
     }
 
@@ -173,23 +195,9 @@ function loadGame(){
             <div class="label">${current.label}</div>
         </div>
     `;
-
-    speak("Which season do we use " + current.label);
 }
 
-/* ---------------- FIX: CLAP WAIT SYSTEM ---------------- */
-function playClapThenNext(callback){
-
-    let clap = document.getElementById("clap");
-    clap.currentTime = 0;
-    clap.play();
-
-    clap.onended = () => {
-        callback();
-    };
-}
-
-/* ---------------- BOX CLICK ---------------- */
+/* 🖱 BOX CLICK */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
@@ -197,10 +205,9 @@ document.querySelectorAll(".box").forEach(box=>{
 
         if(box.dataset.box === current.type){
 
-            playClapThenNext(() => {
-                index++;
-                loadGame();   // instruction ONLY after clap ends
-            });
+            document.getElementById("correct").play();
+            index++;
+            setTimeout(loadGame,600);
 
         } else {
             document.getElementById("wrong").play();
@@ -208,34 +215,25 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
-/* ---------------- CONFETTI ---------------- */
-function burstConfetti(){
+/* 🌦 FLOATING ICONS (ONLY 12 ELEMENTS) */
+function createParticles(){
 
-    for(let i=0;i<120;i++){
-        let c = document.createElement("div");
-        c.style.position="absolute";
-        c.style.width="8px";
-        c.style.height="8px";
-        c.style.top="-10px";
-        c.style.left=Math.random()*100+"vw";
-        c.style.background=`hsl(${Math.random()*360},80%,60%)`;
-        c.style.animation="fall 3s linear forwards";
+    const icons = ["☀️","🌧","❄"];
 
-        document.body.appendChild(c);
-        setTimeout(()=>c.remove(),4000);
+    for(let i=0;i<12;i++){
+        let p = document.createElement("div");
+        p.className="particle";
+        p.innerHTML = icons[Math.floor(Math.random()*icons.length)];
+
+        p.style.left = Math.random()*100 + "vw";
+        p.style.animationDuration = (6 + Math.random()*6) + "s";
+        p.style.top = Math.random()*100 + "vh";
+
+        document.body.appendChild(p);
     }
 }
 
 </script>
-
-<style>
-@keyframes fall{
-    to{
-        transform:translateY(110vh) rotate(360deg);
-        opacity:0;
-    }
-}
-</style>
 
 </body>
 </html>
