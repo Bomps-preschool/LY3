@@ -13,7 +13,7 @@ body{
     overflow:hidden;
 }
 
-/* ---------------- LOGO ---------------- */
+/* ---------- LOGO ---------- */
 #logo{
     display:flex;
     justify-content:center;
@@ -23,7 +23,7 @@ body{
     transition:opacity 1.2s ease;
 }
 
-/* ---------------- GAME ---------------- */
+/* ---------- GAME ---------- */
 #game{
     display:none;
     text-align:center;
@@ -32,12 +32,7 @@ body{
     transition:opacity 1.2s ease;
 }
 
-/* ---------------- INSTRUCTION ---------------- */
-h2{
-    font-size:28px;
-}
-
-/* ---------------- BOXES ---------------- */
+/* ---------- BOXES ---------- */
 .box-container{
     display:flex;
     justify-content:center;
@@ -57,13 +52,12 @@ h2{
     transition:0.3s;
 }
 
-/* 🌟 NEW: hover glow */
 .box:hover{
     box-shadow:0 0 15px rgba(100,180,255,0.5);
     transform:scale(1.03);
 }
 
-/* ---------------- OBJECT ---------------- */
+/* ---------- OBJECT ---------- */
 #objectArea{
     margin-top:60px;
 }
@@ -74,37 +68,18 @@ h2{
     border-radius:15px;
     padding:12px;
     display:inline-block;
-    cursor:pointer;
 }
 
 .obj img{
     width:130px;
 }
 
-/* ---------------- ANIMATIONS ---------------- */
-.correctAnim{
-    animation:pop 0.5s ease;
+.label{
+    font-size:22px;
+    margin-top:8px;
 }
 
-@keyframes pop{
-    0%{transform:scale(1);}
-    50%{transform:scale(1.2);}
-    100%{transform:scale(1);}
-}
-
-.wrongAnim{
-    animation:shake 0.4s;
-}
-
-@keyframes shake{
-    0%{transform:translateX(0);}
-    25%{transform:translateX(-5px);}
-    50%{transform:translateX(5px);}
-    75%{transform:translateX(-5px);}
-    100%{transform:translateX(0);}
-}
-
-/* ---------------- END ---------------- */
+/* ---------- END ---------- */
 #end{
     display:none;
     height:100vh;
@@ -113,29 +88,20 @@ h2{
     flex-direction:column;
 }
 
-/* ---------------- SEASON PARTICLES ---------------- */
+/* ---------- PARTICLES ---------- */
 .particle{
     position:absolute;
     pointer-events:none;
     opacity:0.4;
 }
 
-/* ---------------- CONFETTI (MULTI LAYER) ---------------- */
+/* ---------- CONFETTI ---------- */
 .confetti{
     position:absolute;
     width:8px;
     height:8px;
     top:-10px;
     animation:fall linear forwards;
-}
-
-.confetti.star{
-    clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-}
-
-.confetti.big{
-    width:12px;
-    height:12px;
 }
 
 @keyframes fall{
@@ -149,12 +115,12 @@ h2{
 
 <body>
 
-<!-- ---------------- LOGO ---------------- -->
+<!-- LOGO -->
 <div id="logo">
     <img src="assets/innovine-logo.png" width="250">
 </div>
 
-<!-- ---------------- GAME ---------------- -->
+<!-- GAME -->
 <div id="game">
 
 <h2>Tap the correct season box</h2>
@@ -169,12 +135,12 @@ h2{
 
 </div>
 
-<!-- ---------------- END ---------------- -->
+<!-- END -->
 <div id="end">
     <h1>🎉 Well Done!</h1>
 </div>
 
-<!-- ---------------- AUDIO ---------------- -->
+<!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
@@ -183,7 +149,7 @@ h2{
 
 let clapPlayed = false;
 
-/* ---------------- SMOOTH TRANSITION FIX ---------------- */
+/* ---------- TRANSITION ---------- */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -199,20 +165,28 @@ window.onload = ()=>{
     },5000);
 };
 
-/* ---------------- GAME DATA ---------------- */
+/* ---------- OBJECT SEQUENCE (UPDATED) ---------- */
 const objects = [
-    {img:"assets/sunglasses.png", label:"Sunglasses", type:"summer"},
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy"},
+    {img:"assets/mittens.png", label:"Mittens", type:"winter"},
     {img:"assets/umbrella.png", label:"Umbrella", type:"rainy"},
-    {img:"assets/winter-hat.png", label:"Winter Hat", type:"winter"},
-    {img:"assets/mittens.png", label:"Mittens", type:"winter"}
+    {img:"assets/sunglasses.png", label:"Sunglasses", type:"summer"},
+    {img:"assets/winter-hat.png", label:"Winter Hat", type:"winter"}
 ];
 
 let index = 0;
 let current = null;
 
-/* ---------------- LOAD ---------------- */
+/* ---------- SPEECH ---------- */
+function speak(text){
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 0.9;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
+}
+
+/* ---------- LOAD GAME ---------- */
 function loadGame(){
 
     if(index >= objects.length){
@@ -236,8 +210,21 @@ function loadGame(){
             <div class="label">${current.label}</div>
         </div>
     `;
+
+    /* ---------- NEW CUSTOM INSTRUCTION AUDIO ---------- */
+    let questionMap = {
+        "Ice Cream":"Which season do we eat ice cream?",
+        "Raincoat":"Which season do we wear raincoat?",
+        "Mittens":"Which season do we wear mittens?",
+        "Umbrella":"Which season do we use umbrella?",
+        "Sunglasses":"Which season do we wear sunglasses?",
+        "Winter Hat":"Which season do we wear winter hat?"
+    };
+
+    speak(questionMap[current.label]);
 }
 
+/* ---------- BOX CLICK ---------- */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
@@ -248,52 +235,39 @@ document.querySelectorAll(".box").forEach(box=>{
         if(box.dataset.box === current.type){
 
             document.getElementById("correct").play();
-
-            obj.classList.add("correctAnim");
+            obj.style.transform="scale(1.1)";
 
             index++;
             setTimeout(loadGame,600);
 
         } else {
             document.getElementById("wrong").play();
-            obj.classList.add("wrongAnim");
         }
     });
 });
 
-/* ---------------- SEASON BACKGROUND ---------------- */
+/* ---------- SEASON BACKGROUND (LIGHT) ---------- */
 function startSeason(){
-
     for(let i=0;i<12;i++){
         let p = document.createElement("div");
         p.className="particle";
         p.style.left = Math.random()*100+"vw";
         p.style.top = Math.random()*100+"vh";
-        p.style.width = p.style.height = "4px";
         p.style.background = "white";
-        p.style.animation = "fall 10s linear infinite";
         document.body.appendChild(p);
     }
 
     loadGame();
 }
 
-/* ---------------- CONFETTI (MULTI LAYER) ---------------- */
+/* ---------- CONFETTI ---------- */
 function burstConfetti(){
-
-    const shapes = ["square","circle","star"];
-
     for(let i=0;i<120;i++){
         let c = document.createElement("div");
         c.className="confetti";
-
-        if(Math.random()>0.7) c.classList.add("big");
-        if(Math.random()>0.8) c.classList.add("star");
-
         c.style.left = Math.random()*100+"vw";
         c.style.background = `hsl(${Math.random()*360},80%,60%)`;
         c.style.animationDuration = (2+Math.random()*3)+"s";
-
         document.body.appendChild(c);
 
         setTimeout(()=>c.remove(),5000);
