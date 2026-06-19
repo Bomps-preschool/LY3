@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Seasons Game</title>
+<title>Season Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,40 +13,36 @@ body{
     overflow:hidden;
 }
 
-/* ---------- SCREEN SYSTEM (FIXED) ---------- */
-.screen{
-    display:none;
-    width:100%;
-    height:100vh;
-    text-align:center;
-    position:absolute;
-    top:0;
-    left:0;
-}
-
-.screen.active{
-    display:block;
-}
-
-/* ---------- LOGO ---------- */
+/* ---------------- LOGO ---------------- */
 #logo{
-    background:white;
     display:flex;
-    align-items:center;
     justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:white;
+    transition:opacity 1.2s ease;
 }
 
-/* ---------- GAME ---------- */
+/* ---------------- GAME ---------------- */
+#game{
+    display:none;
+    text-align:center;
+    padding:20px;
+    opacity:0;
+    transition:opacity 1.2s ease;
+}
+
+/* ---------------- INSTRUCTION ---------------- */
 h2{
-    margin-top:20px;
+    font-size:28px;
 }
 
-/* ---------- BOXES ---------- */
+/* ---------------- BOXES ---------------- */
 .box-container{
     display:flex;
     justify-content:center;
     gap:30px;
-    margin-top:30px;
+    margin-top:20px;
 }
 
 .box{
@@ -61,62 +57,88 @@ h2{
     transition:0.3s;
 }
 
-.box.active{
-    transform:scale(1.05);
-    box-shadow:0 0 10px rgba(0,150,255,0.4);
+/* 🌟 NEW: hover glow */
+.box:hover{
+    box-shadow:0 0 15px rgba(100,180,255,0.5);
+    transform:scale(1.03);
 }
 
-/* ---------- OBJECT ---------- */
-.obj{
+/* ---------------- OBJECT ---------------- */
+#objectArea{
     margin-top:60px;
-    display:inline-block;
+}
+
+.obj{
+    width:170px;
     background:white;
-    padding:15px;
     border-radius:15px;
+    padding:12px;
+    display:inline-block;
     cursor:pointer;
 }
 
 .obj img{
-    width:140px;
+    width:130px;
 }
 
-.label{
-    font-size:20px;
+/* ---------------- ANIMATIONS ---------------- */
+.correctAnim{
+    animation:pop 0.5s ease;
 }
 
-/* ---------- END ---------- */
+@keyframes pop{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.2);}
+    100%{transform:scale(1);}
+}
+
+.wrongAnim{
+    animation:shake 0.4s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
+/* ---------------- END ---------------- */
 #end{
-    display:flex;
-    align-items:center;
+    display:none;
+    height:100vh;
     justify-content:center;
+    align-items:center;
     flex-direction:column;
 }
 
-/* ---------- PARTICLES (LIGHT SEASON EFFECT) ---------- */
+/* ---------------- SEASON PARTICLES ---------------- */
 .particle{
     position:absolute;
-    width:6px;
-    height:6px;
+    pointer-events:none;
     opacity:0.4;
-    border-radius:50%;
-    animation:fall linear infinite;
 }
 
-@keyframes fall{
-    from{transform:translateY(-10vh);}
-    to{transform:translateY(110vh);}
-}
-
-/* ---------- CONFETTI ---------- */
+/* ---------------- CONFETTI (MULTI LAYER) ---------------- */
 .confetti{
     position:absolute;
     width:8px;
     height:8px;
     top:-10px;
-    animation:drop 3s linear forwards;
+    animation:fall linear forwards;
 }
 
-@keyframes drop{
+.confetti.star{
+    clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+}
+
+.confetti.big{
+    width:12px;
+    height:12px;
+}
+
+@keyframes fall{
     to{
         transform:translateY(110vh) rotate(360deg);
         opacity:0;
@@ -127,63 +149,58 @@ h2{
 
 <body>
 
-<!-- ---------- LOGO ---------- -->
-<div id="logo" class="screen active">
+<!-- ---------------- LOGO ---------------- -->
+<div id="logo">
     <img src="assets/innovine-logo.png" width="250">
 </div>
 
-<!-- ---------- GAME ---------- -->
-<div id="game" class="screen">
+<!-- ---------------- GAME ---------------- -->
+<div id="game">
 
 <h2>Tap the correct season box</h2>
 
 <div class="box-container">
-    <div class="box" data-type="summer"><img src="assets/summer-box.png" width="140"></div>
-    <div class="box" data-type="rainy"><img src="assets/rainy-box.png" width="140"></div>
-    <div class="box" data-type="winter"><img src="assets/winter-box.png" width="140"></div>
+    <div class="box" data-box="summer"><img src="assets/summer-box.png" width="140"></div>
+    <div class="box" data-box="rainy"><img src="assets/rainy-box.png" width="140"></div>
+    <div class="box" data-box="winter"><img src="assets/winter-box.png" width="140"></div>
 </div>
 
 <div id="objectArea"></div>
 
 </div>
 
-<!-- ---------- END ---------- -->
-<div id="end" class="screen">
+<!-- ---------------- END ---------------- -->
+<div id="end">
     <h1>🎉 Well Done!</h1>
 </div>
 
-<!-- ---------- AUDIO ---------- -->
+<!-- ---------------- AUDIO ---------------- -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
 <script>
 
-/* ---------- SINGLE SCREEN CONTROLLER (FIXED) ---------- */
-function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-}
+let clapPlayed = false;
 
-/* ---------- START GAME AFTER LOGO ---------- */
-setTimeout(()=>{
-    showScreen("game");
-    startParticles();
-    loadGame();
-},5000);
+/* ---------------- SMOOTH TRANSITION FIX ---------------- */
+window.onload = ()=>{
+    setTimeout(()=>{
+        document.getElementById("logo").style.opacity = 0;
 
-/* ---------- AUDIO LOCK (NO OVERLAP) ---------- */
-let audioPlaying = false;
+        setTimeout(()=>{
+            document.getElementById("logo").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            setTimeout(()=>document.getElementById("game").style.opacity = 1,50);
 
-function playSound(audio){
-    if(audioPlaying) return;
-    audioPlaying = true;
-    audio.play();
-    audio.onended = ()=> audioPlaying = false;
-}
+            startSeason();
+        },1200);
 
-/* ---------- GAME DATA ---------- */
-const items = [
+    },5000);
+};
+
+/* ---------------- GAME DATA ---------------- */
+const objects = [
     {img:"assets/sunglasses.png", label:"Sunglasses", type:"summer"},
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy"},
@@ -195,17 +212,23 @@ const items = [
 let index = 0;
 let current = null;
 
-/* ---------- LOAD ITEM ---------- */
+/* ---------------- LOAD ---------------- */
 function loadGame(){
 
-    if(index >= items.length){
-        showScreen("end");
+    if(index >= objects.length){
+        document.getElementById("game").style.display="none";
+        document.getElementById("end").style.display="flex";
+
+        if(!clapPlayed){
+            document.getElementById("clap").play();
+            clapPlayed = true;
+        }
+
         burstConfetti();
-        playSound(document.getElementById("clap"));
         return;
     }
 
-    current = items[index];
+    current = objects[index];
 
     document.getElementById("objectArea").innerHTML = `
         <div class="obj">
@@ -213,64 +236,67 @@ function loadGame(){
             <div class="label">${current.label}</div>
         </div>
     `;
-
-    speak("Which season do we use " + current.label);
 }
 
-/* ---------- TEXT TO SPEECH ---------- */
-function speak(text){
-    let msg = new SpeechSynthesisUtterance(text);
-    msg.rate = 0.9;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(msg);
-}
-
-/* ---------- BOX CLICK ---------- */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
         if(!current) return;
 
         let obj = document.querySelector(".obj");
-        obj.style.transform = "scale(1.1)";
 
-        setTimeout(()=>obj.style.transform="scale(1)",200);
+        if(box.dataset.box === current.type){
 
-        if(box.dataset.type === current.type){
-            playSound(document.getElementById("correct"));
+            document.getElementById("correct").play();
+
+            obj.classList.add("correctAnim");
+
             index++;
-            setTimeout(loadGame,700);
-        }
-        else{
-            playSound(document.getElementById("wrong"));
+            setTimeout(loadGame,600);
+
+        } else {
+            document.getElementById("wrong").play();
+            obj.classList.add("wrongAnim");
         }
     });
 });
 
-/* ---------- SEASON PARTICLES ---------- */
-function startParticles(){
+/* ---------------- SEASON BACKGROUND ---------------- */
+function startSeason(){
 
-    for(let i=0;i<15;i++){
+    for(let i=0;i<12;i++){
         let p = document.createElement("div");
         p.className="particle";
-        p.style.left = Math.random()*100 + "vw";
+        p.style.left = Math.random()*100+"vw";
+        p.style.top = Math.random()*100+"vh";
+        p.style.width = p.style.height = "4px";
         p.style.background = "white";
-        p.style.animationDuration = (5 + Math.random()*5) + "s";
+        p.style.animation = "fall 10s linear infinite";
         document.body.appendChild(p);
     }
+
+    loadGame();
 }
 
-/* ---------- CONFETTI ---------- */
+/* ---------------- CONFETTI (MULTI LAYER) ---------------- */
 function burstConfetti(){
+
+    const shapes = ["square","circle","star"];
+
     for(let i=0;i<120;i++){
         let c = document.createElement("div");
         c.className="confetti";
-        c.style.left = Math.random()*100 + "vw";
+
+        if(Math.random()>0.7) c.classList.add("big");
+        if(Math.random()>0.8) c.classList.add("star");
+
+        c.style.left = Math.random()*100+"vw";
         c.style.background = `hsl(${Math.random()*360},80%,60%)`;
-        c.style.animationDuration = (2 + Math.random()*2) + "s";
+        c.style.animationDuration = (2+Math.random()*3)+"s";
+
         document.body.appendChild(c);
 
-        setTimeout(()=>c.remove(),4000);
+        setTimeout(()=>c.remove(),5000);
     }
 }
 
