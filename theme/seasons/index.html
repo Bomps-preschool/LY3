@@ -2,44 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Full Fix</title>
+<title>Season Game Final Fix</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
     margin:0;
     font-family: Comic Sans MS;
+    background:#eaf6f6;
     overflow:hidden;
-}
-
-/* 🌈 BACKGROUND */
-#bg{
-    position:fixed;
-    width:100%;
-    height:100%;
-    z-index:-2;
-    animation:seasonShift 25s infinite linear;
-}
-
-@keyframes seasonShift {
-    0%   { background: linear-gradient(#ffeaa7, #ffffff); }
-    25%  { background: linear-gradient(#dfe6e9, #ffffff); }
-    50%  { background: linear-gradient(#74b9ff, #ffffff); }
-    75%  { background: linear-gradient(#b2bec3, #ffffff); }
-    100% { background: linear-gradient(#ffeaa7, #ffffff); }
-}
-
-/* 🌟 FLOATING ICONS */
-.particle{
-    position:absolute;
-    z-index:-1;
-    opacity:0.2;
-    animation:floatDown linear infinite;
-}
-
-@keyframes floatDown{
-    from{transform:translateY(-10vh);}
-    to{transform:translateY(110vh);}
 }
 
 /* LOGO */
@@ -70,8 +41,8 @@ body{
 }
 
 .box{
-    width:210px;
-    height:210px;
+    width:170px;
+    height:170px;
     border:3px dashed #666;
     border-radius:15px;
     background:white;
@@ -90,7 +61,7 @@ body{
 }
 
 .obj img{
-    width:100px;
+    width:130px;
 }
 
 .label{
@@ -110,9 +81,6 @@ body{
 </head>
 
 <body>
-
-<!-- BACKGROUND -->
-<div id="bg"></div>
 
 <!-- LOGO -->
 <div id="logo">
@@ -146,7 +114,7 @@ body{
 
 <script>
 
-/* ---------------- SPEECH FIX (RESTORED) ---------------- */
+/* ---------------- SPEECH ---------------- */
 function speak(text){
     speechSynthesis.cancel();
     let msg = new SpeechSynthesisUtterance(text);
@@ -154,14 +122,20 @@ function speak(text){
     speechSynthesis.speak(msg);
 }
 
-/* ---------------- QUESTION MAP ---------------- */
-const questions = {
-    "Ice Cream":"Which season do we eat ice cream?",
-    "Raincoat":"Which season do we wear raincoat?",
-    "Mittens":"Which season do we wear mittens?",
-    "Umbrella":"Which season do we use umbrella?",
-    "Sunglasses":"Which season do we wear sunglasses?",
-    "Winter Hat":"Which season do we wear winter hat?"
+/* ---------------- START FLOW ---------------- */
+window.onload = ()=>{
+    setTimeout(()=>{
+        document.getElementById("logo").style.opacity = 0;
+
+        setTimeout(()=>{
+            document.getElementById("logo").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            setTimeout(()=>document.getElementById("game").style.opacity = 1,50);
+
+            loadGame();
+        },1200);
+
+    },5000);
 };
 
 /* ---------------- GAME DATA ---------------- */
@@ -176,23 +150,6 @@ const objects = [
 
 let index = 0;
 let current = null;
-
-/* ---------------- START FLOW ---------------- */
-window.onload = ()=>{
-    setTimeout(()=>{
-        document.getElementById("logo").style.opacity = 0;
-
-        setTimeout(()=>{
-            document.getElementById("logo").style.display = "none";
-            document.getElementById("game").style.display = "block";
-            setTimeout(()=>document.getElementById("game").style.opacity = 1,50);
-
-            createParticles();
-            loadGame();
-        },1200);
-
-    },5000);
-};
 
 /* ---------------- LOAD GAME ---------------- */
 function loadGame(){
@@ -213,11 +170,10 @@ function loadGame(){
         </div>
     `;
 
-    /* 🎤 INSTRUCTION AUDIO RESTORED */
-    speak(questions[current.label]);
+    speak("Which season do we use " + current.label);
 }
 
-/* ---------------- CLICK ---------------- */
+/* ---------------- BOX CLICK (FIXED TIMING) ---------------- */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
@@ -227,42 +183,21 @@ document.querySelectorAll(".box").forEach(box=>{
 
             document.getElementById("correct").play();
 
-            index++;
-            setTimeout(loadGame,600);
+            /* ⭐ FIX: WAIT FOR CLAP BEFORE NEXT SLIDE */
+            let clap = document.getElementById("clap");
+            clap.currentTime = 0;
+            clap.play();
+
+            clap.onended = () => {
+                index++;
+                loadGame();
+            };
 
         } else {
             document.getElementById("wrong").play();
         }
     });
 });
-
-/* ---------------- FLOATING ICONS ---------------- */
-function createParticles(){
-
-    const icons = [
-        "☀️","🌻","🍦","🕶","🍉",
-        "🌧","☂️","🧥","🌈","💧",
-        "❄️","🧤","🧣","⛄","🎩"
-    ];
-
-    for(let i=0;i<30;i++){
-
-        let p = document.createElement("div");
-        p.className="particle";
-
-        p.innerHTML = icons[Math.floor(Math.random()*icons.length)];
-
-        p.style.left = Math.random()*100 + "vw";
-        p.style.top = Math.random()*100 + "vh";
-
-        p.style.fontSize = (16 + Math.random()*10) + "px";
-        p.style.opacity = 0.15;
-
-        p.style.animationDuration = (8 + Math.random()*10) + "s";
-
-        document.body.appendChild(p);
-    }
-}
 
 </script>
 
