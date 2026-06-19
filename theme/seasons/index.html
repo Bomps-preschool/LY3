@@ -12,7 +12,7 @@ body{
     overflow:hidden;
 }
 
-/* 🌈 BACKGROUND SYSTEM */
+/* 🌈 BACKGROUND LAYER */
 #bg{
     position:fixed;
     width:100%;
@@ -29,13 +29,13 @@ body{
     100% { background: linear-gradient(#ffeaa7, #ffffff); }
 }
 
-/* 🌦 FLOATING ICONS */
+/* 🌟 FLOATING ICONS */
 .particle{
     position:absolute;
-    font-size:18px;
-    opacity:0.3;
     z-index:-1;
+    opacity:0.2;
     animation:floatDown linear infinite;
+    pointer-events:none;
 }
 
 @keyframes floatDown{
@@ -147,7 +147,7 @@ body{
 
 <script>
 
-/* 🎯 YOUR ORIGINAL GAME DATA (UNCHANGED) */
+/* ---------------- GAME DATA (UNCHANGED) ---------------- */
 const objects = [
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy"},
@@ -160,7 +160,7 @@ const objects = [
 let index = 0;
 let current = null;
 
-/* 🌤 START GAME AFTER LOGO */
+/* ---------------- START ---------------- */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -177,7 +177,7 @@ window.onload = ()=>{
     },5000);
 };
 
-/* 🎮 LOAD GAME */
+/* ---------------- LOAD GAME ---------------- */
 function loadGame(){
 
     if(index >= objects.length){
@@ -197,7 +197,7 @@ function loadGame(){
     `;
 }
 
-/* 🖱 BOX CLICK */
+/* ---------------- CLICK ---------------- */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
@@ -215,19 +215,28 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
-/* 🌦 FLOATING ICONS (ONLY 12 ELEMENTS) */
+/* ---------------- FIXED FLOATING ICONS (30 LIGHT ELEMENTS) ---------------- */
 function createParticles(){
 
-    const icons = ["☀️","🌧","❄"];
+    const icons = [
+        "☀️","🌻","🍦","🕶","🍉",
+        "🌧","☂️","🧥","🌈","💧",
+        "❄️","🧤","🧣","⛄","🎩"
+    ];
 
-    for(let i=0;i<12;i++){
+    for(let i=0;i<30;i++){
+
         let p = document.createElement("div");
         p.className="particle";
+
         p.innerHTML = icons[Math.floor(Math.random()*icons.length)];
 
         p.style.left = Math.random()*100 + "vw";
-        p.style.animationDuration = (6 + Math.random()*6) + "s";
         p.style.top = Math.random()*100 + "vh";
+
+        p.style.fontSize = (16 + Math.random()*10) + "px";
+        p.style.opacity = 0.12 + Math.random()*0.2;
+        p.style.animationDuration = (8 + Math.random()*10) + "s";
 
         document.body.appendChild(p);
     }
