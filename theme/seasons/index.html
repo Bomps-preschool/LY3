@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Premium</title>
+<title>Season Game Full Fix</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,7 +12,7 @@ body{
     overflow:hidden;
 }
 
-/* 🌈 BACKGROUND LAYER */
+/* 🌈 BACKGROUND */
 #bg{
     position:fixed;
     width:100%;
@@ -35,7 +35,6 @@ body{
     z-index:-1;
     opacity:0.2;
     animation:floatDown linear infinite;
-    pointer-events:none;
 }
 
 @keyframes floatDown{
@@ -112,7 +111,7 @@ body{
 
 <body>
 
-<!-- 🌈 BACKGROUND -->
+<!-- BACKGROUND -->
 <div id="bg"></div>
 
 <!-- LOGO -->
@@ -147,7 +146,25 @@ body{
 
 <script>
 
-/* ---------------- GAME DATA (UNCHANGED) ---------------- */
+/* ---------------- SPEECH FIX (RESTORED) ---------------- */
+function speak(text){
+    speechSynthesis.cancel();
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 0.9;
+    speechSynthesis.speak(msg);
+}
+
+/* ---------------- QUESTION MAP ---------------- */
+const questions = {
+    "Ice Cream":"Which season do we eat ice cream?",
+    "Raincoat":"Which season do we wear raincoat?",
+    "Mittens":"Which season do we wear mittens?",
+    "Umbrella":"Which season do we use umbrella?",
+    "Sunglasses":"Which season do we wear sunglasses?",
+    "Winter Hat":"Which season do we wear winter hat?"
+};
+
+/* ---------------- GAME DATA ---------------- */
 const objects = [
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy"},
@@ -160,7 +177,7 @@ const objects = [
 let index = 0;
 let current = null;
 
-/* ---------------- START ---------------- */
+/* ---------------- START FLOW ---------------- */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -195,6 +212,9 @@ function loadGame(){
             <div class="label">${current.label}</div>
         </div>
     `;
+
+    /* 🎤 INSTRUCTION AUDIO RESTORED */
+    speak(questions[current.label]);
 }
 
 /* ---------------- CLICK ---------------- */
@@ -206,6 +226,7 @@ document.querySelectorAll(".box").forEach(box=>{
         if(box.dataset.box === current.type){
 
             document.getElementById("correct").play();
+
             index++;
             setTimeout(loadGame,600);
 
@@ -215,7 +236,7 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
-/* ---------------- FIXED FLOATING ICONS (30 LIGHT ELEMENTS) ---------------- */
+/* ---------------- FLOATING ICONS ---------------- */
 function createParticles(){
 
     const icons = [
@@ -235,7 +256,8 @@ function createParticles(){
         p.style.top = Math.random()*100 + "vh";
 
         p.style.fontSize = (16 + Math.random()*10) + "px";
-        p.style.opacity = 0.12 + Math.random()*0.2;
+        p.style.opacity = 0.15;
+
         p.style.animationDuration = (8 + Math.random()*10) + "s";
 
         document.body.appendChild(p);
