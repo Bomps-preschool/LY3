@@ -14,21 +14,20 @@ body{
   background-size:cover;
 }
 
-/* TITLE */
 h1{
   text-align:center;
   color:#2e7d32;
   margin:10px;
 }
 
-/* BOX LAYOUT */
+/* MAIN LAYOUT */
 .wrapper{
   display:flex;
   justify-content:space-evenly;
   margin-top:10px;
 }
 
-/* SEASON CARD */
+/* SEASON BOX */
 .box{
   width:30%;
   min-height:360px;
@@ -39,14 +38,15 @@ h1{
   flex-direction:column;
   align-items:center;
   padding-bottom:10px;
+  overflow:hidden;
 }
 
-/* TOP IMAGE */
+/* ✅ FIX: FULL IMAGE SHOW (NO CROPPING) */
 .box img{
   width:100%;
-  height:170px;
-  object-fit:cover;
-  border-radius:15px 15px 0 0;
+  height:180px;
+  object-fit:contain;   /* IMPORTANT FIX */
+  background:white;
 }
 
 /* TITLE */
@@ -56,7 +56,7 @@ h1{
   margin:10px 0;
 }
 
-/* DROP AREA INSIDE BOX */
+/* DROP AREA */
 .drop-area{
   width:100%;
   min-height:140px;
@@ -74,14 +74,12 @@ h1{
   justify-content:center;
   flex-wrap:wrap;
   gap:20px;
-  margin-top:30px;
+  margin-top:25px;
 }
 
-/* DRAG ITEM */
 .item{
   width:80px;
   cursor:grab;
-  text-align:center;
 }
 
 .item img{
@@ -105,21 +103,18 @@ h1{
 
 <div class="wrapper">
 
-  <!-- SUMMER -->
   <div class="box">
     <img src="assets/summer-box.png">
     <div class="box-title">Summer</div>
     <div class="drop-area" ondrop="drop(event,'summer')" ondragover="allowDrop(event)"></div>
   </div>
 
-  <!-- WINTER -->
   <div class="box">
     <img src="assets/winter-box.png">
     <div class="box-title">Winter</div>
     <div class="drop-area" ondrop="drop(event,'winter')" ondragover="allowDrop(event)"></div>
   </div>
 
-  <!-- RAINY -->
   <div class="box">
     <img src="assets/rainy-box.png">
     <div class="box-title">Rainy</div>
@@ -169,7 +164,7 @@ function drag(ev){
   ev.dataTransfer.setData("text", ev.target.id);
 }
 
-/* CLEAN DROP LOGIC */
+/* STABLE DROP SYSTEM */
 function drop(ev, season){
 
   ev.preventDefault();
@@ -181,7 +176,9 @@ function drop(ev, season){
 
   if(item.dataset.season === season){
 
-    // IMPORTANT: keep visible inside box
+    document.getElementById("correct").play?.();
+
+    // keep visible inside box
     item.style.width = "70px";
     item.style.margin = "5px";
 
@@ -192,7 +189,6 @@ function drop(ev, season){
   }
 }
 
-/* MESSAGE */
 function showMsg(text){
   let msg = document.getElementById("msg");
   msg.innerText = text;
@@ -203,6 +199,10 @@ function showMsg(text){
 }
 
 </script>
+
+<!-- AUDIO (SAFE EVEN IF FILE MISSING) -->
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
 
 </body>
 </html>
