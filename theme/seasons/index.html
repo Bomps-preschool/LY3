@@ -32,6 +32,12 @@ body{
 /* INSTRUCTION */
 h2{
     font-size:28px;
+    animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
 }
 
 /* BOXES */
@@ -51,33 +57,67 @@ h2{
     display:flex;
     justify-content:center;
     align-items:center;
+    transition:0.3s;
 }
 
-/* OBJECT AREA */
-#objectArea{
-    margin-top:50px;
+/* glow animation */
+.box.active{
+    border-color:#4CAF50;
+    box-shadow:0 0 15px rgba(76,175,80,0.5);
 }
 
 /* OBJECT */
+#objectArea{
+    margin-top:60px;
+}
+
 .obj{
-    width:160px;
+    width:170px;
     background:white;
     border-radius:15px;
-    padding:10px;
+    padding:12px;
     display:inline-block;
     cursor:pointer;
-    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+    box-shadow:0 3px 10px rgba(0,0,0,0.15);
+    animation:pop 0.5s ease;
+}
+
+@keyframes pop{
+    from{transform:scale(0.5);opacity:0;}
+    to{transform:scale(1);opacity:1;}
 }
 
 .obj img{
-    width:120px;
-    height:auto;
+    width:130px;
 }
 
-/* LABEL OUTSIDE BOX (FIXED) */
 .label{
-    font-size:20px;
+    font-size:22px;
     margin-top:8px;
+}
+
+/* CORRECT ANIMATION */
+.correctAnim{
+    animation:correctPulse 0.6s ease;
+}
+
+@keyframes correctPulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.2) rotate(3deg);}
+    100%{transform:scale(1);}
+}
+
+/* WRONG ANIMATION */
+.wrongAnim{
+    animation:shake 0.4s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
 }
 
 /* END */
@@ -149,16 +189,36 @@ const objects = [
 let index = 0;
 let current = null;
 
+/* 🔥 AUDIO LOCK SYSTEM (FIX OVERLAP) */
+let audioPlaying = false;
+
+function playSound(audio){
+    return new Promise(resolve=>{
+        audioPlaying = true;
+        audio.play();
+        audio.onended = ()=>{
+            audioPlaying = false;
+            resolve();
+        };
+    });
+}
+
+/* VOICE */
 function speak(text){
+    if(audioPlaying) return;
+
     let msg = new SpeechSynthesisUtterance(text);
     msg.rate = 0.9;
     speechSynthesis.speak(msg);
 }
 
+/* LOAD GAME */
 function loadGame(){
 
     if(index >= objects.length){
-        endGame();
+        document.getElementById("game").style.display="none";
+        document.getElementById("end").style.display="flex";
+        playSound(document.getElementById("clap"));
         return;
     }
 
@@ -173,7 +233,6 @@ function loadGame(){
     `;
 
     speak("Which season do we use " + obj.label);
-
 }
 
 /* BOX CLICK */
@@ -184,21 +243,31 @@ document.querySelectorAll(".box").forEach(box=>{
 
         let type = box.dataset.box;
 
+        let objCard = document.querySelector(".obj");
+
         if(type === current.type){
-            document.getElementById("correct").play();
-            document.getElementById("clap").play();
-            index++;
-            loadGame();
-        }else{
-            document.getElementById("wrong").play();
+
+            objCard.classList.add("correctAnim");
+
+            playSound(document.getElementById("correct")).then(()=>{
+                playSound(document.getElementById("clap")).then(()=>{
+                    index++;
+                    loadGame();
+                });
+            });
+
+        } else {
+
+            objCard.classList.add("wrongAnim");
+
+            playSound(document.getElementById("wrong"));
+
+            setTimeout(()=>{
+                objCard.classList.remove("wrongAnim");
+            },500);
         }
     });
 });
-
-function endGame(){
-    document.getElementById("game").style.display="none";
-    document.getElementById("end").style.display="flex";
-}
 
 </script>
 
