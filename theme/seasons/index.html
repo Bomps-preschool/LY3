@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game</title>
+<title>Season Game Fixed</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -51,16 +51,7 @@ body{
     align-items:center;
 }
 
-.box:hover{
-    box-shadow:0 0 15px rgba(100,180,255,0.5);
-    transform:scale(1.03);
-}
-
 /* OBJECT */
-#objectArea{
-    margin-top:60px;
-}
-
 .obj{
     width:170px;
     background:white;
@@ -85,30 +76,6 @@ body{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-}
-
-/* PARTICLES */
-.particle{
-    position:absolute;
-    opacity:0.4;
-    width:5px;
-    height:5px;
-}
-
-/* CONFETTI */
-.confetti{
-    position:absolute;
-    width:8px;
-    height:8px;
-    top:-10px;
-    animation:fall linear forwards;
-}
-
-@keyframes fall{
-    to{
-        transform:translateY(110vh) rotate(360deg);
-        opacity:0;
-    }
 }
 </style>
 </head>
@@ -147,28 +114,20 @@ body{
 
 <script>
 
-/* ---------------- AUDIO CONTROL ---------------- */
-let isSpeaking = false;
-
-/* ---------------- SPEECH FIX ---------------- */
+/* ---------------- CLEAN SPEECH FIX ---------------- */
 function speak(text){
 
-    if(isSpeaking) return;
-
-    isSpeaking = true;
+    // always stop previous speech
+    speechSynthesis.cancel();
 
     let msg = new SpeechSynthesisUtterance(text);
     msg.rate = 0.9;
+    msg.pitch = 1;
 
-    msg.onend = () => {
-        isSpeaking = false;
-    };
-
-    speechSynthesis.cancel();
     speechSynthesis.speak(msg);
 }
 
-/* ---------------- TRANSITION ---------------- */
+/* ---------------- START FLOW ---------------- */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -178,7 +137,7 @@ window.onload = ()=>{
             document.getElementById("game").style.display = "block";
             setTimeout(()=>document.getElementById("game").style.opacity = 1,50);
 
-            startSeason();
+            loadGame();
         },1200);
 
     },5000);
@@ -205,7 +164,6 @@ function loadGame(){
         document.getElementById("end").style.display="flex";
 
         document.getElementById("clap").play();
-        burstConfetti();
         return;
     }
 
@@ -218,8 +176,17 @@ function loadGame(){
         </div>
     `;
 
-    /* ---------------- INSTRUCTION AUDIO ---------------- */
-    speak("Which season do we use " + current.label);
+    /* ---------------- INSTRUCTION AUDIO (FIXED) ---------------- */
+    let questions = {
+        "Ice Cream":"Which season do we eat ice cream?",
+        "Raincoat":"Which season do we wear raincoat?",
+        "Mittens":"Which season do we wear mittens?",
+        "Umbrella":"Which season do we use umbrella?",
+        "Sunglasses":"Which season do we wear sunglasses?",
+        "Winter Hat":"Which season do we wear winter hat?"
+    };
+
+    speak(questions[current.label]);
 }
 
 /* ---------------- BOX CLICK ---------------- */
@@ -228,12 +195,7 @@ document.querySelectorAll(".box").forEach(box=>{
 
         if(!current) return;
 
-        let obj = document.querySelector(".obj");
-
         if(box.dataset.box === current.type){
-
-            /* IMPORTANT FIX */
-            speechSynthesis.cancel(); // stop instruction immediately
 
             document.getElementById("correct").play();
 
@@ -245,36 +207,6 @@ document.querySelectorAll(".box").forEach(box=>{
         }
     });
 });
-
-/* ---------------- SEASON EFFECT (LIGHT) ---------------- */
-function startSeason(){
-
-    for(let i=0;i<12;i++){
-        let p = document.createElement("div");
-        p.className="particle";
-        p.style.left = Math.random()*100+"vw";
-        p.style.top = Math.random()*100+"vh";
-        p.style.background = "white";
-        document.body.appendChild(p);
-    }
-
-    loadGame();
-}
-
-/* ---------------- CONFETTI ---------------- */
-function burstConfetti(){
-
-    for(let i=0;i<120;i++){
-        let c = document.createElement("div");
-        c.className="confetti";
-        c.style.left = Math.random()*100+"vw";
-        c.style.background = `hsl(${Math.random()*360},80%,60%)`;
-        c.style.animationDuration = (2+Math.random()*3)+"s";
-
-        document.body.appendChild(c);
-        setTimeout(()=>c.remove(),5000);
-    }
-}
 
 </script>
 
