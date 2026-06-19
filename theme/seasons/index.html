@@ -14,58 +14,37 @@ body{
   background-size:cover;
 }
 
+/* TITLE */
 h1{
   text-align:center;
   color:#2e7d32;
   margin:10px;
 }
 
-/* MAIN LAYOUT */
+/* WRAPPER */
 .wrapper{
   display:flex;
   justify-content:space-evenly;
-  margin-top:10px;
+  margin-top:20px;
 }
 
-/* SEASON BOX */
+/* ❌ PINK BOX REMOVED COMPLETELY */
 .box{
   width:30%;
-  min-height:360px;
-  background:white;
-  border-radius:20px;
-  border:3px solid #ff69b4;
+  min-height:260px;
+  background:transparent;   /* no box background */
+  border:none;              /* no border */
   display:flex;
   flex-direction:column;
+  justify-content:flex-start;
   align-items:center;
-  padding-bottom:10px;
-  overflow:hidden;
 }
 
-/* ✅ FIX: FULL IMAGE SHOW (NO CROPPING) */
-.box img{
-  width:100%;
-  height:180px;
-  object-fit:contain;   /* IMPORTANT FIX */
-  background:white;
-}
-
-/* TITLE */
-.box-title{
-  font-size:22px;
+/* OPTIONAL LABEL STYLE */
+.label{
+  font-size:26px;
   font-weight:bold;
-  margin:10px 0;
-}
-
-/* DROP AREA */
-.drop-area{
-  width:100%;
-  min-height:140px;
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  padding:10px;
+  margin:10px;
 }
 
 /* ITEMS */
@@ -74,7 +53,7 @@ h1{
   justify-content:center;
   flex-wrap:wrap;
   gap:20px;
-  margin-top:25px;
+  margin-top:40px;
 }
 
 .item{
@@ -103,22 +82,16 @@ h1{
 
 <div class="wrapper">
 
-  <div class="box">
-    <img src="assets/summer-box.png">
-    <div class="box-title">Summer</div>
-    <div class="drop-area" ondrop="drop(event,'summer')" ondragover="allowDrop(event)"></div>
+  <div class="box" ondrop="drop(event,'summer')" ondragover="allowDrop(event)">
+    <div class="label">🌞 Summer</div>
   </div>
 
-  <div class="box">
-    <img src="assets/winter-box.png">
-    <div class="box-title">Winter</div>
-    <div class="drop-area" ondrop="drop(event,'winter')" ondragover="allowDrop(event)"></div>
+  <div class="box" ondrop="drop(event,'winter')" ondragover="allowDrop(event)">
+    <div class="label">❄ Winter</div>
   </div>
 
-  <div class="box">
-    <img src="assets/rainy-box.png">
-    <div class="box-title">Rainy</div>
-    <div class="drop-area" ondrop="drop(event,'rainy')" ondragover="allowDrop(event)"></div>
+  <div class="box" ondrop="drop(event,'rainy')" ondragover="allowDrop(event)">
+    <div class="label">🌧 Rainy</div>
   </div>
 
 </div>
@@ -164,7 +137,7 @@ function drag(ev){
   ev.dataTransfer.setData("text", ev.target.id);
 }
 
-/* STABLE DROP SYSTEM */
+/* DROP LOGIC */
 function drop(ev, season){
 
   ev.preventDefault();
@@ -176,19 +149,19 @@ function drop(ev, season){
 
   if(item.dataset.season === season){
 
-    document.getElementById("correct").play?.();
+    box.appendChild(item);
 
-    // keep visible inside box
-    item.style.width = "70px";
+    item.style.width = "60px";
     item.style.margin = "5px";
 
-    box.appendChild(item);
+    showMsg("Correct ✔");
 
   } else {
     showMsg("Try Again ✖");
   }
 }
 
+/* MESSAGE */
 function showMsg(text){
   let msg = document.getElementById("msg");
   msg.innerText = text;
@@ -199,10 +172,6 @@ function showMsg(text){
 }
 
 </script>
-
-<!-- AUDIO (SAFE EVEN IF FILE MISSING) -->
-<audio id="correct" src="assets/correct.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
 
 </body>
 </html>
