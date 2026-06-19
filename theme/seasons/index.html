@@ -13,7 +13,7 @@ body{
     overflow:hidden;
 }
 
-/* ---------- LOGO ---------- */
+/* LOGO */
 #logo{
     display:flex;
     justify-content:center;
@@ -23,7 +23,7 @@ body{
     transition:opacity 1.2s ease;
 }
 
-/* ---------- GAME ---------- */
+/* GAME */
 #game{
     display:none;
     text-align:center;
@@ -32,7 +32,7 @@ body{
     transition:opacity 1.2s ease;
 }
 
-/* ---------- BOXES ---------- */
+/* BOXES */
 .box-container{
     display:flex;
     justify-content:center;
@@ -49,19 +49,9 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    transition:0.3s;
 }
 
-.box:hover{
-    box-shadow:0 0 15px rgba(100,180,255,0.5);
-    transform:scale(1.03);
-}
-
-/* ---------- OBJECT ---------- */
-#objectArea{
-    margin-top:60px;
-}
-
+/* OBJECT */
 .obj{
     width:170px;
     background:white;
@@ -79,7 +69,7 @@ body{
     margin-top:8px;
 }
 
-/* ---------- END ---------- */
+/* END */
 #end{
     display:none;
     height:100vh;
@@ -88,14 +78,7 @@ body{
     flex-direction:column;
 }
 
-/* ---------- PARTICLES ---------- */
-.particle{
-    position:absolute;
-    pointer-events:none;
-    opacity:0.4;
-}
-
-/* ---------- CONFETTI ---------- */
+/* CONFETTI */
 .confetti{
     position:absolute;
     width:8px;
@@ -149,7 +132,7 @@ body{
 
 let clapPlayed = false;
 
-/* ---------- TRANSITION ---------- */
+/* TRANSITION */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -165,7 +148,7 @@ window.onload = ()=>{
     },5000);
 };
 
-/* ---------- OBJECT SEQUENCE (UPDATED) ---------- */
+/* GAME DATA */
 const objects = [
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy"},
@@ -178,27 +161,21 @@ const objects = [
 let index = 0;
 let current = null;
 
-/* ---------- SPEECH ---------- */
-function speak(text){
-    let msg = new SpeechSynthesisUtterance(text);
-    msg.rate = 0.9;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(msg);
-}
-
-/* ---------- LOAD GAME ---------- */
+/* LOAD GAME */
 function loadGame(){
 
     if(index >= objects.length){
         document.getElementById("game").style.display="none";
         document.getElementById("end").style.display="flex";
 
-        if(!clapPlayed){
-            document.getElementById("clap").play();
-            clapPlayed = true;
-        }
+        let clap = document.getElementById("clap");
+        clap.play();
 
-        burstConfetti();
+        /* ✅ FIX: wait for clap to finish before confetti */
+        clap.onended = () => {
+            burstConfetti();
+        };
+
         return;
     }
 
@@ -210,32 +187,17 @@ function loadGame(){
             <div class="label">${current.label}</div>
         </div>
     `;
-
-    /* ---------- NEW CUSTOM INSTRUCTION AUDIO ---------- */
-    let questionMap = {
-        "Ice Cream":"Which season do we eat ice cream?",
-        "Raincoat":"Which season do we wear raincoat?",
-        "Mittens":"Which season do we wear mittens?",
-        "Umbrella":"Which season do we use umbrella?",
-        "Sunglasses":"Which season do we wear sunglasses?",
-        "Winter Hat":"Which season do we wear winter hat?"
-    };
-
-    speak(questionMap[current.label]);
 }
 
-/* ---------- BOX CLICK ---------- */
+/* BOX CLICK */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
         if(!current) return;
 
-        let obj = document.querySelector(".obj");
-
         if(box.dataset.box === current.type){
 
             document.getElementById("correct").play();
-            obj.style.transform="scale(1.1)";
 
             index++;
             setTimeout(loadGame,600);
@@ -246,28 +208,31 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
-/* ---------- SEASON BACKGROUND (LIGHT) ---------- */
+/* SEASON BG (LIGHT) */
 function startSeason(){
+
     for(let i=0;i<12;i++){
         let p = document.createElement("div");
-        p.className="particle";
+        p.className="confetti";
         p.style.left = Math.random()*100+"vw";
-        p.style.top = Math.random()*100+"vh";
         p.style.background = "white";
+        p.style.animationDuration = (5+Math.random()*5)+"s";
         document.body.appendChild(p);
     }
 
     loadGame();
 }
 
-/* ---------- CONFETTI ---------- */
+/* CONFETTI */
 function burstConfetti(){
+
     for(let i=0;i<120;i++){
         let c = document.createElement("div");
         c.className="confetti";
         c.style.left = Math.random()*100+"vw";
         c.style.background = `hsl(${Math.random()*360},80%,60%)`;
         c.style.animationDuration = (2+Math.random()*3)+"s";
+
         document.body.appendChild(c);
 
         setTimeout(()=>c.remove(),5000);
