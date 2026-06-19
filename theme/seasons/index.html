@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Fixed</title>
+<title>Season Game Fixed Timing</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -114,20 +114,15 @@ body{
 
 <script>
 
-/* ---------------- CLEAN SPEECH FIX ---------------- */
+/* ---------------- SPEECH ---------------- */
 function speak(text){
-
-    // always stop previous speech
     speechSynthesis.cancel();
-
     let msg = new SpeechSynthesisUtterance(text);
     msg.rate = 0.9;
-    msg.pitch = 1;
-
     speechSynthesis.speak(msg);
 }
 
-/* ---------------- START FLOW ---------------- */
+/* ---------------- START ---------------- */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -163,7 +158,10 @@ function loadGame(){
         document.getElementById("game").style.display="none";
         document.getElementById("end").style.display="flex";
 
-        document.getElementById("clap").play();
+        playClapThenNext(() => {
+            burstConfetti();
+        });
+
         return;
     }
 
@@ -176,17 +174,19 @@ function loadGame(){
         </div>
     `;
 
-    /* ---------------- INSTRUCTION AUDIO (FIXED) ---------------- */
-    let questions = {
-        "Ice Cream":"Which season do we eat ice cream?",
-        "Raincoat":"Which season do we wear raincoat?",
-        "Mittens":"Which season do we wear mittens?",
-        "Umbrella":"Which season do we use umbrella?",
-        "Sunglasses":"Which season do we wear sunglasses?",
-        "Winter Hat":"Which season do we wear winter hat?"
-    };
+    speak("Which season do we use " + current.label);
+}
 
-    speak(questions[current.label]);
+/* ---------------- FIX: CLAP WAIT SYSTEM ---------------- */
+function playClapThenNext(callback){
+
+    let clap = document.getElementById("clap");
+    clap.currentTime = 0;
+    clap.play();
+
+    clap.onended = () => {
+        callback();
+    };
 }
 
 /* ---------------- BOX CLICK ---------------- */
@@ -197,10 +197,10 @@ document.querySelectorAll(".box").forEach(box=>{
 
         if(box.dataset.box === current.type){
 
-            document.getElementById("correct").play();
-
-            index++;
-            setTimeout(loadGame,600);
+            playClapThenNext(() => {
+                index++;
+                loadGame();   // instruction ONLY after clap ends
+            });
 
         } else {
             document.getElementById("wrong").play();
@@ -208,7 +208,34 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
+/* ---------------- CONFETTI ---------------- */
+function burstConfetti(){
+
+    for(let i=0;i<120;i++){
+        let c = document.createElement("div");
+        c.style.position="absolute";
+        c.style.width="8px";
+        c.style.height="8px";
+        c.style.top="-10px";
+        c.style.left=Math.random()*100+"vw";
+        c.style.background=`hsl(${Math.random()*360},80%,60%)`;
+        c.style.animation="fall 3s linear forwards";
+
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),4000);
+    }
+}
+
 </script>
+
+<style>
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:0;
+    }
+}
+</style>
 
 </body>
 </html>
