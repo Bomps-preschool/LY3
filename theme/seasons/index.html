@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Upgrade</title>
+<title>Season Sorting Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -10,23 +10,100 @@ body{
     margin:0;
     font-family: Comic Sans MS;
     overflow:hidden;
+    background:#eaf6f6;
 }
 
-/* ---------- FADE TRANSITION ---------- */
+/* ---------- SCREEN SYSTEM FIX ---------- */
 .screen{
-    opacity:0;
-    transition:opacity 1s ease;
-}
-.show{
-    opacity:1;
+    display:none;
+    width:100%;
+    height:100vh;
+    text-align:center;
 }
 
-/* ---------- BACKGROUND LAYERS ---------- */
-#bg{
-    position:fixed;
-    width:100%;
-    height:100%;
-    z-index:-1;
+.screen.active{
+    display:block;
+}
+
+/* ---------- LOGO ---------- */
+#logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:white;
+}
+
+/* ---------- GAME ---------- */
+#game{
+    padding:20px;
+}
+
+/* ---------- INSTRUCTION ---------- */
+h2{
+    font-size:28px;
+}
+
+/* ---------- BOXES ---------- */
+.box-container{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    margin-top:20px;
+}
+
+.box{
+    width:170px;
+    height:170px;
+    border:3px dashed #666;
+    border-radius:15px;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:0.3s;
+}
+
+.box.active{
+    box-shadow:0 0 12px rgba(0,150,255,0.4);
+    transform:scale(1.05);
+}
+
+/* ---------- OBJECT ---------- */
+#objectArea{
+    margin-top:60px;
+}
+
+.obj{
+    width:170px;
+    background:white;
+    border-radius:15px;
+    padding:12px;
+    display:inline-block;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.15);
+    animation:pop 0.5s ease;
+}
+
+@keyframes pop{
+    from{transform:scale(0.5);opacity:0;}
+    to{transform:scale(1);opacity:1;}
+}
+
+.obj img{
+    width:130px;
+}
+
+.label{
+    font-size:22px;
+    margin-top:8px;
+}
+
+/* ---------- END ---------- */
+#end{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
 }
 
 /* ---------- PARTICLES ---------- */
@@ -34,20 +111,13 @@ body{
     position:absolute;
     width:6px;
     height:6px;
-    opacity:0.6;
+    opacity:0.5;
     animation:fall linear infinite;
 }
 
 @keyframes fall{
     from{transform:translateY(-10vh);}
     to{transform:translateY(110vh);}
-}
-
-/* ---------- BOX GLOW ---------- */
-.box.active{
-    box-shadow:0 0 15px rgba(0,150,255,0.4);
-    transform:scale(1.03);
-    transition:0.3s;
 }
 
 /* ---------- CONFETTI ---------- */
@@ -70,16 +140,12 @@ body{
 
 <body>
 
-<div id="bg"></div>
-
-<!-- LOGO -->
-<div id="logo" class="screen show">
-    <div style="display:flex;justify-content:center;align-items:center;height:100vh;">
-        <img src="assets/innovine-logo.png" width="250">
-    </div>
+<!-- ---------- LOGO ---------- -->
+<div id="logo" class="screen active">
+    <img src="assets/innovine-logo.png" width="250">
 </div>
 
-<!-- GAME -->
+<!-- ---------- GAME ---------- -->
 <div id="game" class="screen">
 
 <h2>Tap the correct season box</h2>
@@ -100,22 +166,22 @@ body{
 
 </div>
 
-<!-- END -->
+<!-- ---------- END ---------- -->
 <div id="end" class="screen">
     <h1>🎉 Well Done!</h1>
 </div>
 
-<!-- AUDIO -->
+<!-- ---------- AUDIO ---------- -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
 <script>
 
-/* ---------- SMOOTH SCREEN SWITCH ---------- */
+/* ---------- SCREEN FIX ---------- */
 function showScreen(id){
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
-    document.getElementById(id).classList.add('show');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 
 /* ---------- START FLOW ---------- */
@@ -125,14 +191,14 @@ setTimeout(()=>{
     loadGame();
 },5000);
 
-/* ---------- AUDIO LOCK (FIX DOUBLE CLAP) ---------- */
-let audioLock = false;
+/* ---------- AUDIO LOCK ---------- */
+let audioBusy = false;
 
-function playOnce(audio){
-    if(audioLock) return;
-    audioLock = true;
+function playAudio(audio){
+    if(audioBusy) return;
+    audioBusy = true;
     audio.play();
-    audio.onended = ()=> audioLock = false;
+    audio.onended = ()=> audioBusy = false;
 }
 
 /* ---------- DATA ---------- */
@@ -154,7 +220,7 @@ function loadGame(){
     if(index >= objects.length){
         showScreen("end");
         burstConfetti();
-        playOnce(document.getElementById("clap"));
+        playAudio(document.getElementById("clap"));
         return;
     }
 
@@ -162,8 +228,8 @@ function loadGame(){
 
     document.getElementById("objectArea").innerHTML = `
         <div class="obj">
-            <img src="${current.img}" width="140">
-            <div>${current.label}</div>
+            <img src="${current.img}">
+            <div class="label">${current.label}</div>
         </div>
     `;
 
@@ -174,65 +240,57 @@ function loadGame(){
 function speak(text){
     let msg = new SpeechSynthesisUtterance(text);
     msg.rate = 0.9;
+    speechSynthesis.cancel();
     speechSynthesis.speak(msg);
 }
 
-/* ---------- BOX HOVER GLOW ---------- */
-document.querySelectorAll(".box").forEach(b=>{
-    b.addEventListener("click",()=>{
+/* ---------- BOX CLICK ---------- */
+document.querySelectorAll(".box").forEach(box=>{
+    box.addEventListener("click",()=>{
 
         if(!current) return;
 
         let obj = document.querySelector(".obj");
-
         obj.classList.add("active");
 
         setTimeout(()=>obj.classList.remove("active"),300);
 
-        if(b.dataset.box === current.type){
+        if(box.dataset.box === current.type){
 
-            playOnce(document.getElementById("correct"));
+            playAudio(document.getElementById("correct"));
 
             setTimeout(()=>{
                 index++;
                 loadGame();
-            },800);
+            },700);
 
-        }else{
-            document.getElementById("wrong").play();
+        } else {
+            playAudio(document.getElementById("wrong"));
         }
     });
 });
 
-/* ---------- SEASON BACKGROUND PARTICLES ---------- */
+/* ---------- SEASON PARTICLES ---------- */
 function startSeasonParticles(){
-    let types = ["summer","rain","snow"];
 
     for(let i=0;i<12;i++){
         let p = document.createElement("div");
         p.className="particle";
-
         p.style.left = Math.random()*100+"vw";
-        p.style.top = Math.random()*100+"vh";
         p.style.animationDuration = (5+Math.random()*5)+"s";
-
-        let season = "snow";
-        p.style.background = season==="snow" ? "#fff" : "#ffd";
-
+        p.style.background = "#fff";
         document.body.appendChild(p);
     }
 }
 
-/* ---------- CONFETTI (MULTI-LAYER) ---------- */
+/* ---------- CONFETTI ---------- */
 function burstConfetti(){
-    for(let i=0;i<120;i++){
+    for(let i=0;i<140;i++){
         let c = document.createElement("div");
         c.className="confetti";
-
         c.style.left = Math.random()*100+"vw";
         c.style.background = `hsl(${Math.random()*360},80%,60%)`;
         c.style.animationDuration = (2+Math.random()*3)+"s";
-
         document.body.appendChild(c);
         setTimeout(()=>c.remove(),4000);
     }
