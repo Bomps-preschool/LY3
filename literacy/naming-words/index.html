@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Naming Words Game</title>
 
 <style>
@@ -220,9 +224,20 @@ const data = [
   {img:"assets/ball.png", ans:"thing", audio:"Ball belongs to which categoy of naming words?"}
 ];
 
+/* ✅ FIXED MOBILE AUDIO FUNCTION */
 function speak(text){
+  window.speechSynthesis.cancel();
+
   let msg = new SpeechSynthesisUtterance(text);
   msg.rate = 0.9;
+  msg.volume = 1;
+  msg.pitch = 1;
+
+  let voices = window.speechSynthesis.getVoices();
+  if(voices.length > 0){
+    msg.voice = voices.find(v => v.lang.includes("en")) || voices[0];
+  }
+
   window.speechSynthesis.speak(msg);
 }
 
@@ -252,7 +267,7 @@ function loadGame(){
   },200);
 }
 
-/* ⭐ FIXED GLOW LOGIC (ONLY IMPORTANT CHANGE) */
+/* ⭐ FIXED GLOW LOGIC */
 function check(ans){
 
   if(locked) return;
