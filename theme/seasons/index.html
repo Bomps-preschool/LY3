@@ -44,12 +44,12 @@ body{
     padding:20px;
 }
 
-/* MAIN INSTRUCTION */
+/* MAIN TITLE */
 #mainInstruction{
     margin-bottom:5px;
 }
 
-/* SUB INSTRUCTION */
+/* SUBTITLE (NEW) */
 #subInstruction{
     font-size:18px;
     margin-top:8px;
@@ -64,7 +64,6 @@ body{
     margin-top:20px;
 }
 
-/* BOX STYLE */
 .box{
     width:170px;
     height:170px;
@@ -145,7 +144,7 @@ button{
 
 <h2 id="mainInstruction">Tap the correct season box</h2>
 
-<!-- SUBTITLE (NEW) -->
+<!-- SUBTITLE ADDED -->
 <div id="subInstruction"></div>
 
 <div class="box-container">
@@ -182,7 +181,7 @@ const objects = [
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer", question:"Which season do we eat ice cream?"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy", question:"Which season do we use a raincoat?"},
     {img:"assets/mittens.png", label:"Mittens", type:"winter", question:"Which season do we wear mittens?"},
-    {img:"assets/umbrella.png", label:"Umbrella", type:"rainy", question:"Which season do we use an umbrella?"},
+    {img:"assets/umbrella.png", type:"rainy", label:"Umbrella", question:"Which season do we use an umbrella?"},
     {img:"assets/sunglasses.png", type:"summer", label:"Sunglasses", question:"Which season do we wear sunglasses?"},
     {img:"assets/winter-hat.png", type:"winter", label:"Winter Hat", question:"Which season do we wear a winter hat?"}
 ];
@@ -221,7 +220,7 @@ function loadGame(){
         </div>
     `;
 
-    /* MAIN + SUB INSTRUCTION */
+    /* ✅ ONLY IMPORTANT FIX */
     document.getElementById("subInstruction").innerText = current.question;
 
     speak(current.question);
