@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Final Fix</title>
+<title>Season Game Upgrade</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -17,14 +17,16 @@ body{
     overflow:hidden;
 }
 
-/* WEATHER */
+/* 🌤️ WEATHER LAYERS */
 .weather{
     position:fixed;
     width:100%;
     height:100%;
     pointer-events:none;
+    overflow:hidden;
 }
 
+/* SUN */
 .sun{
     position:absolute;
     top:40px;
@@ -33,28 +35,30 @@ body{
     animation: floatSlow 6s infinite ease-in-out;
 }
 
+/* RAIN */
 .rain{
     position:absolute;
     width:2px;
     height:12px;
     background:#4fc3f7;
-    animation: rainFall linear infinite;
     top:-20px;
+    animation: rainFall linear infinite;
 }
 
+@keyframes rainFall{
+    from{transform:translateY(-100px);}
+    to{transform:translateY(110vh);}
+}
+
+/* SNOW */
 .snow{
     position:absolute;
     width:6px;
     height:6px;
     background:white;
     border-radius:50%;
-    animation: snowFall linear infinite;
     top:-10px;
-}
-
-@keyframes rainFall{
-    from{transform:translateY(-100px);}
-    to{transform:translateY(110vh);}
+    animation: snowFall linear infinite;
 }
 
 @keyframes snowFall{
@@ -84,10 +88,11 @@ body{
     padding:20px;
 }
 
-/* STARS */
+/* ⭐ STARS */
 #stars{
     font-size:26px;
     color:gold;
+    margin-bottom:10px;
 }
 
 /* BOXES */
@@ -95,7 +100,6 @@ body{
     display:flex;
     justify-content:center;
     gap:30px;
-    margin-top:20px;
 }
 
 .box{
@@ -117,7 +121,6 @@ body{
     border-radius:15px;
     padding:12px;
     display:inline-block;
-    animation: floatSlow 3s infinite ease-in-out;
 }
 
 .obj img{
@@ -139,18 +142,12 @@ body{
     background:white;
 }
 
-/* STAR DISPLAY */
-#finalStars{
-    font-size:30px;
-    color:gold;
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- WEATHER -->
+<!-- 🌤️ WEATHER BACKGROUND -->
 <div class="weather" id="weather"></div>
 
 <!-- LOGO -->
@@ -194,6 +191,7 @@ let stars = 0;
 
 /* WEATHER */
 function createWeather(){
+
     let w = document.getElementById("weather");
 
     let sun = document.createElement("img");
@@ -201,7 +199,7 @@ function createWeather(){
     sun.className = "sun";
     w.appendChild(sun);
 
-    for(let i=0;i<15;i++){
+    for(let i=0;i<20;i++){
         let r = document.createElement("div");
         r.className = "rain";
         r.style.left = Math.random()*100 + "%";
@@ -209,7 +207,7 @@ function createWeather(){
         w.appendChild(r);
     }
 
-    for(let i=0;i<15;i++){
+    for(let i=0;i<20;i++){
         let s = document.createElement("div");
         s.className = "snow";
         s.style.left = Math.random()*100 + "%";
@@ -220,6 +218,7 @@ function createWeather(){
 
 /* START */
 window.onload = ()=>{
+
     createWeather();
 
     setTimeout(()=>{
@@ -280,7 +279,7 @@ document.querySelectorAll(".box").forEach(box=>{
             stars = Math.min(5, stars+1);
             updateStars();
 
-            /* ⭐ FIX: WAIT FOR CLAP TO FINISH BEFORE NEXT SLIDE */
+            /* ✅ ONLY FIX: WAIT FOR CLAP TO END */
             let clap = document.getElementById("clap");
             clap.currentTime = 0;
             clap.play();
