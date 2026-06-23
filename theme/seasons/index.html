@@ -5,11 +5,19 @@
 <title>Season Game Final Fix</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- 🎉 CONFETTI -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <style>
+
 body{
     margin:0;
     font-family: Comic Sans MS;
-    background:#eaf6f6;
+
+    /* ✅ ADDED BACKGROUND IMAGE */
+    background: url("assets/background.png") no-repeat center center fixed;
+    background-size: cover;
+
     overflow:hidden;
 }
 
@@ -77,6 +85,19 @@ body{
     align-items:center;
     flex-direction:column;
 }
+
+/* PLAY AGAIN BUTTON */
+#restartBtn{
+    margin-top:20px;
+    padding:10px 20px;
+    font-size:18px;
+    border:none;
+    background:#4CAF50;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+}
+
 </style>
 </head>
 
@@ -105,6 +126,7 @@ body{
 <!-- END -->
 <div id="end">
     <h1>🎉 Well Done!</h1>
+    <button id="restartBtn" onclick="restartGame()">🔄 Play Again</button>
 </div>
 
 <!-- AUDIO -->
@@ -155,8 +177,16 @@ let current = null;
 function loadGame(){
 
     if(index >= objects.length){
+
         document.getElementById("game").style.display="none";
         document.getElementById("end").style.display="flex";
+
+        confetti({
+            particleCount: 200,
+            spread: 120,
+            origin: { y: 0.6 }
+        });
+
         document.getElementById("clap").play();
         return;
     }
@@ -173,7 +203,7 @@ function loadGame(){
     speak("Which season do we use " + current.label);
 }
 
-/* ---------------- BOX CLICK (FIXED TIMING) ---------------- */
+/* ---------------- BOX CLICK ---------------- */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
@@ -183,21 +213,30 @@ document.querySelectorAll(".box").forEach(box=>{
 
             document.getElementById("correct").play();
 
-            /* ⭐ FIX: WAIT FOR CLAP BEFORE NEXT SLIDE */
             let clap = document.getElementById("clap");
             clap.currentTime = 0;
             clap.play();
 
-            clap.onended = () => {
+            clap.onended = null;
+
+            setTimeout(()=>{
                 index++;
                 loadGame();
-            };
+            },500);
 
         } else {
             document.getElementById("wrong").play();
         }
     });
 });
+
+/* ---------------- RESTART ---------------- */
+function restartGame(){
+    index = 0;
+    document.getElementById("end").style.display="none";
+    document.getElementById("game").style.display="block";
+    loadGame();
+}
 
 </script>
 
