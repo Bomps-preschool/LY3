@@ -17,6 +17,7 @@ body{
     overflow:hidden;
 }
 
+/* FADE */
 #game, #end{
     animation: fadeIn 1s ease-in;
 }
@@ -43,13 +44,13 @@ body{
     padding:20px;
 }
 
-/* INSTRUCTION */
-h2{
+/* MAIN INSTRUCTION */
+#mainInstruction{
     margin-bottom:5px;
 }
 
 /* SUB INSTRUCTION */
-.sub-instruction{
+#subInstruction{
     font-size:18px;
     margin-top:8px;
     color:#333;
@@ -63,6 +64,7 @@ h2{
     margin-top:20px;
 }
 
+/* BOX STYLE */
 .box{
     width:170px;
     height:170px;
@@ -116,6 +118,7 @@ h2{
     flex-direction:column;
 }
 
+/* BUTTON */
 button{
     margin-top:20px;
     padding:10px 20px;
@@ -124,6 +127,7 @@ button{
     background:#4CAF50;
     color:white;
     border-radius:10px;
+    cursor:pointer;
 }
 
 </style>
@@ -141,9 +145,8 @@ button{
 
 <h2 id="mainInstruction">Tap the correct season box</h2>
 
-<div class="sub-instruction">
-    Listen carefully and choose the correct answer
-</div>
+<!-- SUBTITLE (NEW) -->
+<div id="subInstruction"></div>
 
 <div class="box-container">
     <div class="box" data-box="summer"><img src="assets/summer-box.png" width="140"></div>
@@ -174,44 +177,14 @@ function speak(text){
     speechSynthesis.speak(msg);
 }
 
-/* DATA (UPDATED WITH QUESTIONS) */
+/* DATA */
 const objects = [
-    {
-        img:"assets/ice-cream.png",
-        label:"Ice Cream",
-        type:"summer",
-        question:"Which season do we eat ice cream?"
-    },
-    {
-        img:"assets/raincoat.png",
-        label:"Raincoat",
-        type:"rainy",
-        question:"Which season do we use a raincoat?"
-    },
-    {
-        img:"assets/mittens.png",
-        label:"Mittens",
-        type:"winter",
-        question:"Which season do we wear mittens?"
-    },
-    {
-        img:"assets/umbrella.png",
-        label:"Umbrella",
-        type:"rainy",
-        question:"Which season do we use an umbrella?"
-    },
-    {
-        img:"assets/sunglasses.png",
-        label:"Sunglasses",
-        type:"summer",
-        question:"Which season do we wear sunglasses?"
-    },
-    {
-        img:"assets/winter-hat.png",
-        label:"Winter Hat",
-        type:"winter",
-        question:"Which season do we wear a winter hat?"
-    }
+    {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer", question:"Which season do we eat ice cream?"},
+    {img:"assets/raincoat.png", label:"Raincoat", type:"rainy", question:"Which season do we use a raincoat?"},
+    {img:"assets/mittens.png", label:"Mittens", type:"winter", question:"Which season do we wear mittens?"},
+    {img:"assets/umbrella.png", label:"Umbrella", type:"rainy", question:"Which season do we use an umbrella?"},
+    {img:"assets/sunglasses.png", type:"summer", label:"Sunglasses", question:"Which season do we wear sunglasses?"},
+    {img:"assets/winter-hat.png", type:"winter", label:"Winter Hat", question:"Which season do we wear a winter hat?"}
 ];
 
 let index = 0;
@@ -248,8 +221,8 @@ function loadGame(){
         </div>
     `;
 
-    /* 🔥 NEW: dynamic instruction */
-    document.getElementById("mainInstruction").innerText = current.question;
+    /* MAIN + SUB INSTRUCTION */
+    document.getElementById("subInstruction").innerText = current.question;
 
     speak(current.question);
 }
@@ -287,6 +260,7 @@ function restartGame(){
     loadGame();
 }
 
+/* START */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
@@ -303,4 +277,4 @@ window.onload = ()=>{
 </script>
 
 </body>
-</html>  
+</html>
