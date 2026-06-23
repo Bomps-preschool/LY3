@@ -71,7 +71,6 @@ body{
     transform:scale(1.05);
 }
 
-/* gentle floating */
 @keyframes floatBox{
     0%{transform:translateY(0px);}
     50%{transform:translateY(-6px);}
@@ -86,7 +85,6 @@ body{
     padding:12px;
     display:inline-block;
 
-    /* 🌟 FLOAT OBJECT */
     animation: floatObj 2.5s ease-in-out infinite;
     box-shadow:0 6px 12px rgba(0,0,0,0.1);
 }
@@ -116,7 +114,6 @@ body{
     animation: bounce 1s ease;
 }
 
-/* 🌟 BOUNCE END SCREEN */
 @keyframes bounce{
     0%{transform:scale(0.5); opacity:0;}
     60%{transform:scale(1.1);}
@@ -256,10 +253,11 @@ document.querySelectorAll(".box").forEach(box=>{
             clap.currentTime = 0;
             clap.play();
 
-            setTimeout(()=>{
+            /* ✅ FIX: wait until clap finishes */
+            clap.onended = ()=>{
                 index++;
                 loadGame();
-            },500);
+            };
 
         } else {
             document.getElementById("wrong").play();
