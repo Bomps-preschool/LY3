@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Season Game Upgrade</title>
+<title>Season Game Final Fix</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -17,59 +17,14 @@ body{
     overflow:hidden;
 }
 
-/* 🌤️ WEATHER LAYERS */
-.weather{
-    position:fixed;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    overflow:hidden;
+/* 🌟 SMOOTH FADE IN */
+#game, #end{
+    animation: fadeIn 1s ease-in;
 }
 
-/* SUN */
-.sun{
-    position:absolute;
-    top:40px;
-    left:40px;
-    width:80px;
-    animation: floatSlow 6s infinite ease-in-out;
-}
-
-/* RAIN */
-.rain{
-    position:absolute;
-    width:2px;
-    height:12px;
-    background:#4fc3f7;
-    top:-20px;
-    animation: rainFall linear infinite;
-}
-
-@keyframes rainFall{
-    from{transform:translateY(-100px);}
-    to{transform:translateY(110vh);}
-}
-
-/* SNOW */
-.snow{
-    position:absolute;
-    width:6px;
-    height:6px;
-    background:white;
-    border-radius:50%;
-    top:-10px;
-    animation: snowFall linear infinite;
-}
-
-@keyframes snowFall{
-    from{transform:translateY(-50px);}
-    to{transform:translateY(110vh);}
-}
-
-@keyframes floatSlow{
-    0%{transform:translateY(0px);}
-    50%{transform:translateY(-10px);}
-    100%{transform:translateY(0px);}
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
 }
 
 /* LOGO */
@@ -79,6 +34,7 @@ body{
     align-items:center;
     height:100vh;
     background:white;
+    transition:opacity 1.2s ease;
 }
 
 /* GAME */
@@ -88,20 +44,15 @@ body{
     padding:20px;
 }
 
-/* ⭐ STARS */
-#stars{
-    font-size:26px;
-    color:gold;
-    margin-bottom:10px;
-}
-
 /* BOXES */
 .box-container{
     display:flex;
     justify-content:center;
     gap:30px;
+    margin-top:20px;
 }
 
+/* 🌟 FLOATING BOX ANIMATION */
 .box{
     width:170px;
     height:170px;
@@ -111,7 +62,20 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    font-weight:bold;
+
+    transition:transform 0.3s ease;
+    animation: floatBox 3s ease-in-out infinite;
+}
+
+.box:hover{
+    transform:scale(1.05);
+}
+
+/* gentle floating */
+@keyframes floatBox{
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-6px);}
+    100%{transform:translateY(0px);}
 }
 
 /* OBJECT */
@@ -121,6 +85,16 @@ body{
     border-radius:15px;
     padding:12px;
     display:inline-block;
+
+    /* 🌟 FLOAT OBJECT */
+    animation: floatObj 2.5s ease-in-out infinite;
+    box-shadow:0 6px 12px rgba(0,0,0,0.1);
+}
+
+@keyframes floatObj{
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-8px);}
+    100%{transform:translateY(0px);}
 }
 
 .obj img{
@@ -139,16 +113,37 @@ body{
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    background:white;
+    animation: bounce 1s ease;
+}
+
+/* 🌟 BOUNCE END SCREEN */
+@keyframes bounce{
+    0%{transform:scale(0.5); opacity:0;}
+    60%{transform:scale(1.1);}
+    100%{transform:scale(1); opacity:1;}
+}
+
+/* PLAY AGAIN */
+#restartBtn{
+    margin-top:20px;
+    padding:10px 20px;
+    font-size:18px;
+    border:none;
+    background:#4CAF50;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+    transition:transform 0.2s;
+}
+
+#restartBtn:hover{
+    transform:scale(1.1);
 }
 
 </style>
 </head>
 
 <body>
-
-<!-- 🌤️ WEATHER BACKGROUND -->
-<div class="weather" id="weather"></div>
 
 <!-- LOGO -->
 <div id="logo">
@@ -158,14 +153,12 @@ body{
 <!-- GAME -->
 <div id="game">
 
-<div id="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
-
 <h2>Tap the correct season box</h2>
 
 <div class="box-container">
-    <div class="box" data-box="summer">🌞 Summer</div>
-    <div class="box" data-box="rainy">🌧 Rainy</div>
-    <div class="box" data-box="winter">❄ Winter</div>
+    <div class="box" data-box="summer"><img src="assets/summer-box.png" width="140"></div>
+    <div class="box" data-box="rainy"><img src="assets/rainy-box.png" width="140"></div>
+    <div class="box" data-box="winter"><img src="assets/winter-box.png" width="140"></div>
 </div>
 
 <div id="objectArea"></div>
@@ -175,56 +168,34 @@ body{
 <!-- END -->
 <div id="end">
     <h1>🎉 Well Done!</h1>
-    <div id="finalStars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+    <button id="restartBtn" onclick="restartGame()">🔄 Play Again</button>
 </div>
 
-<!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
 <script>
 
-let index = 0;
-let current = null;
-let stars = 0;
-
-/* WEATHER */
-function createWeather(){
-
-    let w = document.getElementById("weather");
-
-    let sun = document.createElement("img");
-    sun.src = "assets/sun.png";
-    sun.className = "sun";
-    w.appendChild(sun);
-
-    for(let i=0;i<20;i++){
-        let r = document.createElement("div");
-        r.className = "rain";
-        r.style.left = Math.random()*100 + "%";
-        r.style.animationDuration = (1+Math.random()*2)+"s";
-        w.appendChild(r);
-    }
-
-    for(let i=0;i<20;i++){
-        let s = document.createElement("div");
-        s.className = "snow";
-        s.style.left = Math.random()*100 + "%";
-        s.style.animationDuration = (2+Math.random()*3)+"s";
-        w.appendChild(s);
-    }
+function speak(text){
+    speechSynthesis.cancel();
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 0.9;
+    speechSynthesis.speak(msg);
 }
 
 /* START */
 window.onload = ()=>{
-
-    createWeather();
-
     setTimeout(()=>{
-        document.getElementById("logo").style.display="none";
-        document.getElementById("game").style.display="block";
-        loadGame();
+        document.getElementById("logo").style.opacity = 0;
+
+        setTimeout(()=>{
+            document.getElementById("logo").style.display = "none";
+            document.getElementById("game").style.display = "block";
+
+            loadGame();
+        },1200);
+
     },5000);
 };
 
@@ -238,7 +209,10 @@ const objects = [
     {img:"assets/winter-hat.png", label:"Winter Hat", type:"winter"}
 ];
 
-/* LOAD */
+let index = 0;
+let current = null;
+
+/* LOAD GAME */
 function loadGame(){
 
     if(index >= objects.length){
@@ -264,6 +238,8 @@ function loadGame(){
             <div class="label">${current.label}</div>
         </div>
     `;
+
+    speak("Which season do we use " + current.label);
 }
 
 /* BOX CLICK */
@@ -276,18 +252,14 @@ document.querySelectorAll(".box").forEach(box=>{
 
             document.getElementById("correct").play();
 
-            stars = Math.min(5, stars+1);
-            updateStars();
-
-            /* ✅ ONLY FIX: WAIT FOR CLAP TO END */
             let clap = document.getElementById("clap");
             clap.currentTime = 0;
             clap.play();
 
-            clap.onended = () => {
+            setTimeout(()=>{
                 index++;
                 loadGame();
-            };
+            },500);
 
         } else {
             document.getElementById("wrong").play();
@@ -295,11 +267,12 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
-/* STAR UPDATE */
-function updateStars(){
-    let s = "⭐ ".repeat(stars);
-    document.getElementById("stars").innerText = s;
-    document.getElementById("finalStars").innerText = s;
+/* RESTART */
+function restartGame(){
+    index = 0;
+    document.getElementById("end").style.display="none";
+    document.getElementById("game").style.display="block";
+    loadGame();
 }
 
 </script>
