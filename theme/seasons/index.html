@@ -49,7 +49,7 @@ body{
     margin-bottom:5px;
 }
 
-/* SUBTITLE (NEW) */
+/* SUBTITLE */
 #subInstruction{
     font-size:18px;
     margin-top:8px;
@@ -143,8 +143,6 @@ button{
 <div id="game">
 
 <h2 id="mainInstruction">Tap the correct season box</h2>
-
-<!-- SUBTITLE ADDED -->
 <div id="subInstruction"></div>
 
 <div class="box-container">
@@ -176,7 +174,6 @@ function speak(text){
     speechSynthesis.speak(msg);
 }
 
-/* DATA */
 const objects = [
     {img:"assets/ice-cream.png", label:"Ice Cream", type:"summer", question:"Which season do we eat ice cream?"},
     {img:"assets/raincoat.png", label:"Raincoat", type:"rainy", question:"Which season do we use a raincoat?"},
@@ -189,7 +186,6 @@ const objects = [
 let index = 0;
 let current = null;
 
-/* LOAD GAME */
 function loadGame(){
 
     if(index >= objects.length){
@@ -204,9 +200,13 @@ function loadGame(){
         });
 
         let endClap = document.getElementById("clap");
+
+        /* ✅ FIX: prevent repeated play */
         endClap.pause();
         endClap.currentTime = 0;
-        endClap.play();
+        endClap.onended = null;
+
+        endClap.play().catch(()=>{});
 
         return;
     }
@@ -220,13 +220,11 @@ function loadGame(){
         </div>
     `;
 
-    /* ✅ ONLY IMPORTANT FIX */
     document.getElementById("subInstruction").innerText = current.question;
 
     speak(current.question);
 }
 
-/* BOX CLICK */
 document.querySelectorAll(".box").forEach(box=>{
     box.addEventListener("click",()=>{
 
@@ -251,7 +249,6 @@ document.querySelectorAll(".box").forEach(box=>{
     });
 });
 
-/* RESTART */
 function restartGame(){
     index = 0;
     document.getElementById("end").style.display="none";
@@ -259,7 +256,6 @@ function restartGame(){
     loadGame();
 }
 
-/* START */
 window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("logo").style.opacity = 0;
