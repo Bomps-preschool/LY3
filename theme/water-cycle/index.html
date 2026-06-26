@@ -31,6 +31,11 @@ h1{
     color:#333;
 }
 
+/* GAME AREA */
+#gameArea{
+    display:block;
+}
+
 /* CARDS */
 .container{
     display:flex;
@@ -103,11 +108,15 @@ button{
 
 <body>
 
-<h1>🌊 Water Cycle Sequence Game</h1>
+<h1 id="title">🌊 Water Cycle Sequence Game</h1>
 <div id="instruction">Click the stages in correct order</div>
 
-<div class="container" id="gameBox"></div>
+<!-- GAME -->
+<div id="gameArea">
+    <div class="container" id="gameBox"></div>
+</div>
 
+<!-- END -->
 <div id="end">
     <h1>🎉 Well Done Scientist!</h1>
     <button onclick="restart()">Play Again</button>
@@ -122,22 +131,29 @@ const correctOrder = ["evaporation","condensation","precipitation","collection"]
 
 let currentStep = 0;
 
-const cardsData = [
+/* ORIGINAL DATA */
+const baseCards = [
     {id:"evaporation", img:"assets/sun.png", name:"Evaporation ☀"},
     {id:"condensation", img:"assets/cloud.png", name:"Condensation ☁"},
     {id:"precipitation", img:"assets/rain.png", name:"Precipitation 🌧"},
     {id:"collection", img:"assets/ocean.png", name:"Collection 🌊"}
 ];
 
-/* shuffle */
+/* 🔥 FIX 1: proper shuffle function */
 function shuffle(array){
-    return array.sort(()=>Math.random()-0.5);
+    let arr = [...array];
+    for(let i = arr.length - 1; i > 0; i--){
+        let j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
 }
 
-let gameCards = shuffle(cardsData);
+let gameCards = [];
 
 /* LOAD GAME */
 function loadGame(){
+
     let box = document.getElementById("gameBox");
     box.innerHTML = "";
 
@@ -170,7 +186,12 @@ function check(id, element){
             document.getElementById("clap").play();
 
             setTimeout(()=>{
-                document.getElementById("gameBox").style.display="none";
+
+                /* 🔥 FIX 2: hide everything except end screen */
+                document.getElementById("gameArea").style.display="none";
+                document.getElementById("instruction").style.display="none";
+                document.getElementById("title").style.display="none";
+
                 document.getElementById("end").style.display="flex";
 
                 confetti({
@@ -194,13 +215,22 @@ function check(id, element){
 
 /* RESTART */
 function restart(){
+
     currentStep = 0;
-    gameCards = shuffle(cardsData);
+
+    /* 🔥 FIX 3: reshuffle every restart */
+    gameCards = shuffle(baseCards);
+
     document.getElementById("end").style.display="none";
-    document.getElementById("gameBox").style.display="flex";
+    document.getElementById("gameArea").style.display="block";
+    document.getElementById("instruction").style.display="block";
+    document.getElementById("title").style.display="block";
+
     loadGame();
 }
 
+/* INIT */
+gameCards = shuffle(baseCards);
 loadGame();
 
 </script>
