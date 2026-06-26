@@ -18,9 +18,34 @@ body{
     overflow:hidden;
 }
 
-/* HEADER */
+/* SCREENS */
+.screen{
+    width:100%;
+    height:100vh;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+/* SPLASH */
+#splash{
+    background:white;
+    display:flex;
+}
+
+/* GAME */
+#gameScreen{
+    display:none;
+}
+
+/* END */
+#endScreen{
+    background:white;
+}
+
+/* TITLE */
 h1{
-    margin-top:20px;
     color:#1b4f72;
 }
 
@@ -29,11 +54,6 @@ h1{
     font-size:22px;
     margin:10px;
     color:#333;
-}
-
-/* GAME AREA */
-#gameArea{
-    display:block;
 }
 
 /* CARDS */
@@ -55,7 +75,6 @@ h1{
     justify-content:center;
     align-items:center;
     cursor:pointer;
-    transition:0.3s;
     box-shadow:0 5px 12px rgba(0,0,0,0.2);
 }
 
@@ -83,16 +102,6 @@ h1{
     100%{transform:translateX(0);}
 }
 
-/* END SCREEN */
-#end{
-    display:none;
-    height:100vh;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    background:white;
-}
-
 button{
     padding:10px 20px;
     font-size:18px;
@@ -108,16 +117,23 @@ button{
 
 <body>
 
-<h1 id="title">🌊 Water Cycle Sequence Game</h1>
-<div id="instruction">Click the stages in correct order</div>
-
-<!-- GAME -->
-<div id="gameArea">
-    <div class="container" id="gameBox"></div>
+<!-- 🟢 SPLASH -->
+<div id="splash" class="screen">
+    <img src="assets/innovine-logo.png" width="250">
 </div>
 
-<!-- END -->
-<div id="end">
+<!-- 🟡 GAME -->
+<div id="gameScreen" class="screen">
+
+<h1>🌊 Water Cycle Sequence Game</h1>
+<div id="instruction">Click the stages in correct order</div>
+
+<div class="container" id="gameBox"></div>
+
+</div>
+
+<!-- 🔴 END -->
+<div id="endScreen" class="screen">
     <h1>🎉 Well Done Scientist!</h1>
     <button onclick="restart()">Play Again</button>
 </div>
@@ -131,7 +147,7 @@ const correctOrder = ["evaporation","condensation","precipitation","collection"]
 
 let currentStep = 0;
 
-/* ORIGINAL DATA */
+/* DATA */
 const baseCards = [
     {id:"evaporation", img:"assets/sun.png", name:"Evaporation ☀"},
     {id:"condensation", img:"assets/cloud.png", name:"Condensation ☁"},
@@ -139,19 +155,38 @@ const baseCards = [
     {id:"collection", img:"assets/ocean.png", name:"Collection 🌊"}
 ];
 
-/* 🔥 FIX 1: proper shuffle function */
-function shuffle(array){
-    let arr = [...array];
-    for(let i = arr.length - 1; i > 0; i--){
-        let j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
+/* shuffle */
+function shuffle(arr){
+    return arr.sort(()=>Math.random()-0.5);
 }
 
 let gameCards = [];
 
-/* LOAD GAME */
+/* SCREEN CONTROL */
+function showScreen(id){
+    document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
+    document.getElementById(id).style.display="flex";
+}
+
+/* INIT */
+window.onload = ()=>{
+
+    showScreen("splash");
+
+    setTimeout(()=>{
+        showScreen("gameScreen");
+        startGame();
+    },5000);
+};
+
+/* START GAME */
+function startGame(){
+    currentStep = 0;
+    gameCards = shuffle([...baseCards]);
+    loadGame();
+}
+
+/* LOAD */
 function loadGame(){
 
     let box = document.getElementById("gameBox");
@@ -173,7 +208,7 @@ function loadGame(){
     });
 }
 
-/* CHECK CLICK */
+/* CHECK */
 function check(id, element){
 
     if(id === correctOrder[currentStep]){
@@ -186,19 +221,13 @@ function check(id, element){
             document.getElementById("clap").play();
 
             setTimeout(()=>{
-
-                /* 🔥 FIX 2: hide everything except end screen */
-                document.getElementById("gameArea").style.display="none";
-                document.getElementById("instruction").style.display="none";
-                document.getElementById("title").style.display="none";
-
-                document.getElementById("end").style.display="flex";
-
                 confetti({
                     particleCount:200,
                     spread:120,
                     origin:{y:0.6}
                 });
+
+                showScreen("endScreen");
 
             },800);
         }
@@ -215,23 +244,9 @@ function check(id, element){
 
 /* RESTART */
 function restart(){
-
-    currentStep = 0;
-
-    /* 🔥 FIX 3: reshuffle every restart */
-    gameCards = shuffle(baseCards);
-
-    document.getElementById("end").style.display="none";
-    document.getElementById("gameArea").style.display="block";
-    document.getElementById("instruction").style.display="block";
-    document.getElementById("title").style.display="block";
-
-    loadGame();
+    showScreen("gameScreen");
+    startGame();
 }
-
-/* INIT */
-gameCards = shuffle(baseCards);
-loadGame();
 
 </script>
 
