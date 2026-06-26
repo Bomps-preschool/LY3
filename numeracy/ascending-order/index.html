@@ -74,7 +74,7 @@ body{
     box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
 
-/* GREEN GLOW */
+/* GREEN GLOW (STAYS) */
 .greenGlow{
     background:#b6f7c1 !important;
     box-shadow:0 0 18px #2ecc71;
@@ -149,13 +149,10 @@ button{
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
-
-<!-- 🔊 HURRY SOUND ADDED -->
 <audio id="hurry" src="assets/hurry.mp3"></audio>
 
 <script>
 
-/* SETS */
 const sets = [
     [2,5,3],
     [9,4,1],
@@ -183,6 +180,8 @@ function startTimer(){
     clearInterval(timer);
     timeLeft = 10;
 
+    let hurryPlayed = false;
+
     document.getElementById("timer").innerText = "⏱ " + timeLeft;
 
     timer = setInterval(()=>{
@@ -190,9 +189,13 @@ function startTimer(){
         timeLeft--;
         document.getElementById("timer").innerText = "⏱ " + timeLeft;
 
-        /* 🔊 HURRY SOUND (LAST 3 SECONDS) */
-        if(timeLeft <= 3 && timeLeft > 0){
-            document.getElementById("hurry").play();
+        /* 🔊 HURRY SOUND ONCE ONLY */
+        if(timeLeft <= 3 && !hurryPlayed){
+            hurryPlayed = true;
+
+            let h = document.getElementById("hurry");
+            h.currentTime = 0;
+            h.play();
         }
 
         if(timeLeft <= 0){
@@ -202,7 +205,7 @@ function startTimer(){
     },1000);
 }
 
-/* TIMEOUT LOGIC */
+/* TIMEOUT */
 function handleTimeout(){
 
     clearInterval(timer);
@@ -218,7 +221,7 @@ function handleTimeout(){
     }
 }
 
-/* LOAD GAME */
+/* LOAD */
 function loadGame(){
 
     let board = document.getElementById("board");
@@ -274,11 +277,8 @@ function check(num, element){
 
         document.getElementById("correct").play();
 
+        /* GREEN GLOW STAYS */
         element.classList.add("greenGlow");
-
-        setTimeout(()=>{
-            element.classList.remove("greenGlow");
-        },300);
 
         currentIndex++;
 
