@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Detective Number Mission</title>
+<title>Detective Ascending Order Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -17,7 +17,7 @@ body{
     overflow:hidden;
 }
 
-/* SCREENS */
+/* SCREEN */
 .screen{
     width:100%;
     height:100vh;
@@ -47,10 +47,9 @@ h1{
 #instruction{
     font-size:22px;
     margin:10px;
-    color:#333;
 }
 
-/* CLUE BOARD */
+/* BOARD */
 .board{
     display:flex;
     justify-content:center;
@@ -61,21 +60,18 @@ h1{
 
 /* CARD */
 .card{
-    width:150px;
-    height:150px;
+    width:140px;
+    height:140px;
     background:#fffdf5;
     border-radius:15px;
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
+    font-size:40px;
+    font-weight:bold;
     cursor:pointer;
     box-shadow:0 5px 10px rgba(0,0,0,0.2);
     transition:0.2s;
-}
-
-.card img{
-    width:70px;
 }
 
 /* EFFECTS */
@@ -108,6 +104,7 @@ h1{
     background:white;
 }
 
+/* BUTTON */
 button{
     padding:12px 20px;
     font-size:18px;
@@ -132,7 +129,7 @@ button{
 <div id="game" class="screen">
 
 <h1>🕵️ Detective Number Mission</h1>
-<div id="instruction">Tap clues in ascending order</div>
+<div id="instruction">Tap numbers in ascending order</div>
 
 <div class="board" id="board"></div>
 
@@ -151,17 +148,18 @@ button{
 
 <script>
 
-/* ORDER LOGIC */
-const correctOrder = [1,2,5,8];
-let currentIndex = 0;
-
-/* CLUE DATA */
-let clues = [
-    {num:5, img:"assets/apple.png", label:"Apples"},
-    {num:2, img:"assets/car.png", label:"Cars"},
-    {num:8, img:"assets/teddy.png", label:"Teddies"},
-    {num:1, img:"assets/banana.png", label:"Banana"}
+/* 🔢 5 SETS OF NUMBERS */
+const sets = [
+    [2,5,3],
+    [9,4,1],
+    [6,1,8],
+    [3,7,6],
+    [5,7,2]
 ];
+
+let setIndex = 0;
+let currentIndex = 0;
+let currentSet = [];
 
 /* SHUFFLE */
 function shuffle(arr){
@@ -170,51 +168,71 @@ function shuffle(arr){
 
 /* LOAD GAME */
 function loadGame(){
+
     let board = document.getElementById("board");
     board.innerHTML = "";
 
-    clues = shuffle(clues);
+    currentSet = shuffle([...sets[setIndex]]);
+    currentIndex = 0;
 
-    clues.forEach(item=>{
+    currentSet.forEach(num=>{
         let div = document.createElement("div");
         div.className = "card";
+        div.innerText = num;
 
-        div.innerHTML = `
-            <img src="${item.img}">
-            <div>${item.num} ${item.label}</div>
-        `;
-
-        div.onclick = ()=>check(item, div);
+        div.onclick = ()=>check(num, div);
 
         board.appendChild(div);
     });
 }
 
 /* CHECK */
-function check(item, element){
+function check(num, element){
 
-    if(item.num === correctOrder[currentIndex]){
+    let sorted = [...currentSet].sort((a,b)=>a-b);
+
+    if(num === sorted[currentIndex]){
 
         document.getElementById("correct").play();
         element.classList.add("correct");
 
         currentIndex++;
 
-        if(currentIndex === correctOrder.length){
+        if(currentIndex === sorted.length){
 
             document.getElementById("clap").play();
 
             setTimeout(()=>{
+
+                /* 🎉 BIGGER CONFETTI */
                 confetti({
-                    particleCount:200,
-                    spread:120,
+                    particleCount:300,
+                    spread:160,
                     origin:{y:0.6}
                 });
 
-                document.getElementById("game").style.display="none";
-                document.getElementById("end").style.display="flex";
+                confetti({
+                    particleCount:200,
+                    spread:100,
+                    origin:{x:0.2, y:0.6}
+                });
 
-            },800);
+                confetti({
+                    particleCount:200,
+                    spread:100,
+                    origin:{x:0.8, y:0.6}
+                });
+
+                setIndex++;
+
+                if(setIndex < sets.length){
+                    setTimeout(loadGame, 1200);
+                } else {
+                    document.getElementById("game").style.display="none";
+                    document.getElementById("end").style.display="flex";
+                }
+
+            },500);
         }
 
     } else {
@@ -229,13 +247,13 @@ function check(item, element){
 
 /* RESTART */
 function restart(){
-    currentIndex = 0;
+    setIndex = 0;
     document.getElementById("end").style.display="none";
     document.getElementById("game").style.display="flex";
     loadGame();
 }
 
-/* START FLOW */
+/* START */
 window.onload = ()=>{
 
     setTimeout(()=>{
