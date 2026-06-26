@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Water Drop Journey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+
+body{
+    margin:0;
+    font-family: Comic Sans MS;
+    background:url("assets/background.png") no-repeat center center fixed;
+    background-size:cover;
+    overflow:hidden;
+}
+
+/* SPLASH */
+#logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    background:white;
+}
+
+/* GAME */
+#game{
+    display:none;
+    text-align:center;
+    padding:20px;
+}
+
+/* JOURNEY BOX */
+#stageBox{
+    width:300px;
+    height:300px;
+    margin:20px auto;
+    background:white;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    animation: float 3s infinite ease-in-out;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+#stageImg{
+    width:120px;
+}
+
+#text{
+    font-size:22px;
+    margin-top:10px;
+    color:#333;
+}
+
+/* BUTTON */
+button{
+    padding:12px 20px;
+    font-size:18px;
+    border:none;
+    background:#4CAF50;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* END */
+#end{
+    display:none;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGO -->
+<div id="logo">
+    <img src="assets/innovine-logo.png" width="250">
+</div>
+
+<!-- GAME -->
+<div id="game">
+
+<h2>🌊 Water Drop Journey</h2>
+
+<div id="stageBox">
+    <img id="stageImg" src="assets/water-drop.png">
+    <div id="text">I am a water drop</div>
+</div>
+
+<button onclick="nextStage()">NEXT JOURNEY ➜</button>
+
+</div>
+
+<!-- END -->
+<div id="end">
+    <h1>🎉 Well Done Water Explorer!</h1>
+    <div>⭐⭐⭐⭐⭐</div>
+    <button onclick="restart()">Play Again</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="clap" src="assets/claps.mp3"></audio>
+
+<script>
+
+let index = 0;
+
+const stages = [
+    {
+        img:"assets/sun.png",
+        text:"☀ I am going up! (Evaporation)"
+    },
+    {
+        img:"assets/cloud.png",
+        text:"☁ I am forming clouds! (Condensation)"
+    },
+    {
+        img:"assets/rain.png",
+        text:"🌧 I am falling as rain! (Precipitation)"
+    },
+    {
+        img:"assets/ocean.png",
+        text:"🌊 I join the ocean! (Collection)"
+    }
+];
+
+/* SPLASH */
+window.onload = ()=>{
+    setTimeout(()=>{
+        document.getElementById("logo").style.display="none";
+        document.getElementById("game").style.display="block";
+    },5000);
+};
+
+/* NEXT */
+function nextStage(){
+
+    if(index >= stages.length){
+
+        document.getElementById("game").style.display="none";
+        document.getElementById("end").style.display="flex";
+
+        confetti({
+            particleCount: 200,
+            spread: 120,
+            origin: { y: 0.6 }
+        });
+
+        document.getElementById("clap").play();
+        return;
+    }
+
+    document.getElementById("stageImg").src = stages[index].img;
+    document.getElementById("text").innerText = stages[index].text;
+
+    index++;
+}
+
+/* RESTART */
+function restart(){
+    index = 0;
+    document.getElementById("end").style.display="none";
+    document.getElementById("game").style.display="block";
+    nextStage();
+}
+
+</script>
+
+</body>
+</html>
