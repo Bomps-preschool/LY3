@@ -17,7 +17,7 @@ body{
     overflow:hidden;
 }
 
-/* TIMER (ONLY GAME SCREEN) */
+/* TIMER */
 #timer{
     position:absolute;
     top:15px;
@@ -26,10 +26,10 @@ body{
     background:white;
     padding:8px 15px;
     border-radius:10px;
-    display:none;
+    display:block;
 }
 
-/* SCREEN SYSTEM */
+/* SCREEN */
 .screen{
     width:100%;
     height:100vh;
@@ -74,6 +74,27 @@ body{
     box-shadow:0 5px 10px rgba(0,0,0,0.2);
 }
 
+/* GREEN GLOW */
+.greenGlow{
+    background:#b6f7c1 !important;
+    box-shadow:0 0 18px #2ecc71;
+    transform:scale(1.08);
+}
+
+/* WRONG */
+.wrong{
+    animation:shake 0.3s;
+    background:#ffb3b3 !important;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
 /* END */
 #end{
     display:none;
@@ -100,7 +121,7 @@ button{
 
 <body>
 
-<!-- TIMER (ONLY GAME SCREEN) -->
+<!-- TIMER -->
 <div id="timer">⏱ 10</div>
 
 <!-- SPLASH -->
@@ -128,6 +149,9 @@ button{
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
+
+<!-- 🔊 HURRY SOUND ADDED -->
+<audio id="hurry" src="assets/hurry.mp3"></audio>
 
 <script>
 
@@ -159,13 +183,17 @@ function startTimer(){
     clearInterval(timer);
     timeLeft = 10;
 
-    document.getElementById("timer").style.display = "block";
     document.getElementById("timer").innerText = "⏱ " + timeLeft;
 
     timer = setInterval(()=>{
 
         timeLeft--;
         document.getElementById("timer").innerText = "⏱ " + timeLeft;
+
+        /* 🔊 HURRY SOUND (LAST 3 SECONDS) */
+        if(timeLeft <= 3 && timeLeft > 0){
+            document.getElementById("hurry").play();
+        }
 
         if(timeLeft <= 0){
             handleTimeout();
@@ -174,7 +202,7 @@ function startTimer(){
     },1000);
 }
 
-/* TIMEOUT LOGIC (EXACT 2 CHANCES RULE) */
+/* TIMEOUT LOGIC */
 function handleTimeout(){
 
     clearInterval(timer);
@@ -183,10 +211,8 @@ function handleTimeout(){
     chances++;
 
     if(chances < 3){
-        // repeat same set
         loadGame();
     } else {
-        // move to next set
         chances = 0;
         nextSet();
     }
@@ -230,7 +256,6 @@ function nextSet(){
         });
 
         document.getElementById("game").style.display="none";
-        document.getElementById("timer").style.display="none";
         document.getElementById("end").style.display="flex";
 
         document.getElementById("clap").play();
@@ -248,6 +273,13 @@ function check(num, element){
     if(num === sorted[currentIndex]){
 
         document.getElementById("correct").play();
+
+        element.classList.add("greenGlow");
+
+        setTimeout(()=>{
+            element.classList.remove("greenGlow");
+        },300);
+
         currentIndex++;
 
         if(currentIndex === sorted.length){
@@ -271,8 +303,6 @@ function restart(){
 
 /* START */
 window.onload = ()=>{
-
-    document.getElementById("timer").style.display = "none";
 
     setTimeout(()=>{
         document.getElementById("splash").style.display="none";
