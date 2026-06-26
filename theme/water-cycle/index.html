@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Water Drop Journey</title>
+<title>Water Cycle Sequence Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -14,68 +14,71 @@ body{
     font-family: Comic Sans MS;
     background:url("assets/background.png") no-repeat center center fixed;
     background-size:cover;
+    text-align:center;
     overflow:hidden;
 }
 
-/* SPLASH */
-#logo{
+/* HEADER */
+h1{
+    margin-top:20px;
+    color:#1b4f72;
+}
+
+/* INSTRUCTION */
+#instruction{
+    font-size:22px;
+    margin:10px;
+    color:#333;
+}
+
+/* CARDS */
+.container{
     display:flex;
     justify-content:center;
-    align-items:center;
-    height:100vh;
-    background:white;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-top:40px;
 }
 
-/* GAME */
-#game{
-    display:none;
-    text-align:center;
-    padding:20px;
-}
-
-/* JOURNEY BOX */
-#stageBox{
-    width:300px;
-    height:300px;
-    margin:20px auto;
+.card{
+    width:180px;
+    height:180px;
     background:white;
     border-radius:20px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.2);
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    animation: float 3s infinite ease-in-out;
-}
-
-@keyframes float{
-    0%{transform:translateY(0);}
-    50%{transform:translateY(-10px);}
-    100%{transform:translateY(0);}
-}
-
-#stageImg{
-    width:120px;
-}
-
-#text{
-    font-size:22px;
-    margin-top:10px;
-    color:#333;
-}
-
-/* BUTTON */
-button{
-    padding:12px 20px;
-    font-size:18px;
-    border:none;
-    background:#4CAF50;
-    color:white;
-    border-radius:10px;
     cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 5px 12px rgba(0,0,0,0.2);
 }
 
-/* END */
+.card img{
+    width:80px;
+}
+
+/* EFFECTS */
+.correct{
+    background:#b6f7c1 !important;
+    transform:scale(1.05);
+    box-shadow:0 0 15px #2ecc71;
+}
+
+.wrong{
+    animation:shake 0.3s;
+    background:#ffb3b3 !important;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
+/* END SCREEN */
 #end{
     display:none;
     height:100vh;
@@ -85,102 +88,120 @@ button{
     background:white;
 }
 
+button{
+    padding:10px 20px;
+    font-size:18px;
+    border:none;
+    background:#27ae60;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- LOGO -->
-<div id="logo">
-    <img src="assets/innovine-logo.png" width="250">
-</div>
+<h1>🌊 Water Cycle Sequence Game</h1>
+<div id="instruction">Click the stages in correct order</div>
 
-<!-- GAME -->
-<div id="game">
+<div class="container" id="gameBox"></div>
 
-<h2>🌊 Water Drop Journey</h2>
-
-<div id="stageBox">
-    <img id="stageImg" src="assets/water-drop.png">
-    <div id="text">I am a water drop</div>
-</div>
-
-<button onclick="nextStage()">NEXT JOURNEY ➜</button>
-
-</div>
-
-<!-- END -->
 <div id="end">
-    <h1>🎉 Well Done Water Explorer!</h1>
-    <div>⭐⭐⭐⭐⭐</div>
+    <h1>🎉 Well Done Scientist!</h1>
     <button onclick="restart()">Play Again</button>
 </div>
 
-<!-- AUDIO -->
 <audio id="clap" src="assets/claps.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
 
 <script>
 
-let index = 0;
+const correctOrder = ["evaporation","condensation","precipitation","collection"];
 
-const stages = [
-    {
-        img:"assets/sun.png",
-        text:"☀ I am going up! (Evaporation)"
-    },
-    {
-        img:"assets/cloud.png",
-        text:"☁ I am forming clouds! (Condensation)"
-    },
-    {
-        img:"assets/rain.png",
-        text:"🌧 I am falling as rain! (Precipitation)"
-    },
-    {
-        img:"assets/ocean.png",
-        text:"🌊 I join the ocean! (Collection)"
-    }
+let currentStep = 0;
+
+const cardsData = [
+    {id:"evaporation", img:"assets/sun.png", name:"Evaporation ☀"},
+    {id:"condensation", img:"assets/cloud.png", name:"Condensation ☁"},
+    {id:"precipitation", img:"assets/rain.png", name:"Precipitation 🌧"},
+    {id:"collection", img:"assets/ocean.png", name:"Collection 🌊"}
 ];
 
-/* SPLASH */
-window.onload = ()=>{
-    setTimeout(()=>{
-        document.getElementById("logo").style.display="none";
-        document.getElementById("game").style.display="block";
-    },5000);
-};
+/* shuffle */
+function shuffle(array){
+    return array.sort(()=>Math.random()-0.5);
+}
 
-/* NEXT */
-function nextStage(){
+let gameCards = shuffle(cardsData);
 
-    if(index >= stages.length){
+/* LOAD GAME */
+function loadGame(){
+    let box = document.getElementById("gameBox");
+    box.innerHTML = "";
 
-        document.getElementById("game").style.display="none";
-        document.getElementById("end").style.display="flex";
+    gameCards.forEach(card=>{
+        let div = document.createElement("div");
+        div.className = "card";
+        div.dataset.id = card.id;
 
-        confetti({
-            particleCount: 200,
-            spread: 120,
-            origin: { y: 0.6 }
-        });
+        div.innerHTML = `
+            <img src="${card.img}">
+            <p>${card.name}</p>
+        `;
 
-        document.getElementById("clap").play();
-        return;
+        div.onclick = ()=>check(card.id, div);
+
+        box.appendChild(div);
+    });
+}
+
+/* CHECK CLICK */
+function check(id, element){
+
+    if(id === correctOrder[currentStep]){
+
+        element.classList.add("correct");
+        currentStep++;
+
+        if(currentStep === correctOrder.length){
+
+            document.getElementById("clap").play();
+
+            setTimeout(()=>{
+                document.getElementById("gameBox").style.display="none";
+                document.getElementById("end").style.display="flex";
+
+                confetti({
+                    particleCount:200,
+                    spread:120,
+                    origin:{y:0.6}
+                });
+
+            },800);
+        }
+
+    } else {
+        document.getElementById("wrong").play();
+        element.classList.add("wrong");
+
+        setTimeout(()=>{
+            element.classList.remove("wrong");
+        },500);
     }
-
-    document.getElementById("stageImg").src = stages[index].img;
-    document.getElementById("text").innerText = stages[index].text;
-
-    index++;
 }
 
 /* RESTART */
 function restart(){
-    index = 0;
+    currentStep = 0;
+    gameCards = shuffle(cardsData);
     document.getElementById("end").style.display="none";
-    document.getElementById("game").style.display="block";
-    nextStage();
+    document.getElementById("gameBox").style.display="flex";
+    loadGame();
 }
+
+loadGame();
 
 </script>
 
