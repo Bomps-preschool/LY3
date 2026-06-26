@@ -17,6 +17,14 @@ body{
     overflow:hidden;
 }
 
+/* DETECTIVE */
+#detective{
+    position:absolute;
+    top:10px;
+    left:10px;
+    width:90px;
+}
+
 /* TIMER */
 #timer{
     position:absolute;
@@ -26,22 +34,6 @@ body{
     background:white;
     padding:8px 15px;
     border-radius:10px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.2);
-}
-
-/* DETECTIVE CHARACTER */
-#detective{
-    position:absolute;
-    top:10px;
-    left:10px;
-    width:90px;
-    animation: float 2s infinite ease-in-out;
-}
-
-@keyframes float{
-    0%{transform:translateY(0);}
-    50%{transform:translateY(-8px);}
-    100%{transform:translateY(0);}
 }
 
 /* SCREEN */
@@ -63,17 +55,6 @@ body{
 /* GAME */
 #game{
     text-align:center;
-}
-
-/* TITLE */
-h1{
-    color:#3b2f2f;
-}
-
-/* INSTRUCTION */
-#instruction{
-    font-size:22px;
-    margin:10px;
 }
 
 /* BOARD */
@@ -98,27 +79,6 @@ h1{
     font-weight:bold;
     cursor:pointer;
     box-shadow:0 5px 10px rgba(0,0,0,0.2);
-    transition:0.2s;
-}
-
-/* EFFECTS */
-.correct{
-    background:#c8f7c5 !important;
-    box-shadow:0 0 15px #2ecc71;
-    transform:scale(1.05);
-}
-
-.wrong{
-    animation:shake 0.3s;
-    background:#ffb3b3 !important;
-}
-
-@keyframes shake{
-    0%{transform:translateX(0);}
-    25%{transform:translateX(-5px);}
-    50%{transform:translateX(5px);}
-    75%{transform:translateX(-5px);}
-    100%{transform:translateX(0);}
 }
 
 /* END */
@@ -147,10 +107,8 @@ button{
 
 <body>
 
-<!-- DETECTIVE CHARACTER -->
 <img id="detective" src="assets/detective-kid.png">
 
-<!-- TIMER -->
 <div id="timer">⏱ 10</div>
 
 <!-- SPLASH -->
@@ -171,10 +129,10 @@ button{
 <!-- END -->
 <div id="end" class="screen">
     <h1>🎉 Case Solved!</h1>
+    <div id="badge"></div>
     <button onclick="restart()">Play Again</button>
 </div>
 
-<!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
@@ -194,8 +152,17 @@ let setIndex = 0;
 let currentIndex = 0;
 let currentSet = [];
 
+let timer;
 let timeLeft = 10;
-let timerInterval;
+let chances = 0;
+
+/* VOICE */
+function speak(text){
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 0.9;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(msg);
+}
 
 /* SHUFFLE */
 function shuffle(arr){
@@ -204,26 +171,48 @@ function shuffle(arr){
 
 /* TIMER */
 function startTimer(){
-    clearInterval(timerInterval);
+
+    clearInterval(timer);
     timeLeft = 10;
 
     document.getElementById("timer").innerText = "⏱ " + timeLeft;
 
-    timerInterval = setInterval(()=>{
+    timer = setInterval(()=>{
 
         timeLeft--;
         document.getElementById("timer").innerText = "⏱ " + timeLeft;
 
         if(timeLeft <= 0){
-            clearInterval(timerInterval);
-            document.getElementById("wrong").play();
-            nextSet();
+            handleTimeout();
         }
 
     },1000);
 }
 
-/* LOAD */
+/* TIMEOUT LOGIC (2 CHANCES) */
+function handleTimeout(){
+
+    clearInterval(timer);
+
+    speak("Time is up detective!");
+    document.getElementById("wrong").play();
+
+    chances++;
+
+    if(chances < 2){
+
+        speak("Try again detective!");
+        loadGame(); // SAME SET AGAIN
+
+    } else {
+
+        chances = 0;
+        nextSet(); // MOVE TO NEXT SET
+
+    }
+}
+
+/* LOAD GAME */
 function loadGame(){
 
     let board = document.getElementById("board");
@@ -233,6 +222,7 @@ function loadGame(){
     currentIndex = 0;
 
     startTimer();
+    speak("Hurry detective! Find correct order");
 
     currentSet.forEach(num=>{
         let div = document.createElement("div");
@@ -248,11 +238,12 @@ function loadGame(){
 /* NEXT SET */
 function nextSet(){
 
+    chances = 0;
     setIndex++;
 
     if(setIndex >= sets.length){
 
-        clearInterval(timerInterval);
+        clearInterval(timer);
 
         confetti({
             particleCount:400,
@@ -262,10 +253,27 @@ function nextSet(){
 
         document.getElementById("game").style.display="none";
         document.getElementById("end").style.display="flex";
+
         document.getElementById("clap").play();
+
+        document.getElementById("badge").innerText = getBadge();
+
+        speak("Mission completed detective!");
 
     } else {
         loadGame();
+    }
+}
+
+/* BADGE SYSTEM */
+function getBadge(){
+
+    if(setIndex <= 2){
+        return "🥉 Bronze Detective";
+    } else if(setIndex <= 4){
+        return "🥈 Silver Detective";
+    } else {
+        return "🥇 Gold Detective";
     }
 }
 
@@ -277,28 +285,23 @@ function check(num, element){
     if(num === sorted[currentIndex]){
 
         document.getElementById("correct").play();
-        element.classList.add("correct");
-
         currentIndex++;
 
         if(currentIndex === sorted.length){
-            clearInterval(timerInterval);
-            setTimeout(nextSet, 500);
+            clearInterval(timer);
+            setTimeout(nextSet,500);
         }
 
     } else {
         document.getElementById("wrong").play();
-        element.classList.add("wrong");
-
-        setTimeout(()=>{
-            element.classList.remove("wrong");
-        },400);
+        speak("Try again detective!");
     }
 }
 
 /* RESTART */
 function restart(){
     setIndex = 0;
+    chances = 0;
     document.getElementById("end").style.display="none";
     document.getElementById("game").style.display="flex";
     loadGame();
