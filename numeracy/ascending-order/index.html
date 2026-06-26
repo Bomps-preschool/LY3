@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Detective Ascending Order Game</title>
+<title>Detective Number Mission</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -15,6 +15,33 @@ body{
     background:url("assets/detective-board.png") no-repeat center center fixed;
     background-size:cover;
     overflow:hidden;
+}
+
+/* TIMER */
+#timer{
+    position:absolute;
+    top:15px;
+    right:20px;
+    font-size:22px;
+    background:white;
+    padding:8px 15px;
+    border-radius:10px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+}
+
+/* DETECTIVE CHARACTER */
+#detective{
+    position:absolute;
+    top:10px;
+    left:10px;
+    width:90px;
+    animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-8px);}
+    100%{transform:translateY(0);}
 }
 
 /* SCREEN */
@@ -120,6 +147,12 @@ button{
 
 <body>
 
+<!-- DETECTIVE CHARACTER -->
+<img id="detective" src="assets/detective-kid.png">
+
+<!-- TIMER -->
+<div id="timer">⏱ 10</div>
+
 <!-- SPLASH -->
 <div id="splash" class="screen">
     <img src="assets/innovine-logo.png" width="250">
@@ -148,7 +181,7 @@ button{
 
 <script>
 
-/* 🔢 5 SETS OF NUMBERS */
+/* SETS */
 const sets = [
     [2,5,3],
     [9,4,1],
@@ -161,12 +194,36 @@ let setIndex = 0;
 let currentIndex = 0;
 let currentSet = [];
 
+let timeLeft = 10;
+let timerInterval;
+
 /* SHUFFLE */
 function shuffle(arr){
     return arr.sort(()=>Math.random()-0.5);
 }
 
-/* LOAD GAME */
+/* TIMER */
+function startTimer(){
+    clearInterval(timerInterval);
+    timeLeft = 10;
+
+    document.getElementById("timer").innerText = "⏱ " + timeLeft;
+
+    timerInterval = setInterval(()=>{
+
+        timeLeft--;
+        document.getElementById("timer").innerText = "⏱ " + timeLeft;
+
+        if(timeLeft <= 0){
+            clearInterval(timerInterval);
+            document.getElementById("wrong").play();
+            nextSet();
+        }
+
+    },1000);
+}
+
+/* LOAD */
 function loadGame(){
 
     let board = document.getElementById("board");
@@ -174,6 +231,8 @@ function loadGame(){
 
     currentSet = shuffle([...sets[setIndex]]);
     currentIndex = 0;
+
+    startTimer();
 
     currentSet.forEach(num=>{
         let div = document.createElement("div");
@@ -184,6 +243,30 @@ function loadGame(){
 
         board.appendChild(div);
     });
+}
+
+/* NEXT SET */
+function nextSet(){
+
+    setIndex++;
+
+    if(setIndex >= sets.length){
+
+        clearInterval(timerInterval);
+
+        confetti({
+            particleCount:400,
+            spread:180,
+            origin:{y:0.6}
+        });
+
+        document.getElementById("game").style.display="none";
+        document.getElementById("end").style.display="flex";
+        document.getElementById("clap").play();
+
+    } else {
+        loadGame();
+    }
 }
 
 /* CHECK */
@@ -199,40 +282,8 @@ function check(num, element){
         currentIndex++;
 
         if(currentIndex === sorted.length){
-
-            document.getElementById("clap").play();
-
-            setTimeout(()=>{
-
-                /* 🎉 BIGGER CONFETTI */
-                confetti({
-                    particleCount:300,
-                    spread:160,
-                    origin:{y:0.6}
-                });
-
-                confetti({
-                    particleCount:200,
-                    spread:100,
-                    origin:{x:0.2, y:0.6}
-                });
-
-                confetti({
-                    particleCount:200,
-                    spread:100,
-                    origin:{x:0.8, y:0.6}
-                });
-
-                setIndex++;
-
-                if(setIndex < sets.length){
-                    setTimeout(loadGame, 1200);
-                } else {
-                    document.getElementById("game").style.display="none";
-                    document.getElementById("end").style.display="flex";
-                }
-
-            },500);
+            clearInterval(timerInterval);
+            setTimeout(nextSet, 500);
         }
 
     } else {
