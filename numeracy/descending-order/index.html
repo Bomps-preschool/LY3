@@ -2,18 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ice Cream Stack Game</title>
+<title>Ice Cream Game FIXED</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 
+/* GLOBAL FIX */
+*{
+    box-sizing:border-box;
+}
+
 body{
     margin:0;
-    font-family: Comic Sans MS;
-    background:url("assets/background.png") no-repeat center center fixed;
+    font-family:Comic Sans MS;
+    background:url("assets/background.png") no-repeat center center;
     background-size:cover;
+    height:100vh;
     overflow:hidden;
 }
 
@@ -26,95 +32,81 @@ body{
     background:white;
 }
 
-/* GAME */
+/* GAME WRAPPER */
 #game{
     display:none;
-    text-align:center;
-    padding:10px;
+    height:100vh;
+    width:100vw;
+    display:flex;
+    flex-direction:column;
 }
 
 /* TITLE */
-h1{
-    margin:10px;
+#title{
+    text-align:center;
+    font-size:22px;
+    padding:8px;
     color:#2c3e50;
 }
 
-/* CONE AREA */
-#coneArea{
-    margin-top:20px;
+/* MAIN AREA */
+#main{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     position:relative;
-    height:320px;
 }
 
 /* CONE */
 #cone{
-    width:140px;
+    width:120px;
     position:absolute;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
+    bottom:40px;
 }
 
 /* STACK AREA */
 #stack{
     position:absolute;
-    bottom:120px;
-    left:50%;
-    transform:translateX(-50%);
+    bottom:160px;
     display:flex;
     flex-direction:column-reverse;
     align-items:center;
 }
 
-/* SCOOP SLOT */
+/* SLOT */
 .slot{
-    width:90px;
-    height:45px;
+    width:80px;
+    height:40px;
+    border:2px dashed #aaa;
+    border-radius:30px;
     margin:2px;
-    border-radius:50px 50px 20px 20px;
-    border:2px dashed rgba(0,0,0,0.2);
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
-/* SCOOPS */
-#scoops{
-    margin-top:20px;
+/* SCOOP TRAY */
+#tray{
+    height:140px;
+    background:rgba(255,255,255,0.85);
     display:flex;
     justify-content:center;
+    align-items:center;
     flex-wrap:wrap;
     gap:10px;
+    padding:10px;
 }
 
-/* SCOOP IMAGE BUTTON */
+/* SCOOPS */
 .scoop{
-    width:70px;
+    width:60px;
     cursor:pointer;
     transition:0.2s;
 }
 
 .scoop:active{
     transform:scale(1.1);
-}
-
-/* END */
-#end{
-    display:none;
-    height:100vh;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    background:white;
-}
-
-button{
-    padding:10px 20px;
-    font-size:18px;
-    background:#27ae60;
-    color:white;
-    border:none;
-    border-radius:8px;
 }
 
 </style>
@@ -124,159 +116,117 @@ button{
 
 <!-- SPLASH -->
 <div id="splash">
-    <img src="assets/innovine-logo.png" width="250">
+    <img src="assets/innovine-logo.png" width="200">
 </div>
 
 <!-- GAME -->
 <div id="game">
 
-<h1>🍦 Build the Ice Cream!</h1>
-<p>Tap scoops in correct order (1 → 9)</p>
+<div id="title">🍦 Build the Ice Cream (1 → 9)</div>
 
-<div id="coneArea">
-
-    <div id="stack"></div>
+<div id="main">
 
     <img id="cone" src="assets/cone.png">
 
-</div>
-
-<div id="scoops"></div>
+    <div id="stack"></div>
 
 </div>
 
-<!-- END -->
-<div id="end">
-    <h1>🎉 Ice Cream Ready!</h1>
-    <button onclick="restart()">Play Again</button>
-</div>
+<div id="tray"></div>
 
-<!-- AUDIO -->
-<audio id="correct" src="assets/correct.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
-<audio id="clap" src="assets/claps.mp3"></audio>
+</div>
 
 <script>
 
-let selected = null;
-let current = 1;
+let selected=null;
 
 /* START */
-window.onload = ()=>{
+window.onload=()=>{
     setTimeout(()=>{
         document.getElementById("splash").style.display="none";
-        document.getElementById("game").style.display="block";
-        initGame();
-    },5000);
+        document.getElementById("game").style.display="flex";
+        init();
+    },2000);
 };
 
-/* INIT */
-function initGame(){
+function init(){
     createStack();
     createScoops();
 }
 
 /* STACK */
 function createStack(){
-    let stack = document.getElementById("stack");
-    stack.innerHTML = "";
+
+    let stack=document.getElementById("stack");
+    stack.innerHTML="";
 
     for(let i=1;i<=9;i++){
-        let div = document.createElement("div");
-        div.className = "slot";
-        div.dataset.value = i;
-        stack.appendChild(div);
+        let d=document.createElement("div");
+        d.className="slot";
+        d.dataset.value=i;
+        stack.appendChild(d);
     }
 }
 
 /* SCOOPS */
 function createScoops(){
 
-    let box = document.getElementById("scoops");
-    box.innerHTML = "";
+    let tray=document.getElementById("tray");
+    tray.innerHTML="";
 
-    let order = [1,2,3,4,5,6,7,8,9];
-    order.sort(()=>Math.random()-0.5);
+    let arr=[1,2,3,4,5,6,7,8,9];
+    arr.sort(()=>Math.random()-0.5);
 
-    order.forEach(n=>{
-        let img = document.createElement("img");
-        img.src = `assets/scoop-${n}.png`;
-        img.className = "scoop";
-        img.dataset.value = n;
+    arr.forEach(n=>{
+        let img=document.createElement("img");
+        img.src=`assets/scoop-${n}.png`;
+        img.className="scoop";
+        img.dataset.value=n;
 
-        img.onclick = ()=>select(img,n);
+        img.onclick=()=>selected={img,n};
 
-        box.appendChild(img);
+        tray.appendChild(img);
     });
-}
-
-/* SELECT SCOOP */
-function select(el,n){
-    selected = {el,n};
 }
 
 /* PLACE */
-document.getElementById("stack").addEventListener("click",function(e){
+document.getElementById("stack").onclick=(e)=>{
 
     if(!selected) return;
 
-    let slots = document.querySelectorAll(".slot");
+    let slots=document.querySelectorAll(".slot");
 
-    for(let slot of slots){
+    for(let s of slots){
+        if(s.innerHTML==""){
 
-        if(slot.innerText === ""){
+            if(parseInt(s.dataset.value)==selected.n){
 
-            if(parseInt(slot.dataset.value) === selected.n){
-
-                document.getElementById("correct").play();
-
-                slot.innerHTML = `<img src="assets/scoop-${selected.n}.png" style="width:70px">`;
-
-                selected.el.style.visibility="hidden";
+                s.innerHTML=`<img src="assets/scoop-${selected.n}.png" style="width:60px">`;
+                selected.img.style.visibility="hidden";
                 selected=null;
 
                 checkWin();
-
-            } else {
-                document.getElementById("wrong").play();
             }
-
             break;
         }
     }
-});
+};
 
-/* WIN */
 function checkWin(){
 
-    let filled = 0;
+    let filled=0;
     document.querySelectorAll(".slot").forEach(s=>{
-        if(s.innerText !== "") filled++;
+        if(s.innerHTML!="") filled++;
     });
 
-    if(filled === 9){
-
-        document.getElementById("clap").play();
+    if(filled==9){
 
         confetti({
-            particleCount:400,
+            particleCount:300,
             spread:160,
             origin:{y:0.6}
         });
-
-        setTimeout(()=>{
-            document.getElementById("game").style.display="none";
-            document.getElementById("end").style.display="flex";
-        },1200);
     }
-}
-
-/* RESTART */
-function restart(){
-    document.getElementById("end").style.display="none";
-    document.getElementById("game").style.display="block";
-    selected=null;
-    initGame();
 }
 
 </script>
