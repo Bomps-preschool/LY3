@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fix the Train - Descending Order</title>
+<title>Fix the Train - Scene Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -38,47 +38,52 @@ h1{
     color:#2c3e50;
 }
 
-/* TRAIN WRAPPER */
+/* TRAIN SCENE */
 #train{
     display:flex;
     justify-content:center;
     align-items:center;
-    margin-top:30px;
-    gap:5px;
+    margin-top:40px;
 }
 
 /* ENGINE */
 .engine{
-    font-size:45px;
+    font-size:55px;
 }
 
-/* WAGON IMAGE SLOT */
+/* WAGONS (CONNECTED LOOK) */
 .wagon{
-    width:85px;
-    height:85px;
-    position:relative;
+    width:95px;
+    height:70px;
+    background:linear-gradient(#ffcc66,#ff9900);
+    border-radius:10px;
+    margin-left:5px;
     display:flex;
     justify-content:center;
     align-items:center;
-}
-
-/* WAGON IMAGE */
-.wagon img{
-    width:85px;
-}
-
-/* NUMBER INSIDE WAGON */
-.wagon span{
-    position:absolute;
     font-size:22px;
     font-weight:bold;
-    color:#000;
+    box-shadow:0 5px 10px rgba(0,0,0,0.2);
+    position:relative;
 }
 
-/* LIGHT EFFECT */
+/* WAGON WHEEL LOOK */
+.wagon::after{
+    content:"";
+    position:absolute;
+    bottom:-8px;
+    width:12px;
+    height:12px;
+    background:#333;
+    border-radius:50%;
+    left:20px;
+    box-shadow:50px 0 #333;
+}
+
+/* GREEN LIGHT */
 .correct{
-    filter: drop-shadow(0 0 6px #2ecc71);
-    transform:scale(1.05);
+    background:#7bed9f !important;
+    box-shadow:0 0 15px #2ecc71;
 }
 
 /* NUMBER PANEL */
@@ -87,10 +92,10 @@ h1{
     display:flex;
     justify-content:center;
     flex-wrap:wrap;
-    gap:12px;
+    gap:10px;
 }
 
-/* NUMBER TILE */
+/* NUMBER */
 .num{
     width:60px;
     height:60px;
@@ -102,7 +107,7 @@ h1{
     font-size:22px;
     font-weight:bold;
     cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    box-shadow:0 3px 8px rgba(0,0,0,0.2);
 }
 
 /* END */
@@ -142,9 +147,7 @@ button{
 <h1>🚂 Fix the Train!</h1>
 <p>Tap numbers in descending order (10 → 1)</p>
 
-<div id="train">
-    <div class="engine">🚂</div>
-</div>
+<div id="train"></div>
 
 <div id="numbers"></div>
 
@@ -153,7 +156,6 @@ button{
 <!-- END -->
 <div id="end">
     <h1>🎉 Train Completed!</h1>
-    <h2>🏅 Junior Train Engineer</h2>
     <button onclick="restart()">Play Again</button>
 </div>
 
@@ -181,7 +183,7 @@ function startGame(){
     createNumbers();
 }
 
-/* TRAIN WITH WAGONS (LIKE YOUR IMAGE) */
+/* TRAIN ON TRACK */
 function createTrain(){
 
     let train = document.getElementById("train");
@@ -191,15 +193,9 @@ function createTrain(){
 
         let div = document.createElement("div");
         div.className = "wagon";
-
         div.dataset.value = i;
 
-        div.innerHTML = `
-            <img src="assets/wagon.png">
-            <span></span>
-        `;
-
-        div.onclick = ()=>placeNumber(div);
+        div.onclick = ()=>place(div);
 
         train.appendChild(div);
     }
@@ -219,33 +215,31 @@ function createNumbers(){
         d.className = "num";
         d.innerText = n;
 
-        d.onclick = ()=>selectNumber(d,n);
+        d.onclick = ()=>select(n,d);
 
         box.appendChild(d);
     });
 }
 
 /* SELECT NUMBER */
-function selectNumber(el,n){
-    selected = {el,n};
+function select(n,el){
+    selected = {n,el};
 }
 
-/* PLACE NUMBER IN WAGON */
-function placeNumber(wagon){
+/* PLACE IN WAGON */
+function place(wagon){
 
     if(!selected) return;
 
-    let correctValue = parseInt(wagon.dataset.value);
-
-    if(correctValue === selected.n){
+    if(parseInt(wagon.dataset.value) === selected.n){
 
         document.getElementById("correct").play();
 
-        wagon.querySelector("span").innerText = selected.n;
+        wagon.innerText = selected.n;
         wagon.classList.add("correct");
 
-        selected.el.style.visibility = "hidden";
-        selected = null;
+        selected.el.style.visibility="hidden";
+        selected=null;
 
         checkWin();
 
@@ -257,11 +251,10 @@ function placeNumber(wagon){
 /* WIN */
 function checkWin(){
 
-    let filled = document.querySelectorAll(".wagon span").length;
     let done = 0;
 
-    document.querySelectorAll(".wagon span").forEach(s=>{
-        if(s.innerText !== "") done++;
+    document.querySelectorAll(".wagon.correct").forEach(()=>{
+        done++;
     });
 
     if(done === 10){
@@ -285,7 +278,7 @@ function checkWin(){
 function restart(){
     document.getElementById("end").style.display="none";
     document.getElementById("game").style.display="block";
-    selected = null;
+    selected=null;
     startGame();
 }
 
