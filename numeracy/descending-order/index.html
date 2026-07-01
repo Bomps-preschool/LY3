@@ -2,111 +2,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ice Cream Game FIXED</title>
+<title>Ice Cream Descending Order Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 
-/* GLOBAL FIX */
 *{
-    box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    font-family:Comic Sans MS;
-    background:url("assets/background.png") no-repeat center center;
-    background-size:cover;
-    height:100vh;
-    overflow:hidden;
+  margin:0;
+  font-family:Comic Sans MS;
+  background:url("assets/background.png") no-repeat center center;
+  background-size:cover;
+  overflow:hidden;
+  height:100vh;
 }
 
 /* SPLASH */
 #splash{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    background:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:white;
 }
 
 /* GAME WRAPPER */
 #game{
-    display:none;
-    height:100vh;
-    width:100vw;
-    display:flex;
-    flex-direction:column;
+  display:none;
+  height:100vh;
+  width:100vw;
+  display:flex;
+  flex-direction:column;
 }
 
 /* TITLE */
 #title{
-    text-align:center;
-    font-size:22px;
-    padding:8px;
-    color:#2c3e50;
+  text-align:center;
+  padding:8px;
+  font-size:20px;
+  color:#333;
 }
 
 /* MAIN AREA */
 #main{
-    flex:1;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
 }
 
 /* CONE */
 #cone{
-    width:120px;
-    position:absolute;
-    bottom:40px;
+  width:120px;
+  position:absolute;
+  bottom:40px;
 }
 
-/* STACK AREA */
+/* STACK */
 #stack{
-    position:absolute;
-    bottom:160px;
-    display:flex;
-    flex-direction:column-reverse;
-    align-items:center;
+  position:absolute;
+  bottom:140px;
+  display:flex;
+  flex-direction:column-reverse;
+  align-items:center;
 }
 
 /* SLOT */
 .slot{
-    width:80px;
-    height:40px;
-    border:2px dashed #aaa;
-    border-radius:30px;
-    margin:2px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+  width:80px;
+  height:40px;
+  border:2px dashed #aaa;
+  border-radius:25px;
+  margin:2px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
-/* SCOOP TRAY */
+/* TRAY */
 #tray{
-    height:140px;
-    background:rgba(255,255,255,0.85);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:10px;
-    padding:10px;
+  height:140px;
+  background:rgba(255,255,255,0.85);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 /* SCOOPS */
 .scoop{
-    width:60px;
-    cursor:pointer;
-    transition:0.2s;
+  width:60px;
+  cursor:pointer;
+  transition:0.2s;
 }
 
 .scoop:active{
-    transform:scale(1.1);
+  transform:scale(1.1);
+}
+
+/* LEVEL */
+#level{
+  text-align:center;
+  font-size:18px;
+  margin-top:4px;
 }
 
 </style>
@@ -116,19 +121,20 @@ body{
 
 <!-- SPLASH -->
 <div id="splash">
-    <img src="assets/innovine-logo.png" width="200">
+  <img src="assets/innovine-logo.png" width="200">
 </div>
 
 <!-- GAME -->
 <div id="game">
 
-<div id="title">🍦 Build the Ice Cream (1 → 9)</div>
+<div id="title">🍦 Build Ice Cream (Descending Order)</div>
+<div id="level">Level 1</div>
 
 <div id="main">
 
-    <img id="cone" src="assets/cone.png">
+  <img id="cone" src="assets/cone.png">
 
-    <div id="stack"></div>
+  <div id="stack"></div>
 
 </div>
 
@@ -138,95 +144,138 @@ body{
 
 <script>
 
-let selected=null;
+let levels = [
+  [2,7,5],
+  [3,8,9],
+  [7,4,6],
+  [9,1,8],
+  [4,7,2]
+];
+
+let levelIndex = 0;
+let selected = null;
 
 /* START */
-window.onload=()=>{
-    setTimeout(()=>{
-        document.getElementById("splash").style.display="none";
-        document.getElementById("game").style.display="flex";
-        init();
-    },2000);
+window.onload = ()=>{
+  setTimeout(()=>{
+    document.getElementById("splash").style.display="none";
+    document.getElementById("game").style.display="flex";
+    loadLevel();
+  },2000);
 };
 
-function init(){
-    createStack();
-    createScoops();
+/* LOAD LEVEL */
+function loadLevel(){
+
+  let set = levels[levelIndex];
+
+  document.getElementById("level").innerText = "Level " + (levelIndex+1);
+
+  createStack();
+  createScoops(set);
 }
 
 /* STACK */
 function createStack(){
+  let stack = document.getElementById("stack");
+  stack.innerHTML="";
 
-    let stack=document.getElementById("stack");
-    stack.innerHTML="";
-
-    for(let i=1;i<=9;i++){
-        let d=document.createElement("div");
-        d.className="slot";
-        d.dataset.value=i;
-        stack.appendChild(d);
-    }
+  for(let i=1;i<=3;i++){
+    let d=document.createElement("div");
+    d.className="slot";
+    d.dataset.value=i;
+    stack.appendChild(d);
+  }
 }
 
 /* SCOOPS */
-function createScoops(){
+function createScoops(arr){
 
-    let tray=document.getElementById("tray");
-    tray.innerHTML="";
+  let tray=document.getElementById("tray");
+  tray.innerHTML="";
 
-    let arr=[1,2,3,4,5,6,7,8,9];
-    arr.sort(()=>Math.random()-0.5);
+  arr.sort(()=>Math.random()-0.5);
 
-    arr.forEach(n=>{
-        let img=document.createElement("img");
-        img.src=`assets/scoop-${n}.png`;
-        img.className="scoop";
-        img.dataset.value=n;
+  arr.forEach(n=>{
+    let img=document.createElement("img");
+    img.src=`assets/scoop-${n}.png`;
+    img.className="scoop";
+    img.dataset.value=n;
 
-        img.onclick=()=>selected={img,n};
+    img.onclick=()=>selected={img,n};
 
-        tray.appendChild(img);
-    });
+    tray.appendChild(img);
+  });
 }
 
 /* PLACE */
 document.getElementById("stack").onclick=(e)=>{
 
-    if(!selected) return;
+  if(!selected) return;
 
-    let slots=document.querySelectorAll(".slot");
+  let slots=document.querySelectorAll(".slot");
 
-    for(let s of slots){
-        if(s.innerHTML==""){
+  for(let s of slots){
 
-            if(parseInt(s.dataset.value)==selected.n){
+    if(s.innerHTML==""){
 
-                s.innerHTML=`<img src="assets/scoop-${selected.n}.png" style="width:60px">`;
-                selected.img.style.visibility="hidden";
-                selected=null;
+      let expected = 3 - (Array.from(slots).filter(x=>x.innerHTML!="").length);
 
-                checkWin();
-            }
-            break;
-        }
+      // DESCENDING ORDER CHECK
+      let correctValue = Math.max(...levels[levelIndex]);
+
+      if(selected.n === correctValue || checkDescending(selected.n, slots)){
+
+        s.innerHTML = `<img src="assets/scoop-${selected.n}.png" style="width:60px">`;
+        selected.img.style.visibility="hidden";
+        selected=null;
+
+        checkWin();
+      }
+
+      break;
     }
+  }
 };
 
+/* DESCENDING VALIDATION */
+function checkDescending(n, slots){
+
+  let filled = Array.from(slots).filter(x=>x.innerHTML!="").length;
+
+  let set = levels[levelIndex].slice().sort((a,b)=>b-a);
+
+  return n === set[filled];
+}
+
+/* WIN */
 function checkWin(){
 
-    let filled=0;
-    document.querySelectorAll(".slot").forEach(s=>{
-        if(s.innerHTML!="") filled++;
+  let filled=0;
+  document.querySelectorAll(".slot").forEach(s=>{
+    if(s.innerHTML!="") filled++;
+  });
+
+  if(filled===3){
+
+    confetti({
+      particleCount:250,
+      spread:140,
+      origin:{y:0.6}
     });
 
-    if(filled==9){
+    setTimeout(()=>{
+      levelIndex++;
 
-        confetti({
-            particleCount:300,
-            spread:160,
-            origin:{y:0.6}
-        });
-    }
+      if(levelIndex<levels.length){
+        loadLevel();
+      }else{
+        document.getElementById("game").innerHTML =
+        "<h1 style='text-align:center'>🎉 All Levels Completed!</h1>";
+      }
+
+    },1200);
+  }
 }
 
 </script>
