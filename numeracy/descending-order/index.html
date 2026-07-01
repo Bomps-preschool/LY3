@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fix the Train - Perfect Alignment</title>
+<title>Ice Cream Stack Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -30,108 +30,73 @@ body{
 #game{
     display:none;
     text-align:center;
+    padding:10px;
 }
 
 /* TITLE */
 h1{
-    margin:8px;
+    margin:10px;
     color:#2c3e50;
 }
 
-/* TRACK WRAPPER */
-#trackArea{
-    position:relative;
-    width:100%;
-    height:240px;
-    margin-top:10px;
+/* ICE CREAM CONE */
+#cone{
+    width:120px;
+    margin:20px auto;
 }
 
-/* TRACK */
-#track{
-    position:absolute;
-    bottom:40px; /* IMPORTANT BASELINE FIX */
-    width:100%;
-    height:80px;
-    background:url("assets/track.png") repeat-x;
-    background-size:contain;
-}
-
-/* TRAIN ROW (FIXED ALIGNMENT) */
-#train{
-    position:absolute;
-    bottom:40px; /* SAME AS TRACK → PERFECT ALIGNMENT */
-    width:100%;
+/* STACK AREA */
+#stack{
     display:flex;
-    justify-content:center;
-    align-items:flex-end;
-    gap:6px;
+    flex-direction:column-reverse;
+    align-items:center;
+    margin-top:20px;
+    min-height:300px;
 }
 
-/* ENGINE */
-.engine{
-    font-size:55px;
-    line-height:1;
-    transform:translateY(4px); /* tiny correction for visual baseline */
-}
-
-/* WAGON */
-.wagon{
-    width:85px;
-    height:65px;
-    background:linear-gradient(#ffcc66,#ff9900);
-    border-radius:10px;
+/* SCOOP SLOT */
+.slot{
+    width:90px;
+    height:45px;
+    margin:3px;
+    border-radius:50px 50px 20px 20px;
+    background:#fff;
+    border:2px dashed #aaa;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:22px;
     font-weight:bold;
-    box-shadow:0 5px 10px rgba(0,0,0,0.25);
-    position:relative;
-    transform:translateY(2px); /* aligns wheels to track */
 }
 
-/* WHEEL EFFECT */
-.wagon::after{
-    content:"";
-    position:absolute;
-    bottom:-8px;
-    left:15px;
-    width:10px;
-    height:10px;
-    background:#333;
-    border-radius:50%;
-    box-shadow:50px 0 #333;
-}
-
-/* CORRECT */
-.correct{
-    background:#7bed9f !important;
-    box-shadow:0 0 15px #2ecc71;
-}
-
-/* NUMBER PANEL */
-#numbers{
-    margin-top:30px;
+/* SCOOPS PANEL */
+#scoops{
     display:flex;
     justify-content:center;
     flex-wrap:wrap;
     gap:10px;
+    margin-top:20px;
 }
 
-/* NUMBER */
-.num{
-    width:60px;
-    height:60px;
-    background:white;
-    border-radius:10px;
+/* SCOOP */
+.scoop{
+    width:70px;
+    height:70px;
+    border-radius:50%;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:22px;
     font-weight:bold;
+    color:white;
     cursor:pointer;
-    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
+
+/* COLORS */
+.c1{background:#ff6b6b;}
+.c2{background:#feca57;}
+.c3{background:#48dbfb;}
+.c4{background:#1dd1a1;}
+.c5{background:#5f27cd;}
 
 /* END */
 #end{
@@ -143,7 +108,6 @@ h1{
     background:white;
 }
 
-/* BUTTON */
 button{
     padding:10px 20px;
     font-size:18px;
@@ -152,6 +116,21 @@ button{
     border:none;
     border-radius:8px;
     cursor:pointer;
+}
+
+/* SPRINKLES */
+.sprinkle{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:gold;
+    border-radius:50%;
+    animation:fall 1s linear forwards;
+}
+
+@keyframes fall{
+    from{transform:translateY(-20px);}
+    to{transform:translateY(400px); opacity:0;}
 }
 
 </style>
@@ -167,37 +146,33 @@ button{
 <!-- GAME -->
 <div id="game">
 
-<h1>🚂 Fix the Train!</h1>
-<p>Tap numbers in descending order (10 → 1)</p>
+<h1>🍦 Build the Ice Cream!</h1>
+<p>Tap scoops in correct order (1 → 5)</p>
 
-<!-- TRACK -->
-<div id="trackArea">
-    <div id="track"></div>
-
-    <div id="train">
-        <div class="engine">🚂</div>
-    </div>
+<div id="cone">
+    <img src="assets/cone.png" width="120">
 </div>
 
-<!-- NUMBERS -->
-<div id="numbers"></div>
+<div id="stack"></div>
+
+<div id="scoops"></div>
 
 </div>
 
 <!-- END -->
 <div id="end">
-    <h1>🎉 Train Completed!</h1>
+    <h1>🎉 Yummy Ice Cream Ready!</h1>
     <button onclick="restart()">Play Again</button>
 </div>
 
 <!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
-<audio id="clap" src="assets/claps.mp3"></audio>
 
 <script>
 
 let selected = null;
+let current = 1;
 
 /* START */
 window.onload = ()=>{
@@ -210,67 +185,67 @@ window.onload = ()=>{
 
 /* INIT */
 function startGame(){
-    createTrain();
-    createNumbers();
+    createStack();
+    createScoops();
 }
 
-/* TRAIN */
-function createTrain(){
+/* STACK */
+function createStack(){
 
-    let train = document.getElementById("train");
-    train.innerHTML = `<div class="engine">🚂</div>`;
+    let stack = document.getElementById("stack");
+    stack.innerHTML = "";
 
-    for(let i=10;i>=1;i--){
-
+    for(let i=1;i<=5;i++){
         let div = document.createElement("div");
-        div.className = "wagon";
+        div.className = "slot";
         div.dataset.value = i;
 
         div.onclick = ()=>place(div);
 
-        train.appendChild(div);
+        stack.appendChild(div);
     }
 }
 
-/* NUMBERS */
-function createNumbers(){
+/* SCOOPS */
+function createScoops(){
 
-    let arr = [10,9,8,7,6,5,4,3,2,1];
-    arr.sort(()=>Math.random()-0.5);
+    let colors = ["c1","c2","c3","c4","c5"];
+    let nums = [1,2,3,4,5];
 
-    let box = document.getElementById("numbers");
+    nums.sort(()=>Math.random()-0.5);
+
+    let box = document.getElementById("scoops");
     box.innerHTML = "";
 
-    arr.forEach(n=>{
-        let d = document.createElement("div");
-        d.className = "num";
-        d.innerText = n;
+    nums.forEach((n,i)=>{
+        let div = document.createElement("div");
+        div.className = "scoop " + colors[i];
+        div.innerText = n;
 
-        d.onclick = ()=>select(n,d);
+        div.onclick = ()=>select(div,n);
 
-        box.appendChild(d);
+        box.appendChild(div);
     });
 }
 
-/* SELECT */
-function select(n,el){
-    selected = {n,el};
+/* SELECT SCOOP */
+function select(div,n){
+    selected = {div,n};
 }
 
 /* PLACE */
-function place(wagon){
+function place(slot){
 
     if(!selected) return;
 
-    if(parseInt(wagon.dataset.value) === selected.n){
+    if(parseInt(slot.dataset.value) === selected.n){
 
         document.getElementById("correct").play();
 
-        wagon.innerText = selected.n;
-        wagon.classList.add("correct");
+        slot.innerText = selected.n;
 
-        selected.el.style.visibility="hidden";
-        selected=null;
+        selected.div.style.visibility="hidden";
+        selected = null;
 
         checkWin();
 
@@ -279,17 +254,34 @@ function place(wagon){
     }
 }
 
+/* SPRINKLES */
+function sprinkleEffect(){
+    for(let i=0;i<20;i++){
+        let s = document.createElement("div");
+        s.className = "sprinkle";
+        s.style.left = Math.random()*100 + "%";
+        document.body.appendChild(s);
+
+        setTimeout(()=>s.remove(),1000);
+    }
+}
+
 /* WIN */
 function checkWin(){
 
-    let done = document.querySelectorAll(".wagon.correct").length;
+    let filled = document.querySelectorAll(".slot").length;
+    let done = 0;
 
-    if(done === 10){
+    document.querySelectorAll(".slot").forEach(s=>{
+        if(s.innerText !== "") done++;
+    });
 
-        document.getElementById("clap").play();
+    if(done === 5){
+
+        sprinkleEffect();
 
         confetti({
-            particleCount:400,
+            particleCount:300,
             spread:160,
             origin:{y:0.6}
         });
@@ -306,6 +298,7 @@ function restart(){
     document.getElementById("end").style.display="none";
     document.getElementById("game").style.display="block";
     selected=null;
+    current=1;
     startGame();
 }
 
