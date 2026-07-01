@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ice Cream Descending Order Game</title>
+<title>Ice Cream Game FIXED</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -31,7 +31,7 @@ body{
   background:white;
 }
 
-/* GAME WRAPPER */
+/* GAME */
 #game{
   display:none;
   height:100vh;
@@ -44,11 +44,11 @@ body{
 #title{
   text-align:center;
   padding:8px;
-  font-size:20px;
+  font-size:22px;
   color:#333;
 }
 
-/* MAIN AREA */
+/* MAIN */
 #main{
   flex:1;
   display:flex;
@@ -57,17 +57,17 @@ body{
   position:relative;
 }
 
-/* CONE */
+/* CONE (BIG FIX) */
 #cone{
-  width:120px;
+  width:180px;   /* 🔥 increased size */
   position:absolute;
-  bottom:40px;
+  bottom:30px;
 }
 
 /* STACK */
 #stack{
   position:absolute;
-  bottom:140px;
+  bottom:200px;
   display:flex;
   flex-direction:column-reverse;
   align-items:center;
@@ -75,30 +75,38 @@ body{
 
 /* SLOT */
 .slot{
-  width:80px;
-  height:40px;
-  border:2px dashed #aaa;
-  border-radius:25px;
-  margin:2px;
+  width:110px;
+  height:55px;
+  border:2px dashed rgba(0,0,0,0.2);
+  border-radius:40px;
+  margin:3px;
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
-/* TRAY */
+/* SCOOP TRAY */
 #tray{
-  height:140px;
-  background:rgba(255,255,255,0.85);
+  height:160px;
+  background:rgba(255,255,255,0.9);
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:10px;
   flex-wrap:wrap;
+  gap:12px;
+  padding:10px;
 }
 
-/* SCOOPS */
+/* SCOOPS (BIG FIX) */
 .scoop{
-  width:60px;
+  width:90px;   /* 🔥 increased size */
+  height:90px;
+  object-fit:contain;
+
+  /* 🔥 IMPORTANT: removes white box illusion */
+  background:transparent;
+  border:none;
+
   cursor:pointer;
   transition:0.2s;
 }
@@ -107,11 +115,9 @@ body{
   transform:scale(1.1);
 }
 
-/* LEVEL */
-#level{
-  text-align:center;
-  font-size:18px;
-  margin-top:4px;
+/* SOUND SAFETY */
+audio{
+  display:none;
 }
 
 </style>
@@ -121,14 +127,13 @@ body{
 
 <!-- SPLASH -->
 <div id="splash">
-  <img src="assets/innovine-logo.png" width="200">
+  <img src="assets/innovine-logo.png" width="220">
 </div>
 
 <!-- GAME -->
 <div id="game">
 
 <div id="title">🍦 Build Ice Cream (Descending Order)</div>
-<div id="level">Level 1</div>
 
 <div id="main">
 
@@ -142,6 +147,11 @@ body{
 
 </div>
 
+<!-- AUDIO -->
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+<audio id="clap" src="assets/claps.mp3"></audio>
+
 <script>
 
 let levels = [
@@ -152,11 +162,20 @@ let levels = [
   [4,7,2]
 ];
 
-let levelIndex = 0;
-let selected = null;
+let levelIndex=0;
+let selected=null;
+
+/* SAFE SOUND PLAY */
+function play(id){
+  let a=document.getElementById(id);
+  if(a){
+    a.currentTime=0;
+    a.play().catch(()=>{});
+  }
+}
 
 /* START */
-window.onload = ()=>{
+window.onload=()=>{
   setTimeout(()=>{
     document.getElementById("splash").style.display="none";
     document.getElementById("game").style.display="flex";
@@ -167,9 +186,10 @@ window.onload = ()=>{
 /* LOAD LEVEL */
 function loadLevel(){
 
-  let set = levels[levelIndex];
+  let set=levels[levelIndex];
 
-  document.getElementById("level").innerText = "Level " + (levelIndex+1);
+  document.getElementById("title").innerText =
+    "🍦 Level " + (levelIndex+1) + " (Descending Order)";
 
   createStack();
   createScoops(set);
@@ -177,13 +197,13 @@ function loadLevel(){
 
 /* STACK */
 function createStack(){
-  let stack = document.getElementById("stack");
+
+  let stack=document.getElementById("stack");
   stack.innerHTML="";
 
   for(let i=1;i<=3;i++){
     let d=document.createElement("div");
     d.className="slot";
-    d.dataset.value=i;
     stack.appendChild(d);
   }
 }
@@ -209,7 +229,7 @@ function createScoops(arr){
 }
 
 /* PLACE */
-document.getElementById("stack").onclick=(e)=>{
+document.getElementById("stack").onclick=()=>{
 
   if(!selected) return;
 
@@ -219,18 +239,21 @@ document.getElementById("stack").onclick=(e)=>{
 
     if(s.innerHTML==""){
 
-      let expected = 3 - (Array.from(slots).filter(x=>x.innerHTML!="").length);
+      let expected = getExpected(slots);
 
-      // DESCENDING ORDER CHECK
-      let correctValue = Math.max(...levels[levelIndex]);
+      if(selected.n === expected){
 
-      if(selected.n === correctValue || checkDescending(selected.n, slots)){
+        play("correct");
 
-        s.innerHTML = `<img src="assets/scoop-${selected.n}.png" style="width:60px">`;
+        s.innerHTML=`<img src="assets/scoop-${selected.n}.png" style="width:100px">`;
+
         selected.img.style.visibility="hidden";
         selected=null;
 
         checkWin();
+
+      }else{
+        play("wrong");
       }
 
       break;
@@ -238,40 +261,44 @@ document.getElementById("stack").onclick=(e)=>{
   }
 };
 
-/* DESCENDING VALIDATION */
-function checkDescending(n, slots){
+/* DESCENDING LOGIC */
+function getExpected(slots){
 
-  let filled = Array.from(slots).filter(x=>x.innerHTML!="").length;
+  let set=levels[levelIndex].slice().sort((a,b)=>b-a);
 
-  let set = levels[levelIndex].slice().sort((a,b)=>b-a);
+  let filled=Array.from(slots).filter(x=>x.innerHTML!="").length;
 
-  return n === set[filled];
+  return set[filled];
 }
 
 /* WIN */
 function checkWin(){
 
   let filled=0;
+
   document.querySelectorAll(".slot").forEach(s=>{
     if(s.innerHTML!="") filled++;
   });
 
   if(filled===3){
 
+    play("clap");
+
     confetti({
-      particleCount:250,
-      spread:140,
+      particleCount:350,
+      spread:160,
       origin:{y:0.6}
     });
 
     setTimeout(()=>{
+
       levelIndex++;
 
       if(levelIndex<levels.length){
         loadLevel();
       }else{
-        document.getElementById("game").innerHTML =
-        "<h1 style='text-align:center'>🎉 All Levels Completed!</h1>";
+        document.getElementById("game").innerHTML=
+        "<h1 style='text-align:center;margin-top:40vh'>🎉 All Levels Done!</h1>";
       }
 
     },1200);
