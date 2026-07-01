@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Train Carriage Order Game</title>
+<title>Fix the Train - Descending Order</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -33,52 +33,48 @@ body{
     padding:10px;
 }
 
-/* TRAIN HEADER */
+/* TITLE */
 h1{
+    margin:10px;
     color:#2c3e50;
 }
 
-/* TRAIN ROW */
+/* TRAIN */
 #train{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:10px;
     margin-top:30px;
+    gap:5px;
 }
 
 /* ENGINE */
 .engine{
-    font-size:40px;
-    animation: move 2s infinite alternate;
+    font-size:45px;
 }
 
-@keyframes move{
-    from{transform:translateX(0);}
-    to{transform:translateX(10px);}
-}
-
-/* CARROUGE */
-.carriage{
-    width:60px;
-    height:60px;
+/* WAGON */
+.wagon{
+    width:55px;
+    height:55px;
+    background:#fff;
     border-radius:10px;
-    background:white;
-    border:2px dashed #555;
+    border:2px solid #444;
     display:flex;
     justify-content:center;
     align-items:center;
     font-size:22px;
     font-weight:bold;
+    transition:0.2s;
 }
 
-/* GLOW */
-.glow{
-    background:#b6f7c1 !important;
-    box-shadow:0 0 15px #2ecc71;
+/* GREEN LIGHT */
+.correct{
+    background:#b6f7c1;
+    box-shadow:0 0 12px #2ecc71;
 }
 
-/* NUMBER PANEL */
+/* NUMBERS */
 #numbers{
     margin-top:40px;
     display:flex;
@@ -87,22 +83,21 @@ h1{
     gap:10px;
 }
 
-/* NUMBER BUTTON */
 .num{
-    width:60px;
-    height:60px;
-    background:#fff;
+    width:55px;
+    height:55px;
+    background:white;
     border-radius:10px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:22px;
+    font-size:20px;
     font-weight:bold;
     cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+    box-shadow:0 3px 8px rgba(0,0,0,0.2);
 }
 
-/* END SCREEN */
+/* END */
 #end{
     display:none;
     height:100vh;
@@ -112,7 +107,6 @@ h1{
     background:white;
 }
 
-/* BUTTON */
 button{
     padding:10px 20px;
     font-size:18px;
@@ -157,93 +151,84 @@ button{
 <!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
-<audio id="choo" src="assets/claps.mp3"></audio>
+<audio id="clap" src="assets/claps.mp3"></audio>
 
 <script>
 
-let order = [];
+let selected = null;
 let current = 10;
-let selectedNumber = null;
 
 /* SPLASH */
 window.onload = () => {
-    setTimeout(() => {
-        document.getElementById("splash").style.display = "none";
-        document.getElementById("game").style.display = "block";
+    setTimeout(()=>{
+        document.getElementById("splash").style.display="none";
+        document.getElementById("game").style.display="block";
         startGame();
-    }, 5000);
+    },5000);
 };
 
-/* INIT GAME */
+/* START GAME */
 function startGame(){
-
-    order = [];
-    current = 10;
-    selectedNumber = null;
-
-    createCarriages();
+    createTrain();
     createNumbers();
 }
 
-/* CREATE TRAIN CARRIAGES */
-function createCarriages(){
+/* TRAIN WAGONS */
+function createTrain(){
 
-    const train = document.getElementById("train");
-
+    let train = document.getElementById("train");
     train.innerHTML = `<div class="engine">🚂</div>`;
 
     for(let i=10;i>=1;i--){
         let div = document.createElement("div");
-        div.className = "carriage";
+        div.className = "wagon";
         div.dataset.value = i;
 
-        div.onclick = () => placeNumber(div);
+        div.onclick = () => place(div);
 
         train.appendChild(div);
     }
 }
 
-/* CREATE NUMBER BUTTONS */
+/* NUMBERS */
 function createNumbers(){
 
-    let numbers = document.getElementById("numbers");
-    numbers.innerHTML = "";
-
     let arr = [10,9,8,7,6,5,4,3,2,1];
-
     arr.sort(()=>Math.random()-0.5);
 
-    arr.forEach(num=>{
-        let div = document.createElement("div");
-        div.className = "num";
-        div.innerText = num;
+    let box = document.getElementById("numbers");
+    box.innerHTML = "";
 
-        div.onclick = () => selectNumber(div, num);
+    arr.forEach(n=>{
+        let d = document.createElement("div");
+        d.className = "num";
+        d.innerText = n;
 
-        numbers.appendChild(div);
+        d.onclick = () => selectNumber(d,n);
+
+        box.appendChild(d);
     });
 }
 
 /* SELECT NUMBER */
-function selectNumber(div, num){
-
-    selectedNumber = {div, num};
+function selectNumber(el,n){
+    selected = {el,n};
 }
 
-/* PLACE NUMBER */
-function placeNumber(carriage){
+/* PLACE IN WAGON */
+function place(wagon){
 
-    if(!selectedNumber) return;
+    if(!selected) return;
 
-    if(parseInt(carriage.dataset.value) === selectedNumber.num){
+    if(parseInt(wagon.dataset.value) === selected.n){
 
         document.getElementById("correct").play();
 
-        carriage.innerText = selectedNumber.num;
-        carriage.classList.add("glow");
+        wagon.innerText = selected.n;
+        wagon.classList.add("correct");
 
-        selectedNumber.div.style.visibility = "hidden";
-        selectedNumber = null;
+        selected.el.style.visibility = "hidden";
+        selected = null;
 
         checkWin();
 
@@ -252,32 +237,34 @@ function placeNumber(carriage){
     }
 }
 
-/* WIN CHECK */
+/* WIN */
 function checkWin(){
 
-    let filled = document.querySelectorAll(".carriage.glow").length;
+    let filled = document.querySelectorAll(".correct").length;
 
     if(filled === 10){
 
-        document.getElementById("choo").play();
+        document.getElementById("clap").play();
 
         confetti({
-            particleCount:300,
+            particleCount:400,
             spread:160,
             origin:{y:0.6}
         });
 
         setTimeout(()=>{
-            document.getElementById("game").style.display = "none";
-            document.getElementById("end").style.display = "flex";
+            document.getElementById("game").style.display="none";
+            document.getElementById("end").style.display="flex";
         },1000);
     }
 }
 
 /* RESTART */
 function restart(){
-    document.getElementById("end").style.display = "none";
-    document.getElementById("game").style.display = "block";
+    document.getElementById("end").style.display="none";
+    document.getElementById("game").style.display="block";
+    selected = null;
+    current = 10;
     startGame();
 }
 
