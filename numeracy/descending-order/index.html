@@ -30,7 +30,6 @@ body{
 #game{
     display:none;
     text-align:center;
-    padding:10px;
 }
 
 /* TITLE */
@@ -39,7 +38,7 @@ h1{
     color:#2c3e50;
 }
 
-/* TRAIN */
+/* TRAIN WRAPPER */
 #train{
     display:flex;
     justify-content:center;
@@ -53,48 +52,57 @@ h1{
     font-size:45px;
 }
 
-/* WAGON */
+/* WAGON IMAGE SLOT */
 .wagon{
-    width:55px;
-    height:55px;
-    background:#fff;
-    border-radius:10px;
-    border:2px solid #444;
+    width:85px;
+    height:85px;
+    position:relative;
     display:flex;
     justify-content:center;
     align-items:center;
+}
+
+/* WAGON IMAGE */
+.wagon img{
+    width:85px;
+}
+
+/* NUMBER INSIDE WAGON */
+.wagon span{
+    position:absolute;
     font-size:22px;
     font-weight:bold;
-    transition:0.2s;
+    color:#000;
 }
 
-/* GREEN LIGHT */
+/* LIGHT EFFECT */
 .correct{
-    background:#b6f7c1;
-    box-shadow:0 0 12px #2ecc71;
+    filter: drop-shadow(0 0 6px #2ecc71);
+    transform:scale(1.05);
 }
 
-/* NUMBERS */
+/* NUMBER PANEL */
 #numbers{
     margin-top:40px;
     display:flex;
     justify-content:center;
     flex-wrap:wrap;
-    gap:10px;
+    gap:12px;
 }
 
+/* NUMBER TILE */
 .num{
-    width:55px;
-    height:55px;
+    width:60px;
+    height:60px;
     background:white;
     border-radius:10px;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:20px;
+    font-size:22px;
     font-weight:bold;
     cursor:pointer;
-    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
 /* END */
@@ -107,6 +115,7 @@ h1{
     background:white;
 }
 
+/* BUTTON */
 button{
     padding:10px 20px;
     font-size:18px;
@@ -143,7 +152,7 @@ button{
 
 <!-- END -->
 <div id="end">
-    <h1>🎉 Train Fixed Successfully!</h1>
+    <h1>🎉 Train Completed!</h1>
     <h2>🏅 Junior Train Engineer</h2>
     <button onclick="restart()">Play Again</button>
 </div>
@@ -156,10 +165,9 @@ button{
 <script>
 
 let selected = null;
-let current = 10;
 
-/* SPLASH */
-window.onload = () => {
+/* START */
+window.onload = ()=>{
     setTimeout(()=>{
         document.getElementById("splash").style.display="none";
         document.getElementById("game").style.display="block";
@@ -167,24 +175,31 @@ window.onload = () => {
     },5000);
 };
 
-/* START GAME */
+/* INIT */
 function startGame(){
     createTrain();
     createNumbers();
 }
 
-/* TRAIN WAGONS */
+/* TRAIN WITH WAGONS (LIKE YOUR IMAGE) */
 function createTrain(){
 
     let train = document.getElementById("train");
     train.innerHTML = `<div class="engine">🚂</div>`;
 
     for(let i=10;i>=1;i--){
+
         let div = document.createElement("div");
         div.className = "wagon";
+
         div.dataset.value = i;
 
-        div.onclick = () => place(div);
+        div.innerHTML = `
+            <img src="assets/wagon.png">
+            <span></span>
+        `;
+
+        div.onclick = ()=>placeNumber(div);
 
         train.appendChild(div);
     }
@@ -204,7 +219,7 @@ function createNumbers(){
         d.className = "num";
         d.innerText = n;
 
-        d.onclick = () => selectNumber(d,n);
+        d.onclick = ()=>selectNumber(d,n);
 
         box.appendChild(d);
     });
@@ -215,16 +230,18 @@ function selectNumber(el,n){
     selected = {el,n};
 }
 
-/* PLACE IN WAGON */
-function place(wagon){
+/* PLACE NUMBER IN WAGON */
+function placeNumber(wagon){
 
     if(!selected) return;
 
-    if(parseInt(wagon.dataset.value) === selected.n){
+    let correctValue = parseInt(wagon.dataset.value);
+
+    if(correctValue === selected.n){
 
         document.getElementById("correct").play();
 
-        wagon.innerText = selected.n;
+        wagon.querySelector("span").innerText = selected.n;
         wagon.classList.add("correct");
 
         selected.el.style.visibility = "hidden";
@@ -240,9 +257,14 @@ function place(wagon){
 /* WIN */
 function checkWin(){
 
-    let filled = document.querySelectorAll(".correct").length;
+    let filled = document.querySelectorAll(".wagon span").length;
+    let done = 0;
 
-    if(filled === 10){
+    document.querySelectorAll(".wagon span").forEach(s=>{
+        if(s.innerText !== "") done++;
+    });
+
+    if(done === 10){
 
         document.getElementById("clap").play();
 
@@ -264,7 +286,6 @@ function restart(){
     document.getElementById("end").style.display="none";
     document.getElementById("game").style.display="block";
     selected = null;
-    current = 10;
     startGame();
 }
 
