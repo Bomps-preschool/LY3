@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Fix the Train - Scene Game</title>
+<title>Fix the Train - Track Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -26,7 +26,7 @@ body{
     background:white;
 }
 
-/* GAME */
+/* GAME WRAPPER */
 #game{
     display:none;
     text-align:center;
@@ -34,53 +34,74 @@ body{
 
 /* TITLE */
 h1{
-    margin:10px;
+    margin:8px;
     color:#2c3e50;
 }
 
-/* TRAIN SCENE */
+/* TRACK AREA */
+#trackArea{
+    position:relative;
+    width:100%;
+    height:220px;
+    margin-top:20px;
+}
+
+/* TRACK IMAGE */
+#track{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:80px;
+    background:url("assets/track.png") repeat-x;
+    background-size:contain;
+}
+
+/* TRAIN ROW (IMPORTANT FIX) */
 #train{
+    position:absolute;
+    bottom:35px;   /* 👈 THIS FIXS ALIGNMENT ON TRACK */
+    width:100%;
     display:flex;
     justify-content:center;
-    align-items:center;
-    margin-top:40px;
+    align-items:flex-end;
+    gap:6px;
 }
 
 /* ENGINE */
 .engine{
     font-size:55px;
+    line-height:1;
 }
 
-/* WAGONS (CONNECTED LOOK) */
+/* WAGON (REAL ON TRACK LOOK) */
 .wagon{
-    width:95px;
-    height:70px;
+    width:85px;
+    height:65px;
     background:linear-gradient(#ffcc66,#ff9900);
     border-radius:10px;
-    margin-left:5px;
     display:flex;
     justify-content:center;
     align-items:center;
     font-size:22px;
     font-weight:bold;
-    box-shadow:0 5px 10px rgba(0,0,0,0.2);
+    box-shadow:0 5px 10px rgba(0,0,0,0.25);
     position:relative;
 }
 
-/* WAGON WHEEL LOOK */
+/* WHEEL EFFECT */
 .wagon::after{
     content:"";
     position:absolute;
     bottom:-8px;
-    width:12px;
-    height:12px;
+    left:15px;
+    width:10px;
+    height:10px;
     background:#333;
     border-radius:50%;
-    left:20px;
     box-shadow:50px 0 #333;
 }
 
-/* GREEN LIGHT */
+/* CORRECT GLOW */
 .correct{
     background:#7bed9f !important;
     box-shadow:0 0 15px #2ecc71;
@@ -147,8 +168,16 @@ button{
 <h1>🚂 Fix the Train!</h1>
 <p>Tap numbers in descending order (10 → 1)</p>
 
-<div id="train"></div>
+<!-- TRACK + TRAIN -->
+<div id="trackArea">
+    <div id="track"></div>
 
+    <div id="train">
+        <div class="engine">🚂</div>
+    </div>
+</div>
+
+<!-- NUMBERS -->
 <div id="numbers"></div>
 
 </div>
@@ -251,11 +280,7 @@ function place(wagon){
 /* WIN */
 function checkWin(){
 
-    let done = 0;
-
-    document.querySelectorAll(".wagon.correct").forEach(()=>{
-        done++;
-    });
+    let done = document.querySelectorAll(".wagon.correct").length;
 
     if(done === 10){
 
