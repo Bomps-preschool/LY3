@@ -11,11 +11,10 @@ body{
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:flex-start;
+    justify-content:center;
     min-height:100vh;
     background:#eaf6f6;
 }
-
 #logo{
     display:flex;
     justify-content:center;
@@ -25,58 +24,62 @@ body{
     background:white;
 }
 #logo img{width:250px;}
-
 #game{
     display:none;
     text-align:center;
     padding:20px;
-    width: 100%;
 }
-
-#instruction{
+h1{
     font-size:28px;
-    margin-bottom: 20px;
+    margin-bottom:20px;
 }
-
-/* Vertical object container */
-#objectArea{
+/* BOXES */
+#boxes{
     display:flex;
-    flex-direction: column;
-    align-items:center;
-    gap: 25px;
+    justify-content:center;
+    gap:15px;
+    margin-bottom:40px;
 }
-
-/* Objects */
-.obj{
-    width:150px;
-    height:150px;
-    background:white;
-    border-radius:15px;
+.box{
+    width:180px;
+    height:180px;
+    border:3px dashed #666;
+    border-radius:12px;
     display:flex;
     justify-content:center;
     align-items:center;
+    background:white;
+}
+/* OBJECTS */
+#objectArea{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:15px;
+}
+.obj{
+    width:180px;
+    height:180px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:15px;
+    background:white;
     cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,0.15);
-    transition:0.3s;
+    animation:pop 0.5s ease;
 }
 .obj img{
-    width:120px;
+    max-width:150px;
+    max-height:150px;
 }
-
-/* Correct / wrong highlights */
-.correct{border:5px solid #4CAF50;}
-.wrong{border:5px solid #e74c3c;}
-
-/* End screen */
-#end{
-    display:none;
-    text-align:center;
-    margin-top:50px;
+@keyframes pop{
+    from{transform:scale(0.5);opacity:0;}
+    to{transform:scale(1);opacity:1;}
 }
-#end h1{
-    font-size:40px;
-    margin-bottom:20px;
-}
+.correct{border:5px solid #27ae60;box-shadow:0 0 15px rgba(39,174,96,0.5);}
+.wrong{border:5px solid #e74c3c;box-shadow:0 0 15px rgba(231,76,60,0.5);}
+#end{display:none;text-align:center;}
+#end h1{font-size:40px;margin-bottom:20px;}
 #end button{
     padding:10px 30px;
     font-size:24px;
@@ -86,32 +89,29 @@ body{
     border-radius:10px;
     cursor:pointer;
 }
-
-/* Confetti canvas */
-canvas{
-    position:fixed;
-    top:0;
-    left:0;
-    pointer-events:none;
-    width:100%;
-    height:100%;
-}
+/* Confetti */
+canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 </style>
 </head>
 <body>
 
-<!-- Logo -->
+<!-- LOGO -->
 <div id="logo">
     <img src="assets/innovine-logo.png">
 </div>
 
-<!-- Game -->
+<!-- GAME -->
 <div id="game">
-    <div id="instruction">Tap all pictures that has 'sm' blend</div>
+    <h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
+    <div id="boxes">
+        <div class="box" data-index="0"></div>
+        <div class="box" data-index="1"></div>
+        <div class="box" data-index="2"></div>
+    </div>
     <div id="objectArea"></div>
 </div>
 
-<!-- End -->
+<!-- END -->
 <div id="end">
     <h1>🎉 Well Done!</h1>
     <button onclick="restartGame()">Play Again</button>
@@ -122,71 +122,66 @@ canvas{
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
-<!-- Confetti canvas -->
+<!-- Confetti -->
 <canvas id="confetti"></canvas>
 
 <script>
-// Slides with correct answers
+// Slides
 const slides = [
-    {blend:'sm', pictures:['smile.png','spectacles.png','smell.png','swim.png','smoke.png'], correct:['smile.png','smell.png','smoke.png']},
-    {blend:'sn', pictures:['swan.png','snail.png','snake.png','star.png','snowman.png'], correct:['snail.png','snake.png','snowman.png']},
-    {blend:'st', pictures:['stamp.png','smell.png','swing.png','star.png','stair.png'], correct:['stamp.png','star.png','stair.png']},
-    {blend:'sw', pictures:['snowman.png','spider.png','swim.png','swing.png','swan.png'], correct:['swim.png','swing.png','swan.png']},
-    {blend:'sp', pictures:['smoke.png','spade.png','spider.png','spectacles.png','stair.png'], correct:['spade.png','spider.png','spectacles.png']}
+    {blend:'sm', objects:['smile','spectacles','smell','swim','smoke'], correct:['smile','smell','smoke']},
+    {blend:'sn', objects:['swan','snail','snake','star','snowman'], correct:['snail','snake','snowman']},
+    {blend:'st', objects:['stamp','smell','swing','star','stair'], correct:['stamp','star','stair']},
+    {blend:'sw', objects:['snowman','spider','swim','swing','swan'], correct:['swim','swing','swan']},
+    {blend:'sp', objects:['smoke','spade','spider','spectacles','stair'], correct:['spade','spider','spectacles']}
 ];
 
 let currentSlide = 0;
-let selected = new Set();
+let clickedCount = 0;
 
 // Show logo first
-setTimeout(() => {
+setTimeout(()=>{
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
     loadSlide(currentSlide);
 },5000);
 
 function loadSlide(slideIndex){
-    selected.clear();
+    clickedCount = 0;
     const slide = slides[slideIndex];
-    const objArea = document.getElementById('objectArea');
-    objArea.innerHTML='';
     document.getElementById('instruction').textContent = `Tap all pictures that has '${slide.blend}' blend`;
 
-    // Shuffle pictures
-    let shuffled = slide.pictures.slice().sort(()=>Math.random()-0.5);
+    const objectArea = document.getElementById('objectArea');
+    objectArea.innerHTML='';
 
-    shuffled.forEach(pic=>{
+    slide.objects.forEach(objName=>{
         const div = document.createElement('div');
         div.classList.add('obj');
-        const img = document.createElement('img');
-        img.src = `assets/${pic}`;
-        div.appendChild(img);
-        objArea.appendChild(div);
+        div.innerHTML = `<img src="assets/${objName}.png">`;
+        objectArea.appendChild(div);
 
         div.addEventListener('click',()=>{
-            if(selected.has(pic)) return; // already selected
-            if(slide.correct.includes(pic)){
+            if(slide.correct.includes(objName)){
                 div.classList.add('correct');
-                selected.add(pic);
-            } else {
+                document.getElementById('correct').play();
+                clickedCount++;
+                // If all correct clicked, play clap
+                if(clickedCount === slide.correct.length){
+                    document.getElementById('clap').play();
+                    setTimeout(()=>{
+                        currentSlide++;
+                        if(currentSlide>=slides.length){
+                            document.getElementById('game').style.display='none';
+                            document.getElementById('end').style.display='block';
+                            launchConfetti();
+                        }else{
+                            loadSlide(currentSlide);
+                        }
+                    },700);
+                }
+            }else{
                 div.classList.add('wrong');
                 document.getElementById('wrong').play();
                 setTimeout(()=>{div.classList.remove('wrong');},400);
-            }
-
-            // Check if slide completed
-            if(selected.size === slide.correct.length){
-                document.getElementById('clap').play();
-                setTimeout(()=>{
-                    currentSlide++;
-                    if(currentSlide>=slides.length){
-                        document.getElementById('game').style.display='none';
-                        document.getElementById('end').style.display='block';
-                        launchConfetti();
-                    } else {
-                        loadSlide(currentSlide);
-                    }
-                },500);
             }
         });
     });
@@ -194,13 +189,13 @@ function loadSlide(slideIndex){
 
 // Restart
 function restartGame(){
-    currentSlide = 0;
+    currentSlide=0;
     document.getElementById('end').style.display='none';
     document.getElementById('game').style.display='block';
     loadSlide(currentSlide);
 }
 
-// Confetti effect
+// Confetti
 function launchConfetti(){
     const canvas=document.getElementById('confetti');
     const ctx=canvas.getContext('2d');
@@ -211,7 +206,6 @@ function launchConfetti(){
     for(let i=0;i<80;i++){
         confettis.push({x: Math.random()*canvas.width,y: Math.random()*canvas.height-100,r: Math.random()*6+4,d: Math.random()*10+5,color: colors[Math.floor(Math.random()*colors.length)],tilt: Math.random()*10-10,tiltAngleIncrement: Math.random()*0.07+0.05});
     }
-
     function draw(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         confettis.forEach(c=>{
@@ -225,7 +219,6 @@ function launchConfetti(){
         update();
         requestAnimationFrame(draw);
     }
-
     function update(){
         confettis.forEach(c=>{
             c.tiltAngle+=c.tiltAngleIncrement;
@@ -237,5 +230,6 @@ function launchConfetti(){
     draw();
 }
 </script>
+
 </body>
 </html>
