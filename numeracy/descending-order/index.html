@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Descending Order Game - Full Version</title>
+<title>Descending Order Game - End Screen Fixed</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
     margin:0;
@@ -16,6 +17,7 @@ body{
     background: url('assets/background.png') no-repeat center center fixed;
     background-size: cover;
 }
+
 #logo{
     display:flex;
     justify-content:center;
@@ -24,27 +26,100 @@ body{
     width:100%;
     background:white;
 }
+
 #logo img{width:250px;}
-#game{text-align:center;padding:20px;display:none;position:relative;}
+
+#game{
+    text-align:center;
+    padding:20px;
+    display:none;
+    position:relative;
+}
+
 h1{font-size:28px;margin-bottom:20px;}
-#boxes{display:flex;justify-content:center;gap:15px;margin-bottom:30px;}
-.box{width:100px;height:100px;border:3px dashed #666;border-radius:12px;display:flex;justify-content:center;align-items:center;font-size:32px;background:white;}
-#numbers{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;}
-.number-tile{width:100px;height:100px;border-radius:12px;display:flex;justify-content:center;align-items:center;font-size:36px;font-weight:bold;color:white;cursor:grab;user-select:none;}
+
+#boxes{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.box{
+    width:100px;
+    height:100px;
+    border:3px dashed #666;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:32px;
+    background:white;
+}
+
+#numbers{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.number-tile{
+    width:100px;
+    height:100px;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:36px;
+    font-weight:bold;
+    color:white;
+    cursor:grab;
+    user-select:none;
+}
+
 .number-tile.purple{background:#9b59b6;}
 .number-tile.orange{background:#f39c12;}
 .number-tile.green{background:#27ae60;}
 .number-tile.red{background:#e74c3c;}
 .number-tile.blue{background:#3498db;}
-#bear{position:absolute;bottom:0;left:10px;width:150px;}
-#end{display:none;text-align:center;width:100%;height:100vh;justify-content:center;align-items:center;flex-direction:column;background:none;}
+
+#bear{
+    position:absolute;
+    bottom:0;
+    left:10px;
+    width:150px;
+}
+
+/* END screen with plain background */
+#end{
+    display:none;
+    text-align:center;
+    width:100%;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background: #eaf6f6 !important; /* plain background for end screen */
+}
+
 #end h1{font-size:40px;margin-bottom:20px;}
 #end button{padding:10px 30px;font-size:24px;background:#4CAF50;color:white;border:none;border-radius:10px;cursor:pointer;}
-canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+    width:100%;
+    height:100%;
+}
+
 .wrongAnim{animation:shake 0.4s;}
 @keyframes shake{0%{transform:translateX(0);}25%{transform:translateX(-5px);}50%{transform:translateX(5px);}75%{transform:translateX(-5px);}100%{transform:translateX(0);}}
 </style>
 </head>
+
 <body>
 
 <!-- Logo -->
@@ -78,6 +153,7 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 <canvas id="confetti"></canvas>
 
 <script>
+// Slides sequences
 const slides = [
     [3,8,1],
     [2,5,9],
@@ -91,6 +167,7 @@ let currentIndex = 0;
 let draggedNumber = null;
 let boxes = document.querySelectorAll('.box');
 
+// Show logo first
 setTimeout(() => {
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
@@ -146,6 +223,7 @@ function handleNumberClick(num, element){
             };
         } 
     } else {
+        // Wrong number stays visible
         document.getElementById('wrong').play();
         element.classList.add('wrongAnim');
         setTimeout(()=>{element.classList.remove('wrongAnim');},400);
@@ -197,6 +275,5 @@ function launchConfetti(){
     draw();
 }
 </script>
-
 </body>
 </html>
