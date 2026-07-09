@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Descending Order Game - Fixed Clap</title>
+<title>Descending Order Game - Slide Fix</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{margin:0;font-family:"Comic Sans MS",sans-serif;background:#eaf6f6;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;}
@@ -28,10 +28,8 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 </style>
 <body>
 
-<!-- Logo -->
 <div id="logo"><img src="assets/innovine-logo.png"></div>
 
-<!-- Game -->
 <div id="game">
 <h1>Arrange the numbers in descending order!</h1>
 <div id="boxes">
@@ -42,17 +40,14 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 <div id="numbers"></div>
 </div>
 
-<!-- End -->
 <div id="end">
 <h1>🎉 Well Done!</h1>
 <button onclick="restartGame()">Play Again</button>
 </div>
 
-<!-- Audio -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
-
 <canvas id="confetti"></canvas>
 
 <script>
@@ -69,7 +64,6 @@ let currentSlide = 0;
 let currentIndex = 0;
 let draggedNumber = null;
 let boxes = document.querySelectorAll('.box');
-let clapPlayed = false;
 
 // Show logo first
 setTimeout(() => {
@@ -79,7 +73,6 @@ setTimeout(() => {
 },5000);
 
 function loadSlide(slideNumber){
-    clapPlayed = false; // reset clap for new slide
     const numbers = slides[slideNumber].slice();
     const boxesDiv = document.getElementById('boxes');
     const numbersDiv = document.getElementById('numbers');
@@ -109,40 +102,24 @@ function handleNumberClick(num, element){
     if(num === correctNum){
         boxes[currentIndex].textContent = num;
         element.style.visibility='hidden';
-        document.getElementById('correct').play();
+        currentIndex++;
 
-        if(!clapPlayed){
-            clapPlayed = true;
-            const clap = document.getElementById('clap');
-            clap.currentTime=0;
-            clap.play();
-            clap.onended=()=>{
-                currentIndex++;
-                if(currentIndex>=3){
-                    currentSlide++;
-                    if(currentSlide>=slides.length){
-                        document.getElementById('game').style.display='none';
-                        document.getElementById('end').style.display='block';
-                        launchConfetti();
-                    } else {
-                        loadSlide(currentSlide);
-                    }
-                }
-            };
-        } else {
-            currentIndex++;
-            if(currentIndex>=3){
+        // Only play clap after last number on slide
+        if(currentIndex === slides[currentSlide].length){
+            document.getElementById('clap').play();
+            document.getElementById('clap').onended=()=>{
                 currentSlide++;
-                if(currentSlide>=slides.length){
+                if(currentSlide >= slides.length){
                     document.getElementById('game').style.display='none';
                     document.getElementById('end').style.display='block';
                     launchConfetti();
                 } else {
                     loadSlide(currentSlide);
                 }
-            }
-        }
+            };
+        } 
     } else {
+        // wrong number stays visible
         document.getElementById('wrong').play();
         element.classList.add('wrongAnim');
         setTimeout(()=>{element.classList.remove('wrongAnim');},400);
