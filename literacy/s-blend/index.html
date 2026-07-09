@@ -11,10 +11,11 @@ body{
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
+    justify-content:flex-start;
     min-height:100vh;
     background:#eaf6f6;
 }
+
 #logo{
     display:flex;
     justify-content:center;
@@ -24,31 +25,34 @@ body{
     background:white;
 }
 #logo img{width:250px;}
+
 #game{
     display:none;
     text-align:center;
     padding:20px;
-    width:100%;
-    max-width:900px;
+    width: 100%;
 }
-h2{
+
+#instruction{
     font-size:28px;
-    margin-bottom:30px;
+    margin-bottom: 20px;
 }
+
+/* Vertical object container */
 #objectArea{
     display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:20px;
+    flex-direction: column;
+    align-items:center;
+    gap: 25px;
 }
+
+/* Objects */
 .obj{
     width:150px;
     height:150px;
     background:white;
-    border-radius:12px;
-    padding:10px;
+    border-radius:15px;
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
     cursor:pointer;
@@ -56,23 +60,18 @@ h2{
     transition:0.3s;
 }
 .obj img{
-    max-width:120px;
-    max-height:120px;
+    width:120px;
 }
-.label{
-    font-size:20px;
-    margin-top:8px;
-}
-.correct{
-    border:3px solid green;
-}
-.wrong{
-    border:3px solid red;
-}
+
+/* Correct / wrong highlights */
+.correct{border:5px solid #4CAF50;}
+.wrong{border:5px solid #e74c3c;}
+
+/* End screen */
 #end{
     display:none;
     text-align:center;
-    width:100%;
+    margin-top:50px;
 }
 #end h1{
     font-size:40px;
@@ -87,6 +86,7 @@ h2{
     border-radius:10px;
     cursor:pointer;
 }
+
 /* Confetti canvas */
 canvas{
     position:fixed;
@@ -107,14 +107,14 @@ canvas{
 
 <!-- Game -->
 <div id="game">
-<h2 id="instruction"></h2>
-<div id="objectArea"></div>
+    <div id="instruction">Tap all pictures that has 'sm' blend</div>
+    <div id="objectArea"></div>
 </div>
 
 <!-- End -->
 <div id="end">
-<h1>🎉 Well Done!</h1>
-<button onclick="restartGame()">Play Again</button>
+    <h1>🎉 Well Done!</h1>
+    <button onclick="restartGame()">Play Again</button>
 </div>
 
 <!-- Audio -->
@@ -122,68 +122,71 @@ canvas{
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
-<!-- Confetti -->
+<!-- Confetti canvas -->
 <canvas id="confetti"></canvas>
 
 <script>
+// Slides with correct answers
 const slides = [
-    {blend:'sm', objects:[{img:'assets/smile.png', label:'Smile'},{img:'assets/spectacles.png', label:'Spectacles'},{img:'assets/smell.png', label:'Smell'},{img:'assets/swim.png', label:'Swim'},{img:'assets/smoke.png', label:'Smoke'}], correct:['Smile','Smell','Smoke']},
-    {blend:'sn', objects:[{img:'assets/swan.png', label:'Swan'},{img:'assets/snail.png', label:'Snail'},{img:'assets/snake.png', label:'Snake'},{img:'assets/star.png', label:'Star'},{img:'assets/snowman.png', label:'Snowman'}], correct:['Snail','Snake','Snowman']},
-    {blend:'st', objects:[{img:'assets/stamp.png', label:'Stamp'},{img:'assets/smell.png', label:'Smell'},{img:'assets/swing.png', label:'Swing'},{img:'assets/star.png', label:'Star'},{img:'assets/stair.png', label:'Stair'}], correct:['Stamp','Star','Stair']},
-    {blend:'sw', objects:[{img:'assets/snowman.png', label:'Snowman'},{img:'assets/spider.png', label:'Spider'},{img:'assets/swim.png', label:'Swim'},{img:'assets/swing.png', label:'Swing'},{img:'assets/swan.png', label:'Swan'}], correct:['Swim','Swing','Swan']},
-    {blend:'sp', objects:[{img:'assets/smoke.png', label:'Smoke'},{img:'assets/spade.png', label:'Spade'},{img:'assets/spider.png', label:'Spider'},{img:'assets/spectacles.png', label:'Spectacles'},{img:'assets/stair.png', label:'Stair'}], correct:['Spade','Spider','Spectacles']}
+    {blend:'sm', pictures:['smile.png','spectacles.png','smell.png','swim.png','smoke.png'], correct:['smile.png','smell.png','smoke.png']},
+    {blend:'sn', pictures:['swan.png','snail.png','snake.png','star.png','snowman.png'], correct:['snail.png','snake.png','snowman.png']},
+    {blend:'st', pictures:['stamp.png','smell.png','swing.png','star.png','stair.png'], correct:['stamp.png','star.png','stair.png']},
+    {blend:'sw', pictures:['snowman.png','spider.png','swim.png','swing.png','swan.png'], correct:['swim.png','swing.png','swan.png']},
+    {blend:'sp', pictures:['smoke.png','spade.png','spider.png','spectacles.png','stair.png'], correct:['spade.png','spider.png','spectacles.png']}
 ];
 
 let currentSlide = 0;
-let selectedCount = 0;
-let selectedCorrect = [];
+let selected = new Set();
 
-setTimeout(()=>{
+// Show logo first
+setTimeout(() => {
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
     loadSlide(currentSlide);
 },5000);
 
-function loadSlide(index){
-    selectedCount = 0;
-    selectedCorrect = [];
-    const slide = slides[index];
+function loadSlide(slideIndex){
+    selected.clear();
+    const slide = slides[slideIndex];
+    const objArea = document.getElementById('objectArea');
+    objArea.innerHTML='';
     document.getElementById('instruction').textContent = `Tap all pictures that has '${slide.blend}' blend`;
-    const container = document.getElementById('objectArea');
-    container.innerHTML='';
-    slide.objects.forEach(obj=>{
+
+    // Shuffle pictures
+    let shuffled = slide.pictures.slice().sort(()=>Math.random()-0.5);
+
+    shuffled.forEach(pic=>{
         const div = document.createElement('div');
-        div.className='obj';
-        div.innerHTML=`<img src="${obj.img}"><div class="label">${obj.label}</div>`;
-        container.appendChild(div);
+        div.classList.add('obj');
+        const img = document.createElement('img');
+        img.src = `assets/${pic}`;
+        div.appendChild(img);
+        objArea.appendChild(div);
 
         div.addEventListener('click',()=>{
-            if(selectedCorrect.includes(obj.label)) return;
-            if(slide.correct.includes(obj.label)){
+            if(selected.has(pic)) return; // already selected
+            if(slide.correct.includes(pic)){
                 div.classList.add('correct');
-                selectedCorrect.push(obj.label);
-                selectedCount++;
-                document.getElementById('correct').currentTime=0;
-                document.getElementById('correct').play();
-                if(selectedCount === slide.correct.length){
-                    document.getElementById('clap').currentTime=0;
-                    document.getElementById('clap').play();
-                    setTimeout(()=>{
-                        currentSlide++;
-                        if(currentSlide >= slides.length){
-                            document.getElementById('game').style.display='none';
-                            document.getElementById('end').style.display='block';
-                            launchConfetti();
-                        } else {
-                            loadSlide(currentSlide);
-                        }
-                    }, 800);
-                }
+                selected.add(pic);
             } else {
                 div.classList.add('wrong');
-                document.getElementById('wrong').currentTime=0;
                 document.getElementById('wrong').play();
                 setTimeout(()=>{div.classList.remove('wrong');},400);
+            }
+
+            // Check if slide completed
+            if(selected.size === slide.correct.length){
+                document.getElementById('clap').play();
+                setTimeout(()=>{
+                    currentSlide++;
+                    if(currentSlide>=slides.length){
+                        document.getElementById('game').style.display='none';
+                        document.getElementById('end').style.display='block';
+                        launchConfetti();
+                    } else {
+                        loadSlide(currentSlide);
+                    }
+                },500);
             }
         });
     });
@@ -191,7 +194,7 @@ function loadSlide(index){
 
 // Restart
 function restartGame(){
-    currentSlide=0;
+    currentSlide = 0;
     document.getElementById('end').style.display='none';
     document.getElementById('game').style.display='block';
     loadSlide(currentSlide);
@@ -208,6 +211,7 @@ function launchConfetti(){
     for(let i=0;i<80;i++){
         confettis.push({x: Math.random()*canvas.width,y: Math.random()*canvas.height-100,r: Math.random()*6+4,d: Math.random()*10+5,color: colors[Math.floor(Math.random()*colors.length)],tilt: Math.random()*10-10,tiltAngleIncrement: Math.random()*0.07+0.05});
     }
+
     function draw(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         confettis.forEach(c=>{
@@ -221,6 +225,7 @@ function launchConfetti(){
         update();
         requestAnimationFrame(draw);
     }
+
     function update(){
         confettis.forEach(c=>{
             c.tiltAngle+=c.tiltAngleIncrement;
