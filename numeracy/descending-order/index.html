@@ -2,13 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Descending Order Game - Slide Fix</title>
+<title>Descending Order Game - With Background and Bear</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body{margin:0;font-family:"Comic Sans MS",sans-serif;background:#eaf6f6;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;}
-#logo{display:flex;justify-content:center;align-items:center;height:100vh;width:100%;background:white;}
+body{
+    margin:0;
+    font-family:"Comic Sans MS",sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover;
+}
+#logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    width:100%;
+    background:white;
+}
 #logo img{width:250px;}
-#game{text-align:center;padding:20px;display:none;}
+#game{text-align:center;padding:20px;display:none;position:relative;}
 h1{font-size:28px;margin-bottom:20px;}
 #boxes{display:flex;justify-content:center;gap:15px;margin-bottom:30px;}
 .box{width:100px;height:100px;border:3px dashed #666;border-radius:12px;display:flex;justify-content:center;align-items:center;font-size:32px;background:white;}
@@ -19,6 +37,12 @@ h1{font-size:28px;margin-bottom:20px;}
 .number-tile.green{background:#27ae60;}
 .number-tile.red{background:#e74c3c;}
 .number-tile.blue{background:#3498db;}
+#bear{
+    position:absolute;
+    bottom:0;
+    left:10px;
+    width:150px;
+}
 #end{display:none;text-align:center;}
 #end h1{font-size:40px;margin-bottom:20px;}
 #end button{padding:10px 30px;font-size:24px;background:#4CAF50;color:white;border:none;border-radius:10px;cursor:pointer;}
@@ -26,12 +50,18 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 .wrongAnim{animation:shake 0.4s;}
 @keyframes shake{0%{transform:translateX(0);}25%{transform:translateX(-5px);}50%{transform:translateX(5px);}75%{transform:translateX(-5px);}100%{transform:translateX(0);}}
 </style>
+</head>
 <body>
 
-<div id="logo"><img src="assets/innovine-logo.png"></div>
+<!-- Logo -->
+<div id="logo">
+    <img src="assets/innovine-logo.png">
+</div>
 
+<!-- Game -->
 <div id="game">
 <h1>Arrange the numbers in descending order!</h1>
+<img id="bear" src="assets/bear.png">
 <div id="boxes">
     <div class="box" data-index="0"></div>
     <div class="box" data-index="1"></div>
@@ -40,14 +70,17 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 <div id="numbers"></div>
 </div>
 
+<!-- End -->
 <div id="end">
 <h1>🎉 Well Done!</h1>
 <button onclick="restartGame()">Play Again</button>
 </div>
 
+<!-- Audio -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
+
 <canvas id="confetti"></canvas>
 
 <script>
@@ -64,6 +97,7 @@ let currentSlide = 0;
 let currentIndex = 0;
 let draggedNumber = null;
 let boxes = document.querySelectorAll('.box');
+let clapPlayed = false;
 
 // Show logo first
 setTimeout(() => {
@@ -73,6 +107,7 @@ setTimeout(() => {
 },5000);
 
 function loadSlide(slideNumber){
+    clapPlayed = false; // reset clap for new slide
     const numbers = slides[slideNumber].slice();
     const boxesDiv = document.getElementById('boxes');
     const numbersDiv = document.getElementById('numbers');
@@ -104,10 +139,12 @@ function handleNumberClick(num, element){
         element.style.visibility='hidden';
         currentIndex++;
 
-        // Only play clap after last number on slide
+        // Play clap after last number on slide
         if(currentIndex === slides[currentSlide].length){
-            document.getElementById('clap').play();
-            document.getElementById('clap').onended=()=>{
+            const clap = document.getElementById('clap');
+            clap.currentTime=0;
+            clap.play();
+            clap.onended=()=>{
                 currentSlide++;
                 if(currentSlide >= slides.length){
                     document.getElementById('game').style.display='none';
@@ -119,7 +156,7 @@ function handleNumberClick(num, element){
             };
         } 
     } else {
-        // wrong number stays visible
+        // Wrong number stays visible
         document.getElementById('wrong').play();
         element.classList.add('wrongAnim');
         setTimeout(()=>{element.classList.remove('wrongAnim');},400);
