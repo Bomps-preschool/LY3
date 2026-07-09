@@ -2,40 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Blend Tap Game</title>
+<title>S-Blend Tap Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-body {
-    margin: 0;
-    font-family: "Comic Sans MS", sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+body{
+    margin:0;
+    font-family:"Comic Sans MS",sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
     background:#eaf6f6;
 }
-#logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    background: white;
+#logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    width:100%;
+    background:white;
 }
-#logo img { width: 250px; }
-#game { display: none; text-align: center; padding: 20px; }
-h2 { font-size: 28px; margin-bottom: 20px; }
-#objectArea { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
-.obj { width:120px; padding:10px; border-radius:12px; background:white; cursor:pointer; display:flex; flex-direction:column; align-items:center; box-shadow:0 3px 10px rgba(0,0,0,0.15); font-size:16px; transition:0.2s; }
-.obj img { width:80px; }
-.correct { border:3px solid green; }
-.wrong { border:3px solid red; animation:shake 0.4s; }
-@keyframes shake { 0%{transform:translateX(0);}25%{transform:translateX(-5px);}50%{transform:translateX(5px);}75%{transform:translateX(-5px);}100%{transform:translateX(0);} }
-#end { display:none; text-align:center; margin-top:50px; }
-#end h1 { font-size:40px; margin-bottom:20px; }
-#end button { padding:10px 30px; font-size:24px; background:#4CAF50; color:white; border:none; border-radius:10px; cursor:pointer; }
+#logo img{width:250px;}
+#game{
+    display:none;
+    text-align:center;
+    padding:20px;
+    width:100%;
+    max-width:900px;
+}
+h2{
+    font-size:28px;
+    margin-bottom:30px;
+}
+#objectArea{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+.obj{
+    width:150px;
+    height:150px;
+    background:white;
+    border-radius:12px;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+.obj img{
+    max-width:120px;
+    max-height:120px;
+}
+.label{
+    font-size:20px;
+    margin-top:8px;
+}
+.correct{
+    border:3px solid green;
+}
+.wrong{
+    border:3px solid red;
+}
+#end{
+    display:none;
+    text-align:center;
+    width:100%;
+}
+#end h1{
+    font-size:40px;
+    margin-bottom:20px;
+}
+#end button{
+    padding:10px 30px;
+    font-size:24px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+/* Confetti canvas */
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+    width:100%;
+    height:100%;
+}
 </style>
 </head>
 <body>
@@ -47,7 +107,7 @@ h2 { font-size: 28px; margin-bottom: 20px; }
 
 <!-- Game -->
 <div id="game">
-<h2 id="instruction">Instruction goes here</h2>
+<h2 id="instruction"></h2>
 <div id="objectArea"></div>
 </div>
 
@@ -62,109 +122,114 @@ h2 { font-size: 28px; margin-bottom: 20px; }
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
+<!-- Confetti -->
+<canvas id="confetti"></canvas>
+
 <script>
-// Slides definition
 const slides = [
-    {blend:"sm", objects:[
-        {name:"smile", file:"assets/smile.png", correct:true},
-        {name:"spectacles", file:"assets/spectacles.png", correct:false},
-        {name:"smell", file:"assets/smell.png", correct:true},
-        {name:"swim", file:"assets/swim.png", correct:false},
-        {name:"smoke", file:"assets/smoke.png", correct:true},
-    ]},
-    {blend:"sn", objects:[
-        {name:"swan", file:"assets/swan.png", correct:false},
-        {name:"snail", file:"assets/snail.png", correct:true},
-        {name:"snake", file:"assets/snake.png", correct:true},
-        {name:"star", file:"assets/star.png", correct:false},
-        {name:"snowman", file:"assets/snowman.png", correct:true},
-    ]},
-    {blend:"st", objects:[
-        {name:"stamp", file:"assets/stamp.png", correct:true},
-        {name:"smell", file:"assets/smell.png", correct:false},
-        {name:"swing", file:"assets/swing.png", correct:true},
-        {name:"star", file:"assets/star.png", correct:true},
-        {name:"stair", file:"assets/stair.png", correct:true},
-    ]},
-    {blend:"sw", objects:[
-        {name:"snowman", file:"assets/snowman.png", correct:false},
-        {name:"spider", file:"assets/spider.png", correct:false},
-        {name:"swim", file:"assets/swim.png", correct:true},
-        {name:"swing", file:"assets/swing.png", correct:true},
-        {name:"swan", file:"assets/swan.png", correct:true},
-    ]},
-    {blend:"sp", objects:[
-        {name:"smoke", file:"assets/smoke.png", correct:false},
-        {name:"spade", file:"assets/spade.png", correct:true},
-        {name:"spider", file:"assets/spider.png", correct:true},
-        {name:"spectacles", file:"assets/spectacles.png", correct:true},
-        {name:"stair", file:"assets/stair.png", correct:false},
-    ]},
+    {blend:'sm', objects:[{img:'assets/smile.png', label:'Smile'},{img:'assets/spectacles.png', label:'Spectacles'},{img:'assets/smell.png', label:'Smell'},{img:'assets/swim.png', label:'Swim'},{img:'assets/smoke.png', label:'Smoke'}], correct:['Smile','Smell','Smoke']},
+    {blend:'sn', objects:[{img:'assets/swan.png', label:'Swan'},{img:'assets/snail.png', label:'Snail'},{img:'assets/snake.png', label:'Snake'},{img:'assets/star.png', label:'Star'},{img:'assets/snowman.png', label:'Snowman'}], correct:['Snail','Snake','Snowman']},
+    {blend:'st', objects:[{img:'assets/stamp.png', label:'Stamp'},{img:'assets/smell.png', label:'Smell'},{img:'assets/swing.png', label:'Swing'},{img:'assets/star.png', label:'Star'},{img:'assets/stair.png', label:'Stair'}], correct:['Stamp','Star','Stair']},
+    {blend:'sw', objects:[{img:'assets/snowman.png', label:'Snowman'},{img:'assets/spider.png', label:'Spider'},{img:'assets/swim.png', label:'Swim'},{img:'assets/swing.png', label:'Swing'},{img:'assets/swan.png', label:'Swan'}], correct:['Swim','Swing','Swan']},
+    {blend:'sp', objects:[{img:'assets/smoke.png', label:'Smoke'},{img:'assets/spade.png', label:'Spade'},{img:'assets/spider.png', label:'Spider'},{img:'assets/spectacles.png', label:'Spectacles'},{img:'assets/stair.png', label:'Stair'}], correct:['Spade','Spider','Spectacles']}
 ];
 
 let currentSlide = 0;
-let answeredCount = 0;
+let selectedCount = 0;
+let selectedCorrect = [];
 
-// Show logo first
 setTimeout(()=>{
-    document.getElementById("logo").style.display="none";
-    document.getElementById("game").style.display="block";
-    loadSlide();
+    document.getElementById('logo').style.display='none';
+    document.getElementById('game').style.display='block';
+    loadSlide(currentSlide);
 },5000);
 
-// Load slide
-function loadSlide(){
-    answeredCount = 0;
-    const slide = slides[currentSlide];
-    document.getElementById("instruction").textContent = `Tap all pictures that has '${slide.blend}' blend`;
-    const area = document.getElementById("objectArea");
-    area.innerHTML="";
+function loadSlide(index){
+    selectedCount = 0;
+    selectedCorrect = [];
+    const slide = slides[index];
+    document.getElementById('instruction').textContent = `Tap all pictures that has '${slide.blend}' blend`;
+    const container = document.getElementById('objectArea');
+    container.innerHTML='';
     slide.objects.forEach(obj=>{
-        const div = document.createElement("div");
-        div.className="obj";
-        div.innerHTML=`<img src="${obj.file}"><div>${obj.name}</div>`;
-        div.addEventListener("click", ()=>{
-            handleTap(div, obj.correct);
-        });
-        area.appendChild(div);
-    });
-}
+        const div = document.createElement('div');
+        div.className='obj';
+        div.innerHTML=`<img src="${obj.img}"><div class="label">${obj.label}</div>`;
+        container.appendChild(div);
 
-// Handle tap
-function handleTap(div, correct){
-    if(correct){
-        div.classList.add("correct");
-        answeredCount++;
-    } else {
-        div.classList.add("wrong");
-        document.getElementById("wrong").currentTime=0;
-        document.getElementById("wrong").play();
-        setTimeout(()=>div.classList.remove("wrong"),500);
-    }
-
-    const slide = slides[currentSlide];
-    if(answeredCount === slide.objects.filter(o=>o.correct).length){
-        // all correct tapped
-        document.getElementById("clap").currentTime=0;
-        document.getElementById("clap").play();
-        document.getElementById("clap").onended = ()=>{
-            currentSlide++;
-            if(currentSlide >= slides.length){
-                document.getElementById("game").style.display="none";
-                document.getElementById("end").style.display="block";
+        div.addEventListener('click',()=>{
+            if(selectedCorrect.includes(obj.label)) return;
+            if(slide.correct.includes(obj.label)){
+                div.classList.add('correct');
+                selectedCorrect.push(obj.label);
+                selectedCount++;
+                document.getElementById('correct').currentTime=0;
+                document.getElementById('correct').play();
+                if(selectedCount === slide.correct.length){
+                    document.getElementById('clap').currentTime=0;
+                    document.getElementById('clap').play();
+                    setTimeout(()=>{
+                        currentSlide++;
+                        if(currentSlide >= slides.length){
+                            document.getElementById('game').style.display='none';
+                            document.getElementById('end').style.display='block';
+                            launchConfetti();
+                        } else {
+                            loadSlide(currentSlide);
+                        }
+                    }, 800);
+                }
             } else {
-                loadSlide();
+                div.classList.add('wrong');
+                document.getElementById('wrong').currentTime=0;
+                document.getElementById('wrong').play();
+                setTimeout(()=>{div.classList.remove('wrong');},400);
             }
-        };
-    }
+        });
+    });
 }
 
 // Restart
 function restartGame(){
     currentSlide=0;
-    document.getElementById("end").style.display="none";
-    document.getElementById("game").style.display="block";
-    loadSlide();
+    document.getElementById('end').style.display='none';
+    document.getElementById('game').style.display='block';
+    loadSlide(currentSlide);
+}
+
+// Confetti effect
+function launchConfetti(){
+    const canvas=document.getElementById('confetti');
+    const ctx=canvas.getContext('2d');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const confettis=[];
+    const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
+    for(let i=0;i<80;i++){
+        confettis.push({x: Math.random()*canvas.width,y: Math.random()*canvas.height-100,r: Math.random()*6+4,d: Math.random()*10+5,color: colors[Math.floor(Math.random()*colors.length)],tilt: Math.random()*10-10,tiltAngleIncrement: Math.random()*0.07+0.05});
+    }
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        confettis.forEach(c=>{
+            ctx.beginPath();
+            ctx.lineWidth=c.r;
+            ctx.strokeStyle=c.color;
+            ctx.moveTo(c.x+c.tilt+c.r/2,c.y);
+            ctx.lineTo(c.x+c.tilt,c.y+c.tilt+c.r/2);
+            ctx.stroke();
+        });
+        update();
+        requestAnimationFrame(draw);
+    }
+    function update(){
+        confettis.forEach(c=>{
+            c.tiltAngle+=c.tiltAngleIncrement;
+            c.y+=(Math.cos(c.d)+1+c.r/2)/2;
+            c.tilt=Math.sin(c.tiltAngle)*12;
+            if(c.y>canvas.height){c.y=-20;c.x=Math.random()*canvas.width;}
+        });
+    }
+    draw();
 }
 </script>
 </body>
