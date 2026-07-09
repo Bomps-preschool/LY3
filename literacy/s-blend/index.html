@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blend Tap Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: "Comic Sans MS", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background:#eaf6f6;
+}
+#logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background: white;
+}
+#logo img { width: 250px; }
+#game { display: none; text-align: center; padding: 20px; }
+h2 { font-size: 28px; margin-bottom: 20px; }
+#objectArea { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; }
+.obj { width:120px; padding:10px; border-radius:12px; background:white; cursor:pointer; display:flex; flex-direction:column; align-items:center; box-shadow:0 3px 10px rgba(0,0,0,0.15); font-size:16px; transition:0.2s; }
+.obj img { width:80px; }
+.correct { border:3px solid green; }
+.wrong { border:3px solid red; animation:shake 0.4s; }
+@keyframes shake { 0%{transform:translateX(0);}25%{transform:translateX(-5px);}50%{transform:translateX(5px);}75%{transform:translateX(-5px);}100%{transform:translateX(0);} }
+#end { display:none; text-align:center; margin-top:50px; }
+#end h1 { font-size:40px; margin-bottom:20px; }
+#end button { padding:10px 30px; font-size:24px; background:#4CAF50; color:white; border:none; border-radius:10px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<!-- Logo -->
+<div id="logo">
+    <img src="assets/innovine-logo.png">
+</div>
+
+<!-- Game -->
+<div id="game">
+<h2 id="instruction">Instruction goes here</h2>
+<div id="objectArea"></div>
+</div>
+
+<!-- End -->
+<div id="end">
+<h1>🎉 Well Done!</h1>
+<button onclick="restartGame()">Play Again</button>
+</div>
+
+<!-- Audio -->
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+<audio id="clap" src="assets/claps.mp3"></audio>
+
+<script>
+// Slides definition
+const slides = [
+    {blend:"sm", objects:[
+        {name:"smile", file:"assets/smile.png", correct:true},
+        {name:"spectacles", file:"assets/spectacles.png", correct:false},
+        {name:"smell", file:"assets/smell.png", correct:true},
+        {name:"swim", file:"assets/swim.png", correct:false},
+        {name:"smoke", file:"assets/smoke.png", correct:true},
+    ]},
+    {blend:"sn", objects:[
+        {name:"swan", file:"assets/swan.png", correct:false},
+        {name:"snail", file:"assets/snail.png", correct:true},
+        {name:"snake", file:"assets/snake.png", correct:true},
+        {name:"star", file:"assets/star.png", correct:false},
+        {name:"snowman", file:"assets/snowman.png", correct:true},
+    ]},
+    {blend:"st", objects:[
+        {name:"stamp", file:"assets/stamp.png", correct:true},
+        {name:"smell", file:"assets/smell.png", correct:false},
+        {name:"swing", file:"assets/swing.png", correct:true},
+        {name:"star", file:"assets/star.png", correct:true},
+        {name:"stair", file:"assets/stair.png", correct:true},
+    ]},
+    {blend:"sw", objects:[
+        {name:"snowman", file:"assets/snowman.png", correct:false},
+        {name:"spider", file:"assets/spider.png", correct:false},
+        {name:"swim", file:"assets/swim.png", correct:true},
+        {name:"swing", file:"assets/swing.png", correct:true},
+        {name:"swan", file:"assets/swan.png", correct:true},
+    ]},
+    {blend:"sp", objects:[
+        {name:"smoke", file:"assets/smoke.png", correct:false},
+        {name:"spade", file:"assets/spade.png", correct:true},
+        {name:"spider", file:"assets/spider.png", correct:true},
+        {name:"spectacles", file:"assets/spectacles.png", correct:true},
+        {name:"stair", file:"assets/stair.png", correct:false},
+    ]},
+];
+
+let currentSlide = 0;
+let answeredCount = 0;
+
+// Show logo first
+setTimeout(()=>{
+    document.getElementById("logo").style.display="none";
+    document.getElementById("game").style.display="block";
+    loadSlide();
+},5000);
+
+// Load slide
+function loadSlide(){
+    answeredCount = 0;
+    const slide = slides[currentSlide];
+    document.getElementById("instruction").textContent = `Tap all pictures that has '${slide.blend}' blend`;
+    const area = document.getElementById("objectArea");
+    area.innerHTML="";
+    slide.objects.forEach(obj=>{
+        const div = document.createElement("div");
+        div.className="obj";
+        div.innerHTML=`<img src="${obj.file}"><div>${obj.name}</div>`;
+        div.addEventListener("click", ()=>{
+            handleTap(div, obj.correct);
+        });
+        area.appendChild(div);
+    });
+}
+
+// Handle tap
+function handleTap(div, correct){
+    if(correct){
+        div.classList.add("correct");
+        answeredCount++;
+    } else {
+        div.classList.add("wrong");
+        document.getElementById("wrong").currentTime=0;
+        document.getElementById("wrong").play();
+        setTimeout(()=>div.classList.remove("wrong"),500);
+    }
+
+    const slide = slides[currentSlide];
+    if(answeredCount === slide.objects.filter(o=>o.correct).length){
+        // all correct tapped
+        document.getElementById("clap").currentTime=0;
+        document.getElementById("clap").play();
+        document.getElementById("clap").onended = ()=>{
+            currentSlide++;
+            if(currentSlide >= slides.length){
+                document.getElementById("game").style.display="none";
+                document.getElementById("end").style.display="block";
+            } else {
+                loadSlide();
+            }
+        };
+    }
+}
+
+// Restart
+function restartGame(){
+    currentSlide=0;
+    document.getElementById("end").style.display="none";
+    document.getElementById("game").style.display="block";
+    loadSlide();
+}
+</script>
+</body>
+</html>
