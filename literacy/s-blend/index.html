@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>S-Blend Tap Game</title>
+<title>S-Blend Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
     margin:0;
@@ -11,10 +12,11 @@ body{
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
+    justify-content:flex-start;
     min-height:100vh;
     background:#eaf6f6;
 }
+
 #logo{
     display:flex;
     justify-content:center;
@@ -24,62 +26,73 @@ body{
     background:white;
 }
 #logo img{width:250px;}
+
 #game{
     display:none;
     text-align:center;
     padding:20px;
+    position:relative;
 }
+
 h1{
     font-size:28px;
-    margin-bottom:20px;
+    margin-bottom:30px;
 }
-/* BOXES */
-#boxes{
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin-bottom:40px;
-}
-.box{
-    width:180px;
-    height:180px;
-    border:3px dashed #666;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:white;
-}
+
 /* OBJECTS */
 #objectArea{
     display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:15px;
+    justify-content:center;
+    gap:20px;
+    flex-wrap: nowrap;
+    margin-top:20px;
 }
+
 .obj{
-    width:180px;
-    height:180px;
+    width:150px;
+    height:150px;
     display:flex;
     justify-content:center;
     align-items:center;
     border-radius:15px;
     background:white;
     cursor:pointer;
-    animation:pop 0.5s ease;
+    transition:0.2s;
 }
 .obj img{
-    max-width:150px;
-    max-height:150px;
+    max-width:130px;
+    max-height:130px;
 }
-@keyframes pop{
-    from{transform:scale(0.5);opacity:0;}
-    to{transform:scale(1);opacity:1;}
+
+.obj.correct{
+    border:3px solid green;
+    box-shadow:0 0 15px rgba(0,255,0,0.4);
 }
-.correct{border:5px solid #27ae60;box-shadow:0 0 15px rgba(39,174,96,0.5);}
-.wrong{border:5px solid #e74c3c;box-shadow:0 0 15px rgba(231,76,60,0.5);}
-#end{display:none;text-align:center;}
-#end h1{font-size:40px;margin-bottom:20px;}
+
+.obj.wrong{
+    border:3px solid red;
+    box-shadow:0 0 15px rgba(255,0,0,0.4);
+    animation:shake 0.4s;
+}
+
+@keyframes shake{
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-5px);}
+    50%{transform:translateX(5px);}
+    75%{transform:translateX(-5px);}
+    100%{transform:translateX(0);}
+}
+
+/* END */
+#end{
+    display:none;
+    text-align:center;
+    margin-top:50px;
+}
+#end h1{
+    font-size:40px;
+    margin-bottom:20px;
+}
 #end button{
     padding:10px 30px;
     font-size:24px;
@@ -89,32 +102,28 @@ h1{
     border-radius:10px;
     cursor:pointer;
 }
-/* Confetti */
-canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
+
+/* AUDIO */
 </style>
 </head>
+
 <body>
 
-<!-- LOGO -->
+<!-- Logo -->
 <div id="logo">
     <img src="assets/innovine-logo.png">
 </div>
 
-<!-- GAME -->
+<!-- Game -->
 <div id="game">
-    <h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
-    <div id="boxes">
-        <div class="box" data-index="0"></div>
-        <div class="box" data-index="1"></div>
-        <div class="box" data-index="2"></div>
-    </div>
-    <div id="objectArea"></div>
+<h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
+<div id="objectArea"></div>
 </div>
 
-<!-- END -->
+<!-- End -->
 <div id="end">
-    <h1>🎉 Well Done!</h1>
-    <button onclick="restartGame()">Play Again</button>
+<h1>🎉 Well Done!</h1>
+<button onclick="restartGame()">Play Again</button>
 </div>
 
 <!-- Audio -->
@@ -122,114 +131,91 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
-<!-- Confetti -->
-<canvas id="confetti"></canvas>
-
 <script>
-// Slides
 const slides = [
-    {blend:'sm', objects:['smile','spectacles','smell','swim','smoke'], correct:['smile','smell','smoke']},
-    {blend:'sn', objects:['swan','snail','snake','star','snowman'], correct:['snail','snake','snowman']},
-    {blend:'st', objects:['stamp','smell','swing','star','stair'], correct:['stamp','star','stair']},
-    {blend:'sw', objects:['snowman','spider','swim','swing','swan'], correct:['swim','swing','swan']},
-    {blend:'sp', objects:['smoke','spade','spider','spectacles','stair'], correct:['spade','spider','spectacles']}
+    {blend:'sm', objects:['smile.png','spectacles.png','smell.png','swim.png','smoke.png'], correct:['smile.png','smell.png','smoke.png']},
+    {blend:'sn', objects:['swan.png','snail.png','snake.png','star.png','snowman.png'], correct:['snail.png','snake.png','snowman.png']},
+    {blend:'st', objects:['stamp.png','smell.png','swing.png','star.png','stair.png'], correct:['stamp.png','star.png','stair.png']},
+    {blend:'sw', objects:['snowman.png','spider.png','swim.png','swing.png','swan.png'], correct:['swim.png','swing.png','swan.png']},
+    {blend:'sp', objects:['smoke.png','spade.png','spider.png','spectacles.png','stair.png'], correct:['spade.png','spider.png','spectacles.png']}
 ];
 
 let currentSlide = 0;
-let clickedCount = 0;
+let clicked = 0;
+let selected = [];
 
-// Show logo first
+let correctAudio = document.getElementById('correct');
+let wrongAudio = document.getElementById('wrong');
+let clapAudio = document.getElementById('clap');
+
+// Logo display
 setTimeout(()=>{
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
-    loadSlide(currentSlide);
+    loadSlide();
 },5000);
 
-function loadSlide(slideIndex){
-    clickedCount = 0;
-    const slide = slides[slideIndex];
-    document.getElementById('instruction').textContent = `Tap all pictures that has '${slide.blend}' blend`;
-
+function loadSlide(){
+    const slide = slides[currentSlide];
     const objectArea = document.getElementById('objectArea');
-    objectArea.innerHTML='';
+    const instruction = document.getElementById('instruction');
+    instruction.textContent = `Tap all pictures that has '${slide.blend}' blend`;
+    objectArea.innerHTML = '';
+    selected = [];
+    clicked = 0;
 
-    slide.objects.forEach(objName=>{
+    slide.objects.forEach(obj=>{
         const div = document.createElement('div');
         div.classList.add('obj');
-        div.innerHTML = `<img src="assets/${objName}.png">`;
+        div.innerHTML = `<img src="assets/${obj}">`;
         objectArea.appendChild(div);
 
         div.addEventListener('click',()=>{
-            if(slide.correct.includes(objName)){
+            if(selected.includes(obj)) return;
+
+            if(slide.correct.includes(obj)){
                 div.classList.add('correct');
-                document.getElementById('correct').play();
-                clickedCount++;
-                // If all correct clicked, play clap
-                if(clickedCount === slide.correct.length){
-                    document.getElementById('clap').play();
-                    setTimeout(()=>{
-                        currentSlide++;
-                        if(currentSlide>=slides.length){
-                            document.getElementById('game').style.display='none';
-                            document.getElementById('end').style.display='block';
-                            launchConfetti();
-                        }else{
-                            loadSlide(currentSlide);
-                        }
-                    },700);
-                }
-            }else{
+                playSound(correctAudio);
+                selected.push(obj);
+            } else {
                 div.classList.add('wrong');
-                document.getElementById('wrong').play();
-                setTimeout(()=>{div.classList.remove('wrong');},400);
+                playSound(wrongAudio);
+                setTimeout(()=> div.classList.remove('wrong'),400);
+            }
+
+            clicked++;
+            // When all correct objects clicked
+            if(selected.length === slide.correct.length){
+                playSound(clapAudio).then(()=>{
+                    currentSlide++;
+                    if(currentSlide >= slides.length){
+                        document.getElementById('game').style.display='none';
+                        document.getElementById('end').style.display='block';
+                    } else {
+                        loadSlide();
+                    }
+                });
             }
         });
     });
 }
 
-// Restart
+// Play audio
+function playSound(audio){
+    return new Promise(resolve=>{
+        audio.currentTime=0;
+        audio.play();
+        audio.onended = resolve;
+    });
+}
+
+// Restart game
 function restartGame(){
     currentSlide=0;
     document.getElementById('end').style.display='none';
     document.getElementById('game').style.display='block';
-    loadSlide(currentSlide);
-}
-
-// Confetti
-function launchConfetti(){
-    const canvas=document.getElementById('confetti');
-    const ctx=canvas.getContext('2d');
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
-    const confettis=[];
-    const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
-    for(let i=0;i<80;i++){
-        confettis.push({x: Math.random()*canvas.width,y: Math.random()*canvas.height-100,r: Math.random()*6+4,d: Math.random()*10+5,color: colors[Math.floor(Math.random()*colors.length)],tilt: Math.random()*10-10,tiltAngleIncrement: Math.random()*0.07+0.05});
-    }
-    function draw(){
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        confettis.forEach(c=>{
-            ctx.beginPath();
-            ctx.lineWidth=c.r;
-            ctx.strokeStyle=c.color;
-            ctx.moveTo(c.x+c.tilt+c.r/2,c.y);
-            ctx.lineTo(c.x+c.tilt,c.y+c.tilt+c.r/2);
-            ctx.stroke();
-        });
-        update();
-        requestAnimationFrame(draw);
-    }
-    function update(){
-        confettis.forEach(c=>{
-            c.tiltAngle+=c.tiltAngleIncrement;
-            c.y+=(Math.cos(c.d)+1+c.r/2)/2;
-            c.tilt=Math.sin(c.tiltAngle)*12;
-            if(c.y>canvas.height){c.y=-20;c.x=Math.random()*canvas.width;}
-        });
-    }
-    draw();
+    loadSlide();
 }
 </script>
-
 </body>
 </html>
