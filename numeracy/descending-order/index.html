@@ -4,242 +4,302 @@
 <meta charset="UTF-8">
 <title>Descending Order Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-    body{
-        margin:0;
-        font-family: 'Comic Sans MS', sans-serif;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        background:#eaf6f6;
-        height:100vh;
-    }
+body {
+    margin: 0;
+    font-family: 'Comic Sans MS', sans-serif;
+    background: #eaf6f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-    /* LOGO */
-    #logo{
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        height:100vh;
-        width:100%;
-        background:white;
-    }
+#logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background:white;
+}
 
-    #logo img{
-        width:250px;
-    }
+#game {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
 
-    /* GAME */
-    #game{
-        display:none;
-        text-align:center;
-        width:90%;
-        max-width:800px;
-    }
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
 
-    h2{
-        font-size:28px;
-        margin-bottom:20px;
-    }
+/* Boxes */
+#boxes {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
 
-    .box-container{
-        display:flex;
-        justify-content:center;
-        gap:10px;
-        margin-bottom:30px;
-    }
+.box {
+    width: 100px;
+    height: 100px;
+    border: 3px dashed #666;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    background:white;
+}
 
-    .box{
-        width:80px;
-        height:100px;
-        border:3px dashed #666;
-        border-radius:12px;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        font-size:32px;
-        font-weight:bold;
-        cursor:pointer;
-        transition:0.3s;
-    }
+/* Number tiles */
+#numbers {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
 
-    .box.correct{
-        border-color:#4CAF50;
-        background:#d1ffd1;
-    }
+.number-tile {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    cursor: grab;
+    user-select: none;
+}
 
-    .box.wrong{
-        border-color:red;
-        background:#ffd1d1;
-        animation:shake 0.3s;
-    }
+.number-tile.purple { background: #9b59b6; }
+.number-tile.orange { background: #f39c12; }
+.number-tile.green { background: #27ae60; }
+.number-tile.red { background: #e74c3c; }
+.number-tile.blue { background: #3498db; }
 
-    @keyframes shake{
-        0%{transform:translateX(0);}
-        25%{transform:translateX(-5px);}
-        50%{transform:translateX(5px);}
-        75%{transform:translateX(-5px);}
-        100%{transform:translateX(0);}
-    }
+/* End screen */
+#end {
+    display: none;
+    text-align: center;
+}
 
-    .number-row{
-        display:flex;
-        justify-content:center;
-        gap:15px;
-        flex-wrap:wrap;
-    }
+#end h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
 
-    .number{
-        width:80px;
-        height:80px;
-        background:#6c5ce7;
-        color:white;
-        font-size:32px;
-        font-weight:bold;
-        border-radius:15px;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        cursor:pointer;
-        user-select:none;
-        transition:0.3s;
-    }
-
-    .number.orange{background:#fd9644;}
-    .number.green{background:#00b894;}
-    .number.pink{background:#ff7675;}
-    .number.blue{background:#0984e3;}
-
-    #end{
-        display:none;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        text-align:center;
-    }
-
-    #end h1{
-        font-size:48px;
-        margin-bottom:20px;
-    }
-
-    #playAgain{
-        font-size:22px;
-        padding:10px 25px;
-        border:none;
-        border-radius:12px;
-        background:#00b894;
-        color:white;
-        cursor:pointer;
-    }
+/* Confetti */
+canvas {
+    position: fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+    width:100%;
+    height:100%;
+}
 </style>
 </head>
 <body>
 
-<!-- LOGO -->
+<!-- Logo -->
 <div id="logo">
-    <img src="assets/innovine-logo.png" alt="Logo">
+    <img src="assets/innovine-logo.png" width="250">
 </div>
 
-<!-- GAME -->
+<!-- Game -->
 <div id="game">
-    <h2>Arrange the numbers in descending order!</h2>
-
-    <div class="box-container">
-        <div class="box" id="box1"></div>
-        <div class="box" id="box2"></div>
-        <div class="box" id="box3"></div>
-        <div class="box" id="box4"></div>
-        <div class="box" id="box5"></div>
+    <h1>Arrange the numbers in descending order!</h1>
+    <div id="boxes">
+        <div class="box" data-index="0"></div>
+        <div class="box" data-index="1"></div>
+        <div class="box" data-index="2"></div>
+        <div class="box" data-index="3"></div>
+        <div class="box" data-index="4"></div>
     </div>
-
-    <div class="number-row" id="numbersRow">
-        <div class="number purple">7</div>
-        <div class="number orange">9</div>
-        <div class="number green">1</div>
-        <div class="number pink">3</div>
-        <div class="number blue">5</div>
-    </div>
+    <div id="numbers"></div>
 </div>
 
-<!-- END -->
+<!-- End -->
 <div id="end">
     <h1>🎉 Well Done!</h1>
-    <button id="playAgain">Play Again</button>
+    <button onclick="restartGame()">Play Again</button>
 </div>
 
-<!-- AUDIO -->
+<!-- Audio -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
-<script>
-const logo = document.getElementById('logo');
-const game = document.getElementById('game');
-const end = document.getElementById('end');
-const numbersRow = document.getElementById('numbersRow');
-const boxes = Array.from(document.querySelectorAll('.box'));
-const numberElems = Array.from(document.querySelectorAll('.number'));
+<!-- Confetti canvas -->
+<canvas id="confetti"></canvas>
 
-let sequence = [9,7,5,3,1];
-let currentIndex = 0;
+<script>
+// Initial display of logo
+setTimeout(() => {
+    document.getElementById('logo').style.display = 'none';
+    document.getElementById('game').style.display = 'block';
+    initGame();
+}, 5000);
+
+// Game variables
+let numbersArray = [
+    {value:9, color:'blue'},
+    {value:7, color:'purple'},
+    {value:5, color:'orange'},
+    {value:3, color:'red'},
+    {value:1, color:'green'}
+];
+
+let draggedNumber = null;
+let boxes = document.querySelectorAll('.box');
 let correctAudio = document.getElementById('correct');
 let wrongAudio = document.getElementById('wrong');
 let clapAudio = document.getElementById('clap');
+let audioPlaying = false;
 
-function shuffleNumbers(){
-    // shuffle numberElems
-    let nums = Array.from(numberElems);
-    for(let i=nums.length-1;i>0;i--){
-        let j = Math.floor(Math.random()*(i+1));
-        let temp = nums[i].textContent;
-        nums[i].textContent = nums[j].textContent;
-        nums[j].textContent = temp;
-    }
+// Initialize game
+function initGame() {
+    shuffleArray(numbersArray);
+    displayNumbers();
+    boxes.forEach(box => {
+        box.innerHTML = '';
+    });
 }
 
-// Show logo 5s then game
-setTimeout(()=>{
-    logo.style.display='none';
-    game.style.display='block';
-    shuffleNumbers();
-},5000);
+// Display number tiles
+function displayNumbers() {
+    const container = document.getElementById('numbers');
+    container.innerHTML = '';
+    numbersArray.forEach(num => {
+        const div = document.createElement('div');
+        div.classList.add('number-tile', num.color);
+        div.setAttribute('draggable', true);
+        div.textContent = num.value;
+        container.appendChild(div);
 
-numberElems.forEach(num=>{
-    num.addEventListener('click',()=>{
-        if(currentIndex >= sequence.length) return;
-        let selected = parseInt(num.textContent);
+        div.addEventListener('dragstart', e => {
+            draggedNumber = num.value;
+        });
+    });
+}
 
-        if(selected === sequence[currentIndex]){
-            num.style.visibility='hidden';
-            boxes[currentIndex].textContent = selected;
-            currentIndex++;
-            correctAudio.play();
-            correctAudio.onended = ()=>{
-                if(currentIndex === sequence.length){
-                    game.style.display='none';
-                    end.style.display='flex';
-                    clapAudio.play();
+// Drag and drop logic
+boxes.forEach(box => {
+    box.addEventListener('dragover', e => e.preventDefault());
+    box.addEventListener('drop', e => {
+        if(box.textContent === '') {
+            let correctIndex = numbersArray.map(n=>n.value).sort((a,b)=>b-a).indexOf(draggedNumber);
+            if(parseInt(box.dataset.index) === correctIndex){
+                box.textContent = draggedNumber;
+                playSoundOnce(correctAudio).then(()=> playSoundOnce(clapAudio));
+            } else {
+                playSoundOnce(wrongAudio);
+            }
+
+            // Remove the dragged number visually
+            document.querySelectorAll('.number-tile').forEach(tile => {
+                if(tile.textContent == draggedNumber){
+                    tile.style.visibility = 'hidden';
                 }
-            };
-        } else{
-            wrongAudio.play();
-            num.classList.add('wrong');
-            setTimeout(()=>{num.classList.remove('wrong');},400);
+            });
+        }
+
+        draggedNumber = null;
+
+        // Check if all boxes filled correctly
+        let completed = Array.from(boxes).every((b,i)=> parseInt(b.textContent) === numbersArray.map(n=>n.value).sort((a,b)=>b-a)[i]);
+        if(completed){
+            setTimeout(()=> {
+                document.getElementById('game').style.display='none';
+                document.getElementById('end').style.display='block';
+                launchConfetti();
+            }, 600);
         }
     });
 });
 
-document.getElementById('playAgain').addEventListener('click',()=>{
-    end.style.display='none';
-    game.style.display='block';
-    boxes.forEach(box=>box.textContent='');
-    numberElems.forEach(num=>num.style.visibility='visible');
-    currentIndex=0;
-    shuffleNumbers();
-});
-</script>
+// Sound function ensuring not overlapping
+function playSoundOnce(audio){
+    return new Promise(resolve=>{
+        if(!audio.paused) audio.pause();
+        audio.currentTime = 0;
+        audio.play();
+        audio.onended = resolve;
+    });
+}
 
+// Shuffle helper
+function shuffleArray(array){
+    for(let i=array.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [array[i],array[j]] = [array[j],array[i]];
+    }
+}
+
+// Restart
+function restartGame(){
+    document.getElementById('end').style.display='none';
+    document.getElementById('game').style.display='block';
+    initGame();
+}
+
+// Confetti effect
+function launchConfetti(){
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const confettis = [];
+    const colors = ['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
+    for(let i=0;i<80;i++){
+        confettis.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height-100,
+            r: Math.random()*6+4,
+            d: Math.random()*10+5,
+            color: colors[Math.floor(Math.random()*colors.length)],
+            tilt: Math.random()*10-10,
+            tiltAngleIncrement: Math.random()*0.07+0.05
+        });
+    }
+
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        confettis.forEach(c=>{
+            ctx.beginPath();
+            ctx.lineWidth = c.r;
+            ctx.strokeStyle = c.color;
+            ctx.moveTo(c.x+c.tilt+c.r/2, c.y);
+            ctx.lineTo(c.x+c.tilt, c.y+c.tilt+c.r/2);
+            ctx.stroke();
+        });
+        update();
+        requestAnimationFrame(draw);
+    }
+
+    function update(){
+        confettis.forEach(c=>{
+            c.tiltAngle += c.tiltAngleIncrement;
+            c.y += (Math.cos(c.d)+1+c.r/2)/2;
+            c.tilt = Math.sin(c.tiltAngle)*12;
+
+            if(c.y>canvas.height){
+                c.y=-20;
+                c.x=Math.random()*canvas.width;
+            }
+        });
+    }
+
+    draw();
+}
+</script>
 </body>
 </html>
