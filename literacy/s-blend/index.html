@@ -14,7 +14,8 @@ body{
     align-items:center;
     justify-content:flex-start;
     min-height:100vh;
-    background:#eaf6f6;
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover;
 }
 
 #logo{
@@ -141,7 +142,6 @@ const slides = [
 ];
 
 let currentSlide = 0;
-let clicked = 0;
 let selected = [];
 
 let correctAudio = document.getElementById('correct');
@@ -162,7 +162,6 @@ function loadSlide(){
     instruction.textContent = `Tap all pictures that has '${slide.blend}' blend`;
     objectArea.innerHTML = '';
     selected = [];
-    clicked = 0;
 
     slide.objects.forEach(obj=>{
         const div = document.createElement('div');
@@ -175,7 +174,6 @@ function loadSlide(){
 
             if(slide.correct.includes(obj)){
                 div.classList.add('correct');
-                playSound(correctAudio);
                 selected.push(obj);
             } else {
                 div.classList.add('wrong');
@@ -183,7 +181,6 @@ function loadSlide(){
                 setTimeout(()=> div.classList.remove('wrong'),400);
             }
 
-            clicked++;
             // When all correct objects clicked
             if(selected.length === slide.correct.length){
                 playSound(clapAudio).then(()=>{
