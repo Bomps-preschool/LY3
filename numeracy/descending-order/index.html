@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Descending Order Game - End Screen Confetti</title>
+<title>Descending Order Game - With Background and Bear</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -43,16 +43,7 @@ h1{font-size:28px;margin-bottom:20px;}
     left:10px;
     width:150px;
 }
-#end{
-    display:none;
-    text-align:center;
-    width:100%;
-    height:100vh;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
-    background: none;  /* Removed background image */
-}
+#end{display:none;text-align:center;}
 #end h1{font-size:40px;margin-bottom:20px;}
 #end button{padding:10px 30px;font-size:24px;background:#4CAF50;color:white;border:none;border-radius:10px;cursor:pointer;}
 canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
@@ -90,7 +81,6 @@ canvas{position:fixed;top:0;left:0;pointer-events:none;width:100%;height:100%;}
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
-<!-- Confetti canvas -->
 <canvas id="confetti"></canvas>
 
 <script>
@@ -107,6 +97,7 @@ let currentSlide = 0;
 let currentIndex = 0;
 let draggedNumber = null;
 let boxes = document.querySelectorAll('.box');
+let clapPlayed = false;
 
 // Show logo first
 setTimeout(() => {
@@ -116,6 +107,7 @@ setTimeout(() => {
 },5000);
 
 function loadSlide(slideNumber){
+    clapPlayed = false; // reset clap for new slide
     const numbers = slides[slideNumber].slice();
     const boxesDiv = document.getElementById('boxes');
     const numbersDiv = document.getElementById('numbers');
@@ -147,7 +139,7 @@ function handleNumberClick(num, element){
         element.style.visibility='hidden';
         currentIndex++;
 
-        // Only play clap after last number on slide
+        // Play clap after last number on slide
         if(currentIndex === slides[currentSlide].length){
             const clap = document.getElementById('clap');
             clap.currentTime=0;
@@ -156,7 +148,7 @@ function handleNumberClick(num, element){
                 currentSlide++;
                 if(currentSlide >= slides.length){
                     document.getElementById('game').style.display='none';
-                    document.getElementById('end').style.display='flex';
+                    document.getElementById('end').style.display='block';
                     launchConfetti();
                 } else {
                     loadSlide(currentSlide);
@@ -164,6 +156,7 @@ function handleNumberClick(num, element){
             };
         } 
     } else {
+        // Wrong number stays visible
         document.getElementById('wrong').play();
         element.classList.add('wrongAnim');
         setTimeout(()=>{element.classList.remove('wrongAnim');},400);
