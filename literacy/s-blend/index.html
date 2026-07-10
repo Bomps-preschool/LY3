@@ -93,8 +93,8 @@ body{
 }
 
 .obj img{
-    width:180px;
-    height:180px;
+    width:200px;
+    height:200px;
 }
 
 /* Correct & Wrong highlight */
@@ -112,6 +112,8 @@ body{
     display:none;
     text-align:center;
     padding:20px;
+    background:none; /* Remove background */
+    min-height:100vh;
 }
 #end h1{
     font-size:48px;
@@ -222,7 +224,7 @@ function handleClick(file, div){
             const clap = document.getElementById('clap');
             clap.currentTime=0;
             clap.play();
-            clap.onended=()=>{
+            clap.onended=()=>{ // Wait for clap to finish
                 currentSlide++;
                 if(currentSlide>=slides.length){
                     document.getElementById('game').style.display='none';
