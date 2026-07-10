@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Playground Picture Comprehension</title>
+<title>Picture Comprehension - Playground</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
+body {
     margin:0;
     font-family:"Comic Sans MS",sans-serif;
     display:flex;
@@ -15,11 +15,10 @@ body{
     justify-content:flex-start;
     min-height:100vh;
     background:#eaf6f6;
-    overflow:hidden;
 }
 
 /* LOGO */
-#logo{
+#logo {
     display:flex;
     justify-content:center;
     align-items:center;
@@ -27,10 +26,10 @@ body{
     width:100%;
     background:white;
 }
-#logo img{width:250px;}
+#logo img { width:250px; }
 
 /* GAME */
-#game{
+#game {
     display:none;
     text-align:center;
     position:relative;
@@ -39,68 +38,72 @@ body{
 }
 
 /* Instruction */
-#instructionBox{
-    margin-top:20px;
+#instruction {
     font-size:28px;
     font-weight:bold;
     background:white;
+    padding:10px 20px;
+    border-radius:12px;
+    margin-bottom:20px;
     display:inline-block;
-    padding:15px 25px;
-    border-radius:15px;
-    color:black;
+    color: #000; /* Will convert to rainbow via JS */
 }
 
 /* Scoreboard */
-#scoreboard{
+#scoreboard {
     position:absolute;
-    top:20px;
-    right:20px;
+    top:10px;
+    right:10px;
+    font-size:24px;
+    font-weight:bold;
     background:#ffefb5;
     padding:10px 20px;
     border-radius:12px;
-    font-size:24px;
-    font-weight:bold;
     color:#563d7c;
 }
 
 /* Playground background */
-#playground{
-    position:relative;
-    margin-top:30px;
-    display:inline-block;
-}
-#playground img{
+#playground {
     width:100%;
-    max-width:900px;
+    max-width:1000px;
+    margin:0 auto;
 }
 
-/* Object overlays */
-.object{
-    position:absolute;
-    cursor:pointer;
-    transition: transform 0.2s, border 0.2s;
+/* Answer buttons */
+#options {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:15px;
+    margin-top:30px;
+}
+.option-btn {
+    padding:15px 20px;
+    font-size:24px;
     border-radius:12px;
+    cursor:pointer;
+    border:none;
+    background:white;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    transition:0.3s;
 }
-.object.correct{
+.option-btn.correct {
     border:4px solid #27ae60;
-    transform:scale(1.1);
 }
-.object.wrong{
+.option-btn.wrong {
     border:4px solid #e74c3c;
-    transform:scale(1.1);
 }
 
-/* End Screen */
-#end{
+/* END SCREEN */
+#end {
     display:none;
     text-align:center;
-    padding:20px;
 }
-#end h1{
+#end h1 {
     font-size:48px;
     margin-bottom:20px;
 }
-#end button{
+#end button {
     padding:10px 30px;
     font-size:24px;
     background:#4CAF50;
@@ -111,7 +114,7 @@ body{
 }
 
 /* Confetti */
-canvas{
+canvas {
     position:fixed;
     top:0; left:0;
     pointer-events:none;
@@ -120,20 +123,20 @@ canvas{
 }
 </style>
 </head>
+
 <body>
 
-<!-- LOGO -->
+<!-- Logo -->
 <div id="logo">
     <img src="assets/innovine-logo.png">
 </div>
 
-<!-- GAME -->
+<!-- Game -->
 <div id="game">
-    <div id="scoreboard">Score: 0</div>
-    <div id="instructionBox"></div>
-    <div id="playground">
-        <img src="assets/at-the-playground.png" alt="Playground">
-    </div>
+    <div id="scoreboard">Score: 0/5</div>
+    <div id="instruction">Instruction</div>
+    <img id="playground" src="assets/at-the-playground.png">
+    <div id="options"></div>
 </div>
 
 <!-- END -->
@@ -142,139 +145,95 @@ canvas{
     <button onclick="restartGame()">Play Again</button>
 </div>
 
-<!-- AUDIO -->
+<!-- Audio -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
-<!-- Confetti -->
 <canvas id="confetti"></canvas>
 
 <script>
-// Slides data
+// --- Game Data ---
 const slides = [
-    {instruction:"Tap all pictures that has 'sm' blend", objects:[
-        {file:'smile.png', top:'45%', left:'10%'}, 
-        {file:'spectacles.png', top:'50%', left:'30%'}, 
-        {file:'smell.png', top:'40%', left:'50%'}, 
-        {file:'swim.png', top:'60%', left:'70%'}, 
-        {file:'smoke.png', top:'60%', left:'50%'}
-    ], correct:['smile.png','smell.png','smoke.png']},
-
-    {instruction:"Tap all pictures that has 'sn' blend", objects:[
-        {file:'swan.png', top:'50%', left:'10%'}, 
-        {file:'snail.png', top:'40%', left:'30%'}, 
-        {file:'snake.png', top:'60%', left:'50%'}, 
-        {file:'star.png', top:'50%', left:'70%'}, 
-        {file:'snowman.png', top:'40%', left:'90%'}
-    ], correct:['snail.png','snake.png','snowman.png']},
-
-    {instruction:"Tap all pictures that has 'st' blend", objects:[
-        {file:'stamp.png', top:'50%', left:'10%'}, 
-        {file:'smell.png', top:'40%', left:'30%'}, 
-        {file:'swing.png', top:'60%', left:'50%'}, 
-        {file:'star.png', top:'50%', left:'70%'}, 
-        {file:'stair.png', top:'40%', left:'90%'}
-    ], correct:['stamp.png','star.png','stair.png']},
-
-    {instruction:"Tap all pictures that has 'sw' blend", objects:[
-        {file:'snowman.png', top:'50%', left:'10%'}, 
-        {file:'spider.png', top:'40%', left:'30%'}, 
-        {file:'swim.png', top:'60%', left:'50%'}, 
-        {file:'swing.png', top:'50%', left:'70%'}, 
-        {file:'swan.png', top:'40%', left:'90%'}
-    ], correct:['swim.png','swing.png','swan.png']},
-
-    {instruction:"Tap all pictures that has 'sp' blend", objects:[
-        {file:'smoke.png', top:'50%', left:'10%'}, 
-        {file:'spade.png', top:'40%', left:'30%'}, 
-        {file:'spider.png', top:'60%', left:'50%'}, 
-        {file:'spectacles.png', top:'50%', left:'70%'}, 
-        {file:'stair.png', top:'40%', left:'90%'}
-    ], correct:['spade.png','spider.png','spectacles.png']}
+    {instruction:"Tap the correct word for question 1", options:["swing","ball","sandbox"], correct:["swing"]},
+    {instruction:"Tap the correct word for question 2", options:["red ball","blue ball","green ball"], correct:["red ball"]},
+    {instruction:"Tap the correct word for question 3", options:["slide","see-saw","tree"], correct:["slide"]},
+    {instruction:"Tap the correct word for question 4", options:["sandbox","bucket","water"], correct:["sandbox"]},
+    {instruction:"Tap the correct word for question 5", options:["child 1","child 2","child 3"], correct:["child 3"]}
 ];
 
 let currentSlide = 0;
-let answeredObjects = new Set();
 let score = 0;
 
-// Show logo first
+// --- Show Innovine logo for 5s ---
 setTimeout(()=>{
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
     loadSlide(currentSlide);
 },5000);
 
-function loadSlide(slideIndex){
-    answeredObjects.clear();
-    const slide = slides[slideIndex];
-    document.getElementById('instructionBox').textContent = slide.instruction;
-    
-    const playground = document.getElementById('playground');
-    // Remove existing objects
-    document.querySelectorAll('.object').forEach(o=>o.remove());
+// --- Load Slide ---
+function loadSlide(index){
+    const slide = slides[index];
+    document.getElementById('instruction').textContent = slide.instruction;
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
 
-    // Add objects
-    slide.objects.forEach(obj=>{
-        const div = document.createElement('div');
-        div.classList.add('object');
-        div.style.top = obj.top;
-        div.style.left = obj.left;
-        const img = document.createElement('img');
-        img.src = 'assets/'+obj.file;
-        img.style.width='120px';
-        div.appendChild(img);
-        playground.appendChild(div);
-
-        div.addEventListener('click',()=>{
-            handleClick(obj.file,div);
-        });
+    slide.options.forEach(opt=>{
+        const btn = document.createElement('button');
+        btn.classList.add('option-btn');
+        btn.textContent = opt;
+        btn.addEventListener('click',()=>handleClick(btn,slide));
+        optionsDiv.appendChild(btn);
     });
-
     updateScore();
 }
 
-function handleClick(file, div){
-    if(slides[currentSlide].correct.includes(file)){
-        if(answeredObjects.has(file)) return;
-        answeredObjects.add(file);
-        div.classList.add('correct');
+// --- Handle Click ---
+function handleClick(btn,slide){
+    if(slide.correct.includes(btn.textContent)){
+        btn.classList.add('correct');
+        document.getElementById('correct').play();
+        btn.disabled = true;
 
-        if(answeredObjects.size === slides[currentSlide].correct.length){
-            score++;
-            updateScore();
+        // Check if all correct are clicked
+        const allClicked = Array.from(document.querySelectorAll('.option-btn')).filter(b=>slide.correct.includes(b.textContent)).every(b=>b.disabled);
+        if(allClicked){
             const clap = document.getElementById('clap');
-            clap.currentTime=0;
             clap.play();
-            clap.onended=()=>{
+            clap.onended = ()=>{
+                score++;
                 currentSlide++;
-                if(currentSlide>=slides.length){
+                if(currentSlide >= slides.length){
                     document.getElementById('game').style.display='none';
                     document.getElementById('end').style.display='block';
                     launchConfetti();
                 } else loadSlide(currentSlide);
             };
         }
+
     } else {
-        div.classList.add('wrong');
+        btn.classList.add('wrong');
         document.getElementById('wrong').play();
-        setTimeout(()=>div.classList.remove('wrong'),500);
+        setTimeout(()=>btn.classList.remove('wrong'),500);
     }
 }
 
+// --- Scoreboard ---
 function updateScore(){
     document.getElementById('scoreboard').textContent = `Score: ${score}/5`;
 }
 
+// --- Restart ---
 function restartGame(){
-    currentSlide=0;
-    score=0;
+    currentSlide = 0;
+    score = 0;
     document.getElementById('end').style.display='none';
     document.getElementById('game').style.display='block';
     loadSlide(currentSlide);
 }
 
-// Confetti effect
+// --- Confetti ---
 function launchConfetti(){
     const canvas=document.getElementById('confetti');
     const ctx=canvas.getContext('2d');
@@ -283,15 +242,7 @@ function launchConfetti(){
     const confettis=[];
     const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
     for(let i=0;i<80;i++){
-        confettis.push({
-            x: Math.random()*canvas.width,
-            y: Math.random()*canvas.height-100,
-            r: Math.random()*6+4,
-            d: Math.random()*10+5,
-            color: colors[Math.floor(Math.random()*colors.length)],
-            tilt: Math.random()*10-10,
-            tiltAngleIncrement: Math.random()*0.07+0.05
-        });
+        confettis.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-100,r:Math.random()*6+4,d:Math.random()*10+5,color:colors[Math.floor(Math.random()*colors.length)],tilt:Math.random()*10-10,tiltAngleIncrement:Math.random()*0.07+0.05});
     }
 
     function draw(){
@@ -319,5 +270,6 @@ function launchConfetti(){
     draw();
 }
 </script>
+
 </body>
 </html>
