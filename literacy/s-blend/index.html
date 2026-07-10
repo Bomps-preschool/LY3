@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>S-Blend Game</title>
+<title>S-Blend Tap Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -18,6 +18,7 @@ body{
     background-size: cover;
 }
 
+/* LOGO */
 #logo{
     display:flex;
     justify-content:center;
@@ -28,70 +29,80 @@ body{
 }
 #logo img{width:250px;}
 
+/* GAME */
 #game{
     display:none;
     text-align:center;
     padding:20px;
     position:relative;
+    width:100%;
+    max-width:1200px;
 }
 
+/* INSTRUCTION */
 h1{
-    font-size:28px;
-    margin-bottom:30px;
+    font-size:32px;
+    margin:20px 0;
+}
+
+/* Scoreboard */
+#scoreboard{
+    position:absolute;
+    top:20px;
+    right:20px;
+    background: #ffefb5;
+    padding:10px 20px;
+    border-radius: 12px;
+    font-size:24px;
+    font-weight:bold;
+    color:#563d7c;
 }
 
 /* OBJECTS */
 #objectArea{
     display:flex;
     justify-content:center;
-    gap:20px;
-    flex-wrap: nowrap;
-    margin-top:20px;
+    gap:25px;
+    flex-wrap:wrap;
+    margin-top:40px;
 }
 
 .obj{
-    width:150px;
-    height:150px;
+    width:180px;
+    height:180px;
+    border-radius:15px;
     display:flex;
     justify-content:center;
     align-items:center;
-    border-radius:15px;
-    background:white;
     cursor:pointer;
-    transition:0.2s;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+    background:white;
+    transition: transform 0.2s;
 }
+
 .obj img{
-    max-width:130px;
-    max-height:130px;
+    width:140px;
+    height:140px;
 }
 
-.obj.correct{
-    border:3px solid green;
-    box-shadow:0 0 15px rgba(0,255,0,0.4);
+/* Correct & Wrong highlight */
+.correct{
+    border: 4px solid #27ae60;
+    transform: scale(1.1);
 }
-
-.obj.wrong{
-    border:3px solid red;
-    box-shadow:0 0 15px rgba(255,0,0,0.4);
-    animation:shake 0.4s;
-}
-
-@keyframes shake{
-    0%{transform:translateX(0);}
-    25%{transform:translateX(-5px);}
-    50%{transform:translateX(5px);}
-    75%{transform:translateX(-5px);}
-    100%{transform:translateX(0);}
+.wrong{
+    border: 4px solid #e74c3c;
+    transform: scale(1.1);
 }
 
 /* END */
 #end{
     display:none;
     text-align:center;
-    margin-top:50px;
+    padding:20px;
 }
 #end h1{
-    font-size:40px;
+    font-size:48px;
     margin-bottom:20px;
 }
 #end button{
@@ -100,39 +111,51 @@ h1{
     background:#4CAF50;
     color:white;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     cursor:pointer;
 }
 
-/* AUDIO */
+/* Confetti */
+canvas{
+    position:fixed;
+    top:0; left:0;
+    pointer-events:none;
+    width:100%;
+    height:100%;
+}
 </style>
 </head>
 
 <body>
 
-<!-- Logo -->
+<!-- LOGO -->
 <div id="logo">
     <img src="assets/innovine-logo.png">
 </div>
 
-<!-- Game -->
+<!-- GAME -->
 <div id="game">
-<h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
-<div id="objectArea"></div>
+    <div id="scoreboard">Score: 0</div>
+    <h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
+    <div id="objectArea"></div>
 </div>
 
-<!-- End -->
+<!-- END -->
 <div id="end">
-<h1>🎉 Well Done!</h1>
-<button onclick="restartGame()">Play Again</button>
+    <h1>🎉 Well Done!</h1>
+    <button onclick="restartGame()">Play Again</button>
 </div>
 
-<!-- Audio -->
+<!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
+<!-- CONFETTI -->
+<canvas id="confetti"></canvas>
+
 <script>
+// Slides data
 const slides = [
     {blend:'sm', objects:['smile.png','spectacles.png','smell.png','swim.png','smoke.png'], correct:['smile.png','smell.png','smoke.png']},
     {blend:'sn', objects:['swan.png','snail.png','snake.png','star.png','snowman.png'], correct:['snail.png','snake.png','snowman.png']},
@@ -142,76 +165,122 @@ const slides = [
 ];
 
 let currentSlide = 0;
-let selected = [];
+let score = 0;
+let answeredObjects = new Set();
 
-let correctAudio = document.getElementById('correct');
-let wrongAudio = document.getElementById('wrong');
-let clapAudio = document.getElementById('clap');
-
-// Logo display
+// Show logo first
 setTimeout(()=>{
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
-    loadSlide();
+    loadSlide(currentSlide);
 },5000);
 
-function loadSlide(){
-    const slide = slides[currentSlide];
+// Load a slide
+function loadSlide(index){
+    answeredObjects.clear();
+    document.getElementById('instruction').textContent=`Tap all pictures that has '${slides[index].blend}' blend`;
     const objectArea = document.getElementById('objectArea');
-    const instruction = document.getElementById('instruction');
-    instruction.textContent = `Tap all pictures that has '${slide.blend}' blend`;
-    objectArea.innerHTML = '';
-    selected = [];
-
-    slide.objects.forEach(obj=>{
+    objectArea.innerHTML='';
+    slides[index].objects.forEach(file=>{
         const div = document.createElement('div');
         div.classList.add('obj');
-        div.innerHTML = `<img src="assets/${obj}">`;
+        const img = document.createElement('img');
+        img.src='assets/'+file;
+        div.appendChild(img);
         objectArea.appendChild(div);
 
         div.addEventListener('click',()=>{
-            if(selected.includes(obj)) return;
-
-            if(slide.correct.includes(obj)){
-                div.classList.add('correct');
-                selected.push(obj);
-            } else {
-                div.classList.add('wrong');
-                playSound(wrongAudio);
-                setTimeout(()=> div.classList.remove('wrong'),400);
-            }
-
-            // When all correct objects clicked
-            if(selected.length === slide.correct.length){
-                playSound(clapAudio).then(()=>{
-                    currentSlide++;
-                    if(currentSlide >= slides.length){
-                        document.getElementById('game').style.display='none';
-                        document.getElementById('end').style.display='block';
-                    } else {
-                        loadSlide();
-                    }
-                });
-            }
+            handleClick(file,div);
         });
     });
 }
 
-// Play audio
-function playSound(audio){
+// Handle click on object
+function handleClick(file, div){
+    if(slides[currentSlide].correct.includes(file)){
+        if(answeredObjects.has(file)) return; // already clicked correct
+        answeredObjects.add(file);
+        div.classList.add('correct');
+        playSoundOnce(document.getElementById('correct'));
+        if(answeredObjects.size === slides[currentSlide].correct.length){
+            playSoundOnce(document.getElementById('clap')).then(()=>{
+                currentSlide++;
+                if(currentSlide>=slides.length){
+                    document.getElementById('game').style.display='none';
+                    document.getElementById('end').style.display='block';
+                    launchConfetti();
+                } else loadSlide(currentSlide);
+            });
+        }
+    } else {
+        div.classList.add('wrong');
+        playSoundOnce(document.getElementById('wrong'));
+        setTimeout(()=> div.classList.remove('wrong'),500);
+    }
+}
+
+// Prevent audio overlapping
+function playSoundOnce(audio){
     return new Promise(resolve=>{
+        if(!audio.paused) audio.pause();
         audio.currentTime=0;
         audio.play();
         audio.onended = resolve;
     });
 }
 
-// Restart game
+// Restart
 function restartGame(){
     currentSlide=0;
+    score=0;
     document.getElementById('end').style.display='none';
     document.getElementById('game').style.display='block';
-    loadSlide();
+    loadSlide(currentSlide);
+}
+
+// Confetti effect
+function launchConfetti(){
+    const canvas=document.getElementById('confetti');
+    const ctx=canvas.getContext('2d');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const confettis=[];
+    const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
+    for(let i=0;i<80;i++){
+        confettis.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height-100,
+            r: Math.random()*6+4,
+            d: Math.random()*10+5,
+            color: colors[Math.floor(Math.random()*colors.length)],
+            tilt: Math.random()*10-10,
+            tiltAngleIncrement: Math.random()*0.07+0.05
+        });
+    }
+
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        confettis.forEach(c=>{
+            ctx.beginPath();
+            ctx.lineWidth=c.r;
+            ctx.strokeStyle=c.color;
+            ctx.moveTo(c.x+c.tilt+c.r/2,c.y);
+            ctx.lineTo(c.x+c.tilt,c.y+c.tilt+c.r/2);
+            ctx.stroke();
+        });
+        update();
+        requestAnimationFrame(draw);
+    }
+
+    function update(){
+        confettis.forEach(c=>{
+            c.tiltAngle+=c.tiltAngleIncrement;
+            c.y+=(Math.cos(c.d)+1+c.r/2)/2;
+            c.tilt=Math.sin(c.tiltAngle)*12;
+            if(c.y>canvas.height){c.y=-20;c.x=Math.random()*canvas.width;}
+        });
+    }
+    draw();
 }
 </script>
 </body>
