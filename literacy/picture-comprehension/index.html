@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Picture Comprehension - Playground</title>
+<title>Picture Comprehension Game</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
     margin:0;
     font-family:"Comic Sans MS",sans-serif;
+    background: #eaf6f6;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    min-height:100vh;
-    background:#eaf6f6;
+    height:100vh;
+    overflow:hidden;
 }
 
 /* LOGO */
@@ -26,27 +27,76 @@ body {
     width:100%;
     background:white;
 }
-#logo img { width:250px; }
+#logo img {
+    width:250px;
+}
 
 /* GAME */
 #game {
     display:none;
     text-align:center;
-    position:relative;
     width:100%;
     max-width:1200px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
-/* Instruction */
+/* INSTRUCTION */
 #instruction {
     font-size:28px;
     font-weight:bold;
-    background:white;
     padding:10px 20px;
+    background:white;
+    border-radius:15px;
+    margin:15px 0;
+    text-align:center;
+}
+
+/* Playground image */
+#playground {
+    max-width: 90%;
+    max-height: 50%;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Options */
+#options {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-top:15px;
+    flex:1;
+    align-items:center;
+}
+
+.option {
+    width:160px;
+    height:100px;
+    background:white;
     border-radius:12px;
-    margin-bottom:20px;
-    display:inline-block;
-    color: #000; /* Will convert to rainbow via JS */
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:bold;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    transition: 0.2s;
+}
+
+.option.correct {
+    border:4px solid #27ae60;
+    transform: scale(1.1);
+}
+
+.option.wrong {
+    border:4px solid #e74c3c;
+    transform: scale(1.1);
 }
 
 /* Scoreboard */
@@ -54,50 +104,18 @@ body {
     position:absolute;
     top:10px;
     right:10px;
-    font-size:24px;
+    background: #ffefb5;
+    padding:8px 15px;
+    border-radius:12px;
+    font-size:20px;
     font-weight:bold;
-    background:#ffefb5;
-    padding:10px 20px;
-    border-radius:12px;
-    color:#563d7c;
 }
 
-/* Playground background */
-#playground {
-    width:100%;
-    max-width:1000px;
-    margin:0 auto;
-}
-
-/* Answer buttons */
-#options {
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:15px;
-    margin-top:30px;
-}
-.option-btn {
-    padding:15px 20px;
-    font-size:24px;
-    border-radius:12px;
-    cursor:pointer;
-    border:none;
-    background:white;
-    box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    transition:0.3s;
-}
-.option-btn.correct {
-    border:4px solid #27ae60;
-}
-.option-btn.wrong {
-    border:4px solid #e74c3c;
-}
-
-/* END SCREEN */
+/* END */
 #end {
     display:none;
     text-align:center;
+    padding:20px;
 }
 #end h1 {
     font-size:48px;
@@ -123,7 +141,6 @@ canvas {
 }
 </style>
 </head>
-
 <body>
 
 <!-- Logo -->
@@ -134,12 +151,12 @@ canvas {
 <!-- Game -->
 <div id="game">
     <div id="scoreboard">Score: 0/5</div>
-    <div id="instruction">Instruction</div>
+    <div id="instruction">Question appears here</div>
     <img id="playground" src="assets/at-the-playground.png">
     <div id="options"></div>
 </div>
 
-<!-- END -->
+<!-- End -->
 <div id="end">
     <h1>🎉 Well Done!</h1>
     <button onclick="restartGame()">Play Again</button>
@@ -150,90 +167,85 @@ canvas {
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
 
+<!-- Confetti -->
 <canvas id="confetti"></canvas>
 
 <script>
-// --- Game Data ---
+// Question slides
 const slides = [
-    {instruction:"Tap the correct word for question 1", options:["swing","ball","sandbox"], correct:["swing"]},
-    {instruction:"Tap the correct word for question 2", options:["red ball","blue ball","green ball"], correct:["red ball"]},
-    {instruction:"Tap the correct word for question 3", options:["slide","see-saw","tree"], correct:["slide"]},
-    {instruction:"Tap the correct word for question 4", options:["sandbox","bucket","water"], correct:["sandbox"]},
-    {instruction:"Tap the correct word for question 5", options:["child 1","child 2","child 3"], correct:["child 3"]}
+    {question:"Which child is on the swing?", options:["Girl","Boy","Dog","Ball","Slide"], correct:["Girl"]},
+    {question:"Which ball is red?", options:["Blue","Yellow","Red","Green","Orange"], correct:["Red"]},
+    {question:"Which child is in front of the slide?", options:["Girl","Boy","Dog","Ball","Tree"], correct:["Girl"]},
+    {question:"Which object is the seesaw?", options:["Seesaw","Ball","Slide","Tree","Bench"], correct:["Seesaw"]},
+    {question:"Which tree has apples?", options:["Left tree","Right tree","Background tree","Slide tree","Swing tree"], correct:["Left tree"]}
 ];
 
 let currentSlide = 0;
+let answered = new Set();
 let score = 0;
 
-// --- Show Innovine logo for 5s ---
+// Show logo for 5 seconds
 setTimeout(()=>{
-    document.getElementById('logo').style.display='none';
-    document.getElementById('game').style.display='block';
+    document.getElementById("logo").style.display="none";
+    document.getElementById("game").style.display="flex";
     loadSlide(currentSlide);
 },5000);
 
-// --- Load Slide ---
+// Load a slide
 function loadSlide(index){
-    const slide = slides[index];
-    document.getElementById('instruction').textContent = slide.instruction;
-    const optionsDiv = document.getElementById('options');
-    optionsDiv.innerHTML = '';
+    answered.clear();
+    document.getElementById("instruction").textContent = slides[index].question;
 
-    slide.options.forEach(opt=>{
-        const btn = document.createElement('button');
-        btn.classList.add('option-btn');
-        btn.textContent = opt;
-        btn.addEventListener('click',()=>handleClick(btn,slide));
-        optionsDiv.appendChild(btn);
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+
+    slides[index].options.forEach(opt=>{
+        const div = document.createElement("div");
+        div.classList.add("option");
+        div.textContent = opt;
+        optionsDiv.appendChild(div);
+
+        div.addEventListener("click",()=>{
+            if(slides[currentSlide].correct.includes(opt)){
+                if(answered.has(opt)) return;
+                answered.add(opt);
+                div.classList.add("correct");
+
+                if(answered.size === slides[currentSlide].correct.length){
+                    score++;
+                    document.getElementById("scoreboard").textContent = `Score: ${score}/${slides.length}`;
+                    const clap = document.getElementById("clap");
+                    clap.currentTime = 0;
+                    clap.play();
+                    clap.onended = ()=>{
+                        currentSlide++;
+                        if(currentSlide >= slides.length){
+                            document.getElementById("game").style.display="none";
+                            document.getElementById("end").style.display="block";
+                            launchConfetti();
+                        } else loadSlide(currentSlide);
+                    };
+                }
+            } else {
+                div.classList.add("wrong");
+                document.getElementById("wrong").play();
+                setTimeout(()=> div.classList.remove("wrong"),500);
+            }
+        });
     });
-    updateScore();
 }
 
-// --- Handle Click ---
-function handleClick(btn,slide){
-    if(slide.correct.includes(btn.textContent)){
-        btn.classList.add('correct');
-        document.getElementById('correct').play();
-        btn.disabled = true;
-
-        // Check if all correct are clicked
-        const allClicked = Array.from(document.querySelectorAll('.option-btn')).filter(b=>slide.correct.includes(b.textContent)).every(b=>b.disabled);
-        if(allClicked){
-            const clap = document.getElementById('clap');
-            clap.play();
-            clap.onended = ()=>{
-                score++;
-                currentSlide++;
-                if(currentSlide >= slides.length){
-                    document.getElementById('game').style.display='none';
-                    document.getElementById('end').style.display='block';
-                    launchConfetti();
-                } else loadSlide(currentSlide);
-            };
-        }
-
-    } else {
-        btn.classList.add('wrong');
-        document.getElementById('wrong').play();
-        setTimeout(()=>btn.classList.remove('wrong'),500);
-    }
-}
-
-// --- Scoreboard ---
-function updateScore(){
-    document.getElementById('scoreboard').textContent = `Score: ${score}/5`;
-}
-
-// --- Restart ---
+// Restart
 function restartGame(){
-    currentSlide = 0;
-    score = 0;
-    document.getElementById('end').style.display='none';
-    document.getElementById('game').style.display='block';
+    currentSlide=0;
+    score=0;
+    document.getElementById("scoreboard").textContent = `Score: 0/${slides.length}`;
+    document.getElementById("end").style.display="none";
+    document.getElementById("game").style.display="flex";
     loadSlide(currentSlide);
 }
 
-// --- Confetti ---
+// Confetti
 function launchConfetti(){
     const canvas=document.getElementById('confetti');
     const ctx=canvas.getContext('2d');
@@ -244,7 +256,6 @@ function launchConfetti(){
     for(let i=0;i<80;i++){
         confettis.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-100,r:Math.random()*6+4,d:Math.random()*10+5,color:colors[Math.floor(Math.random()*colors.length)],tilt:Math.random()*10-10,tiltAngleIncrement:Math.random()*0.07+0.05});
     }
-
     function draw(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         confettis.forEach(c=>{
@@ -258,7 +269,6 @@ function launchConfetti(){
         update();
         requestAnimationFrame(draw);
     }
-
     function update(){
         confettis.forEach(c=>{
             c.tiltAngle+=c.tiltAngleIncrement;
@@ -270,6 +280,5 @@ function launchConfetti(){
     draw();
 }
 </script>
-
 </body>
 </html>
