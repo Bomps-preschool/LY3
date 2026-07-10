@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Picture Comprehension - Playground</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
     margin:0;
@@ -18,7 +19,7 @@ body {
 }
 
 /* Logo */
-#logo {
+#logo{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -32,9 +33,16 @@ body {
 #game{
     display:none;
     text-align:center;
-    padding:20px;
     width:100%;
     max-width:1200px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    position:relative;
+    padding:20px;
+    background: url('assets/background.png') no-repeat center center;
+    background-size: cover;
 }
 
 /* Instruction Boxes */
@@ -71,6 +79,8 @@ body {
 #questionArea {
     display:flex;
     flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
     width:45%;
     max-width:500px;
     gap:20px;
@@ -82,8 +92,7 @@ body {
     text-align:center;
     background:white;
     border-radius:12px;
-    padding:15px;
-    color:#ff1493;
+    padding:10px 20px;
 }
 
 /* Options */
@@ -95,7 +104,7 @@ body {
 }
 
 .option {
-    flex:1 1 40%;
+    flex:1 1 45%;
     padding:15px;
     font-size:22px;
     cursor:pointer;
@@ -105,6 +114,7 @@ body {
     text-align:center;
     transition:0.3s;
 }
+
 .option.correct{border:4px solid #27ae60;}
 .option.wrong{border:4px solid #e74c3c;}
 
@@ -126,7 +136,6 @@ body {
     display:none;
     text-align:center;
     padding:20px;
-    background:none;
 }
 #end h1{
     font-size:48px;
@@ -193,7 +202,6 @@ canvas{
 <canvas id="confetti"></canvas>
 
 <script>
-// Questions
 const questions = [
     {text:"Where are the children playing?", options:["farm","playground"], correct:"playground", audio:"q1"},
     {text:"How many children are on the swings?", options:["2","3"], correct:"2", audio:"q2"},
@@ -205,7 +213,7 @@ const questions = [
 let currentQ = 0;
 let score = 0;
 
-// Show logo first
+// Show logo first (no scoreboard on logo screen)
 setTimeout(()=>{
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
@@ -253,6 +261,7 @@ function handleAnswer(div,q){
         div.classList.remove('correct');
         currentQ++;
         if(currentQ >= questions.length){
+            document.getElementById('game').style.background='none'; // Remove background
             document.getElementById('game').style.display='none';
             document.getElementById('end').style.display='block';
             launchConfetti();
@@ -264,11 +273,13 @@ function handleAnswer(div,q){
 function restartGame(){
     currentQ=0; score=0;
     document.getElementById('end').style.display='none';
+    document.getElementById('game').style.background="url('assets/background.png') no-repeat center center";
+    document.getElementById('game').style.backgroundSize="cover";
     document.getElementById('game').style.display='block';
     loadQuestion(currentQ);
 }
 
-// Confetti
+// Confetti effect
 function launchConfetti(){
     const canvas=document.getElementById('confetti');
     const ctx=canvas.getContext('2d');
