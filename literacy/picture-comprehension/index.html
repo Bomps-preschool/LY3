@@ -2,19 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Playground Picture Comprehension Game</title>
+<title>Picture Comprehension - Playground</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
     margin:0;
     font-family:"Comic Sans MS",sans-serif;
-    background:#eaf6f6;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
-    height:100vh;
+    min-height:100vh;
+    background:#dff6ff;
     overflow:hidden;
 }
 
@@ -32,97 +31,84 @@ body{
 /* Game */
 #game{
     display:none;
-    width:100%;
-    max-width:1200px;
     text-align:center;
-    padding:10px;
+    padding:20px;
     position:relative;
-    box-sizing:border-box;
+    width:100%;
+    max-width:1000px;
 }
 
-/* Instruction */
-#instruction-container{
+/* Instruction Boxes */
+.instruction-box{
     background:white;
-    padding:15px 20px;
     border-radius:12px;
-    margin-bottom:10px;
-    font-size:24px;
-    font-weight:bold;
-    color:#ff0055;
-}
-
-/* Question */
-#question{
+    padding:10px 20px;
+    margin:5px 0;
     font-size:22px;
-    margin:10px 0;
+    font-weight:bold;
+    color:#ff1493;
 }
 
 /* Scoreboard */
 #scoreboard{
     position:absolute;
-    top:10px;
-    right:10px;
-    background: #ffefb5;
-    padding:8px 16px;
-    border-radius:10px;
-    font-size:20px;
+    top:20px;
+    right:20px;
+    background: #fff7aa;
+    padding:10px 20px;
+    border-radius:12px;
+    font-size:24px;
     font-weight:bold;
     color:#563d7c;
 }
 
 /* Playground Image */
 #playground-img{
-    max-width: 100%;
-    max-height: 50vh;
-    border-radius:12px;
-    margin-bottom:15px;
+    width:90%;
+    max-width:800px;
+    margin:15px 0;
+    border-radius:15px;
+}
+
+/* Question */
+#question{
+    font-size:24px;
+    margin:15px 0;
 }
 
 /* Options */
-#options{
+.options{
     display:flex;
     justify-content:center;
+    gap:20px;
     flex-wrap:wrap;
-    gap:15px;
-    margin-top:10px;
+    margin-bottom:20px;
 }
 
 .option{
-    width:130px;
-    height:130px;
-    border-radius:15px;
     background:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+    border-radius:12px;
+    padding:15px 20px;
+    font-size:22px;
     cursor:pointer;
-    transition: transform 0.2s, border 0.3s;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+    transition:0.3s;
+}
+.option.correct{
+    border:4px solid #27ae60;
+}
+.option.wrong{
+    border:4px solid #e74c3c;
 }
 
-.option img{
-    max-width:90%;
-    max-height:90%;
-}
-
-/* Correct/Wrong */
-.correct{
-    border: 4px solid #27ae60;
-    transform: scale(1.1);
-}
-.wrong{
-    border: 4px solid #e74c3c;
-    transform: scale(1.1);
-}
-
-/* END SCREEN */
+/* END */
 #end{
     display:none;
     text-align:center;
     padding:20px;
 }
 #end h1{
-    font-size:40px;
+    font-size:48px;
     margin-bottom:20px;
 }
 #end button{
@@ -156,13 +142,14 @@ canvas{
 <!-- Game -->
 <div id="game">
     <div id="scoreboard">Score: 0/5</div>
-    <div id="instruction-container">Picture Comprehension - At the Playground<br>Read the question and click on the correct answer</div>
+    <div class="instruction-box">Picture Comprehension - At the Playground</div>
+    <div class="instruction-box">Read the question and click on the correct answer</div>
     <img id="playground-img" src="assets/at-the-playground.png">
-    <div id="question">Question text here</div>
-    <div id="options"></div>
+    <div id="question"></div>
+    <div class="options" id="options"></div>
 </div>
 
-<!-- End -->
+<!-- END -->
 <div id="end">
     <h1>🎉 Congratulations!</h1>
     <button onclick="restartGame()">Play Again</button>
@@ -172,85 +159,87 @@ canvas{
 <audio id="correct" src="assets/correct.mp3"></audio>
 <audio id="wrong" src="assets/wrong.mp3"></audio>
 <audio id="clap" src="assets/claps.mp3"></audio>
+<audio id="q1" src="assets/question-1.mp3"></audio>
+<audio id="q2" src="assets/question-2.mp3"></audio>
+<audio id="q3" src="assets/question-3.mp3"></audio>
+<audio id="q4" src="assets/question-4.mp3"></audio>
+<audio id="q5" src="assets/question-5.mp3"></audio>
 
-<!-- Confetti -->
 <canvas id="confetti"></canvas>
 
 <script>
-// Questions sequence
 const questions = [
-    {text:"Where are the children playing?", audio:"assets/question-1.mp3", options:["farm","playground"], correct:"playground"},
-    {text:"How many children are on the swings?", audio:"assets/question-2.mp3", options:["2","3"], correct:"2"},
-    {text:"What is the colour of the ball?", audio:"assets/question-3.mp3", options:["blue","red"], correct:"red"},
-    {text:"What is in the sand box?", audio:"assets/question-4.mp3", options:["shovel","ball"], correct:"shovel"},
-    {text:"Who is playing on the slide?", audio:"assets/question-5.mp3", options:["girl","boy"], correct:"girl"}
+    {text:"Where are the children playing?", options:["farm","playground"], correct:"playground", audio:"q1"},
+    {text:"How many children are on the swings?", options:["2","3"], correct:"2", audio:"q2"},
+    {text:"What is the colour of the ball?", options:["blue","red"], correct:"red", audio:"q3"},
+    {text:"What is in the sand box?", options:["shovel","ball"], correct:"shovel", audio:"q4"},
+    {text:"Who is playing on the slide?", options:["girl","boy"], correct:"girl", audio:"q5"}
 ];
 
-let currentQuestionIndex = 0;
+let currentQ = 0;
 let score = 0;
 
 // Show logo first
 setTimeout(()=>{
     document.getElementById('logo').style.display='none';
     document.getElementById('game').style.display='block';
-    loadQuestion(currentQuestionIndex);
+    loadQuestion(currentQ);
 },5000);
+
+function playAudio(id){
+    let audio = document.getElementById(id);
+    audio.currentTime=0;
+    audio.play();
+    return new Promise(resolve=>{
+        audio.onended=resolve;
+    });
+}
 
 function loadQuestion(index){
     const q = questions[index];
     document.getElementById('question').textContent = q.text;
-    const optionsDiv = document.getElementById('options');
-    optionsDiv.innerHTML = '';
+    const opts = document.getElementById('options');
+    opts.innerHTML='';
     q.options.forEach(opt=>{
         const div = document.createElement('div');
         div.classList.add('option');
-        div.textContent = opt;
-        optionsDiv.appendChild(div);
-
-        div.addEventListener('click',()=> handleAnswer(div,opt,q.correct));
+        div.textContent=opt;
+        opts.appendChild(div);
+        div.addEventListener('click',()=>handleAnswer(div,q));
     });
-
-    // Play audio
-    const audio = new Audio(q.audio);
-    audio.play();
+    playAudio(q.audio);
+    document.getElementById('scoreboard').textContent = `Score: ${score}/5`;
 }
 
-function handleAnswer(div, choice, correct){
-    if(choice === correct){
+function handleAnswer(div,q){
+    if(div.textContent === q.correct){
         div.classList.add('correct');
-        score++;
-        updateScore();
         document.getElementById('correct').play();
-
-        setTimeout(()=>{
-            currentQuestionIndex++;
-            if(currentQuestionIndex>=questions.length){
-                document.getElementById('game').style.display='none';
-                document.getElementById('end').style.display='block';
-                launchConfetti();
-            } else {
-                loadQuestion(currentQuestionIndex);
-            }
-        },600);
-
+        score++;
+        document.getElementById('scoreboard').textContent = `Score: ${score}/5`;
     } else {
         div.classList.add('wrong');
         document.getElementById('wrong').play();
         setTimeout(()=> div.classList.remove('wrong'),500);
+        return;
     }
+    setTimeout(()=>{
+        div.classList.remove('correct');
+        currentQ++;
+        if(currentQ >= questions.length){
+            document.getElementById('game').style.display='none';
+            document.getElementById('end').style.display='block';
+            launchConfetti();
+        } else loadQuestion(currentQ);
+    },600);
 }
 
-function updateScore(){
-    document.getElementById('scoreboard').textContent = `Score: ${score}/5`;
-}
-
+// Restart
 function restartGame(){
-    currentQuestionIndex = 0;
-    score = 0;
+    currentQ=0; score=0;
     document.getElementById('end').style.display='none';
     document.getElementById('game').style.display='block';
-    updateScore();
-    loadQuestion(currentQuestionIndex);
+    loadQuestion(currentQ);
 }
 
 // Confetti effect
@@ -262,9 +251,8 @@ function launchConfetti(){
     const confettis=[];
     const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
     for(let i=0;i<80;i++){
-        confettis.push({x: Math.random()*canvas.width,y: Math.random()*canvas.height-100,r: Math.random()*6+4,d: Math.random()*10+5,color: colors[Math.floor(Math.random()*colors.length)],tilt: Math.random()*10-10,tiltAngleIncrement: Math.random()*0.07+0.05});
+        confettis.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-100,r:Math.random()*6+4,d:Math.random()*10+5,color:colors[Math.floor(Math.random()*colors.length)],tilt:Math.random()*10-10,tiltAngleIncrement:Math.random()*0.07+0.05});
     }
-
     function draw(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         confettis.forEach(c=>{
@@ -278,7 +266,6 @@ function launchConfetti(){
         update();
         requestAnimationFrame(draw);
     }
-
     function update(){
         confettis.forEach(c=>{
             c.tiltAngle+=c.tiltAngleIncrement;
@@ -290,5 +277,6 @@ function launchConfetti(){
     draw();
 }
 </script>
+
 </body>
 </html>
