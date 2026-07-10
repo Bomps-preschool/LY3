@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+>
+<meta name="theme-color" content="#ffd7ef">
+<title>Candy Cloud Adventure</title>
+ 
+<style>
+/* =========================================================
+   GLOBAL
+========================================================= */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-user-select:none;
+  user-select:none;
+}
+ 
+html,
+body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+  font-family:"Trebuchet MS",Arial,sans-serif;
+  background:#ffd7ef;
+  color:#5d356d;
+}
+ 
+button{
+  font:inherit;
+}
+ 
+.hidden{
+  display:none !important;
+}
+ 
+/* =========================================================
+   2-SECOND LOGO SCREEN
+========================================================= */
+#splashScreen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#ffffff;
+}
+ 
+#splashLogo{
+  width:250px;
+  max-width:58vw;
+  max-height:38vh;
+  object-fit:contain;
+}
+ 
+/* =========================================================
+   GAME SCREEN
+========================================================= */
+#gameScreen{
+  position:relative;
+  width:100%;
+  height:100vh;
+  height:100dvh;
+  min-height:100%;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  overflow:hidden;
+  padding:
+    max(8px,env(safe-area-inset-top))
+    max(10px,env(safe-area-inset-right))
+    max(8px,env(safe-area-inset-bottom))
+    max(10px,env(safe-area-inset-left));
+  background:
+    radial-gradient(circle at 13% 12%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    radial-gradient(circle at 83% 11%,rgba(255,255,255,.9) 0 2px,transparent 3px),
+    linear-gradient(#ffd7ef 0%,#ffe8c7 52%,#fff4d8 100%);
+}
+ 
+/* chocolate hills */
+#gameScreen::before{
+  content:"";
+  position:absolute;
+  left:-7%;
+  right:-7%;
+  bottom:-18%;
+  height:43%;
+  border-radius:50% 50% 0 0;
+  background:
+    radial-gradient(circle at 24% 14%,#fff7eb 0 7px,transparent 8px),
+    radial-gradient(circle at 38% 20%,#fff7eb 0 6px,transparent 7px),
+    radial-gradient(circle at 62% 15%,#fff7eb 0 7px,transparent 8px),
+    linear-gradient(#8a4f3d,#603427);
+  z-index:0;
+}
+ 
+#gameScreen::after{
+  content:"";
+  position:absolute;
+  left:-14%;
+  bottom:-22%;
+  width:70%;
+  height:39%;
+  border-radius:50% 50% 0 0;
+  background:
+    radial-gradient(circle at 30% 17%,#ffd75f 0 5px,transparent 6px),
+    radial-gradient(circle at 55% 23%,#ff8aae 0 5px,transparent 6px),
+    linear-gradient(#b96d51,#7b4333);
+  z-index:0;
+}
+ 
+/* decorative candy clouds */
+.candyCloud{
+  position:absolute;
+  z-index:0;
+  width:96px;
+  height:35px;
+  border-radius:36px;
+  background:rgba(255,255,255,.93);
+  box-shadow:0 5px 10px rgba(189,109,151,.13);
+}
+ 
+.candyCloud::before,
+.candyCloud::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background:inherit;
+}
+ 
+.candyCloud::before{
+  width:40px;
+  height:40px;
+  left:16px;
+  top:-19px;
+}
+ 
+.candyCloud::after{
+  width:50px;
+  height:50px;
+  right:9px;
+  top:-28px;
+}
+ 
+.candyCloud.c1{
+  left:4%;
+  top:14%;
+  transform:scale(.82);
+}
+ 
+.candyCloud.c2{
+  right:16%;
+  top:24%;
+  transform:scale(.55);
+}
+ 
+.candyCloud.c3{
+  left:11%;
+  bottom:26%;
+  transform:scale(.48);
+}
+ 
+/* decorative lollipops */
+.lollipop{
+  position:absolute;
+  z-index:0;
+  width:70px;
+  height:120px;
+  pointer-events:none;
+}
+ 
+.lollipop .stick{
+  position:absolute;
+  left:31px;
+  top:55px;
+  width:8px;
+  height:66px;
+  border-radius:5px;
+  background:#f5e4cc;
+  border:2px solid #b98b76;
+}
+ 
+.lollipop .swirl{
+  position:absolute;
+  left:5px;
+  top:0;
+  width:60px;
+  height:60px;
+  border:5px solid #ffffff;
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      #ff6f9d 0 24deg,
+      #fff4a8 24deg 48deg
+    );
+  box-shadow:0 5px 0 rgba(128,71,94,.15);
+}
+ 
+.lollipop.one{
+  left:3%;
+  bottom:7%;
+  transform:rotate(-8deg);
+}
+ 
+.lollipop.two{
+  right:3%;
+  bottom:8%;
+  transform:rotate(8deg) scale(.92);
+}
+ 
+.sunCandy{
+  position:absolute;
+  z-index:0;
+  top:7%;
+  right:6%;
+  width:78px;
+  height:78px;
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(
+      #ffd45f 0 20deg,
+      #ff9fc8 20deg 40deg
+    );
+  border:7px solid rgba(255,255,255,.86);
+  box-shadow:0 0 0 10px rgba(255,212,95,.18);
+}
+ 
+/* =========================================================
+   HEADER
+========================================================= */
+.topBar,
+.starTrail,
+.gameCard{
+  position:relative;
+  z-index:2;
+}
+ 
+.topBar{
+  width:1020px;
+  max-width:98%;
+  min-height:12%;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:10px;
+}
+ 
+.titleWrap{
+  grid-column:2;
+  text-align:center;
+}
+ 
+h1{
+  margin:0;
+  font-size:47px;
+  font-size:clamp(27px,4.6vw,50px);
+  line-height:1;
+  color:#9c3e82;
+  text-shadow:
+    0 3px 0 rgba(255,255,255,.95),
+    0 0 14px rgba(255,255,255,.5);
+}
+ 
+.subtitle{
+  margin-top:4px;
+  font-size:19px;
+  font-size:clamp(13px,1.9vw,20px);
+  font-weight:900;
+  color:#8a5d48;
+}
+ 
+.progressBox{
+  justify-self:end;
+  min-width:88px;
+  padding:7px 11px;
+  border:3px solid #9c3e82;
+  border-radius:18px;
+  background:#ffffff;
+  color:#7b2e66;
+  text-align:center;
+  font-size:18px;
+  font-size:clamp(14px,1.8vw,19px);
+  font-weight:1000;
+  box-shadow:0 4px 0 rgba(112,61,89,.16);
+}
+ 
+/* =========================================================
+   STAR COLLECTION
+========================================================= */
+.starTrail{
+  width:900px;
+  max-width:94%;
+  min-height:38px;
+  height:7%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+}
+ 
+.starSlot{
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  color:rgba(255,255,255,.62);
+  font-size:30px;
+  line-height:1;
+  text-shadow:0 0 5px rgba(138,72,109,.18);
+  transition:transform .35s ease,color .35s ease,text-shadow .35s ease;
+}
+ 
+.starSlot.earned{
+  color:#ffd23f;
+  transform:scale(1.16) rotate(-10deg);
+  text-shadow:
+    0 0 4px #fff5a8,
+    0 0 12px rgba(255,210,63,.72);
+}
+ 
+/* =========================================================
+   MAIN CARD
+========================================================= */
+.gameCard{
+  width:1020px;
+  max-width:97%;
+  flex:1;
+  min-height:0;
+  max-height:80%;
+  margin-bottom:1%;
+  padding:11px 22px 15px;
+  border:5px solid #9c3e82;
+  border-radius:34px;
+  background:rgba(255,255,255,.96);
+  box-shadow:
+    0 10px 0 rgba(141,65,112,.19),
+    0 16px 30px rgba(107,62,88,.15);
+  display:grid;
+  grid-template-rows:auto minmax(155px,1fr) auto minmax(112px,.73fr);
+  gap:8px;
+  align-items:center;
+}
+ 
+#instruction{
+  margin:0;
+  text-align:center;
+  font-size:30px;
+  font-size:clamp(19px,2.9vw,31px);
+  line-height:1.1;
+  font-weight:1000;
+  color:#6f3b72;
+}
+ 
+/* =========================================================
+   CANDY JAR SCENE
+========================================================= */
+.jarStage{
+  position:relative;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+ 
+.sprinkleRing{
+  position:absolute;
+  width:min(67vw,590px);
+  height:min(23vh,195px);
+  border:3px dashed rgba(231,139,183,.3);
+  border-radius:50%;
+  transform:rotate(-3deg);
+}
+ 
+.candyJar{
+  position:relative;
+  width:235px;
+  height:185px;
+  max-width:60vw;
+  max-height:29vh;
+  animation:jarFloat 1.35s ease-in-out infinite alternate;
+}
+ 
+.jarLid{
+  position:absolute;
+  left:57px;
+  top:7px;
+  width:121px;
+  height:30px;
+  border:5px solid #72415f;
+  border-radius:16px 16px 7px 7px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #ff79a5 0 18px,
+      #ffd668 18px 36px,
+      #70d8c4 36px 54px
+    );
+  box-shadow:0 4px 0 rgba(112,64,87,.16);
+}
+ 
+.jarBody{
+  position:absolute;
+  left:43px;
+  top:32px;
+  width:149px;
+  height:130px;
+  border:6px solid #72415f;
+  border-radius:28px 28px 38px 38px;
+  background:
+    radial-gradient(circle at 25% 72%,#ff7ca9 0 11px,transparent 12px),
+    radial-gradient(circle at 47% 78%,#ffd85f 0 10px,transparent 11px),
+    radial-gradient(circle at 73% 71%,#77d9c6 0 11px,transparent 12px),
+    linear-gradient(rgba(255,255,255,.88),rgba(255,240,249,.92));
+  box-shadow:
+    inset -12px -9px 0 rgba(179,94,141,.08),
+    0 7px 0 rgba(100,57,82,.15);
+}
+ 
+.jarBody::before{
+  content:"";
+  position:absolute;
+  left:16px;
+  top:18px;
+  width:20px;
+  height:75px;
+  border-radius:15px;
+  background:rgba(255,255,255,.72);
+  transform:rotate(6deg);
+}
+ 
+.numberCandy{
+  position:absolute;
+  z-index:3;
+  left:50%;
+  top:49%;
+  width:91px;
+  height:91px;
+  transform:translate(-50%,-50%);
+  border:6px solid #ffffff;
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(
+      #ff77a4 0 30deg,
+      #fff4ad 30deg 60deg
+    );
+  color:#6f2c65;
+  display:grid;
+  place-items:center;
+  font-size:50px;
+  font-size:clamp(37px,5.7vw,56px);
+  font-weight:1000;
+  text-shadow:0 2px 0 rgba(255,255,255,.8);
+  box-shadow:0 5px 0 rgba(98,52,81,.17);
+}
+ 
+.jarBase{
+  position:absolute;
+  left:65px;
+  top:157px;
+  width:106px;
+  height:18px;
+  border:4px solid #72415f;
+  border-radius:9px;
+  background:#e4a9c8;
+}
+ 
+.promptText{
+  text-align:center;
+  color:#80556d;
+  font-size:22px;
+  font-size:clamp(16px,2.1vw,23px);
+  font-weight:900;
+}
+ 
+/* =========================================================
+   CANDY CLOUD OPTIONS
+========================================================= */
+#options{
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  align-items:stretch;
+}
+ 
+.optionBtn{
+  position:relative;
+  min-width:0;
+  min-height:100px;
+  border:5px solid #9c3e82;
+  border-radius:30px;
+  background:#ffffff;
+  color:#6e2f66;
+  box-shadow:0 8px 0 #d7a2c5;
+  display:grid;
+  place-items:center;
+  padding:10px 14px;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:transform .12s ease,box-shadow .12s ease,background .2s ease;
+  overflow:hidden;
+}
+ 
+/* candy cloud scallops */
+.optionBtn::before{
+  content:"";
+  position:absolute;
+  left:7%;
+  top:-22px;
+  width:78px;
+  height:48px;
+  border:4px solid #9c3e82;
+  border-bottom:none;
+  border-radius:50% 50% 0 0;
+  background:#ffffff;
+}
+ 
+.optionBtn::after{
+  content:"";
+  position:absolute;
+  right:7%;
+  top:-16px;
+  width:60px;
+  height:38px;
+  border:4px solid #9c3e82;
+  border-bottom:none;
+  border-radius:50% 50% 0 0;
+  background:#ffffff;
+}
+ 
+.candyDot{
+  position:absolute;
+  z-index:1;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  opacity:.7;
+}
+ 
+.candyDot.one{
+  left:13px;
+  bottom:12px;
+  background:#ff8db2;
+}
+ 
+.candyDot.two{
+  right:16px;
+  bottom:13px;
+  background:#ffd460;
+}
+ 
+.optionText{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  font-size:31px;
+  font-size:clamp(22px,3.2vw,35px);
+  font-weight:1000;
+  line-height:1.05;
+  text-transform:lowercase;
+}
+ 
+.optionBtn:active{
+  transform:translateY(5px) scale(.985);
+  box-shadow:0 3px 0 #d7a2c5;
+}
+ 
+.optionBtn:disabled{
+  cursor:default;
+}
+ 
+.optionBtn.wrong{
+  border-color:#ff5f7f;
+  background:#fff3f6;
+  animation:giggle .42s ease;
+}
+ 
+.optionBtn.wrong::before,
+.optionBtn.wrong::after{
+  border-color:#ff5f7f;
+  background:#fff3f6;
+}
+ 
+.optionBtn.correct{
+  border-color:#44b95f;
+  background:#f1ffed;
+  box-shadow:0 8px 0 #2f9545;
+}
+ 
+.optionBtn.correct::before,
+.optionBtn.correct::after{
+  border-color:#44b95f;
+  background:#f1ffed;
+}
+ 
+.optionBtn.hintGlow{
+  border-color:#f4a921;
+  background:#fffbe7;
+  animation:answerGlow .8s ease-in-out infinite alternate;
+}
+ 
+.optionBtn.hintGlow::before,
+.optionBtn.hintGlow::after{
+  border-color:#f4a921;
+  background:#fffbe7;
+}
+ 
+.tickMark{
+  position:absolute;
+  top:7px;
+  right:9px;
+  z-index:4;
+  width:46px;
+  height:46px;
+  border:4px solid #ffffff;
+  border-radius:50%;
+  background:#38b957;
+  color:#ffffff;
+  display:grid;
+  place-items:center;
+  font-size:29px;
+  font-weight:1000;
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+  animation:tickPop .45s ease;
+}
+ 
+/* =========================================================
+   FEEDBACK
+========================================================= */
+#feedback{
+  position:fixed;
+  z-index:50;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(.6);
+  opacity:0;
+  pointer-events:none;
+  min-width:300px;
+  max-width:82vw;
+  padding:15px 24px;
+  border:5px solid #3bb958;
+  border-radius:26px;
+  background:rgba(241,255,238,.98);
+  color:#25843b;
+  text-align:center;
+  font-size:50px;
+  font-size:clamp(31px,6vw,55px);
+  font-weight:1000;
+  box-shadow:0 12px 30px rgba(0,0,0,.24);
+}
+ 
+#feedback.show{
+  animation:feedbackPop 1s ease forwards;
+}
+ 
+/* =========================================================
+   END SCREEN
+========================================================= */
+#endScreen{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 14% 14%,rgba(255,255,255,.95) 0 2px,transparent 3px),
+    linear-gradient(#ffd9ef 0%,#ffe9c8 58%,#c58a6c 100%);
+}
+ 
+.endCard{
+  position:relative;
+  z-index:3;
+  width:660px;
+  max-width:92vw;
+  padding:34px 24px 35px;
+  border:6px solid #9c3e82;
+  border-radius:35px;
+  background:rgba(255,255,255,.97);
+  text-align:center;
+  box-shadow:
+    0 12px 0 rgba(141,65,112,.2),
+    0 20px 40px rgba(0,0,0,.14);
+}
+ 
+.endCard h2{
+  margin:0 0 20px;
+  color:#9c3e82;
+  font-size:72px;
+  font-size:clamp(48px,8vw,78px);
+  line-height:1;
+  text-shadow:0 4px 0 #f4d3e6;
+}
+ 
+#playAgainBtn{
+  margin-top:8px;
+  min-width:210px;
+  padding:13px 28px;
+  border:4px solid #9c3e82;
+  border-radius:23px;
+  background:linear-gradient(#ffe56a,#ff9a78);
+  color:#692b61;
+  font-size:29px;
+  font-size:clamp(22px,3.8vw,32px);
+  font-weight:1000;
+  box-shadow:0 7px 0 #c86c58;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+ 
+#playAgainBtn:active{
+  transform:translateY(5px);
+  box-shadow:0 2px 0 #c86c58;
+}
+ 
+#confettiCanvas{
+  position:fixed;
+  inset:0;
+  z-index:2;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+ 
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+@keyframes jarFloat{
+  from{transform:translateY(4px) rotate(-1deg);}
+  to{transform:translateY(-8px) rotate(1deg);}
+}
+ 
+@keyframes giggle{
+  0%,100%{transform:translateX(0) rotate(0);}
+  20%{transform:translateX(-8px) rotate(-3deg);}
+  40%{transform:translateX(8px) rotate(3deg);}
+  60%{transform:translateX(-6px) rotate(-2deg);}
+  80%{transform:translateX(6px) rotate(2deg);}
+}
+ 
+@keyframes answerGlow{
+  from{
+    transform:scale(1);
+    box-shadow:0 0 0 0 rgba(244,169,33,.35),0 8px 0 #ca891f;
+  }
+  to{
+    transform:scale(1.035);
+    box-shadow:0 0 0 12px rgba(244,169,33,.13),0 8px 0 #ca891f;
+  }
+}
+ 
+@keyframes tickPop{
+  0%{transform:scale(.3) rotate(-20deg);opacity:0;}
+  75%{transform:scale(1.13) rotate(5deg);opacity:1;}
+  100%{transform:scale(1) rotate(0);opacity:1;}
+}
+ 
+@keyframes feedbackPop{
+  0%{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.55);
+  }
+  20%,78%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1);
+  }
+  100%{
+    opacity:0;
+    transform:translate(-50%,-50%) scale(1.12);
+  }
+}
+ 
+/* =========================================================
+   SHORT LANDSCAPE
+========================================================= */
+@media(max-height:620px){
+  .topBar{
+    min-height:11%;
+  }
+ 
+  .starTrail{
+    min-height:28px;
+    height:6%;
+  }
+ 
+  .starSlot{
+    width:27px;
+    height:27px;
+    font-size:24px;
+  }
+ 
+  .gameCard{
+    max-height:83%;
+    padding:7px 16px 10px;
+    grid-template-rows:auto minmax(110px,1fr) auto minmax(76px,.65fr);
+    gap:4px;
+  }
+ 
+  .subtitle{
+    display:none;
+  }
+ 
+  .candyJar{
+    transform:scale(.78);
+    height:140px;
+  }
+ 
+  .optionBtn{
+    min-height:72px;
+  }
+ 
+  .optionText{
+    font-size:25px;
+  }
+}
+ 
+/* =========================================================
+   MOBILE PORTRAIT
+========================================================= */
+@media(max-width:600px) and (orientation:portrait){
+  .topBar{
+    width:100%;
+    grid-template-columns:1fr auto;
+    min-height:11%;
+  }
+ 
+  .titleWrap{
+    grid-column:1;
+    text-align:left;
+    padding-left:4px;
+  }
+ 
+  .progressBox{
+    grid-column:2;
+  }
+ 
+  h1{
+    font-size:31px;
+    font-size:clamp(26px,7.5vw,36px);
+  }
+ 
+  .starTrail{
+    height:6%;
+    min-height:31px;
+    gap:0;
+  }
+ 
+  .starSlot{
+    width:23px;
+    height:23px;
+    font-size:21px;
+  }
+ 
+  .gameCard{
+    width:98%;
+    max-height:83%;
+    padding:9px 9px 12px;
+    grid-template-rows:auto minmax(195px,1fr) auto minmax(220px,1fr);
+  }
+ 
+  #options{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+ 
+  .optionBtn{
+    min-height:61px;
+    border-radius:20px;
+  }
+ 
+  .optionBtn::before,
+  .optionBtn::after{
+    display:none;
+  }
+ 
+  .optionText{
+    font-size:23px;
+  }
+ 
+  .candyJar{
+    transform:scale(.88);
+  }
+ 
+  .tickMark{
+    width:38px;
+    height:38px;
+    font-size:23px;
+  }
+ 
+  .sunCandy{
+    width:55px;
+    height:55px;
+  }
+ 
+  .lollipop{
+    transform:scale(.72);
+  }
+}
+</style>
+</head>
+ 
+<body>
+ 
+<!-- ======================================================
+     2-SECOND LOGO SCREEN
+====================================================== -->
+<div id="splashScreen" aria-label="Logo screen">
+<img
+    id="splashLogo"
+    src="assets/innovine-logo.png"
+    alt="Innovine logo"
+>
+</div>
+ 
+<!-- ======================================================
+     GAME
+====================================================== -->
+<main id="gameScreen" aria-live="polite">
+ 
+  <div class="sunCandy" aria-hidden="true"></div>
+ 
+  <div class="candyCloud c1" aria-hidden="true"></div>
+<div class="candyCloud c2" aria-hidden="true"></div>
+<div class="candyCloud c3" aria-hidden="true"></div>
+ 
+  <div class="lollipop one" aria-hidden="true">
+<div class="stick"></div>
+<div class="swirl"></div>
+</div>
+ 
+  <div class="lollipop two" aria-hidden="true">
+<div class="stick"></div>
+<div class="swirl"></div>
+</div>
+ 
+  <header class="topBar">
+ 
+    <div class="titleWrap">
+<h1>Candy Cloud Adventure</h1>
+<div class="subtitle">
+        Match each number with its correct number name!
+</div>
+</div>
+ 
+    <div class="progressBox">
+<span id="questionNumber">1</span>
+      /
+<span id="totalQuestions">15</span>
+</div>
+ 
+  </header>
+ 
+  <div
+    id="starTrail"
+    class="starTrail"
+    aria-label="Stars collected"
+></div>
+ 
+  <section class="gameCard">
+ 
+    <p id="instruction">
+      Which number name matches this number?
+</p>
+ 
+    <div class="jarStage">
+ 
+      <div class="sprinkleRing" aria-hidden="true"></div>
+ 
+      <div class="candyJar" aria-hidden="true">
+ 
+        <div class="jarLid"></div>
+ 
+        <div class="jarBody">
+ 
+          <div
+            id="numberCandy"
+            class="numberCandy"
+>
+            12
+</div>
+ 
+        </div>
+ 
+        <div class="jarBase"></div>
+ 
+      </div>
+ 
+    </div>
+ 
+    <div class="promptText">
+      Tap the candy cloud with the correct number name.
+</div>
+ 
+    <div
+      id="options"
+      aria-label="Number name choices"
+></div>
+ 
+  </section>
+ 
+</main>
+ 
+<!-- ======================================================
+     CORRECT FEEDBACK
+====================================================== -->
+<div id="feedback" role="status">
+  ✅ Good Job!
+</div>
+ 
+<!-- ======================================================
+     END SCREEN
+====================================================== -->
+<section
+  id="endScreen"
+  aria-label="Game complete"
+>
+ 
+  <canvas id="confettiCanvas"></canvas>
+ 
+  <div class="endCard">
+ 
+    <h2>Good Job!</h2>
+ 
+    <button
+      id="playAgainBtn"
+      type="button"
+>
+      ▶ Play Again
+</button>
+ 
+  </div>
+ 
+</section>
+ 
+<!-- ======================================================
+     AUDIO
+====================================================== -->
+<audio
+  id="correctSound"
+  src="assets/correct.mp3"
+  preload="auto"
+  playsinline
+></audio>
+ 
+<audio
+  id="clapsSound"
+  src="assets/claps.mp3"
+  preload="auto"
+  playsinline
+></audio>
+ 
+<audio
+  id="wrongSound"
+  src="assets/wrong.mp3"
+  preload="auto"
+  playsinline
+></audio>
+ 
+<script>
+(function(){
+ 
+"use strict";
+ 
+/* ======================================================
+   SETTINGS
+====================================================== */
+var QUESTIONS_PER_GAME = 15;
+ 
+var NEXT_QUESTION_DELAY = 1100;
+ 
+/* ======================================================
+   NUMBER NAMES 1 TO 30
+====================================================== */
+var NUMBER_NAMES = {
+ 
+  1:"one",
+  2:"two",
+  3:"three",
+  4:"four",
+  5:"five",
+  6:"six",
+  7:"seven",
+  8:"eight",
+  9:"nine",
+  10:"ten",
+ 
+  11:"eleven",
+  12:"twelve",
+  13:"thirteen",
+  14:"fourteen",
+  15:"fifteen",
+  16:"sixteen",
+  17:"seventeen",
+  18:"eighteen",
+  19:"nineteen",
+  20:"twenty",
+ 
+  21:"twenty-one",
+  22:"twenty-two",
+  23:"twenty-three",
+  24:"twenty-four",
+  25:"twenty-five",
+  26:"twenty-six",
+  27:"twenty-seven",
+  28:"twenty-eight",
+  29:"twenty-nine",
+  30:"thirty"
+ 
+};
+ 
+/* ======================================================
+   ELEMENTS
+====================================================== */
+var splashScreen =
+document.getElementById("splashScreen");
+ 
+var gameScreen =
+document.getElementById("gameScreen");
+ 
+var endScreen =
+document.getElementById("endScreen");
+ 
+var numberCandy =
+document.getElementById("numberCandy");
+ 
+var questionNumber =
+document.getElementById("questionNumber");
+ 
+var totalQuestions =
+document.getElementById("totalQuestions");
+ 
+var starTrail =
+document.getElementById("starTrail");
+ 
+var optionsBox =
+document.getElementById("options");
+ 
+var feedback =
+document.getElementById("feedback");
+ 
+var playAgainBtn =
+document.getElementById("playAgainBtn");
+ 
+var correctSound =
+document.getElementById("correctSound");
+ 
+var clapsSound =
+document.getElementById("clapsSound");
+ 
+var wrongSound =
+document.getElementById("wrongSound");
+ 
+/* ======================================================
+   STATE
+====================================================== */
+var currentQuestions = [];
+ 
+var currentIndex = 0;
+ 
+var wrongAttempts = 0;
+ 
+var answered = false;
+ 
+var nextTimer = null;
+ 
+/* ======================================================
+   SHUFFLE
+====================================================== */
+function shuffle(array){
+ 
+  var copy = array.slice();
+ 
+  var i;
+ 
+  var j;
+ 
+  var temp;
+ 
+  for(
+    i = copy.length - 1;
+    i > 0;
+    i--
+  ){
+ 
+    j =
+    Math.floor(
+      Math.random() *
+      (i + 1)
+    );
+ 
+    temp = copy[i];
+ 
+    copy[i] = copy[j];
+ 
+    copy[j] = temp;
+ 
+  }
+ 
+  return copy;
+ 
+}
+ 
+/* ======================================================
+   SAFE AUDIO
+====================================================== */
+function safePlay(audioElement){
+ 
+  try{
+ 
+    audioElement.pause();
+ 
+    audioElement.currentTime = 0;
+ 
+    var playPromise =
+    audioElement.play();
+ 
+    if(
+      playPromise &&
+      typeof playPromise.catch === "function"
+    ){
+ 
+      playPromise.catch(
+        function(){}
+      );
+ 
+    }
+ 
+  }
+  catch(error){}
+ 
+}
+ 
+/* ======================================================
+   CREATE QUESTION SET
+====================================================== */
+function createQuestionSet(){
+ 
+  var allNumbers = [];
+ 
+  var i;
+ 
+  for(
+    i = 1;
+    i <= 30;
+    i++
+  ){
+ 
+    allNumbers.push(i);
+ 
+  }
+ 
+  return shuffle(
+    allNumbers
+  )
+  .slice(
+    0,
+    QUESTIONS_PER_GAME
+  );
+ 
+}
+ 
+/* ======================================================
+   STAR TRAIL
+====================================================== */
+function createStarTrail(){
+ 
+  starTrail.innerHTML = "";
+ 
+  var i;
+ 
+  for(
+    i = 0;
+    i < QUESTIONS_PER_GAME;
+    i++
+  ){
+ 
+    var star =
+    document.createElement("div");
+ 
+    star.className =
+    "starSlot";
+ 
+    star.textContent =
+    "★";
+ 
+    star.setAttribute(
+      "aria-label",
+      "Star " + (i + 1)
+    );
+ 
+    starTrail.appendChild(
+      star
+    );
+ 
+  }
+ 
+}
+ 
+function earnStar(index){
+ 
+  var stars =
+  starTrail.getElementsByClassName(
+    "starSlot"
+  );
+ 
+  if(stars[index]){
+ 
+    stars[index].className =
+    "starSlot earned";
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+   CREATE THREE NUMBER-NAME CHOICES
+====================================================== */
+function createChoices(number){
+ 
+  var choices = [number];
+ 
+  var nearby = [];
+ 
+  var offset;
+ 
+  for(
+    offset = 1;
+    offset <= 6;
+    offset++
+  ){
+ 
+    if(
+      number - offset >= 1
+    ){
+ 
+      nearby.push(
+        number - offset
+      );
+ 
+    }
+ 
+    if(
+      number + offset <= 30
+    ){
+ 
+      nearby.push(
+        number + offset
+      );
+ 
+    }
+ 
+  }
+ 
+  nearby =
+  shuffle(nearby);
+ 
+  while(
+    choices.length < 3
+  ){
+ 
+    var candidate =
+    nearby.shift();
+ 
+    if(
+      choices.indexOf(
+        candidate
+      )
+      ===
+      -1
+    ){
+ 
+      choices.push(
+        candidate
+      );
+ 
+    }
+ 
+  }
+ 
+  return shuffle(
+    choices
+  );
+ 
+}
+ 
+/* ======================================================
+   BUILD OPTIONS
+====================================================== */
+function buildOptions(number){
+ 
+  var choices =
+  createChoices(number);
+ 
+  optionsBox.innerHTML = "";
+ 
+  var i;
+ 
+  for(
+    i = 0;
+    i < choices.length;
+    i++
+  ){
+ 
+    var button =
+    document.createElement("button");
+ 
+    button.type =
+    "button";
+ 
+    button.className =
+    "optionBtn";
+ 
+    button.setAttribute(
+      "data-number",
+      String(choices[i])
+    );
+ 
+    button.setAttribute(
+      "aria-label",
+      "Choose " +
+      NUMBER_NAMES[
+        choices[i]
+      ]
+    );
+ 
+    var dotOne =
+    document.createElement("span");
+ 
+    dotOne.className =
+    "candyDot one";
+ 
+    var dotTwo =
+    document.createElement("span");
+ 
+    dotTwo.className =
+    "candyDot two";
+ 
+    var text =
+    document.createElement("span");
+ 
+    text.className =
+    "optionText";
+ 
+    text.textContent =
+    NUMBER_NAMES[
+      choices[i]
+    ];
+ 
+    button.appendChild(
+      dotOne
+    );
+ 
+    button.appendChild(
+      dotTwo
+    );
+ 
+    button.appendChild(
+      text
+    );
+ 
+    button.onclick =
+    function(){
+ 
+      checkAnswer(this);
+ 
+    };
+ 
+    optionsBox.appendChild(
+      button
+    );
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+   SHOW QUESTION
+====================================================== */
+function showQuestion(){
+ 
+  var number =
+  currentQuestions[
+    currentIndex
+  ];
+ 
+  wrongAttempts = 0;
+ 
+  answered = false;
+ 
+  questionNumber.textContent =
+  currentIndex + 1;
+ 
+  numberCandy.textContent =
+  number;
+ 
+  buildOptions(
+    number
+  );
+ 
+}
+ 
+/* ======================================================
+   REMOVE WRONG EFFECT
+====================================================== */
+function removeWrongEffect(
+  button
+){
+ 
+  window.setTimeout(
+    function(){
+ 
+      button.className =
+      button.className.replace(
+        /\s?wrong/g,
+        ""
+      );
+ 
+    },
+    450
+  );
+ 
+}
+ 
+/* ======================================================
+   GLOW CORRECT OPTION
+====================================================== */
+function glowCorrectOption(
+  correctNumber
+){
+ 
+  var buttons =
+  optionsBox.getElementsByClassName(
+    "optionBtn"
+  );
+ 
+  var i;
+ 
+  for(
+    i = 0;
+    i < buttons.length;
+    i++
+  ){
+ 
+    if(
+      Number(
+        buttons[i].getAttribute(
+          "data-number"
+        )
+      )
+      ===
+      correctNumber
+    ){
+ 
+      if(
+        buttons[i].className.indexOf(
+          "hintGlow"
+        )
+        ===
+        -1
+      ){
+ 
+        buttons[i].className +=
+        " hintGlow";
+ 
+      }
+ 
+    }
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+   DISABLE OPTIONS
+====================================================== */
+function disableOptions(){
+ 
+  var buttons =
+  optionsBox.getElementsByClassName(
+    "optionBtn"
+  );
+ 
+  var i;
+ 
+  for(
+    i = 0;
+    i < buttons.length;
+    i++
+  ){
+ 
+    buttons[i].disabled =
+    true;
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+   ADD TICK
+====================================================== */
+function addTick(button){
+ 
+  var tick =
+  document.createElement("div");
+ 
+  tick.className =
+  "tickMark";
+ 
+  tick.textContent =
+  "✓";
+ 
+  button.appendChild(
+    tick
+  );
+ 
+}
+ 
+/* ======================================================
+   GOOD JOB
+====================================================== */
+function showGoodJob(){
+ 
+  feedback.className =
+  "";
+ 
+  void feedback.offsetWidth;
+ 
+  feedback.className =
+  "show";
+ 
+}
+ 
+/* ======================================================
+   CHECK ANSWER
+====================================================== */
+function checkAnswer(button){
+ 
+  if(answered){
+ 
+    return;
+ 
+  }
+ 
+  var selectedNumber =
+  Number(
+    button.getAttribute(
+      "data-number"
+    )
+  );
+ 
+  var correctNumber =
+  currentQuestions[
+    currentIndex
+  ];
+ 
+  /* CORRECT */
+  if(
+    selectedNumber ===
+    correctNumber
+  ){
+ 
+    answered = true;
+ 
+    disableOptions();
+ 
+    button.className =
+    "optionBtn correct";
+ 
+    addTick(button);
+ 
+    earnStar(
+      currentIndex
+    );
+ 
+    showGoodJob();
+ 
+    safePlay(
+      correctSound
+    );
+ 
+    window.setTimeout(
+      function(){
+ 
+        safePlay(
+          clapsSound
+        );
+ 
+      },
+      150
+    );
+ 
+    nextTimer =
+    window.setTimeout(
+      function(){
+ 
+        currentIndex++;
+ 
+        if(
+          currentIndex <
+          currentQuestions.length
+        ){
+ 
+          showQuestion();
+ 
+        }
+        else{
+ 
+          showEndScreen();
+ 
+        }
+ 
+      },
+      NEXT_QUESTION_DELAY
+    );
+ 
+  }
+ 
+  /* WRONG */
+  else{
+ 
+    wrongAttempts++;
+ 
+    safePlay(
+      wrongSound
+    );
+ 
+    button.className =
+    button.className.replace(
+      /\s?wrong/g,
+      ""
+    )
+    +
+    " wrong";
+ 
+    removeWrongEffect(
+      button
+    );
+ 
+    if(
+      wrongAttempts >= 2
+    ){
+ 
+      glowCorrectOption(
+        correctNumber
+      );
+ 
+    }
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+   START GAME
+====================================================== */
+function startGame(){
+ 
+  if(nextTimer){
+ 
+    window.clearTimeout(
+      nextTimer
+    );
+ 
+    nextTimer = null;
+ 
+  }
+ 
+  stopConfetti();
+ 
+  endScreen.style.display =
+  "none";
+ 
+  gameScreen.style.display =
+  "flex";
+ 
+  currentQuestions =
+  createQuestionSet();
+ 
+  currentIndex = 0;
+ 
+  wrongAttempts = 0;
+ 
+  answered = false;
+ 
+  totalQuestions.textContent =
+  QUESTIONS_PER_GAME;
+ 
+  createStarTrail();
+ 
+  showQuestion();
+ 
+}
+ 
+/* ======================================================
+   END SCREEN
+====================================================== */
+function showEndScreen(){
+ 
+  gameScreen.style.display =
+  "none";
+ 
+  endScreen.style.display =
+  "flex";
+ 
+  safePlay(
+    clapsSound
+  );
+ 
+  startConfetti();
+ 
+}
+ 
+/* ======================================================
+   PLAY AGAIN
+====================================================== */
+playAgainBtn.onclick =
+function(){
+ 
+  startGame();
+ 
+};
+ 
+/* ======================================================
+   CONFETTI
+====================================================== */
+var canvas =
+document.getElementById(
+  "confettiCanvas"
+);
+ 
+var ctx =
+canvas.getContext(
+  "2d"
+);
+ 
+var confettiPieces = [];
+ 
+var confettiFrame = null;
+ 
+var confettiRunning = false;
+ 
+var confettiColors = [
+ 
+  "#ffd33f",
+ 
+  "#ff6f9d",
+ 
+  "#74d9c7",
+ 
+  "#9d78ff",
+ 
+  "#ff9b55",
+ 
+  "#63d779",
+ 
+  "#d88cff"
+ 
+];
+ 
+/* CANVAS SIZE */
+function resizeCanvas(){
+ 
+  var ratio =
+  window.devicePixelRatio
+  ||
+  1;
+ 
+  canvas.width =
+  Math.floor(
+    window.innerWidth *
+    ratio
+  );
+ 
+  canvas.height =
+  Math.floor(
+    window.innerHeight *
+    ratio
+  );
+ 
+  canvas.style.width =
+  window.innerWidth
+  +
+  "px";
+ 
+  canvas.style.height =
+  window.innerHeight
+  +
+  "px";
+ 
+  ctx.setTransform(
+    ratio,
+    0,
+    0,
+    ratio,
+    0,
+    0
+  );
+ 
+}
+ 
+/* CREATE PIECE */
+function makeConfettiPiece(){
+ 
+  return{
+ 
+    x:
+    Math.random()
+    *
+    window.innerWidth,
+ 
+    y:
+    -20
+    -
+    Math.random()
+    *
+    window.innerHeight,
+ 
+    w:
+    6
+    +
+    Math.random()
+    *
+    7,
+ 
+    h:
+    8
+    +
+    Math.random()
+    *
+    10,
+ 
+    speed:
+    2.2
+    +
+    Math.random()
+    *
+    3.3,
+ 
+    drift:
+    -1.2
+    +
+    Math.random()
+    *
+    2.4,
+ 
+    rotation:
+    Math.random()
+    *
+    Math.PI,
+ 
+    spin:
+    -.12
+    +
+    Math.random()
+    *
+    .24,
+ 
+    color:
+    confettiColors[
+      Math.floor(
+        Math.random()
+        *
+        confettiColors.length
+      )
+    ]
+ 
+  };
+ 
+}
+ 
+/* DRAW */
+function drawConfetti(){
+ 
+  var i;
+ 
+  var piece;
+ 
+  if(
+    !confettiRunning
+  ){
+ 
+    return;
+ 
+  }
+ 
+  ctx.clearRect(
+    0,
+    0,
+    window.innerWidth,
+    window.innerHeight
+  );
+ 
+  for(
+    i = 0;
+    i < confettiPieces.length;
+    i++
+  ){
+ 
+    piece =
+    confettiPieces[i];
+ 
+    piece.y +=
+    piece.speed;
+ 
+    piece.x +=
+    piece.drift;
+ 
+    piece.rotation +=
+    piece.spin;
+ 
+    if(
+      piece.y >
+      window.innerHeight
+      +
+      25
+    ){
+ 
+      confettiPieces[i] =
+      makeConfettiPiece();
+ 
+      confettiPieces[i].y =
+      -20;
+ 
+      piece =
+      confettiPieces[i];
+ 
+    }
+ 
+    ctx.save();
+ 
+    ctx.translate(
+      piece.x,
+      piece.y
+    );
+ 
+    ctx.rotate(
+      piece.rotation
+    );
+ 
+    ctx.fillStyle =
+    piece.color;
+ 
+    ctx.fillRect(
+      -piece.w / 2,
+      -piece.h / 2,
+      piece.w,
+      piece.h
+    );
+ 
+    ctx.restore();
+ 
+  }
+ 
+  confettiFrame =
+  window.requestAnimationFrame(
+    drawConfetti
+  );
+ 
+}
+ 
+/* START */
+function startConfetti(){
+ 
+  var i;
+ 
+  resizeCanvas();
+ 
+  confettiPieces = [];
+ 
+  for(
+    i = 0;
+    i < 100;
+    i++
+  ){
+ 
+    confettiPieces.push(
+      makeConfettiPiece()
+    );
+ 
+  }
+ 
+  confettiRunning =
+  true;
+ 
+  drawConfetti();
+ 
+}
+ 
+/* STOP */
+function stopConfetti(){
+ 
+  confettiRunning =
+  false;
+ 
+  if(confettiFrame){
+ 
+    window.cancelAnimationFrame(
+      confettiFrame
+    );
+ 
+    confettiFrame =
+    null;
+ 
+  }
+ 
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+ 
+}
+ 
+/* ======================================================
+   RESIZE
+====================================================== */
+window.addEventListener(
+  "resize",
+  function(){
+ 
+    if(
+      confettiRunning
+    ){
+ 
+      resizeCanvas();
+ 
+    }
+ 
+  }
+);
+ 
+/* ======================================================
+   START AFTER 2-SECOND LOGO
+====================================================== */
+window.setTimeout(
+  function(){
+ 
+    splashScreen.style.display =
+    "none";
+ 
+    startGame();
+ 
+  },
+  2000
+);
+ 
+})();
+</script>
+ 
+</body>
+</html>
