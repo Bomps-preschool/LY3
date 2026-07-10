@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Playground Picture Comprehension Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    margin:0;
+    font-family:"Comic Sans MS",sans-serif;
+    background:#eaf6f6;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    min-height:100vh;
+}
+#logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    width:100%;
+    background:white;
+}
+#logo img{width:250px;}
+#game{
+    display:none;
+    text-align:center;
+    padding:20px;
+    position:relative;
+    width:100%;
+    max-width:1200px;
+}
+#instruction{
+    font-size:28px;
+    margin-bottom:20px;
+}
+#playground-img{
+    width:80%;
+    max-width:900px;
+    border-radius:15px;
+    margin-bottom:30px;
+}
+.question{
+    background:white;
+    padding:12px 20px;
+    border-radius:12px;
+    margin:10px auto;
+    font-size:22px;
+    width:80%;
+    max-width:600px;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.15);
+    transition:0.3s;
+}
+.question.correct{border:3px solid #27ae60; background:#d4f5d1;}
+.question.wrong{border:3px solid #e74c3c; background:#f8d1d1;}
+#end{
+    display:none;
+    text-align:center;
+    padding:20px;
+}
+#end h1{
+    font-size:48px;
+    margin-bottom:20px;
+}
+#end button{
+    padding:10px 30px;
+    font-size:24px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+/* Confetti */
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+    width:100%;
+    height:100%;
+}
+</style>
+</head>
+<body>
+
+<!-- Logo -->
+<div id="logo">
+    <img src="assets/innovine-logo.png">
+</div>
+
+<!-- Game -->
+<div id="game">
+    <h1 id="instruction">Read the question and choose the correct answer</h1>
+    <img id="playground-img" src="">
+    <div id="questionsArea"></div>
+</div>
+
+<!-- End -->
+<div id="end">
+    <h1>🎉 Well Done!</h1>
+    <button onclick="restartGame()">Play Again</button>
+</div>
+
+<!-- Audio -->
+<audio id="correct" src="assets/correct.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+<audio id="clap" src="assets/claps.mp3"></audio>
+
+<!-- Confetti -->
+<canvas id="confetti"></canvas>
+
+<script>
+// Slides data
+const slides = [
+    {
+        img:'assets/playground1.png',
+        questions:[
+            {text:"Which child is on the swing?", answer:"swing"},
+            {text:"Which ball is red?", answer:"red-ball"},
+            {text:"Which child is holding the bucket?", answer:"bucket"}
+        ]
+    },
+    {
+        img:'assets/playground2.png',
+        questions:[
+            {text:"Which child is climbing?", answer:"climb"},
+            {text:"Which slide is yellow?", answer:"yellow-slide"},
+            {text:"Which child is on the seesaw?", answer:"seesaw"}
+        ]
+    },
+    {
+        img:'assets/playground3.png',
+        questions:[
+            {text:"Which child is jumping?", answer:"jump"},
+            {text:"Which swing is empty?", answer:"empty-swing"},
+            {text:"Which ball is blue?", answer:"blue-ball"}
+        ]
+    }
+];
+
+let currentSlide = 0;
+let score = 0;
+
+// Show logo first
+setTimeout(()=>{
+    document.getElementById('logo').style.display='none';
+    document.getElementById('game').style.display='block';
+    loadSlide(currentSlide);
+},5000);
+
+function loadSlide(slideIndex){
+    const slide = slides[slideIndex];
+    document.getElementById('playground-img').src = slide.img;
+
+    const questionsArea = document.getElementById('questionsArea');
+    questionsArea.innerHTML = '';
+
+    slide.questions.forEach(q=>{
+        const div = document.createElement('div');
+        div.classList.add('question');
+        div.textContent = q.text;
+        questionsArea.appendChild(div);
+
+        div.addEventListener('click',()=>{
+            handleQuestionClick(div, q.answer);
+        });
+    });
+}
+
+function handleQuestionClick(div, correctAnswer){
+    // Check if already answered
+    if(div.classList.contains('correct')) return;
+
+    if(correctAnswer){
+        div.classList.add('correct');
+        document.getElementById('correct').play();
+    } else {
+        div.classList.add('wrong');
+        document.getElementById('wrong').play();
+        setTimeout(()=> div.classList.remove('wrong'), 500);
+    }
+
+    // Check if all questions answered
+    const allAnswered = Array.from(document.querySelectorAll('#questionsArea .question')).every(q=>q.classList.contains('correct'));
+    if(allAnswered){
+        document.getElementById('clap').play();
+        document.getElementById('clap').onended = ()=>{
+            currentSlide++;
+            if(currentSlide>=slides.length){
+                document.getElementById('game').style.display='none';
+                document.getElementById('end').style.display='block';
+                launchConfetti();
+            } else {
+                loadSlide(currentSlide);
+            }
+        };
+    }
+}
+
+// Restart
+function restartGame(){
+    currentSlide=0;
+    document.getElementById('end').style.display='none';
+    document.getElementById('game').style.display='block';
+    loadSlide(currentSlide);
+}
+
+// Confetti effect
+function launchConfetti(){
+    const canvas=document.getElementById('confetti');
+    const ctx=canvas.getContext('2d');
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    const confettis=[];
+    const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
+    for(let i=0;i<80;i++){
+        confettis.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height-100,
+            r: Math.random()*6+4,
+            d: Math.random()*10+5,
+            color: colors[Math.floor(Math.random()*colors.length)],
+            tilt: Math.random()*10-10,
+            tiltAngleIncrement: Math.random()*0.07+0.05
+        });
+    }
+
+    function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        confettis.forEach(c=>{
+            ctx.beginPath();
+            ctx.lineWidth=c.r;
+            ctx.strokeStyle=c.color;
+            ctx.moveTo(c.x+c.tilt+c.r/2,c.y);
+            ctx.lineTo(c.x+c.tilt,c.y+c.tilt+c.r/2);
+            ctx.stroke();
+        });
+        update();
+        requestAnimationFrame(draw);
+    }
+
+    function update(){
+        confettis.forEach(c=>{
+            c.tiltAngle+=c.tiltAngleIncrement;
+            c.y+=(Math.cos(c.d)+1+c.r/2)/2;
+            c.tilt=Math.sin(c.tiltAngle)*12;
+            if(c.y>canvas.height){c.y=-20;c.x=Math.random()*canvas.width;}
+        });
+    }
+    draw();
+}
+</script>
+</body>
+</html>
