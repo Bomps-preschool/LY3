@@ -39,10 +39,22 @@ body{
     max-width:1200px;
 }
 
-/* INSTRUCTION */
-h1{
-    font-size:32px;
-    margin:20px 0;
+/* INSTRUCTION BOX & RAINBOW TEXT */
+#instructionBox {
+    display: inline-block;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+#instruction {
+    font-size: 32px;
+    margin: 0;
+    font-weight: bold;
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 /* Scoreboard */
@@ -136,7 +148,9 @@ canvas{
 <!-- GAME -->
 <div id="game">
     <div id="scoreboard">Score: 0/5</div>
-    <h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
+    <div id="instructionBox">
+        <h1 id="instruction">Tap all pictures that has 'sm' blend</h1>
+    </div>
     <div id="objectArea"></div>
 </div>
 
@@ -189,9 +203,7 @@ function loadSlide(index){
         div.appendChild(img);
         objectArea.appendChild(div);
 
-        div.addEventListener('click',()=>{
-            handleClick(file,div);
-        });
+        div.addEventListener('click',()=> handleClick(file,div));
     });
     updateScore();
 }
