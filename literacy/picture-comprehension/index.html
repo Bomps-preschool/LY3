@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,12 +8,12 @@
 body{
     margin:0;
     font-family:"Comic Sans MS",sans-serif;
+    background: linear-gradient(135deg,#dff6ff,#cce8ff,#b3ddff);
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
     min-height:100vh;
-    background:#dff6ff;
     overflow:hidden;
 }
 
@@ -28,17 +28,44 @@ body{
 }
 #logo img{width:250px;}
 
-/* Game */
+/* Game container side by side */
 #game{
     display:none;
     text-align:center;
-    padding:20px;
-    position:relative;
     width:100%;
-    max-width:1000px;
+    max-width:1200px;
+    flex:1;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    align-items:flex-start;
+    gap:20px;
+    padding:10px;
+    box-sizing:border-box;
 }
 
-/* Instruction Boxes */
+/* Left playground */
+#playground-container{
+    flex:1;
+    display:flex;
+    justify-content:center;
+}
+#playground-img{
+    max-width:100%;
+    max-height:70vh;
+    border-radius:15px;
+}
+
+/* Right question area */
+#question-area{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%;
+}
+
+/* Instruction boxes */
 .instruction-box{
     background:white;
     border-radius:12px;
@@ -47,6 +74,42 @@ body{
     font-size:22px;
     font-weight:bold;
     color:#ff1493;
+    text-align:center;
+    width:90%;
+}
+
+/* Question */
+#question{
+    font-size:24px;
+    margin:15px 0;
+}
+
+/* Options */
+#options{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+    margin-bottom:20px;
+    width:100%;
+}
+
+.option{
+    background:white;
+    border-radius:12px;
+    padding:15px 20px;
+    font-size:22px;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+    transition:0.3s;
+    flex:1 1 40%;
+    text-align:center;
+}
+.option.correct{
+    border:4px solid #27ae60;
+}
+.option.wrong{
+    border:4px solid #e74c3c;
 }
 
 /* Scoreboard */
@@ -60,45 +123,6 @@ body{
     font-size:24px;
     font-weight:bold;
     color:#563d7c;
-}
-
-/* Playground Image */
-#playground-img{
-    width:90%;
-    max-width:800px;
-    margin:15px 0;
-    border-radius:15px;
-}
-
-/* Question */
-#question{
-    font-size:24px;
-    margin:15px 0;
-}
-
-/* Options */
-.options{
-    display:flex;
-    justify-content:center;
-    gap:20px;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-}
-
-.option{
-    background:white;
-    border-radius:12px;
-    padding:15px 20px;
-    font-size:22px;
-    cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,0.2);
-    transition:0.3s;
-}
-.option.correct{
-    border:4px solid #27ae60;
-}
-.option.wrong{
-    border:4px solid #e74c3c;
 }
 
 /* END */
@@ -141,15 +165,22 @@ canvas{
 
 <!-- Game -->
 <div id="game">
+    <!-- Left: Playground -->
+    <div id="playground-container">
+        <img id="playground-img" src="assets/at-the-playground.png">
+    </div>
+
+    <!-- Right: Questions and Options -->
+    <div id="question-area">
+        <div class="instruction-box">Picture Comprehension - At the Playground</div>
+        <div class="instruction-box">Read the question and click on the correct answer</div>
+        <div id="question">Question text here</div>
+        <div class="options" id="options"></div>
+    </div>
     <div id="scoreboard">Score: 0/5</div>
-    <div class="instruction-box">Picture Comprehension - At the Playground</div>
-    <div class="instruction-box">Read the question and click on the correct answer</div>
-    <img id="playground-img" src="assets/at-the-playground.png">
-    <div id="question"></div>
-    <div class="options" id="options"></div>
 </div>
 
-<!-- END -->
+<!-- End -->
 <div id="end">
     <h1>🎉 Congratulations!</h1>
     <button onclick="restartGame()">Play Again</button>
@@ -182,9 +213,17 @@ let score = 0;
 // Show logo first
 setTimeout(()=>{
     document.getElementById('logo').style.display='none';
-    document.getElementById('game').style.display='block';
+    document.getElementById('game').style.display='flex';
+    shuffleQuestions();
     loadQuestion(currentQ);
 },5000);
+
+function shuffleQuestions(){
+    for(let i=questions.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [questions[i],questions[j]] = [questions[j],questions[i]];
+    }
+}
 
 function playAudio(id){
     let audio = document.getElementById(id);
@@ -217,32 +256,32 @@ function handleAnswer(div,q){
         document.getElementById('correct').play();
         score++;
         document.getElementById('scoreboard').textContent = `Score: ${score}/5`;
+        setTimeout(()=>{
+            div.classList.remove('correct');
+            currentQ++;
+            if(currentQ >= questions.length){
+                document.getElementById('game').style.display='none';
+                document.getElementById('end').style.display='block';
+                document.getElementById('clap').play();
+                launchConfetti();
+            } else loadQuestion(currentQ);
+        },600);
     } else {
         div.classList.add('wrong');
         document.getElementById('wrong').play();
         setTimeout(()=> div.classList.remove('wrong'),500);
-        return;
     }
-    setTimeout(()=>{
-        div.classList.remove('correct');
-        currentQ++;
-        if(currentQ >= questions.length){
-            document.getElementById('game').style.display='none';
-            document.getElementById('end').style.display='block';
-            launchConfetti();
-        } else loadQuestion(currentQ);
-    },600);
 }
 
-// Restart
 function restartGame(){
     currentQ=0; score=0;
     document.getElementById('end').style.display='none';
-    document.getElementById('game').style.display='block';
+    document.getElementById('game').style.display='flex';
+    shuffleQuestions();
     loadQuestion(currentQ);
 }
 
-// Confetti effect
+// Confetti
 function launchConfetti(){
     const canvas=document.getElementById('confetti');
     const ctx=canvas.getContext('2d');
@@ -251,7 +290,7 @@ function launchConfetti(){
     const confettis=[];
     const colors=['#f1c40f','#e67e22','#e74c3c','#9b59b6','#3498db','#2ecc71'];
     for(let i=0;i<80;i++){
-        confettis.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-100,r:Math.random()*6+4,d:Math.random()*10+5,color:colors[Math.floor(Math.random()*colors.length)],tilt:Math.random()*10-10,tiltAngleIncrement:Math.random()*0.07+0.05});
+        confettis.push({x: Math.random()*canvas.width,y: Math.random()*canvas.height-100,r: Math.random()*6+4,d: Math.random()*10+5,color:colors[Math.floor(Math.random()*colors.length)],tilt: Math.random()*10-10,tiltAngleIncrement: Math.random()*0.07+0.05});
     }
     function draw(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -277,6 +316,5 @@ function launchConfetti(){
     draw();
 }
 </script>
-
 </body>
 </html>
