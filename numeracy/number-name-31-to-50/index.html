@@ -1,0 +1,3418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta
+
+  name="viewport"
+
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+>
+<meta name="theme-color" content="#153c78">
+<title>Robot Word Factory</title>
+ 
+<style>
+
+/* =========================================================
+
+   GLOBAL
+
+========================================================= */
+
+*{
+
+  box-sizing:border-box;
+
+  -webkit-tap-highlight-color:transparent;
+
+  -webkit-user-select:none;
+
+  user-select:none;
+
+}
+ 
+html,
+
+body{
+
+  width:100%;
+
+  height:100%;
+
+  margin:0;
+
+  overflow:hidden;
+
+  font-family:"Trebuchet MS",Arial,sans-serif;
+
+  background:#153c78;
+
+  color:#26324b;
+
+}
+ 
+button{
+
+  font:inherit;
+
+}
+ 
+.hidden{
+
+  display:none !important;
+
+}
+ 
+/* =========================================================
+
+   2-SECOND LOGO SCREEN
+
+========================================================= */
+
+#splashScreen{
+
+  position:fixed;
+
+  inset:0;
+
+  z-index:1000;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  background:#ffffff;
+
+}
+ 
+#splashLogo{
+
+  width:250px;
+
+  max-width:58vw;
+
+  max-height:38vh;
+
+  object-fit:contain;
+
+}
+ 
+/* =========================================================
+
+   FACTORY BACKGROUND
+
+========================================================= */
+
+#gameScreen{
+
+  position:relative;
+
+  width:100%;
+
+  height:100vh;
+
+  height:100dvh;
+
+  min-height:100%;
+
+  display:none;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  overflow:hidden;
+
+  padding:
+
+    max(8px,env(safe-area-inset-top))
+
+    max(10px,env(safe-area-inset-right))
+
+    max(8px,env(safe-area-inset-bottom))
+
+    max(10px,env(safe-area-inset-left));
+
+  background:
+
+    radial-gradient(circle at 10% 14%,rgba(255,255,255,.2) 0 2px,transparent 3px),
+
+    radial-gradient(circle at 88% 12%,rgba(255,255,255,.18) 0 2px,transparent 3px),
+
+    linear-gradient(145deg,#123a74 0%,#1b66a5 48%,#2a8fa4 100%);
+
+}
+ 
+#gameScreen::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:0;
+
+  right:0;
+
+  bottom:0;
+
+  height:31%;
+
+  z-index:0;
+
+  background:
+
+    repeating-linear-gradient(
+
+      90deg,
+
+      rgba(28,45,73,.88) 0 90px,
+
+      rgba(37,57,89,.9) 90px 180px
+
+    );
+
+  border-top:8px solid rgba(255,205,78,.75);
+
+}
+ 
+#gameScreen::after{
+
+  content:"";
+
+  position:absolute;
+
+  left:0;
+
+  right:0;
+
+  bottom:16%;
+
+  height:14px;
+
+  z-index:1;
+
+  background:
+
+    repeating-linear-gradient(
+
+      90deg,
+
+      #f6c847 0 32px,
+
+      #1f2d49 32px 64px
+
+    );
+
+  box-shadow:0 4px 0 rgba(0,0,0,.22);
+
+}
+ 
+/* decorative pipes */
+
+.pipe{
+
+  position:absolute;
+
+  z-index:0;
+
+  border:8px solid #7fd8dc;
+
+  opacity:.65;
+
+}
+ 
+.pipe.left{
+
+  left:3%;
+
+  top:16%;
+
+  width:115px;
+
+  height:86px;
+
+  border-right:none;
+
+  border-bottom:none;
+
+  border-radius:28px 0 0 0;
+
+}
+ 
+.pipe.right{
+
+  right:3%;
+
+  top:20%;
+
+  width:120px;
+
+  height:90px;
+
+  border-left:none;
+
+  border-bottom:none;
+
+  border-radius:0 28px 0 0;
+
+}
+ 
+/* decorative gears */
+
+.gearDecor{
+
+  position:absolute;
+
+  z-index:0;
+
+  display:grid;
+
+  place-items:center;
+
+  border-radius:50%;
+
+  border:9px dashed rgba(255,220,95,.82);
+
+  animation:gearSpin 9s linear infinite;
+
+}
+ 
+.gearDecor::after{
+
+  content:"";
+
+  width:42%;
+
+  height:42%;
+
+  border-radius:50%;
+
+  background:#173f78;
+
+  box-shadow:inset 0 0 0 5px rgba(255,255,255,.15);
+
+}
+ 
+.gearDecor.one{
+
+  left:5%;
+
+  bottom:8%;
+
+  width:90px;
+
+  height:90px;
+
+}
+ 
+.gearDecor.two{
+
+  right:5%;
+
+  bottom:9%;
+
+  width:74px;
+
+  height:74px;
+
+  animation-direction:reverse;
+
+}
+ 
+.gearDecor.three{
+
+  right:12%;
+
+  top:9%;
+
+  width:58px;
+
+  height:58px;
+
+  border-width:7px;
+
+}
+ 
+/* =========================================================
+
+   HEADER
+
+========================================================= */
+
+.topBar,
+
+.gearTrail,
+
+.gameCard{
+
+  position:relative;
+
+  z-index:3;
+
+}
+ 
+.topBar{
+
+  width:1040px;
+
+  max-width:98%;
+
+  min-height:12%;
+
+  display:grid;
+
+  grid-template-columns:1fr auto 1fr;
+
+  align-items:center;
+
+  gap:10px;
+
+}
+ 
+.titleWrap{
+
+  grid-column:2;
+
+  text-align:center;
+
+}
+ 
+h1{
+
+  margin:0;
+
+  font-size:47px;
+
+  font-size:clamp(28px,4.6vw,50px);
+
+  line-height:1;
+
+  color:#ffe16b;
+
+  text-shadow:
+
+    0 3px 0 #d56b35,
+
+    0 0 14px rgba(255,225,107,.35);
+
+}
+ 
+.subtitle{
+
+  margin-top:4px;
+
+  font-size:19px;
+
+  font-size:clamp(13px,1.9vw,20px);
+
+  font-weight:900;
+
+  color:#dffbff;
+
+}
+ 
+.progressBox{
+
+  justify-self:end;
+
+  min-width:88px;
+
+  padding:7px 11px;
+
+  border:3px solid #ffe16b;
+
+  border-radius:18px;
+
+  background:rgba(15,47,94,.95);
+
+  color:#ffffff;
+
+  text-align:center;
+
+  font-size:18px;
+
+  font-size:clamp(14px,1.8vw,19px);
+
+  font-weight:1000;
+
+  box-shadow:0 4px 0 rgba(0,0,0,.25);
+
+}
+ 
+/* =========================================================
+
+   GEAR COLLECTION
+
+========================================================= */
+
+.gearTrail{
+
+  width:920px;
+
+  max-width:95%;
+
+  min-height:38px;
+
+  height:7%;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:3px;
+
+}
+ 
+.gearSlot{
+
+  width:35px;
+
+  height:35px;
+
+  display:grid;
+
+  place-items:center;
+
+  color:rgba(255,255,255,.28);
+
+  font-size:29px;
+
+  line-height:1;
+
+  transition:transform .35s ease,color .35s ease,text-shadow .35s ease;
+
+}
+ 
+.gearSlot.earned{
+
+  color:#ffd84d;
+
+  transform:scale(1.15) rotate(-12deg);
+
+  text-shadow:
+
+    0 0 5px #fff4a8,
+
+    0 0 13px rgba(255,216,77,.7);
+
+}
+ 
+/* =========================================================
+
+   MAIN CARD
+
+========================================================= */
+
+.gameCard{
+
+  width:1040px;
+
+  max-width:97%;
+
+  flex:1;
+
+  min-height:0;
+
+  max-height:80%;
+
+  margin-bottom:1%;
+
+  padding:10px 20px 14px;
+
+  border:5px solid #f6cb4d;
+
+  border-radius:32px;
+
+  background:rgba(245,250,255,.97);
+
+  box-shadow:
+
+    0 10px 0 rgba(0,0,0,.24),
+
+    0 18px 32px rgba(0,0,0,.18);
+
+  display:grid;
+
+  grid-template-rows:auto minmax(180px,1.15fr) auto minmax(116px,.75fr);
+
+  gap:8px;
+
+  align-items:center;
+
+}
+ 
+#instruction{
+
+  margin:0;
+
+  text-align:center;
+
+  font-size:29px;
+
+  font-size:clamp(19px,2.8vw,31px);
+
+  line-height:1.1;
+
+  font-weight:1000;
+
+  color:#243557;
+
+}
+ 
+/* =========================================================
+
+   ROBOT + LARGE NUMBER DISPLAY
+
+========================================================= */
+
+.robotStage{
+
+  min-height:0;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+ 
+.robot{
+
+  position:relative;
+
+  width:290px;
+
+  height:195px;
+
+  max-width:65vw;
+
+  max-height:29vh;
+
+  animation:robotBob 1.2s ease-in-out infinite alternate;
+
+}
+ 
+/* antenna */
+
+.antenna{
+
+  position:absolute;
+
+  left:140px;
+
+  top:-6px;
+
+  width:10px;
+
+  height:31px;
+
+  border-radius:6px;
+
+  background:#4b5870;
+
+}
+ 
+.antenna::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:-7px;
+
+  top:-16px;
+
+  width:24px;
+
+  height:24px;
+
+  border:4px solid #ffffff;
+
+  border-radius:50%;
+
+  background:#ff657f;
+
+  box-shadow:0 0 12px rgba(255,101,127,.7);
+
+}
+ 
+/* head */
+
+.robotHead{
+
+  position:absolute;
+
+  left:72px;
+
+  top:21px;
+
+  width:146px;
+
+  height:84px;
+
+  border:6px solid #25334e;
+
+  border-radius:29px;
+
+  background:linear-gradient(#a7eff2,#63cbd5);
+
+  box-shadow:0 7px 0 rgba(28,45,72,.2);
+
+}
+ 
+.eye{
+
+  position:absolute;
+
+  top:20px;
+
+  width:28px;
+
+  height:28px;
+
+  border:5px solid #ffffff;
+
+  border-radius:50%;
+
+  background:#263451;
+
+  box-shadow:0 0 0 3px #6dd8e2;
+
+}
+ 
+.eye.left{
+
+  left:28px;
+
+}
+ 
+.eye.right{
+
+  right:28px;
+
+}
+ 
+.mouth{
+
+  position:absolute;
+
+  left:51px;
+
+  bottom:12px;
+
+  width:43px;
+
+  height:13px;
+
+  border-radius:0 0 18px 18px;
+
+  background:#263451;
+
+}
+ 
+/* ears */
+
+.robotHead::before,
+
+.robotHead::after{
+
+  content:"";
+
+  position:absolute;
+
+  top:23px;
+
+  width:25px;
+
+  height:39px;
+
+  border:5px solid #25334e;
+
+  background:#ffbf4a;
+
+}
+ 
+.robotHead::before{
+
+  left:-29px;
+
+  border-radius:12px 0 0 12px;
+
+}
+ 
+.robotHead::after{
+
+  right:-29px;
+
+  border-radius:0 12px 12px 0;
+
+}
+ 
+/* body */
+
+.robotBody{
+
+  position:absolute;
+
+  left:57px;
+
+  top:111px;
+
+  width:176px;
+
+  height:78px;
+
+  border:6px solid #25334e;
+
+  border-radius:23px;
+
+  background:linear-gradient(#ffcc5b,#f39a40);
+
+  box-shadow:0 7px 0 rgba(28,45,72,.2);
+
+}
+ 
+/* Large, high-contrast number panel */
+
+.numberDisplay{
+
+  position:absolute;
+
+  left:50%;
+
+  top:50%;
+
+  width:138px;
+
+  height:62px;
+
+  transform:translate(-50%,-50%);
+
+  border:6px solid #25334e;
+
+  border-radius:16px;
+
+  background:#ffffff;
+
+  color:#142d5c;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:52px;
+
+  font-size:clamp(42px,6vw,58px);
+
+  line-height:1;
+
+  font-weight:1000;
+
+  letter-spacing:1px;
+
+  box-shadow:
+
+    inset 0 0 0 5px #dff7ff,
+
+    0 4px 0 rgba(35,51,78,.18);
+
+}
+ 
+.numberLabel{
+
+  position:absolute;
+
+  left:50%;
+
+  top:-22px;
+
+  transform:translateX(-50%);
+
+  min-width:86px;
+
+  padding:3px 10px;
+
+  border:3px solid #25334e;
+
+  border-radius:11px;
+
+  background:#ffe16b;
+
+  color:#243557;
+
+  text-align:center;
+
+  font-size:13px;
+
+  font-weight:1000;
+
+  letter-spacing:.7px;
+
+}
+ 
+/* arms */
+
+.arm{
+
+  position:absolute;
+
+  top:132px;
+
+  width:57px;
+
+  height:20px;
+
+  border:5px solid #25334e;
+
+  border-radius:13px;
+
+  background:#8adbe1;
+
+}
+ 
+.arm.left{
+
+  left:5px;
+
+  transform:rotate(-15deg);
+
+}
+ 
+.arm.right{
+
+  right:5px;
+
+  transform:rotate(15deg);
+
+}
+ 
+.hand{
+
+  position:absolute;
+
+  top:125px;
+
+  width:31px;
+
+  height:31px;
+
+  border:5px solid #25334e;
+
+  border-radius:50%;
+
+  background:#ff657f;
+
+}
+ 
+.hand.left{
+
+  left:-5px;
+
+}
+ 
+.hand.right{
+
+  right:-5px;
+
+}
+ 
+/* =========================================================
+
+   PROMPT
+
+========================================================= */
+
+.promptText{
+
+  text-align:center;
+
+  color:#43506a;
+
+  font-size:21px;
+
+  font-size:clamp(16px,2.1vw,23px);
+
+  font-weight:900;
+
+}
+ 
+/* =========================================================
+
+   FULL NUMBER-NAME OPTIONS
+
+========================================================= */
+
+#options{
+
+  min-height:0;
+
+  display:grid;
+
+  grid-template-columns:repeat(3,minmax(0,1fr));
+
+  gap:16px;
+
+  align-items:stretch;
+
+}
+ 
+.optionBtn{
+
+  position:relative;
+
+  min-width:0;
+
+  min-height:105px;
+
+  padding:11px 13px;
+
+  border:5px solid #3c84bd;
+
+  border-radius:24px;
+
+  background:#ffffff;
+
+  color:#263b61;
+
+  box-shadow:0 8px 0 #26628f;
+
+  display:grid;
+
+  place-items:center;
+
+  cursor:pointer;
+
+  touch-action:manipulation;
+
+  transition:transform .12s ease,box-shadow .12s ease,background .2s ease;
+
+  overflow:hidden;
+
+}
+ 
+.optionBtn::before{
+
+  content:"";
+
+  position:absolute;
+
+  left:12px;
+
+  top:11px;
+
+  width:14px;
+
+  height:14px;
+
+  border-radius:50%;
+
+  background:#f8ca4d;
+
+}
+ 
+.optionBtn::after{
+
+  content:"";
+
+  position:absolute;
+
+  right:13px;
+
+  bottom:11px;
+
+  width:16px;
+
+  height:16px;
+
+  border-radius:50%;
+
+  background:#74d5dc;
+
+}
+ 
+.optionText{
+
+  position:relative;
+
+  z-index:1;
+
+  text-align:center;
+
+  font-size:28px;
+
+  font-size:clamp(19px,2.8vw,31px);
+
+  font-weight:1000;
+
+  line-height:1.08;
+
+  text-transform:capitalize;
+
+  overflow-wrap:anywhere;
+
+}
+ 
+.optionBtn:active{
+
+  transform:translateY(5px) scale(.985);
+
+  box-shadow:0 3px 0 #26628f;
+
+}
+ 
+.optionBtn:disabled{
+
+  cursor:default;
+
+}
+ 
+.optionBtn.wrong{
+
+  border-color:#ef5771;
+
+  background:#fff2f5;
+
+  animation:giggle .42s ease;
+
+}
+ 
+.optionBtn.correct{
+
+  border-color:#42b75e;
+
+  background:#efffed;
+
+  box-shadow:0 8px 0 #2d8e45;
+
+}
+ 
+.optionBtn.hintGlow{
+
+  border-color:#f6bf3f;
+
+  background:#fff9df;
+
+  animation:answerGlow .8s ease-in-out infinite alternate;
+
+}
+ 
+.tickMark{
+
+  position:absolute;
+
+  top:6px;
+
+  right:8px;
+
+  z-index:3;
+
+  width:43px;
+
+  height:43px;
+
+  border:4px solid #ffffff;
+
+  border-radius:50%;
+
+  background:#38b957;
+
+  color:#ffffff;
+
+  display:grid;
+
+  place-items:center;
+
+  font-size:27px;
+
+  font-weight:1000;
+
+  box-shadow:0 3px 8px rgba(0,0,0,.2);
+
+  animation:tickPop .45s ease;
+
+}
+ 
+/* =========================================================
+
+   FEEDBACK
+
+========================================================= */
+
+#feedback{
+
+  position:fixed;
+
+  z-index:50;
+
+  left:50%;
+
+  top:49%;
+
+  transform:translate(-50%,-50%) scale(.6);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  min-width:310px;
+
+  max-width:84vw;
+
+  padding:15px 24px;
+
+  border:5px solid #3bb958;
+
+  border-radius:26px;
+
+  background:rgba(241,255,238,.98);
+
+  color:#25843b;
+
+  text-align:center;
+
+  font-size:49px;
+
+  font-size:clamp(31px,6vw,55px);
+
+  font-weight:1000;
+
+  box-shadow:0 12px 30px rgba(0,0,0,.26);
+
+}
+ 
+#feedback.show{
+
+  animation:feedbackPop 1s ease forwards;
+
+}
+ 
+/* =========================================================
+
+   END SCREEN
+
+========================================================= */
+
+#endScreen{
+
+  position:fixed;
+
+  inset:0;
+
+  z-index:100;
+
+  display:none;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:18px;
+
+  overflow:hidden;
+
+  background:
+
+    radial-gradient(circle at 12% 18%,rgba(255,255,255,.2) 0 2px,transparent 3px),
+
+    linear-gradient(145deg,#113871 0%,#1c6ca8 50%,#2b92a5 100%);
+
+}
+ 
+.endCard{
+
+  position:relative;
+
+  z-index:3;
+
+  width:660px;
+
+  max-width:92vw;
+
+  padding:36px 24px 36px;
+
+  border:6px solid #f6cb4d;
+
+  border-radius:35px;
+
+  background:rgba(246,250,255,.97);
+
+  text-align:center;
+
+  box-shadow:
+
+    0 12px 0 rgba(0,0,0,.23),
+
+    0 20px 40px rgba(0,0,0,.18);
+
+}
+ 
+.endCard h2{
+
+  margin:0 0 20px;
+
+  color:#2b5f9d;
+
+  font-size:72px;
+
+  font-size:clamp(48px,8vw,78px);
+
+  line-height:1;
+
+  text-shadow:0 4px 0 #d7ecff;
+
+}
+ 
+#playAgainBtn{
+
+  margin-top:8px;
+
+  min-width:215px;
+
+  padding:13px 28px;
+
+  border:4px solid #2d5e97;
+
+  border-radius:23px;
+
+  background:linear-gradient(#ffe16b,#ff9d47);
+
+  color:#243557;
+
+  font-size:29px;
+
+  font-size:clamp(22px,3.8vw,32px);
+
+  font-weight:1000;
+
+  box-shadow:0 7px 0 #bd672d;
+
+  cursor:pointer;
+
+  touch-action:manipulation;
+
+}
+ 
+#playAgainBtn:active{
+
+  transform:translateY(5px);
+
+  box-shadow:0 2px 0 #bd672d;
+
+}
+ 
+#confettiCanvas{
+
+  position:fixed;
+
+  inset:0;
+
+  z-index:2;
+
+  width:100%;
+
+  height:100%;
+
+  pointer-events:none;
+
+}
+ 
+/* =========================================================
+
+   ANIMATIONS
+
+========================================================= */
+
+@keyframes gearSpin{
+
+  from{transform:rotate(0);}
+
+  to{transform:rotate(360deg);}
+
+}
+ 
+@keyframes robotBob{
+
+  from{transform:translateY(4px);}
+
+  to{transform:translateY(-7px);}
+
+}
+ 
+@keyframes giggle{
+
+  0%,100%{transform:translateX(0) rotate(0);}
+
+  20%{transform:translateX(-8px) rotate(-3deg);}
+
+  40%{transform:translateX(8px) rotate(3deg);}
+
+  60%{transform:translateX(-6px) rotate(-2deg);}
+
+  80%{transform:translateX(6px) rotate(2deg);}
+
+}
+ 
+@keyframes answerGlow{
+
+  from{
+
+    transform:scale(1);
+
+    box-shadow:0 0 0 0 rgba(246,191,63,.35),0 8px 0 #b98823;
+
+  }
+
+  to{
+
+    transform:scale(1.035);
+
+    box-shadow:0 0 0 12px rgba(246,191,63,.13),0 8px 0 #b98823;
+
+  }
+
+}
+ 
+@keyframes tickPop{
+
+  0%{transform:scale(.3) rotate(-20deg);opacity:0;}
+
+  75%{transform:scale(1.13) rotate(5deg);opacity:1;}
+
+  100%{transform:scale(1) rotate(0);opacity:1;}
+
+}
+ 
+@keyframes feedbackPop{
+
+  0%{
+
+    opacity:0;
+
+    transform:translate(-50%,-50%) scale(.55);
+
+  }
+
+  20%,78%{
+
+    opacity:1;
+
+    transform:translate(-50%,-50%) scale(1);
+
+  }
+
+  100%{
+
+    opacity:0;
+
+    transform:translate(-50%,-50%) scale(1.12);
+
+  }
+
+}
+ 
+/* =========================================================
+
+   SHORT LANDSCAPE SCREENS
+
+========================================================= */
+
+@media(max-height:650px){
+
+  .topBar{
+
+    min-height:10%;
+
+  }
+ 
+  .gearTrail{
+
+    min-height:26px;
+
+    height:5%;
+
+  }
+ 
+  .gearSlot{
+
+    width:27px;
+
+    height:27px;
+
+    font-size:23px;
+
+  }
+ 
+  .subtitle{
+
+    display:none;
+
+  }
+ 
+  .gameCard{
+
+    max-height:85%;
+
+    padding:6px 14px 9px;
+
+    grid-template-rows:auto minmax(110px,1fr) auto minmax(78px,.72fr);
+
+    gap:4px;
+
+  }
+ 
+  .robot{
+
+    transform:scale(.72);
+
+    height:124px;
+
+  }
+ 
+  .optionBtn{
+
+    min-height:65px;
+
+    border-width:4px;
+
+  }
+ 
+  .optionText{
+
+    font-size:21px;
+
+  }
+
+}
+ 
+/* =========================================================
+
+   MOBILE PORTRAIT
+
+========================================================= */
+
+@media(max-width:620px) and (orientation:portrait){
+
+  .topBar{
+
+    width:100%;
+
+    grid-template-columns:1fr auto;
+
+    min-height:10%;
+
+  }
+ 
+  .titleWrap{
+
+    grid-column:1;
+
+    text-align:left;
+
+    padding-left:4px;
+
+  }
+ 
+  .progressBox{
+
+    grid-column:2;
+
+  }
+ 
+  h1{
+
+    font-size:31px;
+
+    font-size:clamp(26px,7.5vw,36px);
+
+  }
+ 
+  .gearTrail{
+
+    height:5%;
+
+    min-height:29px;
+
+    gap:0;
+
+  }
+ 
+  .gearSlot{
+
+    width:22px;
+
+    height:22px;
+
+    font-size:20px;
+
+  }
+ 
+  .gameCard{
+
+    width:98%;
+
+    max-height:85%;
+
+    padding:8px 8px 10px;
+
+    grid-template-rows:auto minmax(210px,1fr) auto minmax(245px,1.2fr);
+
+  }
+ 
+  .robot{
+
+    transform:scale(.86);
+
+  }
+ 
+  #options{
+
+    grid-template-columns:1fr;
+
+    gap:8px;
+
+  }
+ 
+  .optionBtn{
+
+    min-height:64px;
+
+    border-width:4px;
+
+    border-radius:18px;
+
+  }
+ 
+  .optionText{
+
+    font-size:21px;
+
+  }
+ 
+  .tickMark{
+
+    width:35px;
+
+    height:35px;
+
+    font-size:22px;
+
+  }
+ 
+  .gearDecor{
+
+    transform:scale(.65);
+
+  }
+
+}
+</style>
+</head>
+ 
+<body>
+ 
+<!-- ======================================================
+
+     2-SECOND WHITE LOGO SCREEN
+
+====================================================== -->
+<div id="splashScreen" aria-label="Logo screen">
+<img
+
+    id="splashLogo"
+
+    src="assets/innovine-logo.png"
+
+    alt="Innovine logo"
+>
+</div>
+ 
+<!-- ======================================================
+
+     GAME SCREEN
+
+====================================================== -->
+<main id="gameScreen" aria-live="polite">
+ 
+  <div class="pipe left" aria-hidden="true"></div>
+<div class="pipe right" aria-hidden="true"></div>
+ 
+  <div class="gearDecor one" aria-hidden="true"></div>
+<div class="gearDecor two" aria-hidden="true"></div>
+<div class="gearDecor three" aria-hidden="true"></div>
+ 
+  <header class="topBar">
+ 
+    <div class="titleWrap">
+<h1>Robot Word Factory</h1>
+<div class="subtitle">
+
+        Match the number with its correct number name!
+</div>
+</div>
+ 
+    <div class="progressBox">
+<span id="questionNumber">1</span>
+
+      /
+<span id="totalQuestions">15</span>
+</div>
+ 
+  </header>
+ 
+  <div
+
+    id="gearTrail"
+
+    class="gearTrail"
+
+    aria-label="Gears collected"
+></div>
+ 
+  <section class="gameCard">
+ 
+    <p id="instruction">
+
+      Tap the correct number name.
+</p>
+ 
+    <!-- ROBOT -->
+<div class="robotStage">
+ 
+      <div class="robot" aria-hidden="true">
+ 
+        <div class="antenna"></div>
+ 
+        <div class="robotHead">
+<div class="eye left"></div>
+<div class="eye right"></div>
+<div class="mouth"></div>
+</div>
+ 
+        <div class="arm left"></div>
+<div class="arm right"></div>
+ 
+        <div class="hand left"></div>
+<div class="hand right"></div>
+ 
+        <div class="robotBody">
+ 
+          <div
+
+            id="numberDisplay"
+
+            class="numberDisplay"
+>
+<div class="numberLabel">NUMBER</div>
+<span id="numberText">37</span>
+</div>
+ 
+        </div>
+ 
+      </div>
+ 
+    </div>
+ 
+    <div class="promptText">
+
+      Which number name matches the number shown by the robot?
+</div>
+ 
+    <!-- FULL NUMBER-NAME OPTIONS -->
+<div
+
+      id="options"
+
+      aria-label="Number name choices"
+></div>
+ 
+  </section>
+ 
+</main>
+ 
+<!-- ======================================================
+
+     CORRECT FEEDBACK
+
+====================================================== -->
+<div id="feedback" role="status">
+
+  ✅ Good Job!
+</div>
+ 
+<!-- ======================================================
+
+     END SCREEN
+
+====================================================== -->
+<section
+
+  id="endScreen"
+
+  aria-label="Game complete"
+>
+ 
+  <canvas id="confettiCanvas"></canvas>
+ 
+  <div class="endCard">
+ 
+    <h2>Good Job!</h2>
+ 
+    <button
+
+      id="playAgainBtn"
+
+      type="button"
+>
+
+      ▶ Play Again
+</button>
+ 
+  </div>
+ 
+</section>
+ 
+<!-- ======================================================
+
+     AUDIO
+
+====================================================== -->
+<audio
+
+  id="correctSound"
+
+  src="assets/correct.mp3"
+
+  preload="auto"
+
+  playsinline
+></audio>
+ 
+<audio
+
+  id="clapsSound"
+
+  src="assets/claps.mp3"
+
+  preload="auto"
+
+  playsinline
+></audio>
+ 
+<audio
+
+  id="wrongSound"
+
+  src="assets/wrong.mp3"
+
+  preload="auto"
+
+  playsinline
+></audio>
+ 
+<script>
+
+(function(){
+ 
+"use strict";
+ 
+/* ======================================================
+
+   SETTINGS
+
+====================================================== */
+
+var QUESTIONS_PER_GAME = 15;
+ 
+var NEXT_QUESTION_DELAY = 1100;
+ 
+/* ======================================================
+
+   NUMBER NAMES 31 TO 50
+
+====================================================== */
+
+var NUMBER_NAMES = {
+ 
+  31:"thirty-one",
+
+  32:"thirty-two",
+
+  33:"thirty-three",
+
+  34:"thirty-four",
+
+  35:"thirty-five",
+
+  36:"thirty-six",
+
+  37:"thirty-seven",
+
+  38:"thirty-eight",
+
+  39:"thirty-nine",
+
+  40:"forty",
+ 
+  41:"forty-one",
+
+  42:"forty-two",
+
+  43:"forty-three",
+
+  44:"forty-four",
+
+  45:"forty-five",
+
+  46:"forty-six",
+
+  47:"forty-seven",
+
+  48:"forty-eight",
+
+  49:"forty-nine",
+
+  50:"fifty"
+ 
+};
+ 
+/* ======================================================
+
+   ELEMENTS
+
+====================================================== */
+
+var splashScreen =
+
+document.getElementById("splashScreen");
+ 
+var gameScreen =
+
+document.getElementById("gameScreen");
+ 
+var endScreen =
+
+document.getElementById("endScreen");
+ 
+var numberText =
+
+document.getElementById("numberText");
+ 
+var questionNumber =
+
+document.getElementById("questionNumber");
+ 
+var totalQuestions =
+
+document.getElementById("totalQuestions");
+ 
+var gearTrail =
+
+document.getElementById("gearTrail");
+ 
+var optionsBox =
+
+document.getElementById("options");
+ 
+var feedback =
+
+document.getElementById("feedback");
+ 
+var playAgainBtn =
+
+document.getElementById("playAgainBtn");
+ 
+var correctSound =
+
+document.getElementById("correctSound");
+ 
+var clapsSound =
+
+document.getElementById("clapsSound");
+ 
+var wrongSound =
+
+document.getElementById("wrongSound");
+ 
+/* ======================================================
+
+   GAME STATE
+
+====================================================== */
+
+var currentQuestions = [];
+ 
+var currentIndex = 0;
+ 
+var wrongAttempts = 0;
+ 
+var answered = false;
+ 
+var nextTimer = null;
+ 
+/* ======================================================
+
+   SHUFFLE
+
+====================================================== */
+
+function shuffle(array){
+ 
+  var copy = array.slice();
+ 
+  var i;
+ 
+  var j;
+ 
+  var temp;
+ 
+  for(
+
+    i = copy.length - 1;
+
+    i > 0;
+
+    i--
+
+  ){
+ 
+    j =
+
+    Math.floor(
+
+      Math.random() *
+
+      (i + 1)
+
+    );
+ 
+    temp = copy[i];
+ 
+    copy[i] = copy[j];
+ 
+    copy[j] = temp;
+ 
+  }
+ 
+  return copy;
+ 
+}
+ 
+/* ======================================================
+
+   SAFE AUDIO
+
+====================================================== */
+
+function safePlay(audioElement){
+ 
+  try{
+ 
+    audioElement.pause();
+ 
+    audioElement.currentTime = 0;
+ 
+    var playPromise =
+
+    audioElement.play();
+ 
+    if(
+
+      playPromise &&
+
+      typeof playPromise.catch === "function"
+
+    ){
+ 
+      playPromise.catch(
+
+        function(){}
+
+      );
+ 
+    }
+ 
+  }
+
+  catch(error){}
+ 
+}
+ 
+/* ======================================================
+
+   CREATE QUESTION SET
+ 
+   15 random questions from 31 to 50.
+
+   40 and 50 are always included.
+
+====================================================== */
+
+function createQuestionSet(){
+ 
+  var pool = [];
+ 
+  var selected = [40,50];
+ 
+  var i;
+ 
+  for(
+
+    i = 31;
+
+    i <= 50;
+
+    i++
+
+  ){
+ 
+    if(
+
+      i !== 40 &&
+
+      i !== 50
+
+    ){
+ 
+      pool.push(i);
+ 
+    }
+ 
+  }
+ 
+  pool =
+
+  shuffle(pool);
+ 
+  selected =
+
+  selected.concat(
+
+    pool.slice(
+
+      0,
+
+      QUESTIONS_PER_GAME - 2
+
+    )
+
+  );
+ 
+  return shuffle(
+
+    selected
+
+  );
+ 
+}
+ 
+/* ======================================================
+
+   GEAR TRAIL
+
+====================================================== */
+
+function createGearTrail(){
+ 
+  gearTrail.innerHTML =
+
+  "";
+ 
+  var i;
+ 
+  for(
+
+    i = 0;
+
+    i < QUESTIONS_PER_GAME;
+
+    i++
+
+  ){
+ 
+    var gear =
+
+    document.createElement(
+
+      "div"
+
+    );
+ 
+    gear.className =
+
+    "gearSlot";
+ 
+    gear.textContent =
+
+    "⚙";
+ 
+    gear.setAttribute(
+
+      "aria-label",
+
+      "Gear " + (i + 1)
+
+    );
+ 
+    gearTrail.appendChild(
+
+      gear
+
+    );
+ 
+  }
+ 
+}
+ 
+function earnGear(index){
+ 
+  var gears =
+
+  gearTrail.getElementsByClassName(
+
+    "gearSlot"
+
+  );
+ 
+  if(
+
+    gears[index]
+
+  ){
+ 
+    gears[index].className =
+
+    "gearSlot earned";
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+
+   CREATE THREE FULL NUMBER-NAME CHOICES
+
+====================================================== */
+
+function createChoices(number){
+ 
+  var choices = [number];
+ 
+  var nearby = [];
+ 
+  var offset;
+ 
+  /*
+
+    Nearby distractors keep the challenge
+
+    age-appropriate and meaningful.
+
+  */
+ 
+  for(
+
+    offset = 1;
+
+    offset <= 10;
+
+    offset++
+
+  ){
+ 
+    if(
+
+      number - offset >= 31
+
+    ){
+ 
+      nearby.push(
+
+        number - offset
+
+      );
+ 
+    }
+ 
+    if(
+
+      number + offset <= 50
+
+    ){
+ 
+      nearby.push(
+
+        number + offset
+
+      );
+ 
+    }
+ 
+  }
+ 
+  nearby =
+
+  shuffle(nearby);
+ 
+  while(
+
+    choices.length < 3
+
+  ){
+ 
+    var candidate =
+
+    nearby.shift();
+ 
+    if(
+
+      choices.indexOf(
+
+        candidate
+
+      )
+
+      ===
+
+      -1
+
+    ){
+ 
+      choices.push(
+
+        candidate
+
+      );
+ 
+    }
+ 
+  }
+ 
+  return shuffle(
+
+    choices
+
+  );
+ 
+}
+ 
+/* ======================================================
+
+   BUILD OPTIONS
+
+====================================================== */
+
+function buildOptions(number){
+ 
+  var choices =
+
+  createChoices(number);
+ 
+  optionsBox.innerHTML =
+
+  "";
+ 
+  var i;
+ 
+  for(
+
+    i = 0;
+
+    i < choices.length;
+
+    i++
+
+  ){
+ 
+    var button =
+
+    document.createElement(
+
+      "button"
+
+    );
+ 
+    button.type =
+
+    "button";
+ 
+    button.className =
+
+    "optionBtn";
+ 
+    button.setAttribute(
+
+      "data-number",
+
+      String(choices[i])
+
+    );
+ 
+    button.setAttribute(
+
+      "aria-label",
+
+      "Choose " +
+
+      NUMBER_NAMES[
+
+        choices[i]
+
+      ]
+
+    );
+ 
+    var text =
+
+    document.createElement(
+
+      "span"
+
+    );
+ 
+    text.className =
+
+    "optionText";
+ 
+    text.textContent =
+
+    NUMBER_NAMES[
+
+      choices[i]
+
+    ];
+ 
+    button.appendChild(
+
+      text
+
+    );
+ 
+    button.onclick =
+
+    function(){
+ 
+      checkAnswer(
+
+        this
+
+      );
+ 
+    };
+ 
+    optionsBox.appendChild(
+
+      button
+
+    );
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+
+   SHOW QUESTION
+
+====================================================== */
+
+function showQuestion(){
+ 
+  var number =
+
+  currentQuestions[
+
+    currentIndex
+
+  ];
+ 
+  wrongAttempts = 0;
+ 
+  answered = false;
+ 
+  questionNumber.textContent =
+
+  currentIndex + 1;
+ 
+  numberText.textContent =
+
+  number;
+ 
+  buildOptions(
+
+    number
+
+  );
+ 
+}
+ 
+/* ======================================================
+
+   REMOVE WRONG EFFECT
+
+====================================================== */
+
+function removeWrongEffect(
+
+  button
+
+){
+ 
+  window.setTimeout(
+
+    function(){
+ 
+      button.className =
+
+      button.className.replace(
+
+        /\s?wrong/g,
+
+        ""
+
+      );
+ 
+    },
+
+    450
+
+  );
+ 
+}
+ 
+/* ======================================================
+
+   GLOW CORRECT OPTION
+
+====================================================== */
+
+function glowCorrectOption(
+
+  correctNumber
+
+){
+ 
+  var buttons =
+
+  optionsBox.getElementsByClassName(
+
+    "optionBtn"
+
+  );
+ 
+  var i;
+ 
+  for(
+
+    i = 0;
+
+    i < buttons.length;
+
+    i++
+
+  ){
+ 
+    if(
+
+      Number(
+
+        buttons[i].getAttribute(
+
+          "data-number"
+
+        )
+
+      )
+
+      ===
+
+      correctNumber
+
+    ){
+ 
+      if(
+
+        buttons[i].className.indexOf(
+
+          "hintGlow"
+
+        )
+
+        ===
+
+        -1
+
+      ){
+ 
+        buttons[i].className +=
+
+        " hintGlow";
+ 
+      }
+ 
+    }
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+
+   DISABLE OPTIONS
+
+====================================================== */
+
+function disableOptions(){
+ 
+  var buttons =
+
+  optionsBox.getElementsByClassName(
+
+    "optionBtn"
+
+  );
+ 
+  var i;
+ 
+  for(
+
+    i = 0;
+
+    i < buttons.length;
+
+    i++
+
+  ){
+ 
+    buttons[i].disabled =
+
+    true;
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+
+   ADD GREEN TICK
+
+====================================================== */
+
+function addTick(button){
+ 
+  var tick =
+
+  document.createElement(
+
+    "div"
+
+  );
+ 
+  tick.className =
+
+  "tickMark";
+ 
+  tick.textContent =
+
+  "✓";
+ 
+  button.appendChild(
+
+    tick
+
+  );
+ 
+}
+ 
+/* ======================================================
+
+   GOOD JOB
+
+====================================================== */
+
+function showGoodJob(){
+ 
+  feedback.className =
+
+  "";
+ 
+  void feedback.offsetWidth;
+ 
+  feedback.className =
+
+  "show";
+ 
+}
+ 
+/* ======================================================
+
+   CHECK ANSWER
+
+====================================================== */
+
+function checkAnswer(button){
+ 
+  if(
+
+    answered
+
+  ){
+ 
+    return;
+ 
+  }
+ 
+  var selectedNumber =
+
+  Number(
+
+    button.getAttribute(
+
+      "data-number"
+
+    )
+
+  );
+ 
+  var correctNumber =
+
+  currentQuestions[
+
+    currentIndex
+
+  ];
+ 
+  /* -------------------------
+
+     CORRECT
+
+  ------------------------- */
+
+  if(
+
+    selectedNumber ===
+
+    correctNumber
+
+  ){
+ 
+    answered =
+
+    true;
+ 
+    disableOptions();
+ 
+    button.className =
+
+    "optionBtn correct";
+ 
+    addTick(
+
+      button
+
+    );
+ 
+    earnGear(
+
+      currentIndex
+
+    );
+ 
+    showGoodJob();
+ 
+    safePlay(
+
+      correctSound
+
+    );
+ 
+    window.setTimeout(
+
+      function(){
+ 
+        safePlay(
+
+          clapsSound
+
+        );
+ 
+      },
+
+      150
+
+    );
+ 
+    nextTimer =
+
+    window.setTimeout(
+
+      function(){
+ 
+        currentIndex++;
+ 
+        if(
+
+          currentIndex <
+
+          currentQuestions.length
+
+        ){
+ 
+          showQuestion();
+ 
+        }
+
+        else{
+ 
+          showEndScreen();
+ 
+        }
+ 
+      },
+
+      NEXT_QUESTION_DELAY
+
+    );
+ 
+  }
+ 
+  /* -------------------------
+
+     WRONG
+
+  ------------------------- */
+
+  else{
+ 
+    wrongAttempts++;
+ 
+    safePlay(
+
+      wrongSound
+
+    );
+ 
+    button.className =
+
+    button.className.replace(
+
+      /\s?wrong/g,
+
+      ""
+
+    )
+
+    +
+
+    " wrong";
+ 
+    removeWrongEffect(
+
+      button
+
+    );
+ 
+    if(
+
+      wrongAttempts >= 2
+
+    ){
+ 
+      glowCorrectOption(
+
+        correctNumber
+
+      );
+ 
+    }
+ 
+  }
+ 
+}
+ 
+/* ======================================================
+
+   START GAME
+
+====================================================== */
+
+function startGame(){
+ 
+  if(
+
+    nextTimer
+
+  ){
+ 
+    window.clearTimeout(
+
+      nextTimer
+
+    );
+ 
+    nextTimer =
+
+    null;
+ 
+  }
+ 
+  stopConfetti();
+ 
+  endScreen.style.display =
+
+  "none";
+ 
+  gameScreen.style.display =
+
+  "flex";
+ 
+  currentQuestions =
+
+  createQuestionSet();
+ 
+  currentIndex = 0;
+ 
+  wrongAttempts = 0;
+ 
+  answered = false;
+ 
+  totalQuestions.textContent =
+
+  QUESTIONS_PER_GAME;
+ 
+  createGearTrail();
+ 
+  showQuestion();
+ 
+}
+ 
+/* ======================================================
+
+   END SCREEN
+
+====================================================== */
+
+function showEndScreen(){
+ 
+  gameScreen.style.display =
+
+  "none";
+ 
+  endScreen.style.display =
+
+  "flex";
+ 
+  safePlay(
+
+    clapsSound
+
+  );
+ 
+  startConfetti();
+ 
+}
+ 
+/* ======================================================
+
+   PLAY AGAIN
+
+====================================================== */
+
+playAgainBtn.onclick =
+
+function(){
+ 
+  startGame();
+ 
+};
+ 
+/* ======================================================
+
+   CONFETTI
+
+====================================================== */
+
+var canvas =
+
+document.getElementById(
+
+  "confettiCanvas"
+
+);
+ 
+var ctx =
+
+canvas.getContext(
+
+  "2d"
+
+);
+ 
+var confettiPieces = [];
+ 
+var confettiFrame = null;
+ 
+var confettiRunning = false;
+ 
+var confettiColors = [
+ 
+  "#ffd84d",
+ 
+  "#ff657f",
+ 
+  "#74d5dc",
+ 
+  "#6ca8ff",
+ 
+  "#a67cff",
+ 
+  "#ff9d47",
+ 
+  "#55d278"
+ 
+];
+ 
+/* CANVAS SIZE */
+
+function resizeCanvas(){
+ 
+  var ratio =
+
+  window.devicePixelRatio
+
+  ||
+
+  1;
+ 
+  canvas.width =
+
+  Math.floor(
+
+    window.innerWidth *
+
+    ratio
+
+  );
+ 
+  canvas.height =
+
+  Math.floor(
+
+    window.innerHeight *
+
+    ratio
+
+  );
+ 
+  canvas.style.width =
+
+  window.innerWidth
+
+  +
+
+  "px";
+ 
+  canvas.style.height =
+
+  window.innerHeight
+
+  +
+
+  "px";
+ 
+  ctx.setTransform(
+
+    ratio,
+
+    0,
+
+    0,
+
+    ratio,
+
+    0,
+
+    0
+
+  );
+ 
+}
+ 
+/* CREATE ONE PIECE */
+
+function makeConfettiPiece(){
+ 
+  return{
+ 
+    x:
+
+    Math.random()
+
+    *
+
+    window.innerWidth,
+ 
+    y:
+
+    -20
+
+    -
+
+    Math.random()
+
+    *
+
+    window.innerHeight,
+ 
+    w:
+
+    6
+
+    +
+
+    Math.random()
+
+    *
+
+    7,
+ 
+    h:
+
+    8
+
+    +
+
+    Math.random()
+
+    *
+
+    10,
+ 
+    speed:
+
+    2.2
+
+    +
+
+    Math.random()
+
+    *
+
+    3.3,
+ 
+    drift:
+
+    -1.2
+
+    +
+
+    Math.random()
+
+    *
+
+    2.4,
+ 
+    rotation:
+
+    Math.random()
+
+    *
+
+    Math.PI,
+ 
+    spin:
+
+    -.12
+
+    +
+
+    Math.random()
+
+    *
+
+    .24,
+ 
+    color:
+
+    confettiColors[
+
+      Math.floor(
+
+        Math.random()
+
+        *
+
+        confettiColors.length
+
+      )
+
+    ]
+ 
+  };
+ 
+}
+ 
+/* DRAW */
+
+function drawConfetti(){
+ 
+  var i;
+ 
+  var piece;
+ 
+  if(
+
+    !confettiRunning
+
+  ){
+ 
+    return;
+ 
+  }
+ 
+  ctx.clearRect(
+
+    0,
+
+    0,
+
+    window.innerWidth,
+
+    window.innerHeight
+
+  );
+ 
+  for(
+
+    i = 0;
+
+    i < confettiPieces.length;
+
+    i++
+
+  ){
+ 
+    piece =
+
+    confettiPieces[i];
+ 
+    piece.y +=
+
+    piece.speed;
+ 
+    piece.x +=
+
+    piece.drift;
+ 
+    piece.rotation +=
+
+    piece.spin;
+ 
+    if(
+
+      piece.y >
+
+      window.innerHeight
+
+      +
+
+      25
+
+    ){
+ 
+      confettiPieces[i] =
+
+      makeConfettiPiece();
+ 
+      confettiPieces[i].y =
+
+      -20;
+ 
+      piece =
+
+      confettiPieces[i];
+ 
+    }
+ 
+    ctx.save();
+ 
+    ctx.translate(
+
+      piece.x,
+
+      piece.y
+
+    );
+ 
+    ctx.rotate(
+
+      piece.rotation
+
+    );
+ 
+    ctx.fillStyle =
+
+    piece.color;
+ 
+    ctx.fillRect(
+
+      -piece.w / 2,
+
+      -piece.h / 2,
+
+      piece.w,
+
+      piece.h
+
+    );
+ 
+    ctx.restore();
+ 
+  }
+ 
+  confettiFrame =
+
+  window.requestAnimationFrame(
+
+    drawConfetti
+
+  );
+ 
+}
+ 
+/* START */
+
+function startConfetti(){
+ 
+  var i;
+ 
+  resizeCanvas();
+ 
+  confettiPieces =
+
+  [];
+ 
+  for(
+
+    i = 0;
+
+    i < 100;
+
+    i++
+
+  ){
+ 
+    confettiPieces.push(
+
+      makeConfettiPiece()
+
+    );
+ 
+  }
+ 
+  confettiRunning =
+
+  true;
+ 
+  drawConfetti();
+ 
+}
+ 
+/* STOP */
+
+function stopConfetti(){
+ 
+  confettiRunning =
+
+  false;
+ 
+  if(
+
+    confettiFrame
+
+  ){
+ 
+    window.cancelAnimationFrame(
+
+      confettiFrame
+
+    );
+ 
+    confettiFrame =
+
+    null;
+ 
+  }
+ 
+  ctx.clearRect(
+
+    0,
+
+    0,
+
+    canvas.width,
+
+    canvas.height
+
+  );
+ 
+}
+ 
+/* ======================================================
+
+   RESIZE
+
+====================================================== */
+
+window.addEventListener(
+
+  "resize",
+
+  function(){
+ 
+    if(
+
+      confettiRunning
+
+    ){
+ 
+      resizeCanvas();
+ 
+    }
+ 
+  }
+
+);
+ 
+/* ======================================================
+
+   START AFTER 2-SECOND LOGO
+
+====================================================== */
+
+window.setTimeout(
+
+  function(){
+ 
+    splashScreen.style.display =
+
+    "none";
+ 
+    startGame();
+ 
+  },
+
+  2000
+
+);
+ 
+})();
+</script>
+ 
+</body>
+</html>
+ 
