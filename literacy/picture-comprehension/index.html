@@ -8,14 +8,14 @@
 body {
     margin:0;
     font-family:"Comic Sans MS",sans-serif;
+    background: url('assets/background.png') no-repeat center center fixed;
+    background-size: cover;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-start;
     min-height:100vh;
     overflow:hidden;
-    background: url('assets/background.png') no-repeat center center fixed;
-    background-size: cover;
 }
 
 /* Logo */
@@ -34,7 +34,6 @@ body {
     display:none;
     text-align:center;
     padding:20px;
-    position:relative;
     width:100%;
     max-width:1200px;
     display:flex;
@@ -72,34 +71,33 @@ body {
     border-radius:15px;
 }
 
-/* Question & Options */
-#questionArea {
-    display:flex;
-    flex-direction:column;
+/* Question Box */
+#questionBox{
+    background:white;
+    border-radius:12px;
+    padding:20px;
     width:45%;
     max-width:500px;
+    display:flex;
+    flex-direction:column;
     gap:20px;
 }
 
+/* Question & Options */
 #question{
     font-size:24px;
     font-weight:bold;
     text-align:center;
-    background:white;
-    border-radius:12px;
-    padding:10px 15px;
 }
 
-/* Options */
 .options {
     display:flex;
-    flex-wrap:wrap;
     gap:20px;
     justify-content:center;
 }
 
 .option {
-    flex:1 1 40%;
+    flex:1 1 45%;
     padding:15px;
     font-size:22px;
     cursor:pointer;
@@ -109,6 +107,7 @@ body {
     text-align:center;
     transition:0.3s;
 }
+
 .option.correct{border:4px solid #27ae60;}
 .option.wrong{border:4px solid #e74c3c;}
 
@@ -169,7 +168,7 @@ canvas{
     <div class="instruction-box">Read the question and click on the correct answer</div>
     <div id="mainContent">
         <img id="playground-img" src="assets/at-the-playground.png">
-        <div id="questionArea">
+        <div id="questionBox">
             <div id="question"></div>
             <div class="options" id="options"></div>
         </div>
