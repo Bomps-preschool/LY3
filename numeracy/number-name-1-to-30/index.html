@@ -954,7 +954,7 @@ h1{
     <div class="progressBox">
 <span id="questionNumber">1</span>
       /
-<span id="totalQuestions">15</span>
+<span id="totalQuestions">10</span>
 </div>
  
   </header>
@@ -985,7 +985,7 @@ h1{
             id="numberCandy"
             class="numberCandy"
 >
-            12
+            1
 </div>
  
         </div>
@@ -1073,15 +1073,15 @@ h1{
 /* ======================================================
    SETTINGS
 ====================================================== */
-var QUESTIONS_PER_GAME = 15;
+var QUESTIONS_PER_GAME = 10;
  
 var NEXT_QUESTION_DELAY = 1100;
  
 /* ======================================================
-   NUMBER NAMES 1 TO 30
+   NUMBER NAMES 1 TO 10
 ====================================================== */
 var NUMBER_NAMES = {
- 
+
   1:"one",
   2:"two",
   3:"three",
@@ -1091,30 +1091,8 @@ var NUMBER_NAMES = {
   7:"seven",
   8:"eight",
   9:"nine",
-  10:"ten",
- 
-  11:"eleven",
-  12:"twelve",
-  13:"thirteen",
-  14:"fourteen",
-  15:"fifteen",
-  16:"sixteen",
-  17:"seventeen",
-  18:"eighteen",
-  19:"nineteen",
-  20:"twenty",
- 
-  21:"twenty-one",
-  22:"twenty-two",
-  23:"twenty-three",
-  24:"twenty-four",
-  25:"twenty-five",
-  26:"twenty-six",
-  27:"twenty-seven",
-  28:"twenty-eight",
-  29:"twenty-nine",
-  30:"thirty"
- 
+  10:"ten"
+
 };
  
 /* ======================================================
@@ -1250,7 +1228,7 @@ function createQuestionSet(){
  
   for(
     i = 1;
-    i <= 30;
+    i <= 10;
     i++
   ){
  
@@ -1349,7 +1327,7 @@ function createChoices(number){
     }
  
     if(
-      number + offset <= 30
+      number + offset <= 10
     ){
  
       nearby.push(
