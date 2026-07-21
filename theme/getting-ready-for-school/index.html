@@ -1,350 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Naming Words Game</title>
-
+<title>Getting Ready For School</title>
 <style>
-
-/* 🌈 BACKGROUND */
-body{
-  margin:0;
-  font-family:Arial;
-  overflow:hidden;
-
-  background: url("assets/designer.png") no-repeat center center fixed;
-  background-size:cover;
-}
-
-/* SPLASH */
-#splash{
-  position:absolute;
-  width:100%;
-  height:100%;
-  background:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10;
-}
-
-/* GAME */
-#game{
-  display:none;
-  width:100vw;
-  height:100vh;
-  text-align:center;
-}
-
-/* TITLE */
-#title{
-  font-size:30px;
-  font-weight:bold;
-  color:#2e7d32;
-  margin-top:10px;
-}
-
-#subInstruction{
-  font-size:18px;
-  margin:8px;
-  color:#444;
-}
-
-/* IMAGE */
-#mainImg{
-  width:80%;
-  max-width:350px;
-  height:300px;
-  object-fit:contain;
-  border-radius:15px;
-  box-shadow:0 8px 18px rgba(0,0,0,0.2);
-  margin-top:10px;
-  animation:float 2.5s ease-in-out infinite;
-}
-
-@keyframes float{
-  0%{transform:translateY(0px)}
-  50%{transform:translateY(-8px)}
-  100%{transform:translateY(0px)}
-}
-
-/* BUTTONS */
-.btnRow{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  margin-top:20px;
-}
-
-.btn{
-  width:130px;
-  padding:15px;
-  font-size:20px;
-  font-weight:bold;
-  border-radius:15px;
-  cursor:pointer;
-  border:none;
-}
-
-.person{background:#ffd166;}
-.place{background:#06d6a0;}
-.thing{background:#4dabf7;}
-
-/* TRY AGAIN */
-#msg{
-  position:absolute;
-  top:45%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  font-size:30px;
-  font-weight:bold;
-  background:white;
-  padding:20px;
-  display:none;
-  border-radius:12px;
-}
-
-/* END SCREEN */
-#end{
-  display:none;
-  position:absolute;
-  width:100%;
-  height:100%;
-  top:0;
-  left:0;
-
-  background:white;
-
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-
-  font-size:60px;
-  font-weight:bold;
-  color:#2e7d32;
-  text-align:center;
-  z-index:999;
-}
-
-/* CONFETTI */
-.confetti{
-  position:absolute;
-  width:10px;
-  height:10px;
-  top:0;
-  animation:fall 2.5s linear forwards;
-}
-
-@keyframes fall{
-  0%{transform:translateY(0) rotate(0deg);opacity:1;}
-  100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
-}
-
-/* 🟢 GREEN GLOW */
-.correctGlow{
-  animation:greenGlow 1s ease-in-out;
-}
-
-@keyframes greenGlow{
-  0%{box-shadow:0 0 0px rgba(0,255,0,0);}
-  50%{box-shadow:0 0 35px rgba(0,255,0,1);}
-  100%{box-shadow:0 0 0px rgba(0,255,0,0);}
-}
-
-/* 🔴 RED GLOW */
-.wrongGlow{
-  animation:redGlow 1s ease-in-out;
-}
-
-@keyframes redGlow{
-  0%{box-shadow:0 0 0px rgba(255,0,0,0);}
-  50%{box-shadow:0 0 35px rgba(255,0,0,1);}
-  100%{box-shadow:0 0 0px rgba(255,0,0,0);}
-}
-
+body, html { margin:0; padding:0; height:100%; width:100%; font-family: Arial, sans-serif; background: linear-gradient(135deg,#fceabb,#f8b500); display:flex; justify-content:center; align-items:center; }
+#gameContainer { width:100%; max-width:600px; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; }
+.slide { display:none; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%; position:relative; }
+.active { display:flex; }
+.headerBox { background:#fff3e0; padding:15px; border-radius:10px; margin-top:10px; width:90%; box-shadow:0 0 10px rgba(0,0,0,0.1);}
+.headerBox h1 { font-size:1.5rem; margin:0; color:#333; }
+.instructionBox { background:#fff; padding:10px; border-radius:10px; border:2px dashed #ff9e80; margin:10px 0; width:90%; box-shadow:0 0 5px rgba(0,0,0,0.1);}
+.instructionBox p { font-size:1.2rem; color:#444; margin:0; }
+.questionFrame { background:#fff; border-radius:15px; border:3px solid #ffb74d; padding:15px; width:90%; max-width:500px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 0 10px rgba(0,0,0,0.2); margin-bottom:20px; }
+.boyImage { width:100%; max-width:300px; margin-bottom:15px; }
+.options { display:flex; justify-content:center; flex-wrap:wrap; gap:15px; }
+.option img { width:120px; cursor:pointer; border:3px solid #ffcc80; border-radius:10px; transition: transform 0.2s, box-shadow 0.2s; }
+.option img:hover { transform: scale(1.05); box-shadow:0 0 10px rgba(0,0,0,0.2); }
+.wiggle { animation: wiggle 0.3s; }
+@keyframes wiggle {0%{transform:rotate(0deg);}25%{transform:rotate(10deg);}50%{transform:rotate(-10deg);}75%{transform:rotate(10deg);}100%{transform:rotate(0deg);}}
+.glow { box-shadow:0 0 15px 5px yellow; border:2px solid yellow; }
+.playAgainBtn { padding:10px 20px; font-size:1.2rem; background:#4db6ac; color:#fff; border:none; border-radius:10px; cursor:pointer; margin-top:20px; }
+.playAgainBtn:hover { background:#26a69a; }
+#confettiCanvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+.logo { width:150px; margin-top:50px; }
 </style>
 </head>
-
 <body>
+<div id="gameContainer">
 
-<div id="splash">
-  <img src="assets/innovine-logo.png" width="220">
+<!-- Slide 0: Logo -->
+<div class="slide active" id="slide0">
+  <img src="assets/innovine-logo.png" class="logo" alt="Innovine Logo">
 </div>
 
-<div id="game">
-
-  <div id="title">Naming Words Game</div>
-
-  <div id="subInstruction">
-    Look at the picture and click on the correct category of naming words
+<!-- Slide 1: Shirt -->
+<div class="slide" id="slide1">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/shirt-slide-image.png" class="boyImage" alt="Boy Shirt">
+    <div class="options">
+      <div class="option"><img src="assets/blue-shirt.png" data-answer="false"></div>
+      <div class="option"><img src="assets/white-shirt.png" data-answer="true"></div>
+    </div>
   </div>
+</div>
 
-  <img id="mainImg" src="">
-
-  <div class="btnRow">
-    <button class="btn person" onclick="check('person')">👦 Person</button>
-    <button class="btn place" onclick="check('place')">🏫 Place</button>
-    <button class="btn thing" onclick="check('thing')">🧸 Thing</button>
+<!-- Slide 2: Pants -->
+<div class="slide" id="slide2">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/pants-slide-image.png" class="boyImage" alt="Boy Pants">
+    <div class="options">
+      <div class="option"><img src="assets/shorts.png" data-answer="false"></div>
+      <div class="option"><img src="assets/pants.png" data-answer="true"></div>
+    </div>
   </div>
-
-  <div id="msg">Try Again</div>
-
 </div>
 
-<div id="end">
-🎉 GOOD JOB 🎉
+<!-- Slide 3: Socks -->
+<div class="slide" id="slide3">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/socks-slide-image.png" class="boyImage" alt="Boy Socks">
+    <div class="options">
+      <div class="option"><img src="assets/blue-socks.png" data-answer="false"></div>
+      <div class="option"><img src="assets/white-socks.png" data-answer="true"></div>
+    </div>
+  </div>
 </div>
 
-<audio id="clap" src="assets/claps.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
+<!-- Slide 4: Shoes -->
+<div class="slide" id="slide4">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/shoe-slide-image.png" class="boyImage" alt="Boy Shoes">
+    <div class="options">
+      <div class="option"><img src="assets/colourful-shoes.png" data-answer="false"></div>
+      <div class="option"><img src="assets/black-shoes.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 5: Tie -->
+<div class="slide" id="slide5">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/tie-slide-image.png" class="boyImage" alt="Boy Tie">
+    <div class="options">
+      <div class="option"><img src="assets/sun-glasse.png" data-answer="false"></div>
+      <div class="option"><img src="assets/tie.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: Bag -->
+<div class="slide" id="slide6">
+  <div class="headerBox"><h1>Getting Ready For School</h1></div>
+  <div class="instructionBox"><p>Dress up the boy for school</p></div>
+  <div class="questionFrame">
+    <img src="assets/bag-slide-image.png" class="boyImage" alt="Boy Bag">
+    <div class="options">
+      <div class="option"><img src="assets/green-bag.png" data-answer="false"></div>
+      <div class="option"><img src="assets/blue-bag.png" data-answer="true"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Final Slide -->
+<div class="slide" id="slide7">
+  <img src="assets/im-ready-slide-image.png" class="boyImage" style="width:200px; margin-top:50px;" alt="I am Ready">
+  <h1>Good Job!</h1>
+  <button class="playAgainBtn">Play Again</button>
+  <canvas id="confettiCanvas"></canvas>
+</div>
+
+<audio id="correctAudio" src="assets/correct.mp3"></audio>
+<audio id="wrongAudio" src="assets/wrong.mp3"></audio>
+<audio id="clapAudio" src="assets/freesound_community-claps-44774.mp3"></audio>
 
 <script>
+let slides=document.querySelectorAll('.slide');
+let currentSlide=0;
+let wrongAttempts=0;
 
-/* =========================
-   🔊 MOBILE AUDIO FIX
-========================= */
+setTimeout(()=>{showSlide(1)},2000);
 
-let audioUnlocked = false;
-
-document.body.addEventListener("click", () => {
-  audioUnlocked = true;
-}, { once:true });
-
-function speak(text){
-
-  if(!audioUnlocked) return;
-
-  window.speechSynthesis.cancel();
-
-  let msg = new SpeechSynthesisUtterance(text);
-
-  msg.rate = 0.9;
-  msg.volume = 1;
-  msg.pitch = 1;
-
-  let voices = window.speechSynthesis.getVoices();
-  if(voices.length > 0){
-    msg.voice = voices.find(v => v.lang.includes("en")) || voices[0];
-  }
-
-  window.speechSynthesis.speak(msg);
+function showSlide(idx){
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[idx].classList.add('active');
+  currentSlide=idx;
+  wrongAttempts=0;
+  if(idx>=1 && idx<=6) setupOptions(slides[idx]);
 }
 
-/* ========================= */
-
-let i = 0;
-let locked = false;
-
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-  document.getElementById("game").style.display="block";
-  document.getElementById("end").style.display="none";
-  loadGame();
-},3000);
-
-const data = [
-  {img:"assets/teacher.png", ans:"person", audio:"Teacher belongs to which category of naming words?"},
-  {img:"assets/school.png", ans:"place", audio:"School belongs to which category of naming words?"},
-  {img:"assets/book.png", ans:"thing", audio:"Book belongs to which category of naming words?"},
-  {img:"assets/doctor.png", ans:"person", audio:"Doctor belongs to which category of naming words?"},
-  {img:"assets/park.png", ans:"place", audio:"Park belongs to which category of naming words?"},
-  {img:"assets/ball.png", ans:"thing", audio:"Ball belongs to which categoy of naming words?"}
-];
-
-function loadGame(){
-
-  if(i >= data.length){
-    document.getElementById("game").style.display="none";
-    document.getElementById("end").style.display="flex";
-    speak("Good job");
-    startConfetti();
-    return;
-  }
-
-  locked = false;
-
-  let img = document.getElementById("mainImg");
-
-  img.classList.remove("correctGlow","wrongGlow");
-  img.style.opacity = 0;
-
-  setTimeout(()=>{
-    img.src = data[i].img;
-    img.style.opacity = 1;
-
-    speak(data[i].audio);
-
-  },200);
+function setupOptions(slide){
+  const options=slide.querySelectorAll('.option img');
+  options.forEach(opt=>{
+    opt.onclick=()=>{
+      if(opt.dataset.answer==="true"){
+        document.getElementById('correctAudio').play();
+        opt.style.border='3px solid green';
+        setTimeout(()=>{
+          if(currentSlide<6) showSlide(currentSlide+1);
+          else { showSlide(7); startConfetti(); }
+        },700);
+      } else{
+        wrongAttempts++;
+        document.getElementById('wrongAudio').play();
+        opt.classList.add('wiggle');
+        setTimeout(()=>opt.classList.remove('wiggle'),300);
+        if(wrongAttempts>=2) options.forEach(o=>{if(o.dataset.answer==="true") o.classList.add('glow');});
+      }
+    }
+  });
 }
 
-function check(ans){
-
-  if(locked) return;
-
-  let img = document.getElementById("mainImg");
-
-  if(ans === data[i].ans){
-
-    locked = true;
-
-    document.getElementById("clap").currentTime = 0;
-    document.getElementById("clap").play();
-
-    img.classList.add("correctGlow");
-
-    setTimeout(()=>{
-      img.classList.remove("correctGlow");
-    },1000);
-
-    document.getElementById("clap").onended = function(){
-      i++;
-      loadGame();
-    };
-
-  } else {
-
-    locked = true;
-
-    document.getElementById("wrong").currentTime = 0;
-    document.getElementById("wrong").play();
-
-    img.classList.add("wrongGlow");
-
-    setTimeout(()=>{
-      img.classList.remove("wrongGlow");
-      document.getElementById("msg").style.display="block";
-
-      setTimeout(()=>{
-        document.getElementById("msg").style.display="none";
-        locked = false;
-      },1500);
-
-    },800);
-  }
+document.querySelector('.playAgainBtn').onclick=()=>{
+  slides.forEach(s=>s.classList.remove('active'));
+  stopConfetti();
+  showSlide(1);
 }
 
+let confettiInterval;
 function startConfetti(){
-
-  for(let j=0;j<120;j++){
-    let c = document.createElement("div");
-    c.className = "confetti";
-
-    c.style.left = Math.random()*100 + "vw";
-    c.style.background = ["#ff4d6d","#ffd166","#06d6a0","#4dabf7","#b197fc"][Math.floor(Math.random()*5)];
-    c.style.animationDuration = (1+Math.random()*2) + "s";
-
-    document.body.appendChild(c);
-
-    setTimeout(()=>c.remove(),3000);
-  }
+  slides[7].querySelector('#confettiCanvas').style.display='block';
+  const canvas=slides[7].querySelector('#confettiCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.offsetWidth;
+  canvas.height=canvas.offsetHeight;
+  const confetti=[];
+  for(let i=0;i<150;i++) confetti.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*6+2,d:Math.random()*50+10,color:`hsl(${Math.random()*360},100%,50%)`,tilt:Math.random()*10-10,tiltAngleInc:Math.random()*0.07+0.05});
+  confettiInterval=setInterval(()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(c=>{
+      ctx.beginPath();
+      ctx.lineWidth=c.r/2;
+      ctx.strokeStyle=c.color;
+      ctx.moveTo(c.x+c.tilt+c.r/4,c.y);
+      ctx.lineTo(c.x+c.tilt,c.y+c.tilt+c.r/4);
+      ctx.stroke();
+      c.tiltAngle+=c.tiltAngleInc;
+      c.y+=(Math.cos(c.d)+3+c.r/2)/2;
+      c.tilt=Math.sin(c.tiltAngle)*15;
+      if(c.y>canvas.height){c.y=-10;c.x=Math.random()*canvas.width;}
+    });
+  },20);
 }
 
+function stopConfetti(){ clearInterval(confettiInterval); slides[7].querySelector('#confettiCanvas').style.display='none'; }
 </script>
-
 </body>
 </html>
