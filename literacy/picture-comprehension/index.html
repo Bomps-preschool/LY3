@@ -5,7 +5,6 @@
 <title>Picture Comprehension - Playground</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <style>
-/* Keep all original CSS */
 :root{--pink:#ff1493;--pink-border:#ff78b7;--green:#27ae60;--red:#e74c3c;}
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:white;}
@@ -18,18 +17,18 @@ button,.option{font-family:"Comic Sans MS","Trebuchet MS",sans-serif;-webkit-tap
 #mainContent{width:min(100%,1700px);flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,0.8fr);align-items:stretch;gap:clamp(15px,4vw,65px);padding:clamp(8px,1.6vh,18px) clamp(0px,2vw,35px) clamp(55px,7vh,82px);}
 #pictureWrap{min-width:0;min-height:0;display:flex;justify-content:center;align-items:center;}
 
-/* ✅ Updated playground image to be fully responsive */
+/* ✅ Playground image responsive fix */
 #playground-img{
     display:block;
-    width:90%;          /* scales with screen width */
-    max-width:600px;    /* prevents it from being too large on desktop */
-    height:auto;        /* maintains aspect ratio */
+    width:90%;
+    max-width:600px;
+    height:auto;
+    margin:0 auto;
     border:clamp(2px,0.22vw,4px) solid var(--pink-border);
     border-radius:20px;
     box-shadow:0 5px 15px rgba(0,0,0,0.18);
 }
 
-/* Rest of original CSS unchanged */
 #questionArea{min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(10px,2.2vh,27px);}
 #question{width:100%;padding:clamp(10px,1.7vh,18px) 18px;background:white;border:clamp(2px,0.22vw,4px) solid var(--pink-border);border-radius:17px;color:#111;font-size:clamp(20px,2vw,35px);font-weight:bold;line-height:1.25;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.14);}
 .options{width:100%;display:grid;grid-template-columns:1fr;justify-items:center;gap:clamp(10px,1.8vh,22px);}
@@ -40,7 +39,7 @@ button,.option{font-family:"Comic Sans MS","Trebuchet MS",sans-serif;-webkit-tap
 .option.wrong{border:5px solid var(--red);background:#ffe8e8;animation:wiggle 0.35s ease;}
 @keyframes wiggle{0%{transform:translateX(0);}25%{transform:translateX(-8px);}50%{transform:translateX(8px);}75%{transform:translateX(-5px);}100%{transform:translateX(0);}}
 #scoreboard{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:max(13px,env(safe-area-inset-bottom));padding:9px 20px;background:#fff7aa;border:3px solid var(--pink-border);border-radius:16px;color:#563d7c;font-size:clamp(18px,1.8vw,30px);font-weight:bold;white-space:nowrap;box-shadow:0 3px 9px rgba(0,0,0,0.15);}
-#end{position:fixed;inset:0;width:100vw;height:100vh;display:none;flex-direction:column;justify-content:center;align-items:center;padding:20px;background:white;text-align:center;z-index:20;}
+#end{position:fixed;inset:0;width:100vw;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;background:white;text-align:center;z-index:20;display:none;}
 #end h1{margin:0 15px 28px;color:var(--pink);font-size:clamp(37px,5vw,75px);line-height:1.2;}
 #end button{min-width:170px;min-height:58px;padding:13px 35px;border:none;border-radius:16px;background:#4caf50;color:white;font-size:clamp(21px,2vw,31px);font-weight:bold;cursor:pointer;box-shadow:0 5px 12px rgba(0,0,0,0.2);}
 #end button:active{transform:scale(0.97);}
@@ -49,12 +48,10 @@ button,.option{font-family:"Comic Sans MS","Trebuchet MS",sans-serif;-webkit-tap
 </head>
 <body>
 
-<!-- LOGO -->
 <div id="logo">
 <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
-<!-- GAME -->
 <div id="game">
 <div class="instruction-box">Picture Comprehension - At the Playground</div>
 <div class="instruction-box">Read the question and click on the correct answer</div>
@@ -70,13 +67,11 @@ button,.option{font-family:"Comic Sans MS","Trebuchet MS",sans-serif;-webkit-tap
 <div id="scoreboard">Score: 0/5</div>
 </div>
 
-<!-- END SCREEN -->
 <div id="end">
 <h1>🎉 Congratulations! 🎉</h1>
 <button type="button" onclick="restartGame()">Play Again</button>
 </div>
 
-<!-- AUDIO -->
 <audio id="correct" src="assets/correct.mp3" preload="auto"></audio>
 <audio id="wrong" src="assets/wrong.mp3" preload="auto"></audio>
 <audio id="clap" src="assets/claps.mp3" preload="auto"></audio>
@@ -86,7 +81,6 @@ button,.option{font-family:"Comic Sans MS","Trebuchet MS",sans-serif;-webkit-tap
 <audio id="q4" src="assets/question-4.mp3" preload="auto"></audio>
 <audio id="q5" src="assets/question-5.mp3" preload="auto"></audio>
 
-<!-- CONFETTI -->
 <canvas id="confetti"></canvas>
 
 <script>
