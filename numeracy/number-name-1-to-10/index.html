@@ -43,19 +43,20 @@ body{
 
 /* SCORE */
 #score{
-  position:absolute;top:60px;left:10px;
+  position:absolute;top:5%;left:2%;
   background:white;padding:10px;border-radius:10px;font-weight:bold;
 }
 
 /* STAR BOARD */
 #starBoard{
-  position:absolute;top:60px;right:10px;
+  position:absolute;top:5%;right:2%;
   background:white;padding:10px;border-radius:10px;
 }
 
 /* TRAIN */
 #train{
-  position:absolute;bottom:50px;
+  position:absolute;
+  bottom:15%;
   width:90%;
   left:-100%;
   transition:1.5s ease;
@@ -63,33 +64,37 @@ body{
 
 #train img{
   width:100%;
+  height:auto;
 }
 
 /* TICKET */
 #ticket{
   position:absolute;
-  bottom:200px;
+  bottom:40%;
   left:50%;
   transform:translateX(-50%);
-  width:260px;
+  width:calc(25vw);
+  max-width:300px;
   min-height:140px;
   background:url('assets/ticket.png') center/cover no-repeat;
   display:flex;align-items:center;justify-content:center;
   text-align:center;
   padding:20px;
   font-weight:bold;
-  font-size:22px;
+  font-size:2vw;
   cursor:pointer;
   z-index:5;
   user-select:none;
+  touch-action: none; /* ✅ improve touch */
 }
 
 /* FEEDBACK */
 #msg{
   position:absolute;
-  top:120px;width:100%;
+  top:15%;
+  width:100%;
   text-align:center;
-  font-size:24px;
+  font-size:clamp(18px,3vw,28px);
   font-weight:bold;
   color:black;
 }
@@ -154,11 +159,6 @@ const sentences = [
 {type:"exclamation",text:"What an amazing performance!"}
 ];
 
-// SHUFFLE FUNCTION
-function shuffle(array){
-  return array.sort(()=>Math.random()-0.5);
-}
-
 let index=0;
 let attempts=0;
 let currentSentence = null;
@@ -180,38 +180,36 @@ setTimeout(()=>{
 // START ROUND
 function startRound(){
   attempts=0;
-  const remaining = shuffle(sentences.slice());
+  const remaining = sentences.slice();
   currentSentence = remaining[index % remaining.length];
   ticket.innerText = currentSentence.text;
   msg.innerText = "";
   ticket.style.left="50%";
-  ticket.style.top="200px";
+  ticket.style.top="40%";
 
   // Train arrives
   train.style.left="5%";
   setTimeout(()=>{train.style.left="50%";},100);
 }
 
-// DRAG TICKET
+// DRAG TICKET (TOUCH-FRIENDLY FIX)
 let dragging=false;
-ticket.addEventListener("mousedown",dragStart);
-ticket.addEventListener("touchstart",dragStart);
 
 function dragStart(e){
   e.preventDefault();
   dragging=true;
   document.addEventListener("mousemove",dragMove);
   document.addEventListener("mouseup",dragEnd);
-  document.addEventListener("touchmove",dragMove);
+  document.addEventListener("touchmove",dragMove,{passive:false});
   document.addEventListener("touchend",dragEnd);
 }
 
 function dragMove(e){
   if(!dragging) return;
-  let x = e.touches?e.touches[0].clientX:e.clientX;
-  let y = e.touches?e.touches[0].clientY:e.clientY;
-  ticket.style.left=(x-130)+"px";
-  ticket.style.top=(y-70)+"px";
+  let x = e.touches ? e.touches[0].clientX : e.clientX;
+  let y = e.touches ? e.touches[0].clientY : e.clientY;
+  ticket.style.left=(x-ticket.offsetWidth/2)+"px";
+  ticket.style.top=(y-ticket.offsetHeight/2)+"px";
 }
 
 function dragEnd(e){
@@ -220,10 +218,11 @@ function dragEnd(e){
   document.removeEventListener("mouseup",dragEnd);
   document.removeEventListener("touchmove",dragMove);
   document.removeEventListener("touchend",dragEnd);
-
-  // DETECT DROP
   checkDrop();
 }
+
+ticket.addEventListener("mousedown",dragStart);
+ticket.addEventListener("touchstart",dragStart,{passive:false});
 
 // CHECK DROP LOGIC
 function checkDrop(){
@@ -247,7 +246,7 @@ function checkDrop(){
     document.getElementById("clap").play();
     score++;
     scoreEl.innerText="Score: "+score;
-    train.style.left="105%"; // train leaves
+    train.style.left="105%";
     setTimeout(()=>{index++; startRound(); train.style.left="-100%";},1000);
   }else{
     document.getElementById("wrong").play();
@@ -257,7 +256,7 @@ function checkDrop(){
       msg.innerText="Correct: "+currentSentence.type.toUpperCase();
     }
     ticket.style.left="50%";
-    ticket.style.top="200px";
+    ticket.style.top="40%";
   }
 }
 </script>
