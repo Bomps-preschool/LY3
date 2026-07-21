@@ -3,262 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sentence Express Station - 3 Bogeys</title>
+<title>Number Names 1–10</title>
 <style>
-body{
+body {
   margin:0;
-  font-family:Arial;
+  font-family:'Comic Sans MS', sans-serif;
   overflow:hidden;
-  background:#000;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: linear-gradient(135deg,#ffe0b2,#ffccbc,#fff9c4);
+  height:100vh;
 }
 
-/* SPLASH */
-#splash{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:white;
-  display:flex;justify-content:center;align-items:center;
-  z-index:999;
-}
-
-/* INSTRUCTIONS */
-#instructions{
-  display:none;
-  position:absolute;
-  top:0;width:100%;
-  background:#fff3cd;
-  padding:12px;
-  font-weight:bold;
-  text-align:center;
-  z-index:10;
-}
-
-/* GAME AREA */
-#game{
-  display:none;
+#logoScreen, #gameScreen, #winScreen {
   width:100%;
   height:100vh;
-  background:url('assets/background.png') center/cover no-repeat;
+  position:absolute;
+  top:0; left:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
+#logoScreen img { width:40vw; max-width:300px; }
+
+#gameScreen {
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  padding:1vh 2vw;
+  box-sizing:border-box;
   position:relative;
 }
 
-/* SCORE */
-#score{
-  position:absolute;top:5%;left:2%;
-  background:white;padding:10px;border-radius:10px;font-weight:bold;
-}
-
-/* STAR BOARD */
-#starBoard{
-  position:absolute;top:5%;right:2%;
-  background:white;padding:10px;border-radius:10px;
-}
-
-/* TRAIN */
-#train{
-  position:absolute;
-  bottom:15%;
+#instruction {
+  margin-top:1vh;
   width:90%;
-  left:-100%;
-  transition:1.5s ease;
-}
-
-#train img{
-  width:100%;
-  height:auto;
-}
-
-/* TICKET */
-#ticket{
-  position:absolute;
-  bottom:40%;
-  left:50%;
-  transform:translateX(-50%);
-  width:calc(25vw);
-  max-width:300px;
-  min-height:140px;
-  background:url('assets/ticket.png') center/cover no-repeat;
-  display:flex;align-items:center;justify-content:center;
   text-align:center;
-  padding:20px;
-  font-weight:bold;
   font-size:2vw;
-  cursor:pointer;
-  z-index:5;
-  user-select:none;
-  touch-action: none; /* ✅ improve touch */
-}
-
-/* FEEDBACK */
-#msg{
-  position:absolute;
-  top:15%;
-  width:100%;
-  text-align:center;
-  font-size:clamp(18px,3vw,28px);
+  max-font-size:22px;
   font-weight:bold;
-  color:black;
+  color:#003366;
+  text-shadow:1px 1px 2px #fff;
+  z-index:10;
 }
 
-/* CORRECT/WRONG ANIMATIONS */
-.glow{box-shadow:0 0 15px gold;}
-.shake{animation:shake 0.3s;}
-@keyframes shake{
-0%{transform:translateX(-5px);}
-50%{transform:translateX(5px);}
-100%{transform:translateX(0);}
+/* Object display */
+#objectsContainer {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:1vw;
+  margin-top:3vh;
+  max-width:95vw;
+}
+.object {
+  width:100px;
+  height:100px;
+}
+
+/* Options buttons */
+.options {
+  display:flex;
+  justify-content:center;
+  gap:2vw;
+  flex-wrap:wrap;
+  margin-top:2vh;
+}
+.optionBtn {
+  padding:1vh 2vw;
+  font-size:4vw;
+  max-font-size:28px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  background-color:#ffcc80;
+}
+.optionBtn:hover { background-color:#ffb74d; }
+
+/* Win Screen */
+#winScreen {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  background: rgba(255,255,255,0.9);
+  z-index: 10;
+  height:100vh;
+}
+#winScreen h1 {
+  font-size:7vw;
+  max-font-size:48px;
+  color:#28a745;
+  margin-bottom:2vh;
+}
+#playAgainBtn {
+  padding:2vh 4vw;
+  font-size:4vw; max-font-size:24px;
+  border:none;
+  border-radius:10px;
+  background-color:#4CAF50;
+  color:white;
+  cursor:pointer;
+}
+#playAgainBtn:hover {background-color:#45a049;}
+
+/* Confetti */
+.confetti {
+  position:absolute;
+  width:3vw; height:3vw;
+  max-width:20px; max-height:20px;
+  background-size:contain;
+  z-index:20;
+  animation: fall linear infinite;
+}
+@keyframes fall {
+  0% { transform: translate(0,0) rotate(0deg); opacity:1; }
+  100% { transform: translate(var(--x,0vw),100vh) rotate(360deg); opacity:0; }
+}
+
+/* Responsive */
+@media (max-width:480px) {
+  .object { width:60px; height:60px; }
+  .optionBtn { font-size:5vw; }
+  #instruction { font-size:3vw; }
 }
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <img src="assets/innovinelogo.png" style="width:300px;">
+<!-- Logo Slide -->
+<div id="logoScreen">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
-<!-- INSTRUCTIONS -->
-<div id="instructions">
-🚂 Sentence Express Station: Drag the ticket to the correct bogey (Statement, Question, Exclamation)!
+<!-- Game Screen -->
+<div id="gameScreen">
+  <div id="instruction">Count the objects and tap the correct number name!</div>
+  <div id="objectsContainer"></div>
+  <div class="options" id="optionsContainer"></div>
 </div>
 
-<!-- GAME -->
-<div id="game">
-<div id="score">Score: 0</div>
-<div id="starBoard">⭐⭐⭐</div>
-<div id="msg"></div>
-
-<div id="train">
-  <img src="assets/train-3bogeys.png" alt="Train with 3 bogeys">
+<!-- Win Screen -->
+<div id="winScreen">
+  <h1>🎉 Congratulations! 🎉</h1>
+  <button id="playAgainBtn">Play Again</button>
 </div>
 
-<div id="ticket"></div>
-</div>
-
-<audio id="correct" src="assets/correct.mp3"></audio>
-<audio id="wrong" src="assets/wrong.mp3"></audio>
-<audio id="whistle" src="assets/whistle.mp3"></audio>
-<audio id="clap" src="assets/clapping.mp3"></audio>
+<!-- Audio -->
+<audio id="correctAudio" src="assets/correct.mp3"></audio>
+<audio id="wrongAudio" src="assets/wrong.mp3"></audio>
+<audio id="clapAudio" src="assets/claps.mp3"></audio>
 
 <script>
-// SENTENCES
-const sentences = [
-{type:"statement",text:"The giraffee is a tall animal."},
-{type:"statement",text:"My brother plays football every evening."},
-{type:"statement",text:"We visited the zoo yesterday."},
-{type:"statement",text:"The flowers are blooming in the garden."},
-{type:"statement",text:"I enjoy reading storybooks."},
-{type:"question",text:"When is your birthday?"},
-{type:"question",text:"Why is the sky blue?"},
-{type:"question",text:"Can you help me?"},
-{type:"question",text:"Why are you laughing?"},
-{type:"question",text:"Did you finish your homework?"},
-{type:"exclamation",text:"What a beautiful rainbow!"},
-{type:"exclamation",text:"Hurray! We won the match!"},
-{type:"exclamation",text:"Wow! This cake is delicious!"},
-{type:"exclamation",text:"Oh no! I lost my pencil!"},
-{type:"exclamation",text:"What an amazing performance!"}
+const logoScreen = document.getElementById('logoScreen');
+const gameScreen = document.getElementById('gameScreen');
+const winScreen = document.getElementById('winScreen');
+const objectsContainer = document.getElementById('objectsContainer');
+const optionsContainer = document.getElementById('optionsContainer');
+const playAgainBtn = document.getElementById('playAgainBtn');
+const correctAudio = document.getElementById('correctAudio');
+const wrongAudio = document.getElementById('wrongAudio');
+const clapAudio = document.getElementById('clapAudio');
+
+const slides = [
+  {img:'assets/bear.png', name:'One'},
+  {img:'assets/cat.png', name:'Two'},
+  {img:'assets/deer.png', name:'Three'},
+  {img:'assets/duck.png', name:'Four'},
+  {img:'assets/giraffe.png', name:'Five'},
+  {img:'assets/koala.png', name:'Six'},
+  {img:'assets/monkey.png', name:'Seven'},
+  {img:'assets/penguin.png', name:'Eight'},
+  {img:'assets/rabbit.png', name:'Nine'},
+  {img:'assets/tiger.png', name:'Ten'},
 ];
 
-let index=0;
-let attempts=0;
-let currentSentence = null;
+let currentSlide = 0;
 
-const ticket=document.getElementById("ticket");
-const train=document.getElementById("train");
-const msg=document.getElementById("msg");
-const scoreEl=document.getElementById("score");
-let score=0;
+// Show splash
+logoScreen.style.display='flex';
+setTimeout(()=> {
+  logoScreen.style.display='none';
+  gameScreen.style.display='flex';
+  showSlide(currentSlide);
+},3000);
 
-// SPLASH SCREEN
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-  document.getElementById("instructions").style.display="block";
-  document.getElementById("game").style.display="block";
-  startRound();
-},5000);
+function showSlide(index){
+  const slide = slides[index];
+  objectsContainer.innerHTML='';
+  optionsContainer.innerHTML='';
 
-// START ROUND
-function startRound(){
-  attempts=0;
-  const remaining = sentences.slice();
-  currentSentence = remaining[index % remaining.length];
-  ticket.innerText = currentSentence.text;
-  msg.innerText = "";
-  ticket.style.left="50%";
-  ticket.style.top="40%";
+  // Show objects
+  let imgEl = document.createElement('img');
+  imgEl.src = slide.img;
+  imgEl.classList.add('object');
+  objectsContainer.appendChild(imgEl);
 
-  // Train arrives
-  train.style.left="5%";
-  setTimeout(()=>{train.style.left="50%";},100);
-}
-
-// DRAG TICKET (TOUCH-FRIENDLY FIX)
-let dragging=false;
-
-function dragStart(e){
-  e.preventDefault();
-  dragging=true;
-  document.addEventListener("mousemove",dragMove);
-  document.addEventListener("mouseup",dragEnd);
-  document.addEventListener("touchmove",dragMove,{passive:false});
-  document.addEventListener("touchend",dragEnd);
-}
-
-function dragMove(e){
-  if(!dragging) return;
-  let x = e.touches ? e.touches[0].clientX : e.clientX;
-  let y = e.touches ? e.touches[0].clientY : e.clientY;
-  ticket.style.left=(x-ticket.offsetWidth/2)+"px";
-  ticket.style.top=(y-ticket.offsetHeight/2)+"px";
-}
-
-function dragEnd(e){
-  dragging=false;
-  document.removeEventListener("mousemove",dragMove);
-  document.removeEventListener("mouseup",dragEnd);
-  document.removeEventListener("touchmove",dragMove);
-  document.removeEventListener("touchend",dragEnd);
-  checkDrop();
-}
-
-ticket.addEventListener("mousedown",dragStart);
-ticket.addEventListener("touchstart",dragStart,{passive:false});
-
-// CHECK DROP LOGIC
-function checkDrop(){
-  const ticketRect = ticket.getBoundingClientRect();
-  const trainRect = train.getBoundingClientRect();
-  const bogeyWidth = trainRect.width/3;
-
-  let droppedType = null;
-
-  if(ticketRect.left + ticketRect.width/2 < trainRect.left + bogeyWidth){
-    droppedType="statement";
-  }else if(ticketRect.left + ticketRect.width/2 < trainRect.left + 2*bogeyWidth){
-    droppedType="question";
-  }else{
-    droppedType="exclamation";
+  // Options: correct + 2 random
+  let options = [slide.name];
+  while(options.length<3){
+    let rand = slides[Math.floor(Math.random()*slides.length)].name;
+    if(!options.includes(rand)) options.push(rand);
   }
+  options.sort(()=>0.5-Math.random());
 
-  if(droppedType===currentSentence.type){
-    document.getElementById("correct").play();
-    document.getElementById("whistle").play();
-    document.getElementById("clap").play();
-    score++;
-    scoreEl.innerText="Score: "+score;
-    train.style.left="105%";
-    setTimeout(()=>{index++; startRound(); train.style.left="-100%";},1000);
-  }else{
-    document.getElementById("wrong").play();
-    attempts++;
-    msg.innerText="Try Again!";
-    if(attempts>=2){
-      msg.innerText="Correct: "+currentSentence.type.toUpperCase();
-    }
-    ticket.style.left="50%";
-    ticket.style.top="40%";
-  }
+  options.forEach(opt=>{
+    let btn = document.createElement('button');
+    btn.classList.add('optionBtn');
+    btn.textContent = opt;
+    btn.onclick = ()=>{
+      if(opt===slide.name){
+        correctAudio.currentTime=0; correctAudio.play();
+        clapAudio.currentTime=0; clapAudio.play();
+        clapAudio.onended=()=>{
+          currentSlide++;
+          if(currentSlide<slides.length) showSlide(currentSlide);
+          else showWinScreen();
+        };
+      } else {
+        wrongAudio.currentTime=0; wrongAudio.play();
+      }
+    };
+    optionsContainer.appendChild(btn);
+  });
 }
+
+function showWinScreen(){
+  gameScreen.style.display='none';
+  winScreen.style.display='flex';
+  clapAudio.currentTime=0; clapAudio.play();
+}
+
+playAgainBtn.onclick=()=>{
+  currentSlide=0;
+  winScreen.style.display='none';
+  gameScreen.style.display='flex';
+  showSlide(currentSlide);
+};
 </script>
+
 </body>
 </html>
