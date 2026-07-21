@@ -3,247 +3,535 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Number Names 1–10</title>
+<title>Number Names Ice Cream Game</title>
+
 <style>
-body {
+*{box-sizing:border-box}
+
+html,body{
   margin:0;
-  font-family:'Comic Sans MS', sans-serif;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background: linear-gradient(135deg,#ffe0b2,#ffccbc,#fff9c4);
-  height:100vh;
-}
-
-#logoScreen, #gameScreen, #winScreen {
   width:100%;
-  height:100vh;
-  position:absolute;
-  top:0; left:0;
+  height:100%;
+  overflow:hidden;
+  font-family:"Comic Sans MS","Arial Rounded MT Bold",sans-serif;
+  background:linear-gradient(#dff8ff,#fff5cf);
+  color:#4b3b2f;
+}
+
+.screen{
+  width:100vw;
+  height:100dvh;
   display:none;
+}
+
+.active{display:flex}
+
+#logoScreen{
+  background:white;
+  align-items:center;
   justify-content:center;
-  align-items:center;
+}
+
+#logoScreen img{
+  width:min(280px,70vw);
+}
+
+#gameScreen{
   flex-direction:column;
 }
 
-#logoScreen img { width:40vw; max-width:300px; }
-
-#gameScreen {
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  align-items:center;
-  padding:1vh 2vw;
-  box-sizing:border-box;
-  position:relative;
-}
-
-#instruction {
-  margin-top:1vh;
-  width:90%;
+.header{
+  height:58px;
+  width:100%;
   text-align:center;
-  font-size:2vw;
-  max-font-size:22px;
-  font-weight:bold;
-  color:#003366;
-  text-shadow:1px 1px 2px #fff;
-  z-index:10;
+  background:#fff1b8;
+  border-bottom:3px solid #f2c86b;
+  padding:3px 8px;
+  flex-shrink:0;
 }
 
-/* Object display */
-#objectsContainer {
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:1vw;
-  margin-top:3vh;
-  max-width:95vw;
-}
-.object {
-  width:100px;
-  height:100px;
+.header h1{
+  margin:0;
+  font-size:clamp(18px,2.5vw,28px);
+  line-height:1.1;
 }
 
-/* Options buttons */
-.options {
-  display:flex;
-  justify-content:center;
-  gap:2vw;
-  flex-wrap:wrap;
-  margin-top:2vh;
+.header p{
+  margin:1px 0 0;
+  font-size:clamp(10px,1.2vw,14px);
+  line-height:1.1;
 }
-.optionBtn {
-  padding:1vh 2vw;
-  font-size:4vw;
-  max-font-size:28px;
-  border-radius:10px;
-  border:none;
-  cursor:pointer;
-  background-color:#ffcc80;
-}
-.optionBtn:hover { background-color:#ffb74d; }
 
-/* Win Screen */
-#winScreen {
+.gameArea{
+  width:100%;
+  height:calc(100dvh - 58px);
+  display:grid;
+  grid-template-rows:25% 48% 25%;
+  gap:1%;
+  padding:8px 18px;
+}
+
+.row{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:14px;
+}
+
+.card{
+  background:rgba(255,255,255,0.96);
+  border:4px solid #f4c976;
+  border-radius:22px;
   display:flex;
-  flex-direction:column;
-  justify-content:center;
   align-items:center;
-  background: rgba(255,255,255,0.9);
-  z-index: 10;
-  height:100vh;
-}
-#winScreen h1 {
-  font-size:7vw;
-  max-font-size:48px;
-  color:#28a745;
-  margin-bottom:2vh;
-}
-#playAgainBtn {
-  padding:2vh 4vw;
-  font-size:4vw; max-font-size:24px;
-  border:none;
-  border-radius:10px;
-  background-color:#4CAF50;
-  color:white;
+  justify-content:center;
+  padding:4px;
   cursor:pointer;
+  box-shadow:0 5px 10px rgba(0,0,0,0.08);
+  overflow:hidden;
+  touch-action:manipulation;
 }
-#playAgainBtn:hover {background-color:#45a049;}
 
-/* Confetti */
-.confetti {
+.card img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+}
+
+.card.correct{
+  background:#d9ffd7;
+  border-color:#6fc06f;
+  transform:scale(1.03);
+}
+
+.card.wrong{
+  animation:wiggle .35s ease;
+}
+
+.card.glow{
+  box-shadow:0 0 18px 7px #8fe58f;
+}
+
+@keyframes wiggle{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-8px)}
+  50%{transform:translateX(8px)}
+  75%{transform:translateX(-6px)}
+  100%{transform:translateX(0)}
+}
+
+.middleArea{
+  width:100%;
+  height:100%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.cartWrap{
   position:absolute;
-  width:3vw; height:3vw;
-  max-width:20px; max-height:20px;
-  background-size:contain;
-  z-index:20;
-  animation: fall linear infinite;
-}
-@keyframes fall {
-  0% { transform: translate(0,0) rotate(0deg); opacity:1; }
-  100% { transform: translate(var(--x,0vw),100vh) rotate(360deg); opacity:0; }
+  width:min(430px,42vw);
+  height:min(270px,36vh);
+  left:-520px;
+  opacity:0;
+  z-index:5;
 }
 
-/* Responsive */
-@media (max-width:480px) {
-  .object { width:60px; height:60px; }
-  .optionBtn { font-size:5vw; }
-  #instruction { font-size:3vw; }
+.cartWrap img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.cartNumber{
+  position:absolute;
+  top:43%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:clamp(48px,6vw,82px);
+  font-weight:bold;
+  color:#2f7edb;
+  text-shadow:4px 4px white;
+}
+
+.cartIn{
+  animation:cartIn 3s ease forwards;
+}
+
+.cartCenter{
+  left:50%;
+  transform:translateX(-50%);
+  opacity:1;
+}
+
+.cartOut{
+  animation:cartOut 3s ease forwards;
+}
+
+@keyframes cartIn{
+  from{left:-520px;opacity:0}
+  to{left:50%;transform:translateX(-50%);opacity:1}
+}
+
+@keyframes cartOut{
+  from{left:50%;transform:translateX(-50%);opacity:1}
+  to{left:115%;opacity:0}
+}
+
+#endScreen{
+  background:linear-gradient(#dff8ff,#fff5cf);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+#endScreen h1{
+  font-size:clamp(42px,7vw,76px);
+  margin:0 0 10px;
+  z-index:2;
+}
+
+#endScreen p{
+  font-size:clamp(22px,3vw,34px);
+  z-index:2;
+}
+
+button{
+  font-size:clamp(20px,2.5vw,28px);
+  padding:14px 34px;
+  border:none;
+  border-radius:18px;
+  background:#f2c86b;
+  color:#4b3b2f;
+  font-weight:bold;
+  cursor:pointer;
+  z-index:2;
+}
+
+.sparkle{
+  position:absolute;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#ffd45c;
+  animation:sparkleFall 2.8s linear forwards;
+  pointer-events:none;
+}
+
+@keyframes sparkleFall{
+  0%{transform:translateY(-20px) scale(1);opacity:1}
+  100%{transform:translateY(110dvh) scale(.3);opacity:0}
+}
+
+@media(max-width:900px){
+  .header{
+    height:52px;
+  }
+
+  .gameArea{
+    height:calc(100dvh - 52px);
+    grid-template-rows:24% 50% 24%;
+    padding:6px;
+    gap:1%;
+  }
+
+  .row{
+    gap:6px;
+  }
+
+  .card{
+    border-radius:14px;
+    border-width:3px;
+    padding:3px;
+  }
+
+  .cartWrap{
+    width:min(290px,50vw);
+    height:min(190px,32vh);
+  }
+
+  .cartNumber{
+    font-size:clamp(42px,8vw,58px);
+  }
+}
+
+@media(max-width:600px) and (orientation:portrait){
+  .header{
+    height:62px;
+  }
+
+  .header h1{
+    font-size:19px;
+  }
+
+  .header p{
+    font-size:11px;
+  }
+
+  .gameArea{
+    height:calc(100dvh - 62px);
+    grid-template-rows:24% 48% 24%;
+    padding:6px;
+  }
+
+  .row{
+    gap:5px;
+  }
+
+  .cartWrap{
+    width:78vw;
+    height:34vh;
+  }
+}
+
+@media(max-height:500px) and (orientation:landscape){
+  .header{
+    height:46px;
+  }
+
+  .header h1{
+    font-size:20px;
+  }
+
+  .header p{
+    font-size:11px;
+  }
+
+  .gameArea{
+    height:calc(100dvh - 46px);
+    grid-template-rows:24% 50% 24%;
+    padding:5px 12px;
+  }
+
+  .cartWrap{
+    width:300px;
+    height:180px;
+  }
 }
 </style>
 </head>
+
 <body>
 
-<!-- Logo Slide -->
-<div id="logoScreen">
+<div id="logoScreen" class="screen active">
   <img src="assets/innovine-logo.png" alt="Innovine Logo">
 </div>
 
-<!-- Game Screen -->
-<div id="gameScreen">
-  <div id="instruction">Count the objects and tap the correct number name!</div>
-  <div id="objectsContainer"></div>
-  <div class="options" id="optionsContainer"></div>
+<div id="gameScreen" class="screen">
+  <div class="header">
+    <h1>Number Names Ice Cream Game</h1>
+    <p>Look at the number on the cart. Tap the matching animal board.</p>
+  </div>
+
+  <div class="gameArea">
+    <div class="row" id="topRow"></div>
+
+    <div class="middleArea">
+      <div class="cartWrap" id="cartWrap">
+        <img src="assets/icecream-cart.png" alt="Ice Cream Cart">
+        <div class="cartNumber" id="cartNumber">1</div>
+      </div>
+    </div>
+
+    <div class="row" id="bottomRow"></div>
+  </div>
 </div>
 
-<!-- Win Screen -->
-<div id="winScreen">
-  <h1>🎉 Congratulations! 🎉</h1>
-  <button id="playAgainBtn">Play Again</button>
+<div id="endScreen" class="screen">
+  <h1>Excellent!</h1>
+  <p>You matched all number names.</p>
+  <button onclick="restartGame()">Play Again</button>
 </div>
 
-<!-- Audio -->
-<audio id="correctAudio" src="assets/correct.mp3"></audio>
-<audio id="wrongAudio" src="assets/wrong.mp3"></audio>
-<audio id="clapAudio" src="assets/claps.mp3"></audio>
+<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/claps.mp3" preload="auto"></audio>
 
 <script>
-const logoScreen = document.getElementById('logoScreen');
-const gameScreen = document.getElementById('gameScreen');
-const winScreen = document.getElementById('winScreen');
-const objectsContainer = document.getElementById('objectsContainer');
-const optionsContainer = document.getElementById('optionsContainer');
-const playAgainBtn = document.getElementById('playAgainBtn');
-const correctAudio = document.getElementById('correctAudio');
-const wrongAudio = document.getElementById('wrongAudio');
-const clapAudio = document.getElementById('clapAudio');
-
-const slides = [
-  {img:'assets/bear.png', name:'One'},
-  {img:'assets/cat.png', name:'Two'},
-  {img:'assets/deer.png', name:'Three'},
-  {img:'assets/duck.png', name:'Four'},
-  {img:'assets/giraffe.png', name:'Five'},
-  {img:'assets/koala.png', name:'Six'},
-  {img:'assets/monkey.png', name:'Seven'},
-  {img:'assets/penguin.png', name:'Eight'},
-  {img:'assets/rabbit.png', name:'Nine'},
-  {img:'assets/tiger.png', name:'Ten'},
+const numbers = [
+  { number: 1, word: "one", image: "bear.png" },
+  { number: 2, word: "two", image: "koala.png" },
+  { number: 3, word: "three", image: "rabbit.png" },
+  { number: 4, word: "four", image: "monkey.png" },
+  { number: 5, word: "five", image: "penguin.png" },
+  { number: 6, word: "six", image: "giraffe.png" },
+  { number: 7, word: "seven", image: "duck.png" },
+  { number: 8, word: "eight", image: "cat.png" },
+  { number: 9, word: "nine", image: "tiger.png" },
+  { number: 10, word: "ten", image: "deer.png" }
 ];
 
-let currentSlide = 0;
+let questionOrder = [];
+let currentIndex = 0;
+let currentAnswer = null;
+let wrongAttempts = 0;
+let canClick = false;
+let sparkleTimer = null;
 
-// Show splash
-logoScreen.style.display='flex';
-setTimeout(()=> {
-  logoScreen.style.display='none';
-  gameScreen.style.display='flex';
-  showSlide(currentSlide);
-},3000);
+const logoScreen = document.getElementById("logoScreen");
+const gameScreen = document.getElementById("gameScreen");
+const endScreen = document.getElementById("endScreen");
+const topRow = document.getElementById("topRow");
+const bottomRow = document.getElementById("bottomRow");
+const cartWrap = document.getElementById("cartWrap");
+const cartNumber = document.getElementById("cartNumber");
 
-function showSlide(index){
-  const slide = slides[index];
-  objectsContainer.innerHTML='';
-  optionsContainer.innerHTML='';
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+const clapSound = document.getElementById("clapSound");
 
-  // Show objects
-  let imgEl = document.createElement('img');
-  imgEl.src = slide.img;
-  imgEl.classList.add('object');
-  objectsContainer.appendChild(imgEl);
+window.onload = function(){
+  setTimeout(() => {
+    logoScreen.classList.remove("active");
+    gameScreen.classList.add("active");
+    startGame();
+  }, 5000);
+};
 
-  // Options: correct + 2 random
-  let options = [slide.name];
-  while(options.length<3){
-    let rand = slides[Math.floor(Math.random()*slides.length)].name;
-    if(!options.includes(rand)) options.push(rand);
-  }
-  options.sort(()=>0.5-Math.random());
+function playSound(sound){
+  sound.pause();
+  sound.currentTime = 0;
+  sound.play().catch(() => {});
+}
 
-  options.forEach(opt=>{
-    let btn = document.createElement('button');
-    btn.classList.add('optionBtn');
-    btn.textContent = opt;
-    btn.onclick = ()=>{
-      if(opt===slide.name){
-        correctAudio.currentTime=0; correctAudio.play();
-        clapAudio.currentTime=0; clapAudio.play();
-        clapAudio.onended=()=>{
-          currentSlide++;
-          if(currentSlide<slides.length) showSlide(currentSlide);
-          else showWinScreen();
-        };
-      } else {
-        wrongAudio.currentTime=0; wrongAudio.play();
-      }
-    };
-    optionsContainer.appendChild(btn);
+function shuffle(array){
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function startGame(){
+  stopSparkles();
+  currentIndex = 0;
+  questionOrder = shuffle([...numbers]);
+  renderAnimals();
+  showQuestion();
+}
+
+function renderAnimals(){
+  topRow.innerHTML = "";
+  bottomRow.innerHTML = "";
+
+  const shuffledCards = shuffle([...numbers]);
+
+  shuffledCards.slice(0,5).forEach(item => {
+    topRow.appendChild(createCard(item));
+  });
+
+  shuffledCards.slice(5,10).forEach(item => {
+    bottomRow.appendChild(createCard(item));
   });
 }
 
-function showWinScreen(){
-  gameScreen.style.display='none';
-  winScreen.style.display='flex';
-  clapAudio.currentTime=0; clapAudio.play();
+function createCard(item){
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.word = item.word;
+  card.innerHTML = `<img src="assets/${item.image}" alt="${item.word}">`;
+
+  card.addEventListener("click", () => {
+    checkAnswer(card,item.word);
+  });
+
+  return card;
 }
 
-playAgainBtn.onclick=()=>{
-  currentSlide=0;
-  winScreen.style.display='none';
-  gameScreen.style.display='flex';
-  showSlide(currentSlide);
-};
+function showQuestion(){
+  if(currentIndex >= questionOrder.length){
+    gameScreen.classList.remove("active");
+    endScreen.classList.add("active");
+    startSparkles();
+    return;
+  }
+
+  canClick = false;
+  wrongAttempts = 0;
+  currentAnswer = questionOrder[currentIndex];
+
+  document.querySelectorAll(".card").forEach(card => {
+    card.classList.remove("correct","wrong","glow");
+  });
+
+  cartNumber.textContent = currentAnswer.number;
+  cartWrap.className = "cartWrap cartIn";
+
+  setTimeout(() => {
+    cartWrap.className = "cartWrap cartCenter";
+    canClick = true;
+  }, 3000);
+}
+
+function checkAnswer(card, selectedWord){
+  if(!canClick) return;
+
+  if(selectedWord === currentAnswer.word){
+    canClick = false;
+
+    playSound(correctSound);
+    setTimeout(() => playSound(clapSound), 150);
+
+    card.classList.add("correct");
+    cartWrap.className = "cartWrap cartOut";
+
+    setTimeout(() => {
+      currentIndex++;
+      showQuestion();
+    }, 3200);
+
+  } else {
+    wrongAttempts++;
+    playSound(wrongSound);
+
+    card.classList.add("wrong");
+
+    setTimeout(() => {
+      card.classList.remove("wrong");
+    }, 600);
+
+    if(wrongAttempts >= 2){
+      const correctCard = document.querySelector(`[data-word="${currentAnswer.word}"]`);
+      if(correctCard){
+        correctCard.classList.add("glow");
+      }
+    }
+  }
+}
+
+function startSparkles(){
+  stopSparkles();
+
+  sparkleTimer = setInterval(() => {
+    const sparkle = document.createElement("div");
+    sparkle.className = "sparkle";
+    sparkle.style.left = Math.random() * 100 + "vw";
+    sparkle.style.top = "-20px";
+    sparkle.style.background = ["#ffd45c","#ffb6c1","#9ee7ff","#b8f7b0","#d9b3ff"][Math.floor(Math.random()*5)];
+    sparkle.style.width = sparkle.style.height = (8 + Math.random()*10) + "px";
+    endScreen.appendChild(sparkle);
+
+    setTimeout(() => sparkle.remove(), 3000);
+  }, 90);
+}
+
+function stopSparkles(){
+  if(sparkleTimer){
+    clearInterval(sparkleTimer);
+    sparkleTimer = null;
+  }
+
+  document.querySelectorAll(".sparkle").forEach(s => s.remove());
+}
+
+function restartGame(){
+  stopSparkles();
+  endScreen.classList.remove("active");
+  gameScreen.classList.add("active");
+  startGame();
+}
 </script>
 
 </body>
