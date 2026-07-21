@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Descending Order Game - End Screen Fixed</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descending Order Game - End Screen Fixed</title>
 
 <style>
 body{
@@ -84,11 +84,14 @@ h1{font-size:28px;margin-bottom:20px;}
 .number-tile.red{background:#e74c3c;}
 .number-tile.blue{background:#3498db;}
 
+/* ✅ Responsive teddy/bear */
 #bear{
     position:absolute;
-    bottom:0;
-    left:10px;
-    width:150px;
+    bottom:2vh;          /* distance from bottom responsive */
+    left:2vw;            /* distance from left responsive */
+    width:15vw;          /* scales with viewport width */
+    max-width:150px;     /* prevents oversize on large screens */
+    height:auto;
 }
 
 /* END screen with plain background */
@@ -100,7 +103,7 @@ h1{font-size:28px;margin-bottom:20px;}
     justify-content:center;
     align-items:center;
     flex-direction:column;
-    background: #eaf6f6 !important; /* plain background for end screen */
+    background: #eaf6f6 !important;
 }
 
 #end h1{font-size:40px;margin-bottom:20px;}
@@ -176,7 +179,6 @@ setTimeout(() => {
 
 function loadSlide(slideNumber){
     const numbers = slides[slideNumber].slice();
-    const boxesDiv = document.getElementById('boxes');
     const numbersDiv = document.getElementById('numbers');
 
     boxes.forEach(box=>box.textContent='');
@@ -206,7 +208,6 @@ function handleNumberClick(num, element){
         element.style.visibility='hidden';
         currentIndex++;
 
-        // Play clap only after last number on slide
         if(currentIndex === slides[currentSlide].length){
             const clap = document.getElementById('clap');
             clap.currentTime=0;
@@ -223,7 +224,6 @@ function handleNumberClick(num, element){
             };
         } 
     } else {
-        // Wrong number stays visible
         document.getElementById('wrong').play();
         element.classList.add('wrongAnim');
         setTimeout(()=>{element.classList.remove('wrongAnim');},400);
