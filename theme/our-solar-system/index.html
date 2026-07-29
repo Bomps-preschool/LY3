@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Who Am I? Solar System Game</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+}
+
+body{
+width:100%;
+height:100%;
+}
+
+#game{
+width:100vw;
+height:100vh;
+position:relative;
+overflow:hidden;
+}
+
+/* Slides */
+
+.slide{
+position:absolute;
+inset:0;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.active{
+display:flex;
+}
+
+/* Logo Slide */
+
+#logoSlide{
+background:#ffffff;
+}
+
+#logoSlide img{
+width:70%;
+max-width:300px;
+}
+
+/* Game Slide */
+
+#gameSlide{
+background:url('assets/background-solar-system.png') center center/cover no-repeat;
+padding:20px;
+}
+
+.title{
+background:rgba(255,255,255,0.92);
+padding:12px 30px;
+border-radius:20px;
+font-size:clamp(28px,4vw,42px);
+font-weight:bold;
+margin-bottom:25px;
+}
+
+.questionArea{
+width:100%;
+max-width:1100px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+gap:40px;
+}
+
+.planetBox{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.planetBox img{
+width:min(35vw,280px);
+height:auto;
+object-fit:contain;
+}
+
+.options{
+flex:1;
+
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+.option{
+background:white;
+border-radius:20px;
+padding:22px;
+font-size:clamp(24px,3vw,34px);
+font-weight:bold;
+cursor:pointer;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+user-select:none;
+transition:.2s;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:95px;
+}
+
+.option:hover{
+transform:scale(1.03);
+}
+
+.wiggle{
+animation:wiggle .35s;
+}
+
+@keyframes wiggle{
+0%{transform:translateX(0);}
+25%{transform:translateX(-8px);}
+50%{transform:translateX(8px);}
+75%{transform:translateX(-8px);}
+100%{transform:translateX(0);}
+}
+
+.correctGlow{
+animation:glow 1s infinite;
+}
+
+@keyframes glow{
+0%{box-shadow:0 0 5px #0000FF;}
+50%{box-shadow:0 0 25px #0000FF;}
+100%{box-shadow:0 0 5px #0000FF;}
+}
+
+.tick{
+font-size:80px;
+color:#28a745;
+margin-top:10px;
+display:none;
+}
+
+/* End Slide */
+
+#endSlide{
+background:url('assets/background-solar-system.png') center center/cover no-repeat;
+color:white;
+text-align:center;
+}
+
+#endSlide h1{
+font-size:clamp(40px,6vw,70px);
+text-shadow:2px 2px 8px black;
+margin-bottom:20px;
+}
+
+#playAgain{
+padding:16px 30px;
+font-size:28px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+background:#4CAF50;
+color:white;
+font-weight:bold;
+}
+
+canvas{
+position:absolute;
+inset:0;
+pointer-events:none;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.questionArea{
+flex-direction:column;
+gap:20px;
+}
+
+.planetBox img{
+width:220px;
+}
+
+.options{
+width:100%;
+}
+
+.option{
+min-height:80px;
+font-size:28px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div id="game">
+
+<!-- LOGO -->
+
+<div id="logoSlide" class="slide active">
+<img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+
+<div id="gameSlide" class="slide">
+
+<div class="title">
+Who Am I?
+</div>
+
+<div class="questionArea">
+
+<div class="planetBox">
+<img id="planetImage">
+</div>
+
+<div class="options" id="options"></div>
+
+</div>
+
+<div id="tick" class="tick">
+✔
+</div>
+
+</div>
+
+<!-- END -->
+
+<div id="endSlide" class="slide">
+
+<canvas id="confetti"></canvas>
+
+<h1>🎉 GOOD JOB! 🎉</h1>
+
+<button id="playAgain">
+Play Again
+</button>
+
+</div>
+
+</div>
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="clapsSound" src="assets/claps.mp3"></audio>
+
+<script>
+
+const questions = [
+
+{name:"Mercury",image:"assets/mercury.png"},
+{name:"Venus",image:"assets/venus.png"},
+{name:"Earth",image:"assets/earth.png"},
+{name:"Mars",image:"assets/mars.png"},
+{name:"Jupiter",image:"assets/jupiter.png"},
+{name:"Saturn",image:"assets/saturn.png"},
+{name:"Uranus",image:"assets/uranus.png"},
+{name:"Neptune",image:"assets/neptune.png"},
+{name:"Sun",image:"assets/sun.png"}
+
+];
+
+let currentQuestion = 0;
+let wrongAttempts = 0;
+
+const gameSlide = document.getElementById("gameSlide");
+const endSlide = document.getElementById("endSlide");
+
+const planetImage = document.getElementById("planetImage");
+const optionsDiv = document.getElementById("options");
+
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+const clapsSound = document.getElementById("clapsSound");
+
+shuffle(questions);
+
+function shuffle(array){
+for(let i=array.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[array[i],array[j]]=[array[j],array[i]];
+}
+}
+
+function playVoice(name){
+
+const fileName =
+`assets/${name.toLowerCase()}.mp3`;
+
+const audio = new Audio(fileName);
+
+audio.play().catch(()=>{
+
+const speech =
+new SpeechSynthesisUtterance(
+`Hey, I'm ${name}.`
+);
+
+speech.rate = 0.9;
+speech.pitch = 1.1;
+
+speechSynthesis.cancel();
+speechSynthesis.speak(speech);
+
+});
+
+}
+
+function loadQuestion(){
+
+wrongAttempts = 0;
+
+document.getElementById("tick").style.display="none";
+
+const q = questions[currentQuestion];
+
+planetImage.src = q.image;
+
+playVoice(q.name);
+
+let answers=[q.name];
+
+while(answers.length<4){
+
+let randomName =
+questions[
+Math.floor(Math.random()*questions.length)
+].name;
+
+if(!answers.includes(randomName)){
+answers.push(randomName);
+}
+
+}
+
+shuffle(answers);
+
+optionsDiv.innerHTML="";
+
+answers.forEach(answer=>{
+
+const btn=document.createElement("div");
+
+btn.className="option";
+
+btn.innerText=answer;
+
+btn.onclick=()=>checkAnswer(btn,answer);
+
+optionsDiv.appendChild(btn);
+
+});
+
+}
+
+function checkAnswer(button,answer){
+
+const correctAnswer =
+questions[currentQuestion].name;
+
+if(answer===correctAnswer){
+
+correctSound.currentTime=0;
+correctSound.play();
+
+clapsSound.currentTime=0;
+clapsSound.play();
+
+document.getElementById("tick").style.display="block";
+
+setTimeout(()=>{
+
+currentQuestion++;
+
+if(currentQuestion>=questions.length){
+
+showEndScreen();
+
+}else{
+
+loadQuestion();
+
+}
+
+},1200);
+
+}else{
+
+wrongSound.currentTime=0;
+wrongSound.play();
+
+button.classList.add("wiggle");
+
+setTimeout(()=>{
+button.classList.remove("wiggle");
+},350);
+
+wrongAttempts++;
+
+if(wrongAttempts>=2){
+
+document.querySelectorAll(".option").forEach(opt=>{
+
+if(opt.innerText===correctAnswer){
+
+opt.classList.add("correctGlow");
+
+}
+
+});
+
+}
+
+}
+
+}
+
+function showEndScreen(){
+
+gameSlide.classList.remove("active");
+endSlide.classList.add("active");
+
+startConfetti();
+
+}
+
+function startConfetti(){
+
+const canvas =
+document.getElementById("confetti");
+
+const ctx =
+canvas.getContext("2d");
+
+canvas.width =
+window.innerWidth;
+
+canvas.height =
+window.innerHeight;
+
+const confetti=[];
+
+for(let i=0;i<150;i++){
+
+confetti.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height-canvas.height,
+r:Math.random()*8+4,
+dx:(Math.random()-0.5)*3,
+dy:Math.random()*3+2
+
+});
+
+}
+
+function draw(){
+
+ctx.clearRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
+confetti.forEach(c=>{
+
+ctx.beginPath();
+
+ctx.arc(
+c.x,
+c.y,
+c.r,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle =
+`hsl(${Math.random()*360},100%,50%)`;
+
+ctx.fill();
+
+c.x += c.dx;
+c.y += c.dy;
+
+if(c.y > canvas.height){
+
+c.y = -20;
+
+}
+
+});
+
+requestAnimationFrame(draw);
+
+}
+
+draw();
+
+}
+
+document.getElementById("playAgain")
+.onclick=()=>{
+
+location.reload();
+
+};
+
+setTimeout(()=>{
+
+document.getElementById("logoSlide")
+.classList.remove("active");
+
+gameSlide.classList.add("active");
+
+loadQuestion();
+
+},2000);
+
+</script>
+
+</body>
+</html>
