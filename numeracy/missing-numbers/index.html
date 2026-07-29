@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Missing Numbers Train Game</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:#fff;
+  touch-action:manipulation;
+}
+
+:root{--vh:1vh;}
+
+.screen{
+  width:100vw;
+  height:calc(var(--vh) * 100);
+  display:none;
+  position:relative;
+  overflow:hidden;
+}
+
+.active{display:flex}
+
+#logoScreen{
+  background:#fff;
+  align-items:center;
+  justify-content:center;
+}
+
+#logoScreen img{
+  width:55vw;
+  max-width:320px;
+}
+
+/* BACKGROUND */
+#gameScreen,#endScreen{
+  flex-direction:column;
+  background:linear-gradient(#93dcf6 0%,#c9f4ff 43%,#89d36f 44%,#59b850 100%);
+}
+
+.sun{
+  position:absolute;
+  right:6vw;
+  top:8vh;
+  width:64px;
+  height:64px;
+  background:#ffd64a;
+  border-radius:50%;
+  box-shadow:0 0 0 14px rgba(255,230,130,.5);
+  z-index:1;
+}
+
+.cloud{
+  position:absolute;
+  background:#fff;
+  width:110px;
+  height:38px;
+  border-radius:50px;
+  box-shadow:0 6px 0 rgba(0,0,0,.08);
+  z-index:1;
+}
+
+.cloud:before,.cloud:after{
+  content:"";
+  position:absolute;
+  background:#fff;
+  border-radius:50%;
+}
+
+.cloud:before{
+  width:52px;
+  height:52px;
+  left:15px;
+  top:-22px;
+}
+
+.cloud:after{
+  width:60px;
+  height:60px;
+  right:10px;
+  top:-28px;
+}
+
+.c1{left:7vw;top:12vh}
+.c2{left:43vw;top:10vh}
+.c3{right:18vw;top:17vh}
+
+.hill{
+  position:absolute;
+  bottom:31vh;
+  width:60vw;
+  height:24vh;
+  border-radius:60% 60% 0 0;
+  box-shadow:0 -4px 0 rgba(255,255,255,.18),0 8px 0 rgba(0,0,0,.08);
+  z-index:0;
+}
+
+.h1{left:-10vw;background:#77c95e}
+.h2{right:-10vw;background:#6fc45d}
+.h3{left:22vw;bottom:35vh;background:#a3dd82}
+
+.tree{
+  position:absolute;
+  bottom:24vh;
+  width:36px;
+  height:105px;
+  background:#9b6b35;
+  border-radius:18px 18px 8px 8px;
+  z-index:3;
+}
+
+.tree:before{
+  content:"";
+  position:absolute;
+  left:-42px;
+  top:-58px;
+  width:122px;
+  height:82px;
+  background:#2fa84a;
+  border-radius:60%;
+  box-shadow:-20px 12px 0 #37b653,20px 10px 0 #3abc55,0 -16px 0 #45c75e;
+}
+
+.t1{left:8vw}
+.t2{right:9vw}
+.t3{left:73vw;transform:scale(.85)}
+
+.track{
+  position:absolute;
+  bottom:16vh;
+  left:0;
+  width:100%;
+  height:48px;
+  background:repeating-linear-gradient(90deg,#8b5728 0 30px,#5b3518 30px 47px);
+  border-top:7px solid #333;
+  border-bottom:7px solid #333;
+  z-index:5;
+}
+
+.track:before{
+  content:"";
+  position:absolute;
+  top:11px;
+  left:0;
+  width:100%;
+  height:6px;
+  background:#222;
+}
+
+/* HEADER */
+.title{
+  z-index:10;
+  text-align:center;
+  margin:6px auto 0;
+  padding:5px 12px;
+  max-width:92vw;
+  background:rgba(255,255,255,.45);
+  border-radius:18px;
+  font-family:Georgia,"Times New Roman",serif;
+  font-style:italic;
+  font-weight:900;
+  color:#263238;
+  text-shadow:2px 2px 0 white;
+  font-size:clamp(17px,4.8vw,32px);
+  line-height:1.1;
+}
+
+.instruction{
+  z-index:10;
+  text-align:center;
+  margin:4px auto 0;
+  padding:6px 10px;
+  width:max-content;
+  max-width:90vw;
+  background:white;
+  border-radius:16px;
+  font-size:clamp(12px,3.2vw,18px);
+  color:#1f2e35;
+  font-weight:bold;
+}
+
+/* TRAIN */
+.trainWrap{
+  position:absolute;
+  left:50%;
+  bottom:23vh;
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  width:max-content;
+  z-index:8;
+  transform:translateX(260vw);
+}
+
+.engine{
+  position:relative;
+  width:120px;
+  height:88px;
+  background:#f8cf45;
+  border:5px solid #303030;
+  border-radius:20px 48px 18px 18px;
+  box-shadow:0 7px 0 rgba(0,0,0,.25);
+}
+
+.engineFront{
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:70px;
+  height:66px;
+  background:#e84b38;
+  border-right:5px solid #303030;
+  border-radius:18px 10px 12px 12px;
+}
+
+.engineCab{
+  position:absolute;
+  right:8px;
+  bottom:18px;
+  width:46px;
+  height:46px;
+  background:#0fa9bc;
+  border:4px solid #303030;
+  border-radius:8px;
+}
+
+.engineWindow{
+  position:absolute;
+  right:15px;
+  bottom:27px;
+  width:31px;
+  height:29px;
+  background:#eaffff;
+  border:4px solid white;
+  border-radius:6px;
+}
+
+.chimney{
+  position:absolute;
+  left:14px;
+  top:-40px;
+  width:32px;
+  height:41px;
+  background:#202020;
+  border:4px solid #303030;
+  border-radius:8px 8px 0 0;
+}
+
+.smoke{
+  position:absolute;
+  left:12px;
+  top:-72px;
+  width:24px;
+  height:24px;
+  background:white;
+  border-radius:50%;
+  opacity:0;
+}
+
+.trainWrap.run .smoke{animation:smoke 1s infinite}
+
+@keyframes smoke{
+  0%{opacity:.9;transform:translate(0,0) scale(.6)}
+  100%{opacity:0;transform:translate(-35px,-55px) scale(1.8)}
+}
+
+.coach,.missingBox{
+  position:relative;
+  width:100px;
+  height:84px;
+  border:5px solid #303030;
+  border-radius:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  font-weight:bold;
+  color:white;
+  text-shadow:2px 2px 0 #333;
+  box-shadow:0 7px 0 rgba(0,0,0,.25);
+}
+
+.coach:before,.missingBox:before{
+  content:"";
+  position:absolute;
+  top:-14px;
+  left:10px;
+  right:10px;
+  height:18px;
+  background:#f6d46d;
+  border:4px solid #303030;
+  border-bottom:none;
+  border-radius:15px 15px 0 0;
+}
+
+.missingBox{
+  background:#f4fff0;
+  border:5px dashed #303030;
+  color:#333;
+  text-shadow:none;
+}
+
+.connector{
+  position:absolute;
+  left:-15px;
+  top:48%;
+  width:18px;
+  height:8px;
+  background:#303030;
+}
+
+.wheel{
+  position:absolute;
+  bottom:-23px;
+  width:32px;
+  height:32px;
+  background:#202020;
+  border:6px solid #666;
+  border-radius:50%;
+}
+
+.w1{left:14px}
+.w2{right:14px}
+
+/* OPTIONS - PHONE FRIENDLY */
+.options{
+  position:absolute;
+  left:0;
+  bottom:calc(env(safe-area-inset-bottom) + 8px);
+  width:100%;
+  z-index:20;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  flex-wrap:nowrap;
+  padding:6px 8px;
+}
+
+.optionCoach{
+  position:relative;
+  width:72px;
+  height:52px;
+  border:4px solid #303030;
+  border-radius:16px;
+  font-size:26px;
+  font-weight:bold;
+  color:white;
+  text-shadow:2px 2px 0 #333;
+  box-shadow:0 6px 0 rgba(0,0,0,.25);
+  cursor:pointer;
+  flex:0 0 auto;
+}
+
+.optionCoach:before{
+  content:"";
+  position:absolute;
+  top:-10px;
+  left:8px;
+  right:8px;
+  height:13px;
+  background:#f6d46d;
+  border:3px solid #303030;
+  border-bottom:none;
+  border-radius:12px 12px 0 0;
+}
+
+.optionCoach:active{transform:scale(.95)}
+
+#message{
+  position:absolute;
+  top:46%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:30;
+  background:white;
+  padding:14px 24px;
+  border-radius:22px;
+  font-size:clamp(22px,5vw,38px);
+  font-weight:bold;
+  display:none;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+}
+
+/* END */
+#endScreen{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+#endScreen h1{
+  z-index:12;
+  background:white;
+  padding:25px;
+  border-radius:25px;
+  font-size:clamp(32px,7vw,60px);
+  color:#333;
+  box-shadow:0 8px 0 rgba(0,0,0,.16);
+}
+
+button{
+  z-index:12;
+  margin-top:18px;
+  padding:13px 26px;
+  border:none;
+  border-radius:18px;
+  background:#333;
+  color:white;
+  font-size:20px;
+}
+
+.confetti{
+  position:absolute;
+  width:12px;
+  height:14px;
+  top:-20px;
+  animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg)}
+}
+
+/* MOBILE */
+@media(max-width:760px){
+  .sun{width:58px;height:58px;top:9vh}
+  .cloud{transform:scale(.82)}
+  .c1{left:4vw;top:13vh}
+  .c2{left:40vw;top:11vh}
+  .c3{right:8vw;top:18vh}
+
+  .tree{bottom:25vh;transform:scale(.82)}
+  .t3{display:none}
+
+  .track{
+    bottom:16vh;
+    height:42px;
+  }
+
+  .trainWrap{
+    bottom:23vh;
+    gap:4px;
+  }
+
+  .engine{
+    width:74px;
+    height:62px;
+    border-width:4px;
+  }
+
+  .engineFront{
+    width:42px;
+    height:48px;
+    border-right-width:4px;
+  }
+
+  .engineCab{
+    width:30px;
+    height:30px;
+    right:4px;
+    bottom:14px;
+    border-width:3px;
+  }
+
+  .engineWindow{
+    width:21px;
+    height:20px;
+    right:8px;
+    bottom:19px;
+    border-width:3px;
+  }
+
+  .chimney{
+    width:22px;
+    height:30px;
+    left:12px;
+    top:-31px;
+    border-width:3px;
+  }
+
+  .coach,.missingBox{
+    width:62px;
+    height:58px;
+    font-size:27px;
+    border-width:4px;
+    border-radius:16px;
+  }
+
+  .coach:before,.missingBox:before{
+    height:12px;
+    top:-10px;
+    left:8px;
+    right:8px;
+    border-width:3px;
+    border-bottom:none;
+  }
+
+  .connector{
+    left:-11px;
+    width:12px;
+    height:7px;
+  }
+
+  .wheel{
+    width:22px;
+    height:22px;
+    bottom:-16px;
+    border-width:4px;
+  }
+
+  .w1{left:8px}
+  .w2{right:8px}
+
+  .options{
+    bottom:calc(env(safe-area-inset-bottom) + 6px);
+    gap:7px;
+  }
+
+  .optionCoach{
+    width:58px;
+    height:44px;
+    font-size:23px;
+    border-width:4px;
+  }
+}
+
+/* EXTRA SMALL PHONES */
+@media(max-width:390px){
+  .title{font-size:16px}
+  .instruction{font-size:12px;padding:5px 8px}
+
+  .trainWrap{bottom:24vh;gap:3px}
+
+  .engine{
+    width:66px;
+    height:58px;
+  }
+
+  .coach,.missingBox{
+    width:55px;
+    height:54px;
+    font-size:24px;
+  }
+
+  .optionCoach{
+    width:52px;
+    height:40px;
+    font-size:21px;
+  }
+
+  .options{gap:6px}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
+
+<div id="logoScreen" class="screen active">
+  <img src="assets/innovine-logo.png" alt="Logo">
+</div>
+
+<div id="gameScreen" class="screen">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+
+  <div class="hill h3"></div>
+  <div class="hill h1"></div>
+  <div class="hill h2"></div>
+
+  <div class="tree t1"></div>
+  <div class="tree t2"></div>
+  <div class="tree t3"></div>
+
+  <div class="title">Match the Compartment with the Correct Missing Number</div>
+  <div class="instruction">Tap the correct number to complete the train.</div>
+
+  <div class="track"></div>
+  <div class="trainWrap" id="train"></div>
+  <div class="options" id="options"></div>
+  <div id="message"></div>
+</div>
+
+<div id="endScreen" class="screen">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="hill h3"></div>
+  <div class="hill h1"></div>
+  <div class="hill h2"></div>
+
+  <h1>Great Job! 🎉</h1>
+  <button onclick="location.reload()">Play Again</button>
+</div>
+
+<script>
+function setVH(){
+  document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + "px");
+}
+setVH();
+window.addEventListener("resize", setVH);
+window.addEventListener("orientationchange", setVH);
+
+const correctSound=document.getElementById("correctSound");
+const wrongSound=document.getElementById("wrongSound");
+const clapSound=document.getElementById("clapSound");
+
+const questions=[
+  {seq:[1,null,3,4],missing:[2],options:[2,5,8,10]},
+  {seq:[5,6,null,8],missing:[7],options:[4,7,9,11]},
+  {seq:[9,null,11,12],missing:[10],options:[6,10,13,15]},
+  {seq:[13,14,null,16],missing:[15],options:[12,15,18,20]},
+  {seq:[2,null,4,null],missing:[3,5],options:[3,5,8,9]},
+  {seq:[6,null,8,null],missing:[7,9],options:[4,7,9,12]},
+  {seq:[10,null,12,null],missing:[11,13],options:[11,13,15,17]},
+  {seq:[14,null,16,null],missing:[15,17],options:[12,15,17,20]},
+  {seq:[16,null,18,19],missing:[17],options:[14,17,20,12]},
+  {seq:[17,18,null,20],missing:[19],options:[15,16,19,11]}
+];
+
+const coachColours=["#e84b38","#0fa9bc","#f6cf4b","#84ca5b","#d88ab6","#ba7dd7","#f1a24d"];
+
+let qIndex=0;
+let selectedMissing=0;
+
+setTimeout(()=>{
+  document.getElementById("logoScreen").classList.remove("active");
+  document.getElementById("gameScreen").classList.add("active");
+  loadQuestion();
+},2000);
+
+function playSound(sound){
+  sound.currentTime=0;
+  sound.play().catch(()=>{});
+}
+
+function showMessage(text){
+  const m=document.getElementById("message");
+  m.innerText=text;
+  m.style.display="block";
+  setTimeout(()=>{m.style.display="none";},700);
+}
+
+function loadQuestion(){
+  selectedMissing=0;
+
+  const q=questions[qIndex];
+  const train=document.getElementById("train");
+  const options=document.getElementById("options");
+
+  train.className="trainWrap";
+  train.style.transition="none";
+  train.style.transform="translateX(260vw)";
+
+  train.innerHTML="";
+  options.innerHTML="";
+
+  const engine=document.createElement("div");
+  engine.className="engine";
+  engine.innerHTML=`
+    <div class="smoke"></div>
+    <div class="chimney"></div>
+    <div class="engineFront"></div>
+    <div class="engineCab"></div>
+    <div class="engineWindow"></div>
+    <div class="wheel w1"></div>
+    <div class="wheel w2"></div>
+  `;
+  train.appendChild(engine);
+
+  q.seq.forEach((num,i)=>{
+    const div=document.createElement("div");
+
+    if(num===null){
+      div.className="missingBox";
+      div.innerHTML=`?<div class="connector"></div><div class="wheel w1"></div><div class="wheel w2"></div>`;
+    }else{
+      div.className="coach";
+      div.style.background=coachColours[(num+i)%coachColours.length];
+      div.innerHTML=`${num}<div class="connector"></div><div class="wheel w1"></div><div class="wheel w2"></div>`;
+    }
+
+    train.appendChild(div);
+  });
+
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      train.style.transition="transform 2.4s ease-in-out";
+      train.style.transform="translateX(-50%)";
+    });
+  });
+
+  shuffle([...q.options]).forEach((n,i)=>{
+    const btn=document.createElement("button");
+    btn.className="optionCoach";
+    btn.style.background=coachColours[i%coachColours.length];
+    btn.innerText=n;
+    btn.onclick=()=>checkAnswer(n,btn);
+    options.appendChild(btn);
+  });
+}
+
+function checkAnswer(num,btn){
+  const q=questions[qIndex];
+  const needed=q.missing[selectedMissing];
+
+  if(num===needed){
+    playSound(correctSound);
+
+    const empty=document.querySelector(".missingBox");
+    empty.className="coach";
+    empty.style.background=coachColours[num%coachColours.length];
+    empty.innerHTML=`${num}<div class="connector"></div><div class="wheel w1"></div><div class="wheel w2"></div>`;
+
+    btn.style.visibility="hidden";
+    selectedMissing++;
+    showMessage("Good job!");
+
+    if(selectedMissing===q.missing.length){
+      setTimeout(runTrain,800);
+    }
+
+  }else{
+    playSound(wrongSound);
+    showMessage("Try again!");
+    if(navigator.vibrate)navigator.vibrate(120);
+  }
+}
+
+function runTrain(){
+  const train=document.getElementById("train");
+
+  train.classList.add("run");
+  playTrainSound();
+
+  setTimeout(()=>{
+    train.style.transition="transform 2.6s ease-in";
+    train.style.transform="translateX(-280vw)";
+  },500);
+
+  setTimeout(()=>{
+    qIndex++;
+
+    if(qIndex>=questions.length){
+      showEnd();
+    }else{
+      loadQuestion();
+    }
+  },3500);
+}
+
+function playTrainSound(){
+  try{
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    const ctx=new AudioContext();
+    let count=0;
+
+    const timer=setInterval(()=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+
+      osc.frequency.value=95;
+      gain.gain.value=.12;
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime+.08);
+
+      count++;
+
+      if(count>14){
+        clearInterval(timer);
+        setTimeout(()=>ctx.close(),500);
+      }
+    },120);
+
+  }catch(e){}
+}
+
+function showEnd(){
+  document.getElementById("gameScreen").classList.remove("active");
+  document.getElementById("endScreen").classList.add("active");
+  playSound(clapSound);
+  createConfetti();
+}
+
+function createConfetti(){
+  const colours=["#f8362d","#356ae8","#f8cf2f","#6ed46e","#d27cc2"];
+
+  for(let i=0;i<90;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=colours[Math.floor(Math.random()*colours.length)];
+    c.style.animationDelay=Math.random()*2+"s";
+    c.style.animationDuration=(2+Math.random()*2)+"s";
+    document.getElementById("endScreen").appendChild(c);
+  }
+}
+
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-.5);
+}
+</script>
+
+</body>
+</html>
