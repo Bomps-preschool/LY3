@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Primary Colours Game</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:#fff;
+}
+
+.screen{
+  width:100vw;
+  height:100vh;
+  display:none;
+  position:relative;
+  overflow:hidden;
+}
+
+.active{
+  display:flex;
+}
+
+/* LOGO SCREEN */
+
+#logoScreen{
+  background:#fff;
+  align-items:center;
+  justify-content:center;
+}
+
+#logoScreen img{
+  width:55vw;
+  max-width:320px;
+}
+
+/* GAME + END SCREEN */
+
+#gameScreen,
+#endScreen{
+  flex-direction:column;
+  background:#f4e7d9;
+}
+
+#gameScreen::before,
+#endScreen::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+
+  background:
+  radial-gradient(circle at 20% 20%, rgba(255,80,80,.25), transparent 25%),
+  radial-gradient(circle at 80% 30%, rgba(255,220,0,.25), transparent 25%),
+  radial-gradient(circle at 50% 10%, rgba(80,120,255,.2), transparent 20%);
+}
+
+/* DECORATIVE CURVES */
+
+.curve{
+  position:absolute;
+  border:10px solid;
+  border-radius:50%;
+  opacity:.8;
+  z-index:0;
+}
+
+.c1{
+  width:260px;
+  height:90px;
+  border-color:#ef5a50;
+  top:20px;
+  left:-80px;
+  transform:rotate(-20deg);
+}
+
+.c2{
+  width:280px;
+  height:100px;
+  border-color:#596dc0;
+  top:15px;
+  right:-90px;
+  transform:rotate(20deg);
+}
+
+.c3{
+  width:240px;
+  height:90px;
+  border-color:#d27cc2;
+  bottom:120px;
+  left:-100px;
+  transform:rotate(15deg);
+}
+
+.c4{
+  width:250px;
+  height:100px;
+  border-color:#f5bc37;
+  bottom:70px;
+  right:-70px;
+  transform:rotate(-25deg);
+}
+
+/* HEADER */
+
+.header{
+  z-index:2;
+  text-align:center;
+  padding-top:10px;
+  font-size:clamp(24px,5vw,42px);
+  font-weight:bold;
+  color:#333;
+}
+
+.instruction{
+  z-index:2;
+  text-align:center;
+  margin-top:8px;
+  font-size:clamp(14px,3vw,22px);
+  color:#444;
+}
+
+/* OBJECTS */
+
+.objects{
+  z-index:2;
+
+  width:100%;
+  height:48vh;
+
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  gap:10px;
+
+  padding:12px;
+
+  justify-items:center;
+  align-items:center;
+}
+
+.obj{
+  width:min(16vw,90px);
+  height:min(16vw,90px);
+
+  background:#fff;
+  border-radius:20px;
+  padding:8px;
+
+  object-fit:contain;
+
+  box-shadow:0 5px 12px rgba(0,0,0,.15);
+
+  animation:jump 1.3s infinite ease-in-out;
+
+  cursor:pointer;
+
+  border:4px solid transparent;
+}
+
+.obj.selected{
+  border:4px solid #222;
+  transform:scale(1.1);
+}
+
+.obj.done{
+  visibility:hidden;
+}
+
+@keyframes jump{
+
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-10px);
+  }
+}
+
+/* BASKETS */
+
+.baskets{
+  z-index:2;
+
+  width:100%;
+  height:34vh;
+
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  gap:10px;
+
+  padding:10px;
+}
+
+.basketBox{
+  background:rgba(255,255,255,.4);
+
+  border-radius:24px;
+
+  display:flex;
+  flex-direction:column;
+
+  justify-content:flex-end;
+  align-items:center;
+
+  padding:10px;
+}
+
+.basket{
+  width:95%;
+  height:75%;
+
+  border-radius:0 0 40px 40px;
+  border:6px solid #333;
+
+  position:relative;
+
+  cursor:pointer;
+}
+
+.basket::before{
+  content:"";
+
+  position:absolute;
+
+  left:12%;
+  right:12%;
+  top:-22px;
+
+  height:35px;
+
+  border:6px solid #333;
+  border-bottom:none;
+
+  border-radius:50px 50px 0 0;
+}
+
+.red{
+  background:#f8362d;
+}
+
+.blue{
+  background:#356ae8;
+}
+
+.yellow{
+  background:#f8cf2f;
+}
+
+.label{
+  margin-top:6px;
+
+  font-size:clamp(18px,3vw,30px);
+  font-weight:bold;
+
+  color:#222;
+}
+
+/* MESSAGE */
+
+#message{
+  position:absolute;
+
+  top:42%;
+  left:50%;
+
+  transform:translate(-50%,-50%);
+
+  z-index:5;
+
+  background:#fff;
+
+  padding:15px 25px;
+
+  border-radius:20px;
+
+  font-size:clamp(22px,5vw,40px);
+  font-weight:bold;
+
+  display:none;
+
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+
+/* END SCREEN */
+
+#endScreen{
+  justify-content:center;
+  align-items:center;
+}
+
+#endScreen h1{
+  z-index:2;
+
+  background:#fff;
+
+  padding:25px;
+
+  border-radius:25px;
+
+  font-size:clamp(30px,7vw,60px);
+
+  color:#333;
+}
+
+button{
+  z-index:2;
+
+  margin-top:20px;
+
+  padding:14px 26px;
+
+  border:none;
+
+  border-radius:18px;
+
+  background:#333;
+  color:#fff;
+
+  font-size:20px;
+
+  cursor:pointer;
+}
+
+/* CONFETTI */
+
+.confetti{
+  position:absolute;
+
+  width:12px;
+  height:14px;
+
+  top:-20px;
+
+  animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+
+  to{
+    transform:translateY(110vh) rotate(360deg);
+  }
+}
+
+/* MOBILE */
+
+@media(max-height:650px){
+
+  .objects{
+    height:45vh;
+  }
+
+  .baskets{
+    height:38vh;
+  }
+
+  .obj{
+    width:min(14vw,70px);
+    height:min(14vw,70px);
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- AUDIO -->
+
+<audio id="correctSound" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+<audio id="clapSound" src="assets/freesound_community-claps-44774.mp3" preload="auto"></audio>
+
+<!-- LOGO SCREEN -->
+
+<div id="logoScreen" class="screen active">
+
+  <img src="assets/innovine-logo.png" alt="Logo">
+
+</div>
+
+<!-- GAME SCREEN -->
+
+<div id="gameScreen" class="screen">
+
+  <div class="curve c1"></div>
+  <div class="curve c2"></div>
+  <div class="curve c3"></div>
+  <div class="curve c4"></div>
+
+  <div class="header">
+    Primary Colours
+  </div>
+
+  <div class="instruction">
+    Tap an object. Then tap the matching colour basket.
+  </div>
+
+  <div class="objects" id="objects"></div>
+
+  <div class="baskets">
+
+    <div class="basketBox">
+
+      <div class="basket red" data-colour="red"></div>
+
+      <div class="label">Red</div>
+
+    </div>
+
+    <div class="basketBox">
+
+      <div class="basket blue" data-colour="blue"></div>
+
+      <div class="label">Blue</div>
+
+    </div>
+
+    <div class="basketBox">
+
+      <div class="basket yellow" data-colour="yellow"></div>
+
+      <div class="label">Yellow</div>
+
+    </div>
+
+  </div>
+
+  <div id="message"></div>
+
+</div>
+
+<!-- END SCREEN -->
+
+<div id="endScreen" class="screen">
+
+  <div class="curve c1"></div>
+  <div class="curve c2"></div>
+  <div class="curve c3"></div>
+  <div class="curve c4"></div>
+
+  <h1>Great Job! 🎉</h1>
+
+  <button onclick="location.reload()">
+    Play Again
+  </button>
+
+</div>
+
+<script>
+
+/* AUDIO */
+
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
+const clapSound = document.getElementById("clapSound");
+
+/* OBJECTS */
+
+const items = [
+
+  /* RED */
+
+  {
+    file:"apple.png",
+    colour:"red"
+  },
+
+  {
+    file:"car.png",
+    colour:"red"
+  },
+
+  {
+    file:"socks.png",
+    colour:"red"
+  },
+
+  {
+    file:"cap.png",
+    colour:"red"
+  },
+
+  /* YELLOW */
+
+  {
+    file:"banana.jpg",
+    colour:"yellow"
+  },
+
+  {
+    file:"pineapple.png",
+    colour:"yellow"
+  },
+
+  {
+    file:"star.jpg",
+    colour:"yellow"
+  },
+
+  {
+    file:"balloon.png",
+    colour:"yellow"
+  },
+
+  /* BLUE */
+
+  {
+    file:"blueberry.png",
+    colour:"blue"
+  },
+
+  {
+    file:"whale.png",
+    colour:"blue"
+  },
+
+  {
+    file:"butterfly.png",
+    colour:"blue"
+  },
+
+  {
+    file:"crayon.png",
+    colour:"blue"
+  }
+
+];
+
+/* VARIABLES */
+
+let selected = null;
+let completed = 0;
+
+/* LOGO SCREEN */
+
+setTimeout(() => {
+
+  document
+  .getElementById("logoScreen")
+  .classList
+  .remove("active");
+
+  document
+  .getElementById("gameScreen")
+  .classList
+  .add("active");
+
+},2000);
+
+/* PLAY SOUND */
+
+function playSound(sound){
+
+  sound.currentTime = 0;
+
+  sound.play().catch(()=>{});
+
+}
+
+/* SHUFFLE */
+
+function shuffle(array){
+
+  return array.sort(() => Math.random() - 0.5);
+
+}
+
+/* LOAD OBJECTS */
+
+function loadObjects(){
+
+  const container = document.getElementById("objects");
+
+  shuffle(items).forEach((item,index)=>{
+
+    const img = document.createElement("img");
+
+    img.src = "assets/" + item.file;
+
+    img.className = "obj";
+
+    img.dataset.colour = item.colour;
+
+    img.style.animationDelay = (index * 0.1) + "s";
+
+    img.onclick = () => selectObject(img);
+
+    container.appendChild(img);
+
+  });
+
+}
+
+/* SELECT OBJECT */
+
+function selectObject(img){
+
+  if(img.classList.contains("done")) return;
+
+  document
+  .querySelectorAll(".obj")
+  .forEach(o => o.classList.remove("selected"));
+
+  img.classList.add("selected");
+
+  selected = img;
+
+}
+
+/* BASKET CLICK */
+
+document.querySelectorAll(".basket").forEach(basket => {
+
+  basket.onclick = () => {
+
+    if(!selected){
+
+      showMessage("Pick an object!");
+
+      return;
+    }
+
+    const objectColour = selected.dataset.colour;
+
+    const basketColour = basket.dataset.colour;
+
+    if(objectColour === basketColour){
+
+      playSound(correctSound);
+
+      moveToBasket(selected,basket);
+
+    }else{
+
+      playSound(wrongSound);
+
+      showMessage("Try again!");
+
+      if(navigator.vibrate){
+
+        navigator.vibrate(120);
+
+      }
+    }
+  };
+
+});
+
+/* MOVE OBJECT */
+
+function moveToBasket(obj,basket){
+
+  const objRect = obj.getBoundingClientRect();
+
+  const basketRect = basket.getBoundingClientRect();
+
+  const clone = obj.cloneNode(true);
+
+  clone.style.position = "fixed";
+
+  clone.style.left = objRect.left + "px";
+
+  clone.style.top = objRect.top + "px";
+
+  clone.style.width = objRect.width + "px";
+
+  clone.style.height = objRect.height + "px";
+
+  clone.style.zIndex = "20";
+
+  clone.style.transition = "all .7s ease";
+
+  document.body.appendChild(clone);
+
+  obj.classList.add("done");
+
+  obj.classList.remove("selected");
+
+  selected = null;
+
+  setTimeout(()=>{
+
+    clone.style.left =
+    (basketRect.left + basketRect.width/2 - objRect.width/2) + "px";
+
+    clone.style.top =
+    (basketRect.top + basketRect.height/2 - objRect.height/2) + "px";
+
+    clone.style.transform = "scale(.7)";
+
+  },30);
+
+  setTimeout(()=>{
+
+    clone.remove();
+
+    completed++;
+
+    showMessage("Good job!");
+
+    if(completed === items.length){
+
+      setTimeout(showEndScreen,1000);
+
+    }
+
+  },750);
+
+}
+
+/* MESSAGE */
+
+function showMessage(text){
+
+  const message = document.getElementById("message");
+
+  message.innerText = text;
+
+  message.style.display = "block";
+
+  setTimeout(()=>{
+
+    message.style.display = "none";
+
+  },700);
+
+}
+
+/* END SCREEN */
+
+function showEndScreen(){
+
+  document
+  .getElementById("gameScreen")
+  .classList
+  .remove("active");
+
+  document
+  .getElementById("endScreen")
+  .classList
+  .add("active");
+
+  playSound(clapSound);
+
+  createConfetti();
+
+}
+
+/* CONFETTI */
+
+function createConfetti(){
+
+  const colours = [
+    "#f8362d",
+    "#356ae8",
+    "#f8cf2f",
+    "#6ed46e",
+    "#d27cc2"
+  ];
+
+  for(let i=0;i<80;i++){
+
+    const confetti = document.createElement("div");
+
+    confetti.className = "confetti";
+
+    confetti.style.left = Math.random()*100 + "vw";
+
+    confetti.style.background =
+    colours[Math.floor(Math.random()*colours.length)];
+
+    confetti.style.animationDelay =
+    Math.random()*2 + "s";
+
+    confetti.style.animationDuration =
+    (2 + Math.random()*2) + "s";
+
+    document
+    .getElementById("endScreen")
+    .appendChild(confetti);
+
+  }
+
+}
+
+/* START GAME */
+
+loadObjects();
+
+</script>
+
+</body>
+</html>
