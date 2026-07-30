@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Count and Type</title>
+
+<style>
+  
+#startScreen{
+display:none;
+position:fixed;
+inset:0;
+background:linear-gradient(135deg,#FFE066,#FFB6C1,#A5F2F3,#C8FFB0);
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:500;
+}
+
+.gameTitle{
+font-size:40px;
+font-weight:bold;
+text-align:center;
+background:linear-gradient(
+90deg,
+#ff4d4d,
+#ff9900,
+#ffee00,
+#33cc33,
+#3399ff,
+#9933ff
+);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+#tapStart{
+margin-top:40px;
+font-size:26px;
+font-weight:bold;
+background:white;
+padding:16px 30px;
+border-radius:30px;
+cursor:pointer;
+animation:wiggle 1.5s infinite;
+}
+
+@keyframes wiggle{
+
+0%,100%{
+transform:rotate(0deg) scale(1);
+}
+
+25%{
+transform:rotate(-4deg) scale(1.05);
+}
+
+75%{
+transform:rotate(4deg) scale(1.05);
+}
+
+}
+  
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+
+background:
+linear-gradient(
+135deg,
+#FFE066,
+#FFD6E8,
+#B5F7FF,
+#D8FFC1
+);
+
+text-align:center;
+overflow-x:hidden;
+}
+
+#splash{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:white;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+#splash img{
+width:250px;
+max-width:80%;
+}
+
+.container{
+padding:10px;
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:15px;
+border-radius:20px;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.objectsCard{
+
+background:white;
+
+border-radius:30px;
+
+padding:10px;
+
+margin:10px auto;
+
+max-width:900px;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
+
+}
+
+  
+h1{
+color:#F26B38;
+font-size:24px;
+margin-top:5px;
+}
+
+.mainTitle{
+
+font-size:48px;
+
+font-weight:bold;
+
+text-align:center;
+
+background:linear-gradient(
+90deg,
+#ff4d4d,
+#ff9900,
+#ffee00,
+#33cc33,
+#3399ff,
+#9933ff
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+margin-bottom:10px;
+
+}
+
+.questionBox{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:15px;
+
+flex-wrap:wrap;
+
+background:#FFF4B3;
+
+padding:12px;
+
+border-radius:25px;
+
+margin:10px auto;
+
+max-width:1200px;
+
+}
+  
+.question{
+font-size:22px;
+font-weight:bold;
+margin:10px 0;
+}
+
+
+.objects{
+
+display:grid;
+
+gap:10px;
+
+justify-content:center;
+
+margin:15px auto;
+
+}
+
+.objects img{
+width:35px;
+height:35px;
+object-fit:contain;
+}
+
+.controls{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+flex-wrap:wrap;
+}
+
+input{
+
+display:block;
+
+margin:10px auto;
+
+width:140px;
+
+height:65px;
+
+font-size:34px;
+
+text-align:center;
+
+border-radius:20px;
+
+border:4px solid #39C56B;
+
+outline:none;
+
+background:white;
+
+}
+
+button{
+padding:14px 20px;
+font-size:20px;
+border:none;
+border-radius:15px;
+background:#5DBB63;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.hearBtn{
+background:#6A8DFF;
+}
+
+.feedback{
+height:35px;
+font-size:24px;
+font-weight:bold;
+margin-top:5px;
+}
+
+#finishScreen{
+display:none;
+}
+
+@media(max-width:480px){
+
+.mainTitle{
+font-size:36px;
+}
+  
+h1{
+font-size:22px;
+}
+
+.question{
+font-size:18px;
+}
+
+.objects{
+grid-template-columns:repeat(auto-fit,minmax(35px,1fr));
+}
+
+.objects img{
+width:35px;
+height:35px;
+}
+
+input{
+width:120px;
+height:60px;
+font-size:30px;
+}
+
+button{
+font-size:18px;
+padding:12px 18px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="splash">
+<img src="./assets/innovine-logo.png">
+</div>
+
+<div id="startScreen">
+
+<h1 class="gameTitle">🌈 Number Counting 🌈</h1>
+
+<div id="tapStart" onclick="startFromTitle()">
+👉 Tap to Start 👈
+</div>
+
+</div>
+
+
+<div class="container" id="game" style="display:none;">
+
+<div id="gameCard">
+
+<h1 class="mainTitle">Number Counting</h1>
+
+
+<div class="questionBox">
+
+<div class="question" id="question">
+Count the objects and type the correct number.
+</div>
+
+<button class="hearBtn"
+onclick="speakQuestion()">
+🔊
+</button>
+
+</div>
+
+<div class="objectsCard">
+
+<div class="objects" id="objects"></div>
+
+</div>
+
+<input
+id="answer"
+type="number"
+inputmode="numeric"
+pattern="[0-9]*"
+min="1"
+max="30"
+oninput="autoCheck()">
+
+<div class="feedback" id="feedback"></div>
+
+</div>
+
+<div class="card" id="finishScreen">
+
+<h2 style="
+font-size:48px;
+background:linear-gradient(
+90deg,
+#ff4d4d,
+#ff9900,
+#ffee00,
+#33cc33,
+#3399ff,
+#9933ff
+);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+">
+🌟 WELL DONE! 🌟
+</h2>
+
+
+<button onclick="restartGame()">
+
+🔄 Play Again
+
+</button>
+
+</div>
+
+</div>
+
+<audio id="correctSound" src="./assets/correct.mp3"></audio>
+
+<audio id="wrongSound" src="./assets/wrong.mp3"></audio>
+
+<audio id="clapSound" src="./assets/freesound_community-claps-44774.mp3"></audio>
+
+<script>
+
+function startFromTitle(){
+
+document.getElementById("startScreen").style.display="none";
+
+document.getElementById("game").style.display="block";
+
+startGame();
+
+}  
+const items = [
+
+{
+name:"bags",
+image:"./assets/bag.png"
+},
+
+{
+name:"birds",
+image:"./assets/bird.jpg"
+},
+
+{
+name:"books",
+image:"./assets/book.png"
+},
+
+{
+name:"buses",
+image:"./assets/bus.png"
+},
+
+{
+name:"cats",
+image:"./assets/cat.jpg"
+},
+
+{
+name:"crayons",
+image:"./assets/crayon.jpg"
+},
+
+{
+name:"dogs",
+image:"./assets/dog.png"
+},
+
+{
+name:"balls",
+image:"./assets/ball.png"
+},
+
+{
+name:"stars",
+image:"./assets/star.png"
+},
+
+{
+name:"marbles",
+image:"./assets/marble.png"
+}
+
+];
+
+let questions = [];
+let currentQuestion = 0;
+
+let answerTimer;
+
+function autoCheck(){
+
+clearTimeout(answerTimer);
+
+let value=
+document.getElementById("answer").value;
+
+if(value.length===0) return;
+
+answerTimer=setTimeout(function(){
+
+checkAnswer();
+
+},1200);
+
+}
+
+window.onload=function(){
+
+setTimeout(function(){
+
+document.getElementById("splash").style.display="none";
+document.getElementById("startScreen").style.display="flex";
+
+},5000);
+
+}
+
+function startGame(){
+
+questions = [
+
+{count:5,item:items[0]},
+{count:8,item:items[1]},
+{count:10,item:items[2]},
+{count:12,item:items[3]},
+{count:15,item:items[4]},
+{count:18,item:items[5]},
+{count:20,item:items[6]},
+{count:22,item:items[7]},
+{count:25,item:items[8]},
+{count:30,item:items[9]}
+
+];
+
+currentQuestion=0;
+
+showQuestion();
+
+}
+
+function showQuestion(){
+
+let q=questions[currentQuestion];
+
+
+document.getElementById("question").innerHTML=
+"Count the " + q.item.name + " and type the correct number.";
+
+document.getElementById("answer").value="";
+
+let box=
+document.getElementById("answer");
+
+box.style.borderColor="#39C56B";
+
+box.style.boxShadow="none";  
+
+document.getElementById("feedback").innerHTML="";
+
+let objects=document.getElementById("objects");
+
+objects.innerHTML="";
+
+let columns = 5;
+  
+objects.style.gridTemplateColumns =
+`repeat(${columns},minmax(35px,45px))`;
+
+for(let i=0;i<q.count;i++){
+
+let img=document.createElement("img");
+
+img.src=q.item.image;
+
+img.alt=q.item.name;
+
+objects.appendChild(img);
+
+}
+
+setTimeout(function(){
+
+speakQuestion();
+let answerBox=document.getElementById("answer");
+
+answerBox.focus();
+
+answerBox.select();
+  
+},500);
+
+}
+
+function speakQuestion(){
+
+let q=questions[currentQuestion];
+
+if('speechSynthesis' in window){
+
+speechSynthesis.cancel();
+
+let speech=new SpeechSynthesisUtterance(
+"Count the " + q.item.name + " and type the correct number."
+);
+
+
+speech.rate=0.85;
+
+speech.pitch=1;
+
+speechSynthesis.speak(speech);
+
+}
+
+}
+
+function checkAnswer(){
+
+let answer=Number(document.getElementById("answer").value);
+
+let correct=questions[currentQuestion].count;
+
+if(answer===correct){
+
+let box=
+document.getElementById("answer");
+
+box.style.borderColor="green";
+
+box.style.boxShadow=
+"0 0 20px lime";
+
+speakText("Good Job");
+
+playSound("correctSound");
+
+setTimeout(function(){
+
+currentQuestion++;
+
+if(currentQuestion>=10){
+
+finishGame();
+
+}else{
+
+showQuestion();
+
+}
+
+},1000);
+
+}else{
+
+document.getElementById("feedback").innerHTML="❌ Try Again";
+
+playSound("wrongSound");
+
+document.getElementById("answer").value="";
+
+document.getElementById("answer").focus();
+
+}
+
+} 
+function finishGame(){
+
+document.getElementById("gameCard").style.display="none";
+
+document.getElementById("finishScreen").style.display="block";
+
+playSound("clapSound");
+
+speakText("Great Job! You finished the game.");
+
+confetti({
+
+particleCount:250,
+
+spread:180,
+
+origin:{y:0.5}
+
+});  
+}
+
+function restartGame(){
+
+document.getElementById("finishScreen").style.display="none";
+
+document.getElementById("gameCard").style.display="block";
+
+document.getElementById("game").style.display="none";
+
+document.getElementById("startScreen").style.display="none";  
+
+document.getElementById("splash").style.display="flex";
+
+setTimeout(function(){
+
+document.getElementById("splash").style.display="none";
+
+document.getElementById("startScreen").style.display="flex";
+
+},5000);
+
+}
+
+function playSound(id){
+
+let sound=document.getElementById(id);
+
+sound.currentTime=0;
+
+sound.play();
+
+}
+
+function speakText(text){
+
+if('speechSynthesis' in window){
+
+speechSynthesis.cancel();
+
+let speech=new SpeechSynthesisUtterance(text);
+
+speech.rate=0.85;
+
+speechSynthesis.speak(speech);
+
+}
+
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</body>
+</html>
