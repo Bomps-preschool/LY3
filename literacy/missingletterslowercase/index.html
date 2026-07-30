@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Missing Letters Game</title>
+
+<style>
+
+/* =========================================
+RESET
+========================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial, sans-serif;
+    background:#fff;
+}
+
+/* =========================================
+COMMON SLIDES
+========================================= */
+
+.slide{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    transition:.6s;
+}
+
+.hidden{
+    opacity:0;
+    pointer-events:none;
+    transform:scale(1.05);
+}
+
+.show{
+    opacity:1;
+    pointer-events:auto;
+    transform:scale(1);
+}
+
+/* =========================================
+SLIDE 1
+========================================= */
+
+#slide1{
+    background:white;
+}
+
+.logo{
+
+    width:min(75vw,420px);
+
+    max-width:420px;
+
+    object-fit:contain;
+
+    display:block;
+}
+
+/* =========================================
+SLIDE 2
+========================================= */
+
+#slide2{
+
+    background:
+    linear-gradient(rgba(255,255,255,.92),
+    rgba(255,255,255,.92)),
+    url("assets/background1.png");
+
+    background-size:cover;
+    background-position:center;
+
+    overflow:hidden;
+}
+
+/* MAIN WRAPPER */
+
+.game-wrapper{
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:space-evenly;
+    align-items:center;
+
+    padding:10px;
+}
+
+/* TITLE */
+
+.game-title{
+
+    font-size:clamp(22px,4vw,44px);
+
+    font-weight:bold;
+
+    color:#ff006e;
+
+    text-align:center;
+}
+
+/* =========================================
+HORIZONTAL RECTANGLE GRID
+========================================= */
+
+.table-area{
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+}
+
+/* ROWS */
+
+.row{
+
+    display:flex;
+    gap:6px;
+    justify-content:center;
+}
+
+/* CELL */
+
+.cell{
+
+    width:64px;
+    height:64px;
+
+    border-radius:16px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:42px;
+    font-weight:bold;
+
+    background:white;
+
+    border:3px solid #ffb703;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.18);
+
+    color:#111;
+}
+
+/* FIXED LETTERS */
+
+.fixed{
+
+    background:#ffffff;
+}
+
+/* BLANK CELLS */
+
+.blank{
+
+    background:#fff6cc;
+
+    border:3px dashed #ff006e;
+
+    cursor:pointer;
+}
+
+/* HELP BOX */
+
+.help-box{
+
+    width:min(95vw,1000px);
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:12px;
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:10px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+}
+
+/* OPTION BUTTONS */
+
+.option{
+
+    width:54px;
+    height:54px;
+
+    border:none;
+
+    border-radius:14px;
+
+    color:white;
+
+    font-size:30px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.2);
+
+    transition:.2s;
+}
+
+.option:active{
+    transform:scale(.92);
+}
+
+.selected{
+    outline:4px solid #111;
+}
+
+/* COLORS */
+
+.c1{background:#ff006e;}
+.c2{background:#8338ec;}
+.c3{background:#3a86ff;}
+.c4{background:#06d6a0;}
+.c5{background:#ffbe0b;}
+.c6{background:#fb5607;}
+
+/* FEEDBACK */
+
+.feedback{
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    font-size:90px;
+
+    z-index:100;
+
+    pointer-events:none;
+}
+
+/* =========================================
+SLIDE 3
+========================================= */
+
+#slide3{
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(rgba(255,255,255,.18),
+    rgba(255,255,255,.18)),
+    url("assets/background2.png");
+
+    background-size:cover;
+    background-position:center;
+}
+
+/* AMAZING TEXT */
+
+.amazing{
+
+    font-size:clamp(45px,9vw,110px);
+
+    font-weight:bold;
+
+    color:#ff006e;
+
+    text-shadow:
+    3px 3px white,
+    6px 6px 15px rgba(0,0,0,.25);
+
+    z-index:5;
+
+    animation:bounce 1s infinite alternate;
+}
+
+@keyframes bounce{
+
+    from{
+        transform:translateY(0);
+    }
+
+    to{
+        transform:translateY(-12px);
+    }
+}
+
+/* LETTER RAIN */
+
+.rain-letter{
+
+    position:absolute;
+
+    top:-60px;
+
+    font-size:clamp(24px,5vw,60px);
+
+    font-weight:bold;
+
+    animation:fall linear forwards;
+
+    user-select:none;
+}
+
+@keyframes fall{
+
+    to{
+        transform:translateY(120vh) rotate(360deg);
+    }
+}
+
+/* =========================================
+MOBILE
+========================================= */
+
+@media(max-width:700px){
+
+    .row{
+        gap:4px;
+    }
+
+    .cell{
+
+        width:44px;
+        height:44px;
+
+        font-size:28px;
+
+        border-radius:10px;
+    }
+
+    .option{
+
+        width:42px;
+        height:42px;
+
+        font-size:22px;
+    }
+
+    .feedback{
+        font-size:70px;
+    }
+
+    .help-box{
+        gap:7px;
+        padding:10px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================
+AUDIO
+========================================= -->
+
+<audio id="correctSound" src="assets/correct.mp3"></audio>
+
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
+<audio id="clapSound" src="assets/clap.mp3"></audio>
+
+<!-- =========================================
+SLIDE 1
+========================================= -->
+
+<section id="slide1" class="slide show">
+
+    <img
+    src="assets/innovine-logo.png"
+    class="logo"
+    alt="Innovine Logo">
+
+</section>
+
+<!-- =========================================
+SLIDE 2
+========================================= -->
+
+<section id="slide2" class="slide hidden">
+
+    <div class="game-wrapper">
+
+        <div class="game-title">
+            Identify the missing letters
+        </div>
+
+        <!-- HORIZONTAL RECTANGLE TABLE -->
+
+        <div class="table-area" id="tableArea"></div>
+
+        <!-- HELP BOX -->
+
+        <div class="help-box" id="helpBox"></div>
+
+    </div>
+
+    <!-- FEEDBACK -->
+
+    <div class="feedback" id="feedback"></div>
+
+</section>
+
+<!-- =========================================
+SLIDE 3
+========================================= -->
+
+<section id="slide3" class="slide hidden">
+
+    <div class="amazing">
+        Amazing!
+    </div>
+
+</section>
+
+<script>
+
+/* =========================================
+SLIDES
+========================================= */
+
+const slide1 = document.getElementById("slide1");
+const slide2 = document.getElementById("slide2");
+const slide3 = document.getElementById("slide3");
+
+setTimeout(()=>{
+
+    slide1.classList.remove("show");
+    slide1.classList.add("hidden");
+
+    slide2.classList.remove("hidden");
+    slide2.classList.add("show");
+
+},3000);
+
+/* =========================================
+HORIZONTAL RECTANGLE DATA
+========================================= */
+
+const rows = [
+
+[
+{type:"fixed",letter:"a"},
+{type:"blank",answer:"b"},
+{type:"blank",answer:"c"},
+{type:"fixed",letter:"d"},
+{type:"fixed",letter:"e"},
+{type:"blank",answer:"f"},
+{type:"blank",answer:"g"},
+{type:"fixed",letter:"h"}
+],
+
+[
+{type:"fixed",letter:"i"},
+{type:"blank",answer:"j"},
+{type:"fixed",letter:"k"},
+{type:"blank",answer:"l"},
+{type:"blank",answer:"m"},
+{type:"blank",answer:"n"},
+{type:"blank",answer:"o"},
+{type:"fixed",letter:"p"}
+],
+
+[
+{type:"blank",answer:"q"},
+{type:"blank",answer:"r"},
+{type:"blank",answer:"s"},
+{type:"blank",answer:"t"},
+{type:"blank",answer:"u"},
+{type:"fixed",letter:"v"},
+{type:"fixed",letter:"w"},
+{type:"blank",answer:"x"}
+],
+
+[
+{type:"fixed",letter:"y"},
+{type:"blank",answer:"z"}
+]
+
+];
+
+/* =========================================
+SHUFFLED HELP LETTERS
+========================================= */
+
+const helpLetters = [
+
+"q","m","b","x",
+"g","t","o","c",
+"z","j","r","u",
+"f","n","s","l"
+
+];
+
+/* =========================================
+ELEMENTS
+========================================= */
+
+const tableArea =
+document.getElementById("tableArea");
+
+const helpBox =
+document.getElementById("helpBox");
+
+const feedback =
+document.getElementById("feedback");
+
+const correctSound =
+document.getElementById("correctSound");
+
+const wrongSound =
+document.getElementById("wrongSound");
+
+const clapSound =
+document.getElementById("clapSound");
+let selectedLetter = null;
+let selectedButton = null;
+
+/* =========================================
+CREATE TABLE
+========================================= */
+
+rows.forEach(rowData=>{
+
+    const row =
+    document.createElement("div");
+
+    row.classList.add("row");
+
+    rowData.forEach(item=>{
+
+        const cell =
+        document.createElement("div");
+
+        cell.classList.add("cell");
+
+        if(item.type === "fixed"){
+
+            cell.classList.add("fixed");
+
+            cell.innerHTML = item.letter;
+
+        }else{
+
+            cell.classList.add("blank");
+
+            cell.innerHTML = "";
+
+            cell.addEventListener("click",()=>{
+
+                if(!selectedLetter) return;
+
+                if(selectedLetter === item.answer){
+
+                    cell.innerHTML =
+                    selectedLetter;
+
+                    cell.style.background =
+                    "#d8ffd8";
+
+                    cell.style.border =
+                    "3px solid green";
+
+                    selectedButton.remove();
+
+                    selectedLetter = null;
+                    selectedButton = null;
+
+                    playCorrect();
+
+                    feedback.innerHTML = "✅";
+
+                    setTimeout(()=>{
+                        feedback.innerHTML="";
+                    },700);
+
+                    checkComplete();
+
+                }else{
+
+                    playWrong();
+
+                    feedback.innerHTML = "❌";
+
+                    setTimeout(()=>{
+                        feedback.innerHTML="";
+                    },700);
+                }
+            });
+        }
+
+        row.appendChild(cell);
+
+    });
+
+    tableArea.appendChild(row);
+
+});
+
+/* =========================================
+CREATE HELP LETTERS
+========================================= */
+
+helpLetters.forEach((letter,index)=>{
+
+    const btn =
+    document.createElement("button");
+
+    btn.className =
+    "option c"+((index%6)+1);
+
+    btn.innerHTML = letter;
+
+    btn.addEventListener("click",()=>{
+
+        document
+        .querySelectorAll(".option")
+        .forEach(b=>{
+
+            b.classList.remove("selected");
+
+        });
+
+        btn.classList.add("selected");
+
+        selectedLetter = letter;
+
+        selectedButton = btn;
+    });
+
+    helpBox.appendChild(btn);
+
+});
+
+/* =========================================
+AUDIO
+========================================= */
+
+function playCorrect(){
+
+    correctSound.currentTime = 0;
+
+    correctSound.play().catch(()=>{});
+}
+
+function playWrong(){
+
+    wrongSound.currentTime = 0;
+
+    wrongSound.play().catch(()=>{});
+}
+
+/* =========================================
+CHECK COMPLETE
+========================================= */
+
+function checkComplete(){
+
+    const blanks =
+    document.querySelectorAll(".blank");
+
+    let complete = true;
+
+    blanks.forEach(box=>{
+
+        if(box.innerHTML === ""){
+            complete = false;
+        }
+    });
+if(complete){
+
+    setTimeout(()=>{
+
+        slide2.classList.remove("show");
+        slide2.classList.add("hidden");
+
+        slide3.classList.remove("hidden");
+        slide3.classList.add("show");
+
+        clapSound.currentTime = 0;
+        clapSound.play().catch(()=>{});
+
+        startRain();
+
+    },1200);
+}
+}
+
+/* =========================================
+RAINING LETTERS
+========================================= */
+
+function startRain(){
+
+    const letters =
+    "abcdefghijklmnopqrstuvwxyz";
+
+    setInterval(()=>{
+
+        const span =
+        document.createElement("span");
+
+        span.className =
+        "rain-letter";
+
+        span.innerHTML =
+        letters[Math.floor(Math.random()*26)];
+
+        span.style.left =
+        Math.random()*100 + "vw";
+
+        span.style.color =
+        randomColor();
+
+        span.style.animationDuration =
+        (3 + Math.random()*3) + "s";
+
+        slide3.appendChild(span);
+
+        setTimeout(()=>{
+
+            span.remove();
+
+        },7000);
+
+    },150);
+}
+
+/* =========================================
+RANDOM COLORS
+========================================= */
+
+function randomColor(){
+
+    const colors = [
+
+        "#ff006e",
+        "#8338ec",
+        "#3a86ff",
+        "#06d6a0",
+        "#ffbe0b",
+        "#fb5607"
+    ];
+
+    return colors[
+    Math.floor(Math.random()*colors.length)
+    ];
+}
+
+</script>
+
+</body>
+</html>
