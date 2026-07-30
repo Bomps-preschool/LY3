@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Sight Words Game</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:"Arial Rounded MT Bold",Arial,sans-serif;
+}
+
+body{
+background:#fff;
+}
+
+/* SLIDES */
+
+.slide{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.slide.active{
+display:flex;
+}
+
+/* LOGO SCREEN */
+
+.logo-screen{
+background:white;
+}
+
+.logo-screen img{
+max-width:70%;
+max-height:50%;
+object-fit:contain;
+}
+
+/* GAME SCREENS */
+
+.game-screen{
+background-image:
+linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,.12)),
+url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop");
+background-size:cover;
+background-position:center;
+padding:20px;
+}
+
+.instruction{
+font-size:clamp(24px,4vw,40px);
+font-weight:bold;
+color:#111;
+text-align:center;
+margin-bottom:40px;
+background:white;
+padding:12px 20px;
+border-radius:20px;
+box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+.words{
+display:flex;
+gap:25px;
+justify-content:center;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.word-btn{
+min-width:130px;
+padding:22px 28px;
+font-size:clamp(30px,5vw,48px);
+font-weight:bold;
+border:none;
+border-radius:25px;
+background:white;
+cursor:pointer;
+transition:.2s;
+box-shadow:0 6px 15px rgba(0,0,0,.15);
+}
+
+.word-btn:active{
+transform:scale(.95);
+}
+
+.border1{
+border:8px solid #ff4d6d;
+}
+
+.border2{
+border:8px solid #00b894;
+}
+
+.border3{
+border:8px solid #6c5ce7;
+}
+
+.border4{
+border:8px solid #fdcb6e;
+}
+
+.border5{
+border:8px solid #00cec9;
+}
+
+.border6{
+border:8px solid #e17055;
+}
+
+/* FEEDBACK */
+
+.feedback{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:min(25vw,160px);
+font-weight:bold;
+display:none;
+z-index:999;
+pointer-events:none;
+}
+
+.correct{
+color:#00c853;
+}
+
+.wrong{
+color:#ff1744;
+}
+
+/* FINAL SCREEN */
+
+.final-screen{
+background:
+linear-gradient(135deg,#ff9ff3,#feca57,#48dbfb,#1dd1a1);
+overflow:hidden;
+}
+
+.amazing{
+font-size:clamp(50px,10vw,100px);
+font-weight:bold;
+color:white;
+text-shadow:4px 4px 10px rgba(0,0,0,.25);
+z-index:5;
+}
+
+.rain{
+position:absolute;
+top:-50px;
+font-weight:bold;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(120vh) rotate(360deg);
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<audio id="clapSound" src="assets/clap.mp3" preload="auto"></audio>
+<audio id="wrongSound" src="assets/wrong.mp3" preload="auto"></audio>
+
+<div id="feedbackTick" class="feedback correct">✓</div>
+<div id="feedbackCross" class="feedback wrong">✗</div>
+
+<!-- Slide 1 -->
+
+<div class="slide active logo-screen" id="slide0">
+<img src="assets/innovine-logo.png" alt="Innovine Logo">
+</div>
+
+<!-- Slide 2 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border1" onclick="checkAnswer(this,true)">I</button>
+<button class="word-btn border2" onclick="checkAnswer(this,false)">mat</button>
+</div>
+</div>
+
+<!-- Slide 3 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border3" onclick="checkAnswer(this,false)">hen</button>
+<button class="word-btn border4" onclick="checkAnswer(this,true)">this</button>
+</div>
+</div>
+
+<!-- Slide 4 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border5" onclick="checkAnswer(this,true)">the</button>
+<button class="word-btn border6" onclick="checkAnswer(this,false)">sit</button>
+</div>
+</div>
+
+<!-- Slide 5 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border2" onclick="checkAnswer(this,false)">cat</button>
+<button class="word-btn border1" onclick="checkAnswer(this,true)">are</button>
+</div>
+</div>
+
+<!-- Slide 6 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border4" onclick="checkAnswer(this,true)">to</button>
+<button class="word-btn border3" onclick="checkAnswer(this,false)">tap</button>
+</div>
+</div>
+
+<!-- Slide 7 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border6" onclick="checkAnswer(this,true)">my</button>
+<button class="word-btn border5" onclick="checkAnswer(this,false)">hat</button>
+</div>
+</div>
+
+<!-- Slide 8 -->
+
+<div class="slide game-screen">
+<div class="instruction">Identify the sight word</div>
+
+<div class="words">
+<button class="word-btn border1" onclick="checkAnswer(this,false)">fit</button>
+<button class="word-btn border2" onclick="checkAnswer(this,true)">that</button>
+</div>
+</div>
+
+<!-- Slide 9 -->
+
+<div class="slide final-screen" id="finalScreen">
+<div class="amazing">Amazing!</div>
+</div>
+
+<script>
+
+const slides=document.querySelectorAll(".slide");
+const clap=document.getElementById("clapSound");
+const wrong=document.getElementById("wrongSound");
+
+let currentSlide=0;
+
+/* logo screen */
+
+setTimeout(()=>{
+goToSlide(1);
+},2500);
+
+function goToSlide(index){
+
+slides.forEach(slide=>slide.classList.remove("active"));
+
+if(index<slides.length){
+slides[index].classList.add("active");
+currentSlide=index;
+}
+
+if(index===slides.length-1){
+startRain();
+}
+
+}
+
+function showTick(){
+
+const tick=document.getElementById("feedbackTick");
+
+tick.style.display="block";
+
+setTimeout(()=>{
+tick.style.display="none";
+},1000);
+
+}
+
+function showCross(){
+
+const cross=document.getElementById("feedbackCross");
+
+cross.style.display="block";
+
+setTimeout(()=>{
+cross.style.display="none";
+},1000);
+
+}
+
+function checkAnswer(button,isCorrect){
+
+if(isCorrect){
+
+clap.currentTime=0;
+clap.play();
+
+showTick();
+
+button.disabled=true;
+
+setTimeout(()=>{
+goToSlide(currentSlide+1);
+},1200);
+
+}else{
+
+wrong.currentTime=0;
+wrong.play();
+
+showCross();
+
+}
+
+}
+
+/* Amazing screen letters */
+
+function startRain(){
+
+const final=document.getElementById("finalScreen");
+
+const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+setInterval(()=>{
+
+const letter=document.createElement("div");
+
+letter.className="rain";
+
+letter.innerHTML=
+letters[Math.floor(Math.random()*letters.length)];
+
+letter.style.left=Math.random()*100+"vw";
+
+letter.style.fontSize=
+(20+Math.random()*35)+"px";
+
+letter.style.color=
+`hsl(${Math.random()*360},90%,55%)`;
+
+letter.style.animationDuration=
+(3+Math.random()*3)+"s";
+
+final.appendChild(letter);
+
+setTimeout(()=>{
+letter.remove();
+},6000);
+
+},120);
+
+}
+
+</script>
+
+</body>
+</html>
