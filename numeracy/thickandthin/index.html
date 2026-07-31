@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Thick and Thin</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.slide{
+    width:100vw;
+    height:100vh;
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+.active{
+    display:flex;
+}
+
+.logo-slide{
+    background:white;
+}
+
+.logo-slide img{
+    max-width:70%;
+    max-height:60%;
+}
+
+.game-slide{
+    background:#f8f3ff;
+}
+
+.instruction{
+    font-size:clamp(24px,4vw,42px);
+    font-weight:bold;
+    color:#333;
+    margin-bottom:25px;
+}
+
+.options{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:25px;
+    width:100%;
+}
+
+.option{
+    width:40vw;
+    max-width:300px;
+    height:40vw;
+    max-height:300px;
+    border:10px solid;
+    border-radius:25px;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:transform .2s;
+}
+
+.option:nth-child(1){
+    border-color:#ff7eb3;
+}
+
+.option:nth-child(2){
+    border-color:#7afcff;
+}
+
+.option:hover{
+    transform:scale(1.05);
+}
+
+.option img{
+    max-width:90%;
+    max-height:90%;
+    object-fit:contain;
+}
+
+.feedback{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:120px;
+    z-index:999;
+    display:none;
+}
+
+.tick{
+    color:green;
+}
+
+.cross{
+    color:red;
+}
+
+.final-slide{
+    background:white;
+}
+
+.final-message{
+    font-size:clamp(40px,8vw,80px);
+    color:#28a745;
+    font-weight:bold;
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+@media(max-width:768px){
+
+    .instruction{
+        font-size:28px;
+    }
+
+    .options{
+        gap:15px;
+    }
+
+    .option{
+        width:42vw;
+        height:42vw;
+    }
+}
+</style>
+</head>
+<body>
+
+<audio id="clap" src="assets/clap.mp3"></audio>
+<audio id="wrong" src="assets/wrong.mp3"></audio>
+
+<div id="tick" class="feedback tick">✔</div>
+<div id="cross" class="feedback cross">✖</div>
+
+<!-- Slide 1 -->
+<div class="slide active logo-slide">
+    <img src="assets/innovine-logo.png" alt="Innovine Logo">
+</div>
+
+<!-- Slide 2 -->
+<div class="slide game-slide">
+    <div class="instruction">Identify the thick rope</div>
+
+    <div class="options">
+        <div class="option" onclick="checkAnswer(true)">
+            <img src="assets/thickrope.png">
+        </div>
+
+        <div class="option" onclick="checkAnswer(false)">
+            <img src="assets/thinrope.png">
+        </div>
+    </div>
+</div>
+
+<!-- Slide 3 -->
+<div class="slide game-slide">
+    <div class="instruction">Identify the thick paintbrush</div>
+
+    <div class="options">
+        <div class="option" onclick="checkAnswer(false)">
+            <img src="assets/thinpaintbrush.png">
+        </div>
+
+        <div class="option" onclick="checkAnswer(true)">
+            <img src="assets/thickpaintbrush.png">
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4 -->
+<div class="slide game-slide">
+    <div class="instruction">Identify the thin pencil</div>
+
+    <div class="options">
+        <div class="option" onclick="checkAnswer(true)">
+            <img src="assets/thinpencil.png">
+        </div>
+
+        <div class="option" onclick="checkAnswer(false)">
+            <img src="assets/thickpencil.png">
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5 -->
+<div class="slide game-slide">
+    <div class="instruction">Identify the thin book</div>
+
+    <div class="options">
+        <div class="option" onclick="checkAnswer(false)">
+            <img src="assets/thickbook.png">
+        </div>
+
+        <div class="option" onclick="checkAnswer(true)">
+            <img src="assets/thinbook.png">
+        </div>
+    </div>
+</div>
+
+<!-- Slide 6 -->
+<div class="slide game-slide">
+    <div class="instruction">Identify the thick candle</div>
+
+    <div class="options">
+        <div class="option" onclick="checkAnswer(false)">
+            <img src="assets/thincandle.png">
+        </div>
+
+        <div class="option" onclick="checkAnswer(true)">
+            <img src="assets/thickcandle.png">
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7 -->
+<div class="slide game-slide">
+    <div class="instruction">Identify the thin marker</div>
+
+    <div class="options">
+        <div class="option" onclick="checkAnswer(false)">
+            <img src="assets/thickmarker.png">
+        </div>
+
+        <div class="option" onclick="checkAnswer(true)">
+            <img src="assets/thinmarker.png">
+        </div>
+    </div>
+</div>
+
+<!-- Slide 8 -->
+<div class="slide final-slide">
+    <div class="final-message">🎉 Good job! 🎉</div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+
+const slides = document.querySelectorAll('.slide');
+let currentSlide = 0;
+
+setTimeout(()=>{
+    nextSlide();
+},2000);
+
+function nextSlide(){
+    slides[currentSlide].classList.remove('active');
+    currentSlide++;
+
+    if(currentSlide < slides.length){
+        slides[currentSlide].classList.add('active');
+
+        if(currentSlide === slides.length-1){
+            startConfetti();
+        }
+    }
+}
+
+function checkAnswer(correct){
+
+    if(correct){
+
+        document.getElementById("clap").currentTime = 0;
+        document.getElementById("clap").play();
+
+        const tick = document.getElementById("tick");
+        tick.style.display="block";
+
+        setTimeout(()=>{
+            tick.style.display="none";
+            nextSlide();
+        },1200);
+
+    }else{
+
+        document.getElementById("wrong").currentTime = 0;
+        document.getElementById("wrong").play();
+
+        const cross = document.getElementById("cross");
+        cross.style.display="block";
+
+        setTimeout(()=>{
+            cross.style.display="none";
+        },1000);
+    }
+}
+
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let confetti=[];
+
+function startConfetti(){
+
+    for(let i=0;i<150;i++){
+        confetti.push({
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height-canvas.height,
+            r:Math.random()*6+4,
+            d:Math.random()*150
+        });
+    }
+
+    animateConfetti();
+}
+
+function animateConfetti(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    confetti.forEach((c)=>{
+
+        ctx.beginPath();
+
+        const colors=[
+            "#ff6b6b",
+            "#4ecdc4",
+            "#ffe66d",
+            "#ff9ff3",
+            "#54a0ff"
+        ];
+
+        ctx.fillStyle=colors[Math.floor(Math.random()*colors.length)];
+
+        ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+
+        ctx.fill();
+
+        c.y+=3;
+
+        if(c.y>canvas.height){
+            c.y=-10;
+        }
+    });
+
+    requestAnimationFrame(animateConfetti);
+}
+
+</script>
+
+</body>
+</html>
