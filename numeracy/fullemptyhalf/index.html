@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Full Empty Half Game</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:'Baloo 2',cursive;
+    background:#fff;
+}
+
+/* ==========================
+SLIDES
+========================== */
+
+.slide{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+/* ==========================
+SLIDE 1
+========================== */
+
+#slide1{
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:20;
+    transition:1s ease;
+}
+
+#slide1.fade{
+    opacity:0;
+    visibility:hidden;
+}
+
+#logo{
+    width:min(42vw,300px);
+    max-width:300px;
+    object-fit:contain;
+}
+
+/* ==========================
+SLIDE 2
+========================== */
+
+#slide2{
+    display:none;
+    flex-direction:column;
+    padding:8px;
+    overflow:hidden;
+
+    background-image:
+    url("assets/background.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+}
+
+#slide2::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(255,255,255,0.42);
+    z-index:0;
+}
+
+#slide2 *{
+    position:relative;
+    z-index:2;
+}
+
+/* ==========================
+TITLE
+========================== */
+
+.title{
+    width:100%;
+    text-align:center;
+    font-size:clamp(18px,2vw,36px);
+    font-weight:800;
+    color:#5d4037;
+    background:rgba(255,255,255,0.96);
+    padding:8px;
+    border-radius:18px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.12);
+    margin-bottom:8px;
+}
+
+/* ==========================
+GAME LAYOUT
+========================== */
+
+.game-layout{
+    flex:1;
+    display:flex;
+    gap:10px;
+    overflow:hidden;
+    height:calc(100vh - 90px);
+}
+
+/* ==========================
+LEFT PANEL
+========================== */
+
+.left-panel{
+    width:48%;
+    background:rgba(255,255,255,0.94);
+    border-radius:22px;
+    padding:10px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,0.12);
+}
+
+.items-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    height:100%;
+}
+
+.item{
+    background:white;
+    border-radius:20px;
+    padding:6px;
+    cursor:pointer;
+    transition:0.25s;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    border:5px solid #ff80ab;
+
+    box-shadow:0 5px 10px rgba(0,0,0,0.1);
+
+    overflow:hidden;
+}
+
+.item:nth-child(2n){
+    border-color:#29b6f6;
+}
+
+.item:nth-child(3n){
+    border-color:#66bb6a;
+}
+
+.item:nth-child(4n){
+    border-color:#ffca28;
+}
+
+.item.selected{
+    transform:scale(1.04);
+    box-shadow:0 0 0 5px #ffd54f;
+}
+
+/* ==========================
+IMAGE SIZES
+========================== */
+
+.item img{
+    object-fit:contain;
+    display:block;
+}
+
+/* FULL + HALF IMAGES */
+
+.normal-img{
+    width:100%;
+    max-width:135px;
+    height:135px;
+}
+
+/* EMPTY IMAGES */
+
+.big-empty{
+    width:100%;
+    max-width:145px;
+    height:145px;
+}
+
+/* ==========================
+LABELS
+========================== */
+
+.item-label{
+    margin-top:-4px;
+    font-size:22px;
+    font-weight:800;
+    color:#111;
+    text-transform:lowercase;
+    text-align:center;
+    line-height:1.1;
+    min-height:24px;
+}
+
+/* ==========================
+RIGHT PANEL
+========================== */
+
+.right-panel{
+    width:52%;
+    display:flex;
+    gap:10px;
+}
+
+.column{
+    flex:1;
+    background:rgba(255,255,255,0.95);
+    border-radius:22px;
+    padding:8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    overflow:hidden;
+    box-shadow:0 5px 12px rgba(0,0,0,0.12);
+}
+
+.column h2{
+    width:100%;
+    text-align:center;
+    color:white;
+    font-size:clamp(18px,2vw,32px);
+    border-radius:14px;
+    padding:6px;
+    margin-bottom:8px;
+    text-transform:lowercase;
+    font-weight:800;
+}
+
+.full h2{
+    background:#66bb6a;
+}
+
+.empty h2{
+    background:#ef5350;
+}
+
+.half h2{
+    background:#42a5f5;
+}
+
+.drop-zone{
+    width:100%;
+    flex:1;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+
+    overflow:hidden;
+}
+
+.drop-zone img{
+    width:85px;
+    height:85px;
+    object-fit:contain;
+    background:white;
+    border-radius:14px;
+    padding:4px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ==========================
+FEEDBACK
+========================== */
+
+#feedback{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    pointer-events:none;
+    z-index:100;
+}
+
+.feedback-icon{
+    font-size:110px;
+    animation:pop 0.5s ease;
+}
+
+.correct{
+    color:#00c853;
+}
+
+.wrong{
+    color:#ff1744;
+}
+
+@keyframes pop{
+
+    0%{
+        transform:scale(0);
+        opacity:0;
+    }
+
+    100%{
+        transform:scale(1);
+        opacity:1;
+    }
+
+}
+
+/* ==========================
+SLIDE 3
+========================== */
+
+#slide3{
+    display:none;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+
+    background:
+    linear-gradient(135deg,#ffeb3b,#ff8a65,#4fc3f7,#81c784);
+
+    overflow:hidden;
+}
+
+#message{
+    font-size:clamp(45px,6vw,90px);
+    color:white;
+    text-shadow:4px 4px 10px rgba(0,0,0,0.25);
+    animation:bounce 1s infinite;
+    z-index:5;
+}
+
+@keyframes bounce{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+
+}
+
+/* ==========================
+CONFETTI
+========================== */
+
+.confetti{
+    position:absolute;
+    width:14px;
+    height:14px;
+    opacity:0.9;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+
+    0%{
+        transform:translateY(-100px) rotate(0deg);
+    }
+
+    100%{
+        transform:translateY(120vh) rotate(720deg);
+    }
+
+}
+
+/* ==========================
+TABLET
+========================== */
+
+@media(max-width:900px){
+
+    .normal-img{
+        max-width:105px;
+        height:105px;
+    }
+
+    .big-empty{
+        max-width:115px;
+        height:115px;
+    }
+
+    .item-label{
+        font-size:18px;
+    }
+
+    .drop-zone img{
+        width:65px;
+        height:65px;
+    }
+
+}
+
+/* ==========================
+MOBILE
+========================== */
+
+@media(max-width:700px){
+
+    html,body{
+        overflow:hidden;
+    }
+
+    #slide2{
+        padding:6px;
+    }
+
+    .title{
+        font-size:15px;
+        padding:6px;
+        margin-bottom:6px;
+    }
+
+    .game-layout{
+        flex-direction:column;
+        gap:8px;
+        height:calc(100vh - 72px);
+    }
+
+    .left-panel,
+    .right-panel{
+        width:100%;
+    }
+
+    .left-panel{
+        height:48%;
+        padding:6px;
+    }
+
+    .right-panel{
+        height:52%;
+        gap:6px;
+    }
+
+    .items-grid{
+        gap:6px;
+    }
+
+    .item{
+        padding:2px;
+        border-width:4px;
+        border-radius:16px;
+    }
+
+    /* MOBILE IMAGE FIX */
+
+    .normal-img{
+        max-width:88px;
+        height:88px;
+    }
+
+    .big-empty{
+        max-width:92px;
+        height:92px;
+    }
+
+    /* MOBILE LABEL FIX */
+
+    .item-label{
+        font-size:18px;
+        margin-top:-6px;
+        min-height:22px;
+    }
+
+    .drop-zone img{
+        width:48px;
+        height:48px;
+    }
+
+    .column{
+        border-radius:18px;
+        padding:6px;
+    }
+
+    .column h2{
+        font-size:16px;
+        padding:5px;
+        margin-bottom:5px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ==========================
+SLIDE 1
+========================== -->
+
+<div id="slide1" class="slide">
+
+    <img
+    src="assets/innovine-logo.png"
+    alt="Innovine Logo"
+    id="logo">
+
+</div>
+
+<!-- ==========================
+SLIDE 2
+========================== -->
+
+<div id="slide2" class="slide">
+
+    <div class="title">
+        Place the container on the correct column.
+    </div>
+
+    <div class="game-layout">
+
+        <!-- LEFT PANEL -->
+
+        <div class="left-panel">
+
+            <div class="items-grid" id="itemsGrid"></div>
+
+        </div>
+
+        <!-- RIGHT PANEL -->
+
+        <div class="right-panel">
+
+            <div class="column full">
+
+                <h2>full</h2>
+
+                <div class="drop-zone" data-column="full"></div>
+
+            </div>
+
+            <div class="column empty">
+
+                <h2>empty</h2>
+
+                <div class="drop-zone" data-column="empty"></div>
+
+            </div>
+
+            <div class="column half">
+
+                <h2>half</h2>
+
+                <div class="drop-zone" data-column="half"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================
+SLIDE 3
+========================== -->
+
+<div id="slide3" class="slide">
+
+    <div id="message">
+        Fantastic!
+    </div>
+
+</div>
+
+<!-- ==========================
+FEEDBACK
+========================== -->
+
+<div id="feedback"></div>
+
+<!-- ==========================
+AUDIO
+========================== -->
+
+<audio id="correctSound">
+<source src="assets/correct.mp3" type="audio/mp3">
+</audio>
+
+<audio id="wrongSound">
+<source src="assets/wrong.mp3" type="audio/mp3">
+</audio>
+
+<audio id="clapSound">
+<source src="assets/clap.mp3" type="audio/mp3">
+</audio>    
+<script>
+
+/* ==========================
+SPLASH SCREEN
+========================== */
+
+setTimeout(()=>{
+
+    document
+    .getElementById("slide1")
+    .classList.add("fade");
+
+    setTimeout(()=>{
+
+        document
+        .getElementById("slide1")
+        .style.display="none";
+
+        document
+        .getElementById("slide2")
+        .style.display="flex";
+
+    },1000);
+
+},2000);
+
+/* ==========================
+GAME DATA
+========================== */
+
+const gameItems = [
+
+{
+    label:"half",
+    image:"assets/halfbottle.png",
+    answer:"half",
+    size:"normal-img"
+},
+
+{
+    label:"empty",
+    image:"assets/emptybottle.png",
+    answer:"empty",
+    size:"big-empty"
+},
+
+{
+    label:"full",
+    image:"assets/fullglass.png",
+    answer:"full",
+    size:"normal-img"
+},
+
+{
+    label:"half",
+    image:"assets/halfbowl.png",
+    answer:"half",
+    size:"normal-img"
+},
+
+{
+    label:"empty",
+    image:"assets/emptybowl.png",
+    answer:"empty",
+    size:"big-empty"
+},
+
+{
+    label:"full",
+    image:"assets/fulljar.png",
+    answer:"full",
+    size:"normal-img"
+},
+
+{
+    label:"half",
+    image:"assets/halfglass.png",
+    answer:"half",
+    size:"normal-img"
+},
+
+{
+    label:"empty",
+    image:"assets/emptyglass.png",
+    answer:"empty",
+    size:"big-empty"
+},
+
+{
+    label:"full",
+    image:"assets/fullbowl.png",
+    answer:"full",
+    size:"normal-img"
+}
+
+];
+
+/* ==========================
+SHUFFLE
+========================== */
+
+gameItems.sort(()=>Math.random()-0.5);
+
+/* ==========================
+CREATE ITEMS
+========================== */
+
+const itemsGrid = document.getElementById("itemsGrid");
+
+let selectedItem = null;
+let completed = 0;
+
+gameItems.forEach((item)=>{
+
+    const div = document.createElement("div");
+
+    div.className = "item";
+
+    div.innerHTML = `
+
+    <img
+    src="${item.image}"
+    class="${item.size}"
+    alt="${item.label}">
+
+    <div class="item-label">
+        ${item.label}
+    </div>
+
+    `;
+
+    div.addEventListener("click",()=>{
+
+        document
+        .querySelectorAll(".item")
+        .forEach(i=>i.classList.remove("selected"));
+
+        div.classList.add("selected");
+
+        selectedItem = {
+            element:div,
+            data:item
+        };
+
+    });
+
+    itemsGrid.appendChild(div);
+
+});
+
+/* ==========================
+COLUMN CLICK
+========================== */
+
+document
+.querySelectorAll(".drop-zone")
+.forEach(zone=>{
+
+    zone.addEventListener("click",()=>{
+
+        if(!selectedItem) return;
+
+        const chosenColumn =
+        zone.dataset.column;
+
+        const correctAnswer =
+        selectedItem.data.answer;
+
+        if(chosenColumn === correctAnswer){
+
+            showFeedback(true);
+
+            playCorrect();
+
+            const img =
+            document.createElement("img");
+
+            img.src =
+            selectedItem.data.image;
+
+            zone.appendChild(img);
+
+            selectedItem.element.remove();
+
+            selectedItem = null;
+
+            completed++;
+
+            if(completed === gameItems.length){
+
+                setTimeout(()=>{
+
+                    showFinalSlide();
+
+                },1000);
+
+            }
+
+        }else{
+
+            showFeedback(false);
+
+            playWrong();
+
+        }
+
+    });
+
+});
+
+/* ==========================
+FEEDBACK
+========================== */
+
+function showFeedback(correct){
+
+    const feedback =
+    document.getElementById("feedback");
+
+    feedback.innerHTML = `
+    <div class="feedback-icon ${correct ? 'correct':'wrong'}">
+        ${correct ? '✔':'✖'}
+    </div>
+    `;
+
+    setTimeout(()=>{
+
+        feedback.innerHTML = "";
+
+    },600);
+
+}
+
+/* ==========================
+AUDIO
+========================== */
+
+function playCorrect(){
+
+    const audio =
+    document.getElementById("correctSound");
+
+    audio.currentTime = 0;
+
+    audio.play();
+
+}
+
+function playWrong(){
+
+    const audio =
+    document.getElementById("wrongSound");
+
+    audio.currentTime = 0;
+
+    audio.play();
+
+}
+
+ function playClap(){
+
+    const audio =
+    document.getElementById("clapSound");
+
+    audio.currentTime = 0;
+
+    audio.play();
+
+}   
+/* ==========================
+FINAL SLIDE
+========================== */
+
+function showFinalSlide(){
+
+    document
+    .getElementById("slide2")
+    .style.display="none";
+
+    document
+    .getElementById("slide3")
+    .style.display="flex";
+
+    createConfetti();
+
+    playClap();
+
+}
+
+/* ==========================
+CONFETTI
+========================== */
+
+function createConfetti(){
+
+    const slide3 =
+    document.getElementById("slide3");
+
+    for(let i=0;i<200;i++){
+
+        const confetti =
+        document.createElement("div");
+
+        confetti.classList.add("confetti");
+
+        confetti.style.left =
+        Math.random()*100 + "vw";
+
+        confetti.style.animationDuration =
+        (Math.random()*3 + 2) + "s";
+
+        confetti.style.background =
+        `hsl(${Math.random()*360},100%,50%)`;
+
+        confetti.style.width =
+        confetti.style.height =
+        (Math.random()*10 + 6) + "px";
+
+        slide3.appendChild(confetti);
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
