@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Match Actions With Shadows</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to bottom,#FFF4D6,#DFF4FF);
+    overflow:hidden;
+    height:100vh;
+}
+
+/* SPLASH SCREEN */
+
+#splash{
+    position:fixed;
+    inset:0;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+#splash img{
+    width:240px;
+    max-width:75%;
+}
+
+/* GAME AREA */
+
+#game{
+    display:none;
+    height:100vh;
+    padding:10px;
+}
+
+h1{
+    text-align:center;
+    color:#444;
+    font-size:24px;
+    margin-bottom:10px;
+}
+
+/* BUTTONS */
+
+#startBtn,
+#playAgainBtn{
+    padding:12px 22px;
+    border:none;
+    border-radius:12px;
+    background:#FFCC80;
+    font-size:18px;
+    cursor:pointer;
+}
+
+#startBtn{
+    display:block;
+    margin:0 auto 10px auto;
+}
+
+/* COMPLETE AREA */
+
+#completeArea{
+    display:none;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+#completeMessage{
+    font-size:28px;
+    color:#4CAF50;
+    margin-bottom:10px;
+}
+
+/* BOARD */
+
+.board{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    height:78vh;
+}
+
+.column{
+    width:48%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+}
+
+.card{
+    background:white;
+    border:3px solid #FFD180;
+    border-radius:18px;
+    height:22%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:8px;
+}
+
+.card img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+}
+
+.shadow.correct{
+    border:4px solid #66BB6A;
+    background:#E8F5E9;
+}
+
+/* FEEDBACK */
+
+#feedback{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:90px;
+    display:none;
+    z-index:5000;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    h1{
+        font-size:18px;
+    }
+
+    .board{
+        gap:8px;
+        height:80vh;
+    }
+
+    .card{
+        height:23%;
+    }
+
+    #completeMessage{
+        font-size:22px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH SCREEN -->
+
+<div id="splash">
+
+    <img src="assets/innovine-logo.png">
+
+</div>
+
+<!-- GAME -->
+
+<div id="game">
+
+    <h1>
+        Drag and match the action with the correct shadow
+    </h1>
+
+    <button id="startBtn">
+        Start Game
+    </button>
+
+    <!-- COMPLETE AREA -->
+
+    <div id="completeArea">
+
+        <div id="completeMessage">
+            🎉 Great Job! 🎉
+        </div>
+
+        <button id="playAgainBtn">
+            Play Again
+        </button>
+
+    </div>
+
+    <!-- GAME BOARD -->
+
+    <div class="board">
+
+        <!-- LEFT SIDE - ACTIONS -->
+
+        <div class="column">
+
+            <div class="card">
+                <img src="assets/singer1.png"
+                     id="singer1"
+                     draggable="true">
+            </div>
+
+            <div class="card">
+                <img src="assets/skipping2.png"
+                     id="skipping2"
+                     draggable="true">
+            </div>
+
+            <div class="card">
+                <img src="assets/jumping3.png"
+                     id="jumping3"
+                     draggable="true">
+            </div>
+
+            <div class="card">
+                <img src="assets/boy4.png"
+                     id="boy4"
+                     draggable="true">
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE - SHADOWS -->
+
+        <div class="column">
+
+            <!-- shadow4 -->
+
+            <div class="card shadow"
+                 data-match="boy4">
+
+                <img src="assets/shadow4.png">
+
+            </div>
+
+            <!-- shadow3 -->
+
+            <div class="card shadow"
+                 data-match="jumping3">
+
+                <img src="assets/shadow3.png">
+
+            </div>
+
+            <!-- shadow1 -->
+
+            <div class="card shadow"
+                 data-match="singer1">
+
+                <img src="assets/shadow1.png">
+
+            </div>
+
+            <!-- shadow2 -->
+
+            <div class="card shadow"
+                 data-match="skipping2">
+
+                <img src="assets/shadow2.png">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FEEDBACK -->
+
+<div id="feedback"></div>
+
+<!-- AUDIO -->
+
+<audio id="correctSound">
+    <source src="assets/correct (1).mp3" type="audio/mp3">
+</audio>
+
+<audio id="wrongSound">
+    <source src="assets/wrong.mp3" type="audio/mp3">
+</audio>
+
+<audio id="bgMusic" loop>
+    <source src="assets/background music.mp3" type="audio/mp3">
+</audio>
+
+<script>
+
+/* SPLASH SCREEN */
+
+setTimeout(function(){
+
+    document.getElementById("splash").style.display="none";
+
+    document.getElementById("game").style.display="block";
+
+},5000);
+
+
+/* VARIABLES */
+
+let draggedItem = null;
+
+let correctMatches = 0;
+
+const startBtn =
+document.getElementById("startBtn");
+
+const completeArea =
+document.getElementById("completeArea");
+
+const playAgainBtn =
+document.getElementById("playAgainBtn");
+
+const items =
+document.querySelectorAll('[draggable="true"]');
+
+const shadows =
+document.querySelectorAll(".shadow");
+
+
+/* START GAME */
+
+startBtn.addEventListener("click", startGame);
+
+function startGame(){
+
+    // BACKGROUND MUSIC
+
+    const bgMusic =
+    document.getElementById("bgMusic");
+
+    bgMusic.volume = 0.2;
+
+    bgMusic.play().catch(()=>{});
+
+    // SPOKEN INSTRUCTION
+
+    const instruction =
+    new SpeechSynthesisUtterance(
+    "Drag and match the action with the correct shadow.");
+
+    instruction.rate = 0.9;
+
+    speechSynthesis.speak(instruction);
+
+    startBtn.style.display = "none";
+}
+
+
+/* DRAG */
+
+items.forEach(function(item){
+
+    item.addEventListener("dragstart", function(){
+
+        draggedItem = item;
+
+    });
+
+});
+
+
+/* DROP */
+
+shadows.forEach(function(shadow){
+
+    shadow.addEventListener("dragover", function(e){
+
+        e.preventDefault();
+
+    });
+
+    shadow.addEventListener("drop", function(e){
+
+        e.preventDefault();
+
+        const correctMatch =
+        shadow.dataset.match;
+
+        if(draggedItem.id === correctMatch){
+
+            if(shadow.classList.contains("correct")){
+                return;
+            }
+
+            shadow.classList.add("correct");
+
+            shadow.innerHTML =
+            "<img src='"+draggedItem.src+"'>";
+
+            draggedItem.style.visibility =
+            "hidden";
+
+            playCorrect();
+
+            correctMatches++;
+
+            // GAME COMPLETE
+
+            if(correctMatches === 4){
+
+                setTimeout(function(){
+
+                    completeArea.style.display =
+                    "block";
+
+                    const doneSpeech =
+                    new SpeechSynthesisUtterance(
+                    "Great job. Play again.");
+
+                    speechSynthesis.speak(doneSpeech);
+
+                },1000);
+
+            }
+
+        }
+
+        else{
+
+            playWrong();
+
+        }
+
+    });
+
+});
+
+
+/* CORRECT */
+
+function playCorrect(){
+
+    const sound =
+    document.getElementById("correctSound");
+
+    sound.currentTime = 0;
+
+    sound.play();
+
+    const feedback =
+    document.getElementById("feedback");
+
+    feedback.innerHTML = "👏";
+
+    feedback.style.display = "block";
+
+    setTimeout(function(){
+
+        feedback.style.display = "none";
+
+    },1000);
+}
+
+
+/* WRONG */
+
+function playWrong(){
+
+    const sound =
+    document.getElementById("wrongSound");
+
+    sound.currentTime = 0;
+
+    sound.play();
+
+    const feedback =
+    document.getElementById("feedback");
+
+    feedback.innerHTML = "❌";
+
+    feedback.style.display = "block";
+
+    setTimeout(function(){
+
+        feedback.style.display = "none";
+
+    },1000);
+}
+
+
+/* PLAY AGAIN */
+
+playAgainBtn.addEventListener(
+"click", resetGame);
+
+function resetGame(){
+
+    correctMatches = 0;
+
+    completeArea.style.display = "none";
+
+    // RESET LEFT IMAGES
+
+    document.getElementById(
+    "singer1").style.visibility = "visible";
+
+    document.getElementById(
+    "skipping2").style.visibility = "visible";
+
+    document.getElementById(
+    "jumping3").style.visibility = "visible";
+
+    document.getElementById(
+    "boy4").style.visibility = "visible";
+
+
+    // RESET SHADOWS ORDER
+
+    shadows[0].innerHTML =
+    '<img src="assets/shadow4.png">';
+
+    shadows[1].innerHTML =
+    '<img src="assets/shadow3.png">';
+
+    shadows[2].innerHTML =
+    '<img src="assets/shadow1.png">';
+
+    shadows[3].innerHTML =
+    '<img src="assets/shadow2.png">';
+
+    shadows.forEach(function(shadow){
+
+        shadow.classList.remove("correct");
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>
