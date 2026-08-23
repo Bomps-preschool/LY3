@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Word Family</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+</head>
+
+<body>
+
+    <!-- =====================================
+         SPLASH SCREEN
+    ====================================== -->
+
+    <div id="splashScreen">
+
+        <img
+            id="logo"
+            src="assets/innovine-logo.png"
+            alt="Innovine Logo">
+
+    </div>
+
+    <!-- =====================================
+         GAME CONTAINER
+    ====================================== -->
+
+    <div id="gameContainer">
+
+        <!-- HEADER -->
+
+        <header>
+
+            <h1>Word Family</h1>
+
+            <div id="instructions">
+
+                Drag and drop the word into the correct basket.<br>
+
+                Put <strong>-at</strong> words in the
+                <strong>-at</strong> basket.<br>
+
+                Put <strong>-an</strong> words in the
+                <strong>-an</strong> basket.
+
+            </div>
+
+            <div id="score">
+
+                Score: 0 / 18
+
+            </div>
+
+        </header>
+
+        <!-- WORD AREA -->
+
+        <section id="wordArea">
+
+            <img
+                id="wordImage"
+                src=""
+                alt="Word Image"
+                draggable="false">
+
+            <div
+                id="wordCard"
+                draggable="false">
+
+            </div>
+
+        </section>
+
+        <!-- BASKETS -->
+
+        <section id="basketArea">
+
+            <!-- AT BASKET -->
+
+            <div
+                class="basket"
+                id="atBasket">
+
+                <img
+                    src="assets/basket.png"
+                    alt="-at basket">
+
+                <div class="basketText">
+
+                    -AT
+
+                </div>
+
+            </div>
+
+            <!-- AN BASKET -->
+
+            <div
+                class="basket"
+                id="anBasket">
+
+                <img
+                    src="assets/basket.png"
+                    alt="-an basket">
+
+                <div class="basketText">
+
+                    -AN
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- =====================================
+         FEEDBACK
+    ====================================== -->
+
+    <div id="feedback"></div>
+
+    <!-- =====================================
+         END SCREEN
+    ====================================== -->
+
+    <div id="endScreen">
+
+        <h2>🎉 Fantastic!</h2>
+
+        <p>
+
+            You sorted all the words!
+
+        </p>
+
+        <button id="replayBtn">
+
+            🔄 Replay
+
+        </button>
+
+    </div>
+
+    <!-- =====================================
+         AUDIO FILES
+    ====================================== -->
+
+    <!-- CORRECT -->
+
+    <audio
+        id="correctSound"
+        preload="auto">
+
+        <source
+            src="assets/correct.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+    <!-- WRONG -->
+
+    <audio
+        id="wrongSound"
+        preload="auto">
+
+        <source
+            src="assets/wrong.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+    <!-- BACKGROUND MUSIC -->
+
+    <audio
+        id="backgroundMusic"
+        preload="auto"
+        loop>
+
+        <source
+            src="assets/background-music.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+    <!-- INSTRUCTION AUDIO -->
+
+    <audio
+        id="instructionAudio"
+        preload="auto">
+
+        <source
+            src="assets/instructions.mp3"
+            type="audio/mpeg">
+
+    </audio>
+
+    <!-- =====================================
+         JAVASCRIPT
+    ====================================== -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
