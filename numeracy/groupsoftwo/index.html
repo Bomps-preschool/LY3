@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
+
+<title>Grouping Adventure – Groups of 2</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  background:url('assets/background.png') center/cover no-repeat;
+}
+
+/* SCREENS */
+
+.screen{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.hidden{
+  display:none;
+}
+
+/* INTRO */
+
+#introScreen{
+  justify-content:center;
+  background:rgba(255,255,255,0.3);
+  backdrop-filter:blur(3px);
+}
+
+.intro-content{
+  text-align:center;
+  animation:float 3s ease-in-out infinite;
+}
+
+.intro-logo{
+  width:240px;
+  max-width:70vw;
+  margin-bottom:20px;
+}
+
+.intro-text{
+  font-size:2rem;
+  font-weight:bold;
+  color:#4b2e83;
+  line-height:1.5;
+  padding:0 20px;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0px);
+  }
+  50%{
+    transform:translateY(-10px);
+  }
+}
+
+/* GAME */
+
+.top-section{
+  width:100%;
+  text-align:center;
+  padding:10px;
+}
+
+.question-text{
+  font-size:1.8rem;
+  font-weight:bold;
+  color:#111;
+  margin-top:10px;
+}
+
+.progress{
+  margin-top:8px;
+  font-size:1.2rem;
+  font-weight:bold;
+  color:#4b2e83;
+}
+
+.cards-container{
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  padding:10px 15px;
+}
+
+.card{
+  background:white;
+  border-radius:25px;
+  height:230px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:10px;
+  box-shadow:0 5px 12px rgba(0,0,0,0.2);
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.card:hover{
+  transform:scale(1.03);
+}
+
+.card img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.bottom-section{
+  width:100%;
+  padding:10px 20px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.stars{
+  font-size:2rem;
+  font-weight:bold;
+}
+
+.audio-btn{
+  width:70px;
+  height:70px;
+  border:none;
+  border-radius:50%;
+  background:#ffcc00;
+  font-size:2rem;
+  cursor:pointer;
+  box-shadow:0 5px 12px rgba(0,0,0,0.25);
+}
+
+/* FEEDBACK */
+
+.feedback{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:7rem;
+  z-index:1001;
+  animation:pop 0.6s ease;
+}
+
+.try-again{
+  position:fixed;
+  top:65%;
+  left:50%;
+  transform:translateX(-50%);
+  background:#ff5252;
+  color:white;
+  padding:18px 30px;
+  border-radius:25px;
+  font-size:2rem;
+  font-weight:bold;
+  z-index:1002;
+  animation:pop 0.5s ease;
+}
+
+@keyframes pop{
+  0%{
+    transform:translate(-50%,-50%) scale(0);
+  }
+  100%{
+    transform:translate(-50%,-50%) scale(1);
+  }
+}
+
+/* FULL SCREEN CONFETTI */
+
+.fullscreen-confetti{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  z-index:999;
+  object-fit:cover;
+  pointer-events:none;
+}
+
+/* END SCREEN */
+
+#endScreen{
+  justify-content:center;
+  text-align:center;
+  background:rgba(255,255,255,0.3);
+  backdrop-filter:blur(4px);
+}
+
+.final-score{
+  font-size:3rem;
+  font-weight:bold;
+  color:#4b2e83;
+  margin-bottom:20px;
+}
+
+.end-message{
+  font-size:2.3rem;
+  color:#ff5722;
+  font-weight:bold;
+  margin-bottom:30px;
+}
+
+.end-buttons{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.end-btn{
+  padding:16px 25px;
+  border:none;
+  border-radius:22px;
+  background:#ffcc00;
+  font-size:1.2rem;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 5px 12px rgba(0,0,0,0.2);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .question-text{
+    font-size:1.4rem;
+  }
+
+  .card{
+    height:160px;
+  }
+
+  .intro-text{
+    font-size:1.5rem;
+  }
+
+  .feedback{
+    font-size:5rem;
+  }
+
+  .try-again{
+    font-size:1.5rem;
+    padding:14px 24px;
+  }
+
+  .final-score{
+    font-size:2rem;
+  }
+
+  .end-message{
+    font-size:1.6rem;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- INTRO SCREEN -->
+
+<div id="introScreen" class="screen">
+
+  <div class="intro-content">
+
+    <img
+    src="assets/innovine-logo.png"
+    class="intro-logo">
+
+    <div class="intro-text">
+      👉 Get ready to play the Grouping Adventure Game!
+    </div>
+
+  </div>
+
+</div>
+
+<!-- GAME SCREEN -->
+
+<div id="gameScreen"
+class="screen hidden">
+
+  <div class="top-section">
+
+    <div
+    class="question-text"
+    id="questionText"></div>
+
+    <div
+    class="progress"
+    id="progressText"></div>
+
+  </div>
+
+  <div
+  class="cards-container"
+  id="cardsContainer"></div>
+
+  <div class="bottom-section">
+
+    <div
+    class="stars"
+    id="scoreStars">
+      ⭐ 0
+    </div>
+
+    <button
+    class="audio-btn"
+    onclick="playQuestionVoice()">
+      🔊
+    </button>
+
+  </div>
+
+</div>
+
+<!-- END SCREEN -->
+
+<div id="endScreen"
+class="screen hidden">
+
+  <div
+  class="final-score"
+  id="finalScore"></div>
+
+  <div class="end-message">
+    🎉 Amazing Job!
+  </div>
+
+  <div class="end-buttons">
+
+    <button
+    class="end-btn"
+    onclick="restartGame()">
+      🔄 Replay Game
+    </button>
+
+    <button
+    class="end-btn"
+    onclick="playIntroInstruction()">
+      🔊 Replay Instructions
+    </button>
+
+  </div>
+
+</div>
+
+<!-- AUDIO -->
+
+<audio
+id="correctSound"
+src="assets/correct.mp3"
+preload="auto"></audio>
+
+<audio
+id="wrongSound"
+src="assets/wrong.mp3"
+preload="auto"></audio>
+
+<audio
+id="bgMusic"
+src="assets/background mushc.mp3"
+preload="auto"
+loop></audio>
+
+<script>
+
+/* QUESTIONS */
+
+const questions = [
+
+{
+question:"Find the group with 2 chicks.",
+correct:"assets/chicks-2.png",
+options:[
+"assets/chicks-1.png",
+"assets/chicks-2.png",
+"assets/chicks-3.png"
+]
+},
+
+{
+question:"Tap the group of 2 apples.",
+correct:"assets/apples-2.png",
+options:[
+"assets/apples-4.png",
+"assets/apples-2.png",
+"assets/apples-1.png"
+]
+},
+
+{
+question:"Find the group with 2 balloons.",
+correct:"assets/balloos-2.png",
+options:[
+"assets/ballons-5.png",
+"assets/balloos-2.png",
+"assets/baloons-3.png"
+]
+},
+
+{
+question:"Tap the group of 2 fish.",
+correct:"assets/fish-2.png",
+options:[
+"assets/fish-1.png",
+"assets/fish-2.png",
+"assets/fish-4.png"
+]
+},
+
+{
+question:"Find the group with 2 butterflies.",
+correct:"assets/butterfly-2.png",
+options:[
+"assets/butterfly-1.png",
+"assets/butterfly-2.png",
+"assets/butterfly-3.png"
+]
+},
+
+{
+question:"Tap the group of 2 cars.",
+correct:"assets/cars-2.png",
+options:[
+"assets/cars-5.png",
+"assets/cars-2.png",
+"assets/cars-4.png"
+]
+},
+
+{
+question:"Find the group with 2 flowers.",
+correct:"assets/flowers-2.png",
+options:[
+"assets/flowers-1.png",
+"assets/flowers-2.png",
+"assets/flowers-3.png"
+]
+},
+
+{
+question:"Tap the group of 2 stars.",
+correct:"assets/stars-2.png",
+options:[
+"assets/stars-5.png",
+"assets/stars-2.png",
+"assets/stars-3.png"
+]
+}
+
+];
+
+/* VARIABLES */
+
+let currentQuestion = 0;
+let score = 0;
+
+const introScreen =
+document.getElementById("introScreen");
+
+const gameScreen =
+document.getElementById("gameScreen");
+
+const endScreen =
+document.getElementById("endScreen");
+
+const questionText =
+document.getElementById("questionText");
+
+const progressText =
+document.getElementById("progressText");
+
+const cardsContainer =
+document.getElementById("cardsContainer");
+
+const scoreStars =
+document.getElementById("scoreStars");
+
+const correctSound =
+document.getElementById("correctSound");
+
+const wrongSound =
+document.getElementById("wrongSound");
+
+const bgMusic =
+document.getElementById("bgMusic");
+
+/* SHUFFLE */
+
+function shuffle(array){
+
+  return array.sort(() => Math.random() - 0.5);
+
+}
+
+/* INTRO */
+
+setTimeout(() => {
+
+  introScreen.classList.add("hidden");
+
+  gameScreen.classList.remove("hidden");
+
+  playIntroInstruction();
+
+},5000);
+
+/* INTRO VOICE */
+
+function playIntroInstruction(){
+
+  speechSynthesis.cancel();
+
+  const speech =
+  new SpeechSynthesisUtterance(
+  "Look carefully at the pictures. Tap the groups that have 2 objects.");
+
+  speech.rate = 0.9;
+
+  speech.onend = () => {
+
+    bgMusic.volume = 0.2;
+
+    bgMusic.play();
+
+    loadQuestion();
+
+  };
+
+  speechSynthesis.speak(speech);
+}
+
+/* LOAD QUESTION */
+
+function loadQuestion(){
+
+  if(currentQuestion >= questions.length){
+
+    endGame();
+
+    return;
+  }
+
+  const q = questions[currentQuestion];
+
+  questionText.innerHTML =
+  q.question;
+
+  progressText.innerHTML =
+  `Question ${currentQuestion + 1} of ${questions.length}`;
+
+  scoreStars.innerHTML =
+  `⭐ ${score}`;
+
+  cardsContainer.innerHTML = "";
+
+  let shuffled =
+  shuffle([...q.options]);
+
+  shuffled.forEach(option => {
+
+    const card =
+    document.createElement("div");
+
+    card.className = "card";
+
+    const img =
+    document.createElement("img");
+
+    img.src = option;
+
+    card.appendChild(img);
+
+    /* IMPORTANT FIX */
+
+    card.addEventListener("click", function(){
+
+      checkAnswer(option);
+
+    });
+
+    cardsContainer.appendChild(card);
+
+  });
+
+  playQuestionVoice();
+}
+
+/* QUESTION VOICE */
+
+function playQuestionVoice(){
+
+  speechSynthesis.cancel();
+
+  const speech =
+  new SpeechSynthesisUtterance(
+  questions[currentQuestion].question);
+
+  speech.rate = 0.9;
+
+  speechSynthesis.speak(speech);
+}
+
+/* ANSWER CHECK */
+
+function checkAnswer(selected){
+
+  const correctAnswer =
+  questions[currentQuestion].correct;
+
+  /* WRONG ANSWER */
+
+  if(selected !== correctAnswer){
+
+    wrongSound.currentTime = 0;
+
+    wrongSound.play();
+
+    showFeedback("❌");
+
+    showTryAgain();
+
+    /* STOP HERE */
+    return;
+  }
+
+  /* CORRECT ANSWER */
+
+  correctSound.currentTime = 0;
+
+  correctSound.play();
+
+  score++;
+
+  scoreStars.innerHTML =
+  `⭐ ${score}`;
+
+  showConfetti();
+
+  showFeedback("👏");
+
+  /* DISABLE MULTIPLE CLICKS */
+
+  const allCards =
+  document.querySelectorAll(".card");
+
+  allCards.forEach(card => {
+
+    card.style.pointerEvents = "none";
+
+  });
+
+  /* MOVE TO NEXT */
+
+  setTimeout(() => {
+
+    currentQuestion++;
+
+    loadQuestion();
+
+  },2200);
+}
+
+/* FEEDBACK */
+
+function showFeedback(icon){
+
+  const feedback =
+  document.createElement("div");
+
+  feedback.className =
+  "feedback";
+
+  feedback.innerHTML = icon;
+
+  document.body.appendChild(feedback);
+
+  setTimeout(() => {
+
+    feedback.remove();
+
+  },1000);
+}
+
+/* TRY AGAIN */
+
+function showTryAgain(){
+
+  const tryAgain =
+  document.createElement("div");
+
+  tryAgain.className =
+  "try-again";
+
+  tryAgain.innerHTML =
+  "Try Again!";
+
+  document.body.appendChild(tryAgain);
+
+  setTimeout(() => {
+
+    tryAgain.remove();
+
+  },1200);
+}
+
+/* FULLSCREEN CONFETTI */
+
+function showConfetti(){
+
+  const confetti =
+  document.createElement("img");
+
+  confetti.src =
+  "assets/confetti.gif";
+
+  confetti.className =
+  "fullscreen-confetti";
+
+  document.body.appendChild(confetti);
+
+  setTimeout(() => {
+
+    confetti.remove();
+
+  },2200);
+}
+
+/* END GAME */
+
+function endGame(){
+
+  gameScreen.classList.add("hidden");
+
+  endScreen.classList.remove("hidden");
+
+  document.getElementById("finalScore")
+  .innerHTML =
+  `⭐ You scored ${score}/${questions.length}!`;
+
+  showConfetti();
+
+  correctSound.play();
+}
+
+/* RESTART */
+
+function restartGame(){
+
+  currentQuestion = 0;
+
+  score = 0;
+
+  endScreen.classList.add("hidden");
+
+  gameScreen.classList.remove("hidden");
+
+  loadQuestion();
+}
+
+</script>
+
+</body>
+</html>
