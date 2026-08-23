@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Family Game</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #FFF7E6;
+    text-align: center;
+    overflow: hidden;
+}
+
+#logoScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #FFF7E6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameContainer {
+    display: none;
+    padding: 10px;
+}
+
+h2 {
+    font-size: 18px;
+    color: #333;
+}
+
+#imageBox img {
+    max-width: 140px;
+    margin: 10px auto;
+}
+
+.options {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.option {
+    background: #FFD27F;
+    padding: 18px;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 60px;
+}
+
+.option:hover {
+    background: #FFB84D;
+}
+
+#cross {
+    position: absolute;
+    right: 10px;
+    top: 40%;
+    font-size: 40px;
+    color: red;
+    display: none;
+}
+
+#confetti {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#replayBtn {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    background: #90EE90;
+    border: none;
+    border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="logoScreen">
+    <img src="assets/innovine-logo.png" width="200">
+</div>
+
+<img id="confetti" src="assets/confetti.gif">
+
+<div id="gameContainer">
+
+<h2 id="instruction"></h2>
+
+<div id="imageBox">
+    <img id="wordImage">
+</div>
+
+<div class="options" id="options"></div>
+
+<div id="cross">❌</div>
+
+<button id="replayBtn" onclick="restart()">Replay</button>
+
+</div>
+
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+
+<script>
+
+/* Questions */
+const rounds = [
+
+{word:"jam", correct:"j", options:["j","d","f"]},
+{word:"dam", correct:"d", options:["d","c","r"]},
+{word:"ram", correct:"r", options:["r","h","c"]},
+{word:"yam", correct:"y", options:["y","j","n"]},
+
+{word:"cab", correct:"c", options:["c","l","t"]},
+{word:"lab", correct:"l", options:["l","c","r"]},
+{word:"tab", correct:"t", options:["t","h","c"]},
+{word:"dab", correct:"d", options:["d","j","n"]}
+];
+
+let index = 0;
+
+/* Shuffle function */
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+/* Start after logo */
+setTimeout(() => {
+    document.getElementById("logoScreen").style.display="none";
+    document.getElementById("gameContainer").style.display="block";
+    loadQuestion();
+}, 5000);
+
+/* Load Question */
+function loadQuestion(){
+
+    if(index >= rounds.length){
+        endGame();
+        return;
+    }
+
+    const q = rounds[index];
+
+    let instructionText = (index < 4) ?
+    "Look at the picture. Click the correct letter to complete the '-am' word." :
+    "Look at the picture. Click the correct letter to complete the '-ab' word.";
+
+    document.getElementById("instruction").innerText = instructionText;
+
+    speak(instructionText);
+
+    document.getElementById("wordImage").src = "assets/" + q.word + ".png";
+
+    /* Shuffle options */
+    let shuffledOptions = shuffle([...q.options]);
+
+    let optionsHTML = "";
+    shuffledOptions.forEach(letter=>{
+        optionsHTML += `<div class="option" onclick="check('${letter}')">${letter}</div>`;
+    });
+
+    document.getElementById("options").innerHTML = optionsHTML;
+
+    document.getElementById("cross").style.display="none";
+}
+
+/* Check Answer */
+function check(letter){
+
+    const correct = rounds[index].correct;
+
+    if(letter === correct){
+
+        document.getElementById("confetti").style.display="block";
+
+        setTimeout(()=>{
+            document.getElementById("confetti").style.display="none";
+            index++;
+            loadQuestion();
+        },1500);
+
+    } else {
+
+        document.getElementById("wrongSound").play();
+        document.getElementById("cross").style.display="block";
+
+        setTimeout(()=>{
+            document.getElementById("cross").style.display="none";
+        },1000);
+    }
+}
+
+/* Speech */
+function speak(text){
+    let msg = new SpeechSynthesisUtterance(text);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
+}
+
+/* End */
+function endGame(){
+    document.getElementById("instruction").innerText = "Great Job!";
+    document.getElementById("imageBox").style.display="none";
+    document.getElementById("options").style.display="none";
+    document.getElementById("replayBtn").style.display="inline-block";
+}
+
+/* Replay */
+function restart(){
+    index = 0;
+    document.getElementById("imageBox").style.display="block";
+    document.getElementById("options").style.display="flex";
+    document.getElementById("replayBtn").style.display="none";
+    loadQuestion();
+}
+
+</script>
+
+</body>
+</html>
