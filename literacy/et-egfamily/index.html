@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balloon Crayon Game</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#f7f2ff;
+    overflow:hidden;
+}
+
+/* screens */
+.screen{
+    display:none;
+    width:100%;
+    height:100vh;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+.active{display:flex;}
+
+/* logo */
+#intro img{ width:180px; }
+
+/* top bar */
+.top-bar{
+    width:100%;
+    background:#d9c8f3;
+    padding:10px;
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+}
+
+/* balloon */
+.balloon{
+    width:130px;
+    height:160px;
+    border-radius:50%;
+    border:5px solid #888;
+    margin:10px;
+    transition:0.3s;
+}
+
+/* card */
+.word-card{
+    background:#fff;
+    padding:10px;
+    border-radius:12px;
+    width:170px;
+    text-align:center;
+}
+.word-card img{ width:80px; }
+
+.word-text{
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* crayons */
+.crayon-row{
+    display:flex;
+    justify-content:space-around;
+    width:100%;
+    position:absolute;
+    bottom:0;
+}
+
+.crayon{
+    width:23%;
+    position:relative;
+    cursor:pointer;
+}
+.crayon img{ width:100%; }
+
+.crayon-label{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-weight:bold;
+}
+
+/* feedback */
+#feedback{
+    font-size:40px;
+}
+
+/* confetti */
+#confetti{
+    display:none;
+    position:absolute;
+    top:35%;
+    left:50%;
+    transform:translateX(-50%);
+    width:160px;
+}
+
+/* end */
+.replay-btn{
+    padding:12px;
+    font-size:18px;
+    background:#ffb74d;
+    border:none;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+    <img src="assets/innovine-logo.png">
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen">
+
+<div class="top-bar">
+Read the word and tap the correct crayon.
+</div>
+
+<div id="balloon" class="balloon"></div>
+
+<div class="word-card">
+    <img id="wordImage">
+    <div id="wordText" class="word-text"></div>
+</div>
+
+<div id="feedback"></div>
+
+<img id="confetti" src="assets/confetti.gif">
+
+<div class="crayon-row">
+
+<div class="crayon" onclick="checkAnswer('et')">
+    <img src="assets/redcrayon.png">
+    <div class="crayon-label">-et</div>
+</div>
+
+<div class="crayon" onclick="checkAnswer('eg')">
+    <img src="assets/bluecrayon.png">
+    <div class="crayon-label">-eg</div>
+</div>
+
+<div class="crayon" onclick="checkAnswer('en')">
+    <img src="assets/greencrayon.png">
+    <div class="crayon-label">-en</div>
+</div>
+
+<div class="crayon" onclick="checkAnswer('ed')">
+    <img src="assets/yellowcrayon.png">
+    <div class="crayon-label">-ed</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- END -->
+<div id="end" class="screen">
+<h1>🎉 Great Job!</h1>
+<div id="scoreText"></div>
+<button class="replay-btn" onclick="restartGame()">Replay</button>
+</div>
+
+<!-- AUDIO -->
+<audio id="wrongSound" src="assets/wrong.mp3"></audio>
+<audio id="bgMusic" src="assets/background-music.mp3" loop></audio>
+
+<script>
+
+const questions = [
+{word:"jet", family:"et", img:"assets/jet.png"},
+{word:"net", family:"et", img:"assets/net.png"},
+{word:"pet", family:"et", img:"assets/pet.png"},
+{word:"wet", family:"et", img:"assets/wet.png"},
+
+{word:"leg", family:"eg", img:"assets/leg.png"},
+{word:"peg", family:"eg", img:"assets/peg.png"},
+{word:"beg", family:"eg", img:"assets/beg.png"},
+
+{word:"hen", family:"en", img:"assets/hen.png"},
+{word:"pen", family:"en", img:"assets/pen.png"},
+{word:"ten", family:"en", img:"assets/ten.png"},
+{word:"den", family:"en", img:"assets/den.png"},
+
+{word:"bed", family:"ed", img:"assets/bed.png"},
+{word:"red", family:"ed", img:"assets/red.png"}
+];
+
+questions.sort(()=>Math.random()-0.5);
+
+let current=0;
+let score=0;
+let locked=false;
+
+/* elements */
+const intro=document.getElementById("intro");
+const game=document.getElementById("game");
+const end=document.getElementById("end");
+const wordText=document.getElementById("wordText");
+const wordImage=document.getElementById("wordImage");
+const feedback=document.getElementById("feedback");
+const balloon=document.getElementById("balloon");
+const confetti=document.getElementById("confetti");
+
+/* speech */
+function speak(text){
+    speechSynthesis.cancel();
+    let msg=new SpeechSynthesisUtterance(text);
+    msg.rate=0.8;
+    speechSynthesis.speak(msg);
+}
+
+/* start */
+setTimeout(()=>{
+    intro.classList.remove("active");
+    game.classList.add("active");
+
+    speak("Look at the word and picture. Tap the correct crayon.");
+
+    setTimeout(()=>{
+        document.getElementById("bgMusic").play().catch(()=>{});
+        loadQuestion();
+    },3000);
+
+},5000);
+
+/* load */
+function loadQuestion(){
+    locked=false;
+    let q=questions[current];
+
+    wordText.innerText=q.word;
+    wordImage.src=q.img;
+
+    feedback.innerText="";
+    balloon.style.background="white";
+
+    speak(q.word);
+}
+
+/* check */
+function checkAnswer(ans){
+
+    if(locked) return;
+
+    let q=questions[current];
+
+    if(ans===q.family){
+
+        locked=true;
+        score++;
+
+        /* 🎨 COLOR APPLY */
+        if(ans==="et") balloon.style.background="#e57373";
+        if(ans==="eg") balloon.style.background="#64b5f6";
+        if(ans==="en") balloon.style.background="#81c784";
+        if(ans==="ed") balloon.style.background="#ffd54f";
+
+        confetti.style.display="block";
+        feedback.innerText="✅";
+
+        setTimeout(()=>{
+            confetti.style.display="none";
+            current++;
+
+            if(current<questions.length){
+                loadQuestion();
+            }else{
+                showEnd();
+            }
+        },1500);
+
+    }else{
+
+        document.getElementById("wrongSound").play();
+        feedback.innerText="❌";
+
+        setTimeout(()=>{
+            feedback.innerText="";
+        },1000);
+    }
+}
+
+/* end */
+function showEnd(){
+    game.classList.remove("active");
+    end.classList.add("active");
+    document.getElementById("scoreText").innerText =
+    "⭐ Score: "+score+" / "+questions.length;
+}
+
+/* replay */
+function restartGame(){
+    current=0;
+    score=0;
+    questions.sort(()=>Math.random()-0.5);
+
+    end.classList.remove("active");
+    game.classList.add("active");
+
+    loadQuestion();
+}
+
+</script>
+
+</body>
+</html>
