@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Arachnids</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4fbff;
+overflow:hidden;
+touch-action:none;
+}
+
+.screen{
+display:none;
+width:100vw;
+height:100vh;
+padding:20px;
+}
+
+.active{
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
+
+h1{
+font-size:48px;
+color:#5b4b8a;
+margin-bottom:20px;
+text-align:center;
+}
+
+h2{
+font-size:34px;
+color:#5b4b8a;
+margin-bottom:20px;
+text-align:center;
+}
+
+button{
+padding:12px 24px;
+border:none;
+border-radius:12px;
+background:#7ec8e3;
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+#introScreen{
+background:linear-gradient(
+to bottom,
+#dff6ff,
+#ffffff
+);
+}
+
+#logo{
+width:220px;
+max-width:80%;
+margin-bottom:20px;
+}
+
+#puzzleScreen{
+background:#eefcff;
+}
+
+#puzzleContainer{
+width:100%;
+max-width:1100px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:30px;
+margin-top:20px;
+}
+
+.pieceColumn{
+width:130px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+gap:15px;
+}
+
+#puzzleBoard{
+width:420px;
+height:280px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+grid-template-rows:repeat(2,1fr);
+border:5px solid #7ec8e3;
+border-radius:20px;
+background:white;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
+
+.slot{
+border:2px dashed #bdbdbd;
+position:relative;
+overflow:hidden;
+}
+
+.slot::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-image:url('assets/spiderimage.png');
+background-size:300% 200%;
+background-repeat:no-repeat;
+background-position:var(--bgpos);
+opacity:0.25;
+pointer-events:none;
+}
+
+.puzzlePiece{
+width:110px;
+height:110px;
+border-radius:14px;
+background-image:url('assets/spiderimage.png');
+background-size:300% 200%;
+background-repeat:no-repeat;
+cursor:pointer;
+touch-action:none;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+transition:transform .2s;
+}
+
+.puzzlePiece:active{
+transform:scale(1.08);
+}
+
+#celebrationScreen{
+background:linear-gradient(
+to bottom,
+#fff7cc,
+#ffffff
+);
+}
+
+#finalMessage{
+font-size:48px;
+font-weight:bold;
+color:#ff8c42;
+margin-bottom:20px;
+text-align:center;
+}
+
+#emojiRow{
+font-size:60px;
+margin-bottom:20px;
+}
+
+#feedback{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:90px;
+display:none;
+z-index:999;
+}
+
+#confetti{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:998;
+}
+
+@media(max-width:900px){
+
+#puzzleContainer{
+flex-direction:column;
+gap:15px;
+}
+
+.pieceColumn{
+flex-direction:row;
+width:auto;
+}
+
+#puzzleBoard{
+width:90vw;
+height:60vw;
+max-width:420px;
+max-height:280px;
+}
+
+.puzzlePiece{
+width:90px;
+height:90px;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+<canvas id="confetti"></canvas>
+
+<div id="feedback"></div>
+
+<!-- INTRO SCREEN -->
+
+<div id="introScreen" class="screen active">
+
+<img
+id="logo"
+src="assets/innovine-logo.png"
+alt="Innovine Logo">
+
+<h1>Welcome!</h1>
+
+<p style="
+font-size:24px;
+margin-top:10px;
+text-align:center;
+color:#5b4b8a;
+">
+Complete the spider puzzle.
+</p>
+
+</div>
+
+<!-- PUZZLE SCREEN -->
+
+<div id="puzzleScreen" class="screen">
+
+<h2>Complete the Spider Puzzle</h2>
+
+<div id="puzzleContainer">
+
+<div
+id="leftPieces"
+class="pieceColumn">
+</div>
+
+<div id="puzzleBoard">
+
+<div class="slot" data-slot="0"></div>
+<div class="slot" data-slot="1"></div>
+<div class="slot" data-slot="2"></div>
+
+<div class="slot" data-slot="3"></div>
+<div class="slot" data-slot="4"></div>
+<div class="slot" data-slot="5"></div>
+
+</div>
+
+<div
+id="rightPieces"
+class="pieceColumn">
+</div>
+
+</div>
+
+</div>
+
+<!-- CELEBRATION SCREEN -->
+
+<div
+id="celebrationScreen"
+class="screen">
+
+<div id="emojiRow">
+🎉 ⭐ 👏
+</div>
+
+<div id="finalMessage">
+Great Job!
+</div>
+
+<button id="playAgain">
+Play Again
+</button>
+
+</div>
+
+<!-- AUDIO -->
+
+<audio
+id="bgMusic"
+src="assets/background-music.mp3"
+loop> </audio>
+
+<audio
+id="correctSound"
+src="assets/correct.mp3"> </audio>
+
+<audio
+id="wrongSound"
+src="assets/wrong.mp3"> </audio>
+
+<script>
+
+const introScreen =
+document.getElementById(
+"introScreen"
+);
+
+const puzzleScreen =
+document.getElementById(
+"puzzleScreen"
+);
+
+const celebrationScreen =
+document.getElementById(
+"celebrationScreen"
+);
+
+const leftPieces =
+document.getElementById(
+"leftPieces"
+);
+
+const rightPieces =
+document.getElementById(
+"rightPieces"
+);
+
+const puzzleBoard =
+document.getElementById(
+"puzzleBoard"
+);
+
+const feedback =
+document.getElementById(
+"feedback"
+);
+
+const bgMusic =
+document.getElementById(
+"bgMusic"
+);
+
+const correctSound =
+document.getElementById(
+"correctSound"
+);
+
+const wrongSound =
+document.getElementById(
+"wrongSound"
+);
+
+const slots =
+document.querySelectorAll(
+".slot"
+);
+
+let completedPieces = 0;
+let draggedPiece = null;
+
+const celebrationMessages = [
+
+"Great Job!",
+
+"Excellent!",
+
+"Fantastic Work!",
+
+"You completed the spider puzzle!",
+
+"Super Spider Helper!"
+
+];
+
+function showScreen(screen){
+
+document
+.querySelectorAll(".screen")
+.forEach(s=>{
+
+s.classList.remove(
+"active"
+);
+
+});
+
+screen.classList.add(
+"active"
+);
+
+}
+
+function speak(text){
+
+speechSynthesis.cancel();
+
+const utterance =
+new SpeechSynthesisUtterance(
+text
+);
+
+utterance.rate = 0.9;
+
+speechSynthesis.speak(
+utterance
+);
+
+}
+function showTick(){
+
+feedback.innerHTML = "✓";
+feedback.style.color = "green";
+feedback.style.display = "block";
+
+setTimeout(()=>{
+
+feedback.style.display = "none";
+
+},800);
+
+}
+
+function showCross(){
+
+feedback.innerHTML = "✗";
+feedback.style.color = "red";
+feedback.style.display = "block";
+
+setTimeout(()=>{
+
+feedback.style.display = "none";
+
+},800);
+
+}
+
+function playCorrect(){
+
+correctSound.currentTime = 0;
+correctSound.play();
+
+}
+
+function playWrong(){
+
+wrongSound.currentTime = 0;
+wrongSound.play();
+
+}
+
+document.addEventListener(
+"pointerdown",
+()=>{
+
+bgMusic.volume = 0.3;
+
+bgMusic.play()
+.catch(()=>{});
+
+},
+{once:true}
+);
+
+function createPuzzle(){
+
+leftPieces.innerHTML = "";
+rightPieces.innerHTML = "";
+
+completedPieces = 0;
+
+slots.forEach((slot,index)=>{
+
+const col = index % 3;
+const row = Math.floor(index / 3);
+
+slot.style.setProperty(
+'--bgpos',
+`${col * 50}% ${row * 100}%`
+);
+
+slot.innerHTML = "";
+
+});
+
+const pieceIndexes =
+[0,1,2,3,4,5];
+
+pieceIndexes.sort(
+()=>Math.random()-0.5
+);
+
+pieceIndexes.forEach(
+(pieceNumber,index)=>{
+
+const piece =
+document.createElement("div");
+
+piece.className =
+"puzzlePiece";
+
+piece.dataset.correct =
+pieceNumber;
+
+const col =
+pieceNumber % 3;
+
+const row =
+Math.floor(
+pieceNumber / 3
+);
+
+piece.style.backgroundPosition =
+`${col * 50}% ${row * 100}%`;
+
+piece.dataset.homeSide =
+index < 3
+? "left"
+: "right";
+
+if(index < 3){
+
+leftPieces.appendChild(
+piece
+);
+
+}else{
+
+rightPieces.appendChild(
+piece
+);
+
+}
+
+piece.addEventListener(
+"pointerdown",
+startDrag
+);
+
+});
+
+}
+
+function startDrag(e){
+
+draggedPiece =
+e.target;
+
+draggedPiece.setPointerCapture(
+e.pointerId
+);
+
+draggedPiece.style.position =
+"fixed";
+
+draggedPiece.style.zIndex =
+"1000";
+
+movePiece(e);
+
+draggedPiece.addEventListener(
+"pointermove",
+movePiece
+);
+
+draggedPiece.addEventListener(
+"pointerup",
+dropPiece
+);
+
+}
+
+function movePiece(e){
+
+if(!draggedPiece) return;
+
+draggedPiece.style.left =
+(e.clientX - 55) + "px";
+
+draggedPiece.style.top =
+(e.clientY - 55) + "px";
+
+}
+
+function dropPiece(e){
+
+if(!draggedPiece) return;
+
+let placed = false;
+
+slots.forEach(slot=>{
+
+if(placed) return;
+
+if(
+slot.querySelector(
+".puzzlePiece"
+)
+){
+return;
+}
+
+const slotRect =
+slot.getBoundingClientRect();
+
+const pieceRect =
+draggedPiece.getBoundingClientRect();
+
+const overlap =
+
+pieceRect.left <
+slotRect.right
+
+&&
+
+pieceRect.right >
+slotRect.left
+
+&&
+
+pieceRect.top <
+slotRect.bottom
+
+&&
+
+pieceRect.bottom >
+slotRect.top;
+
+if(overlap){
+
+const correctSlot =
+parseInt(
+slot.dataset.slot
+);
+
+const pieceNumber =
+parseInt(
+draggedPiece.dataset.correct
+);
+
+if(
+correctSlot ===
+pieceNumber
+){
+
+snapPieceToSlot(
+draggedPiece,
+slot
+);
+
+placed = true;
+
+}else{
+
+wrongPlacement();
+
+placed = true;
+
+}
+
+}
+
+});
+
+if(!placed){
+
+returnPieceHome();
+
+}
+
+cleanupDrag();
+
+}
+
+function snapPieceToSlot(
+piece,
+slot
+){
+
+playCorrect();
+
+showTick();
+
+piece.removeEventListener(
+"pointerdown",
+startDrag
+);
+
+piece.style.position =
+"absolute";
+
+piece.style.left = "0";
+piece.style.top = "0";
+
+piece.style.width =
+"100%";
+
+piece.style.height =
+"100%";
+
+piece.style.margin =
+"0";
+
+piece.style.zIndex =
+"10";
+
+piece.style.cursor =
+"default";
+
+piece.style.backgroundSize =
+"300% 200%";
+
+slot.appendChild(piece);
+
+/* Remove the faded guide from this slot */
+slot.style.backgroundImage = "none";
+
+completedPieces++;
+
+speak(
+"Good job!"
+);
+
+if(completedPieces === 6){
+
+setTimeout(()=>{
+
+puzzleComplete();
+
+},1000);
+
+}
+
+}
+
+function wrongPlacement(){
+
+playWrong();
+
+showCross();
+
+speak(
+"Try again."
+);
+
+returnPieceHome();
+
+}
+
+function returnPieceHome(){
+
+draggedPiece.style.position =
+"relative";
+
+draggedPiece.style.left = "";
+
+draggedPiece.style.top = "";
+
+draggedPiece.style.width =
+"110px";
+
+draggedPiece.style.height =
+"110px";
+
+draggedPiece.style.zIndex =
+"1";
+
+if(
+draggedPiece.dataset.homeSide
+=== "left"
+){
+
+leftPieces.appendChild(
+draggedPiece
+);
+
+}else{
+
+rightPieces.appendChild(
+draggedPiece
+);
+
+}
+
+}
+
+function cleanupDrag(){
+
+if(!draggedPiece) return;
+
+draggedPiece.removeEventListener(
+"pointermove",
+movePiece
+);
+
+draggedPiece.removeEventListener(
+"pointerup",
+dropPiece
+);
+
+draggedPiece = null;
+
+}
+
+function puzzleComplete(){
+
+playCorrect();
+
+showTick();
+
+speak(
+"Fantastic. You completed the spider puzzle."
+);
+
+puzzleBoard.style.transform =
+"scale(1.05)";
+
+puzzleBoard.style.transition =
+"0.5s";
+
+setTimeout(()=>{
+
+showCelebration();
+
+},2000);
+
+}
+
+function showCelebration(){
+
+showScreen(
+celebrationScreen
+);
+
+const chosenMessage =
+
+celebrationMessages[
+Math.floor(
+Math.random() *
+celebrationMessages.length
+)
+];
+
+document.getElementById(
+"finalMessage"
+).innerHTML =
+chosenMessage;
+
+speak(
+chosenMessage
+);
+
+startConfetti();
+
+}
+
+document
+.getElementById(
+"playAgain"
+)
+.addEventListener(
+"click",
+()=>{
+
+location.reload();
+
+});
+
+setTimeout(()=>{
+
+showScreen(
+puzzleScreen
+);
+
+speak(
+"Welcome to Arachnids. Complete the spider puzzle."
+);
+
+createPuzzle();
+
+},5000);
+
+/* CONFETTI */
+
+const confettiCanvas =
+document.getElementById(
+"confetti"
+);
+
+const confettiCtx =
+confettiCanvas.getContext(
+"2d"
+);
+
+function resizeConfetti(){
+
+confettiCanvas.width =
+window.innerWidth;
+
+confettiCanvas.height =
+window.innerHeight;
+
+}
+
+resizeConfetti();
+
+window.addEventListener(
+"resize",
+resizeConfetti
+);
+
+const confettiPieces = [];
+
+for(
+let i = 0;
+i < 180;
+i++
+){
+
+confettiPieces.push({
+
+x:
+Math.random() *
+window.innerWidth,
+
+y:
+Math.random() *
+window.innerHeight,
+
+size:
+Math.random() * 10 + 5,
+
+speed:
+Math.random() * 3 + 1,
+
+rotation:
+Math.random() * 360,
+
+colour:
+
+[
+"#ff8fab",
+"#ffd166",
+"#90e0ef",
+"#cdb4ff",
+"#b8f2a5"
+][
+Math.floor(
+Math.random() * 5
+)
+]
+
+});
+
+}
+
+function startConfetti(){
+
+animateConfetti();
+
+}
+
+function animateConfetti(){
+
+confettiCtx.clearRect(
+0,
+0,
+confettiCanvas.width,
+confettiCanvas.height
+);
+
+confettiPieces.forEach(
+piece=>{
+
+confettiCtx.save();
+
+confettiCtx.translate(
+piece.x,
+piece.y
+);
+
+confettiCtx.rotate(
+piece.rotation
+);
+
+confettiCtx.fillStyle =
+piece.colour;
+
+confettiCtx.fillRect(
+0,
+0,
+piece.size,
+piece.size
+);
+
+confettiCtx.restore();
+
+piece.y += piece.speed;
+
+if(
+piece.y >
+confettiCanvas.height
+){
+
+piece.y = -20;
+
+}
+
+});
+
+requestAnimationFrame(
+animateConfetti
+);
+
+}
+
+</script>
+
+</body>
+</html>
