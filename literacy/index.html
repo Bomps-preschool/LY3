@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFF4D6">
+<title>Match Actions With Shadows</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:Arial,sans-serif;
+  background:linear-gradient(to bottom,#FFF4D6,#DFF4FF);
+  color:#333;
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+button,img{touch-action:manipulation}
+#splash{
+  position:fixed;inset:0;background:#fff;display:flex;align-items:center;
+  justify-content:center;z-index:1000
+}
+#splash img{width:min(240px,70vw);height:auto}
+#game{display:none;height:100dvh;padding:10px;position:relative}
+h1{text-align:center;color:#444;font-size:clamp(18px,2.8vw,26px);margin:2px 0 8px}
+#startBtn,#playAgainBtn{
+  display:block;margin:0 auto 8px;padding:11px 22px;border:0;border-radius:12px;
+  background:#FFCC80;font-size:18px;font-weight:700;cursor:pointer;
+  box-shadow:0 2px 5px #0002;
+}
+#completeArea{display:none;text-align:center;margin-bottom:6px}
+#completeMessage{font-size:clamp(22px,4vw,30px);color:#4CAF50;margin-bottom:7px}
+.board{
+  display:flex;justify-content:space-between;gap:12px;height:calc(100dvh - 92px);
+  max-width:1000px;margin:0 auto
+}
+.column{width:49%;display:flex;flex-direction:column;justify-content:space-around;gap:8px}
+.card{
+  background:#fff;border:3px solid #FFD180;border-radius:18px;
+  min-height:0;flex:1;display:flex;align-items:center;justify-content:center;
+  padding:7px;position:relative;overflow:hidden;
+}
+.card img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;pointer-events:none}
+.action-card{cursor:grab}
+.action-card.selected{border-color:#42A5F5;box-shadow:0 0 0 4px #42A5F533;transform:scale(.98)}
+.action-card.matched{visibility:hidden}
+.shadow{cursor:pointer}
+.shadow.target{border-color:#42A5F5;background:#E3F2FD}
+.shadow.correct{border-color:#66BB6A;background:#E8F5E9}
+.shadow.wrong{animation:shake .25s linear}
+#feedback{
+  position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:78px;display:none;z-index:900;pointer-events:none
+}
+#dragGhost{
+  position:fixed;display:none;z-index:850;pointer-events:none;
+  width:100px;height:100px;object-fit:contain;transform:translate(-50%,-50%);
+  filter:drop-shadow(0 5px 5px #0003)
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}
+  75%{transform:translateX(7px)}
+}
+@media(max-width:600px){
+  #game{padding:6px}
+  h1{font-size:16px;margin-bottom:5px}
+  #startBtn,#playAgainBtn{font-size:16px;padding:9px 17px;margin-bottom:5px}
+  .board{gap:6px;height:calc(100dvh - 72px)}
+  .column{gap:5px}
+  .card{border-width:2px;border-radius:13px;padding:4px}
+  #feedback{font-size:65px}
+}
+</style>
+</head>
+<body>
+
+<div id="splash"><img src="assets/innovine-logo.png" alt="Innovine Solutions"></div>
+
+<main id="game">
+  <h1>Touch an action, then touch the correct shadow</h1>
+  <button id="startBtn" type="button">Start Game</button>
+
+  <div id="completeArea">
+    <div id="completeMessage">🎉 Great Job! 🎉</div>
+    <button id="playAgainBtn" type="button">Play Again</button>
+  </div>
+
+  <div class="board">
+    <div class="column" id="actions">
+      <div class="card action-card" data-id="singer1"><img src="assets/singer1.png" alt="Singing"></div>
+      <div class="card action-card" data-id="skipping2"><img src="assets/skipping2.png" alt="Skipping"></div>
+      <div class="card action-card" data-id="jumping3"><img src="assets/jumping3.png" alt="Jumping"></div>
+      <div class="card action-card" data-id="boy4"><img src="assets/boy4.png" alt="Jumping"></div>
+    </div>
+
+    <div class="column" id="shadows">
+      <div class="card shadow" data-match="boy4"><img src="assets/shadow4.png" alt=""></div>
+      <div class="card shadow" data-match="jumping3"><img src="assets/shadow3.png" alt=""></div>
+      <div class="card shadow" data-match="singer1"><img src="assets/shadow1.png" alt=""></div>
+      <div class="card shadow" data-match="skipping2"><img src="assets/shadow2.png" alt=""></div>
+    </div>
+  </div>
+</main>
+
+<div id="feedback"></div>
+<img id="dragGhost" alt="">
+<audio id="correctSound" preload="auto"><source src="assets/correct.mp3" type="audio/mpeg"></audio>
+<audio id="wrongSound" preload="auto"><source src="assets/wrong.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" preload="auto" loop><source src="assets/background-music.mp3" type="audio/mpeg"></audio>
+
+<script>
+const splash=document.getElementById("splash");
+const game=document.getElementById("game");
+const startBtn=document.getElementById("startBtn");
+const playAgainBtn=document.getElementById("playAgainBtn");
+const completeArea=document.getElementById("completeArea");
+const feedback=document.getElementById("feedback");
+const ghost=document.getElementById("dragGhost");
+const bgMusic=document.getElementById("bgMusic");
+const correctSound=document.getElementById("correctSound");
+const wrongSound=document.getElementById("wrongSound");
+const actions=[...document.querySelectorAll(".action-card")];
+const shadows=[...document.querySelectorAll(".shadow")];
+
+let selected=null, correctMatches=0, dragging=false, activePointerId=null;
+
+setTimeout(()=>{splash.style.display="none";game.style.display="block"},1800);
+
+function speak(text){
+  if("speechSynthesis" in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=.9;
+    window.speechSynthesis.speak(u);
+  }
+}
+function sound(audio){
+  audio.currentTime=0;
+  const p=audio.play();
+  if(p) p.catch(()=>{});
+}
+function showFeedback(icon){
+  feedback.textContent=icon;
+  feedback.style.display="block";
+  setTimeout(()=>feedback.style.display="none",650);
+}
+function startGame(){
+  startBtn.style.display="none";
+  bgMusic.volume=.18;
+  bgMusic.play().catch(()=>{});
+  speak("Touch an action, then touch the correct shadow.");
+}
+startBtn.addEventListener("click",startGame);
+
+function selectAction(card){
+  if(card.classList.contains("matched")) return;
+  actions.forEach(a=>a.classList.remove("selected"));
+  selected=card;
+  card.classList.add("selected");
+  shadows.forEach(s=>s.classList.add("target"));
+}
+
+function checkMatch(shadow, action){
+  if(!action || shadow.classList.contains("correct")) return;
+  if(shadow.dataset.match===action.dataset.id){
+    shadow.classList.remove("target","wrong");
+    shadow.classList.add("correct");
+    const img=action.querySelector("img");
+    shadow.innerHTML="";
+    const placed=img.cloneNode(true);
+    shadow.appendChild(placed);
+    action.classList.remove("selected");
+    action.classList.add("matched");
+    selected=null;
+    correctMatches++;
+    sound(correctSound);
+    showFeedback("👏");
+    if(correctMatches===actions.length){
+      setTimeout(()=>{
+        completeArea.style.display="block";
+        speak("Great job! Play again.");
+      },700);
+    }
+  }else{
+    shadow.classList.add("wrong");
+    sound(wrongSound);
+    showFeedback("❌");
+    setTimeout(()=>shadow.classList.remove("wrong"),300);
+  }
+  if(!selected) shadows.forEach(s=>s.classList.remove("target"));
+}
+
+// Tap/click support: this is the primary mobile interaction.
+actions.forEach(card=>{
+  card.addEventListener("click",()=>selectAction(card));
+});
+shadows.forEach(shadow=>{
+  shadow.addEventListener("click",()=>checkMatch(shadow,selected));
+});
+
+// Pointer drag support for touch, mouse and pen.
+// This does NOT rely on HTML5 drag/drop, which is unreliable on many Android browsers.
+actions.forEach(card=>{
+  card.addEventListener("pointerdown",e=>{
+    if(card.classList.contains("matched")) return;
+    activePointerId=e.pointerId;
+    dragging=true;
+    selected=card;
+    actions.forEach(a=>a.classList.remove("selected"));
+    card.classList.add("selected");
+    card.setPointerCapture?.(e.pointerId);
+    ghost.src=card.querySelector("img").src;
+    ghost.style.display="block";
+    moveGhost(e);
+    e.preventDefault();
+  },{passive:false});
+
+  card.addEventListener("pointermove",e=>{
+    if(!dragging || e.pointerId!==activePointerId) return;
+    moveGhost(e);
+    e.preventDefault();
+  },{passive:false});
+
+  card.addEventListener("pointerup",e=>{
+    if(!dragging || e.pointerId!==activePointerId) return;
+    moveGhost(e);
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    const shadow=el?.closest?.(".shadow");
+    dragging=false;
+    activePointerId=null;
+    ghost.style.display="none";
+    card.releasePointerCapture?.(e.pointerId);
+    if(shadow) checkMatch(shadow,card);
+    else selectAction(card);
+    e.preventDefault();
+  },{passive:false});
+
+  card.addEventListener("pointercancel",()=>{
+    dragging=false;activePointerId=null;ghost.style.display="none";
+  });
+});
+
+function moveGhost(e){
+  ghost.style.left=e.clientX+"px";
+  ghost.style.top=e.clientY+"px";
+}
+
+playAgainBtn.addEventListener("click",resetGame);
+
+function resetGame(){
+  correctMatches=0;
+  selected=null;
+  dragging=false;
+  completeArea.style.display="none";
+  ghost.style.display="none";
+  shadows.forEach((shadow,i)=>{
+    shadow.className="card shadow";
+    shadow.innerHTML=[
+      '<img src="assets/shadow4.png" alt="">',
+      '<img src="assets/shadow3.png" alt="">',
+      '<img src="assets/shadow1.png" alt="">',
+      '<img src="assets/shadow2.png" alt="">'
+    ][i];
+  });
+  actions.forEach(a=>{
+    a.classList.remove("selected","matched");
+  });
+  startBtn.style.display="block";
+  speak("Touch an action, then touch the correct shadow.");
+}
+</script>
+</body>
+</html>
