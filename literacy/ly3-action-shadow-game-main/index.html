@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<title>Match Actions With Shadows</title>
+
+
+<style>
+
+/* ==============================
+   BASIC RESET
+============================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+body {
+
+    font-family: Arial, sans-serif;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #FFF4D6,
+            #DFF4FF
+        );
+
+    touch-action: manipulation;
+
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+
+/* ==============================
+   SPLASH SCREEN
+============================== */
+
+#splash {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: white;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    z-index: 9999;
+}
+
+
+#splash img {
+
+    width: 240px;
+
+    max-width: 75%;
+
+    height: auto;
+
+    display: block;
+}
+
+
+/* ==============================
+   GAME
+============================== */
+
+#game {
+
+    display: none;
+
+    width: 100%;
+
+    height: 100dvh;
+
+    padding: 10px;
+
+    position: relative;
+}
+
+
+h1 {
+
+    text-align: center;
+
+    color: #444;
+
+    font-size: 24px;
+
+    margin-bottom: 8px;
+}
+
+
+/* ==============================
+   BUTTONS
+============================== */
+
+#startBtn,
+#playAgainBtn {
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #FFCC80;
+
+    padding: 11px 22px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    display: block;
+
+    margin: 0 auto 8px auto;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,0.15);
+
+    touch-action: manipulation;
+}
+
+
+#startBtn:active,
+#playAgainBtn:active {
+
+    transform: scale(0.96);
+}
+
+
+/* ==============================
+   COMPLETE MESSAGE
+============================== */
+
+#completeArea {
+
+    display: none;
+
+    text-align: center;
+
+    margin-bottom: 8px;
+}
+
+
+#completeMessage {
+
+    font-size: 28px;
+
+    color: #4CAF50;
+
+    margin-bottom: 8px;
+}
+
+
+/* ==============================
+   BOARD
+============================== */
+
+.board {
+
+    width: 100%;
+
+    max-width: 1000px;
+
+    height: calc(100dvh - 85px);
+
+    margin: 0 auto;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.column {
+
+    width: 50%;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+
+/* ==============================
+   CARDS
+============================== */
+
+.card {
+
+    background: white;
+
+    border: 3px solid #FFD180;
+
+    border-radius: 18px;
+
+    flex: 1;
+
+    min-height: 0;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 7px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    touch-action: none;
+}
+
+
+.card img {
+
+    max-width: 100%;
+
+    max-height: 100%;
+
+    width: auto;
+
+    height: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+
+    display: block;
+}
+
+
+/* ==============================
+   ACTION CARDS
+============================== */
+
+.action {
+
+    cursor: grab;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.action.selected {
+
+    border-color: #42A5F5;
+
+    box-shadow:
+        0 0 0 4px rgba(66,165,245,0.25);
+
+    transform: scale(0.98);
+}
+
+
+.action.matched {
+
+    visibility: hidden;
+}
+
+
+/* ==============================
+   SHADOW CARDS
+============================== */
+
+.shadow {
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+.shadow.target {
+
+    border-color: #42A5F5;
+
+    background: #E3F2FD;
+}
+
+
+.shadow.correct {
+
+    border: 4px solid #66BB6A;
+
+    background: #E8F5E9;
+}
+
+
+/* ==============================
+   WRONG ANSWER
+============================== */
+
+.shadow.wrong {
+
+    animation: shake 0.3s;
+}
+
+
+@keyframes shake {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-7px);
+    }
+
+    50% {
+        transform: translateX(7px);
+    }
+
+    75% {
+        transform: translateX(-7px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+
+/* ==============================
+   FEEDBACK
+============================== */
+
+#feedback {
+
+    position: fixed;
+
+    top: 50%;
+
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    font-size: 90px;
+
+    display: none;
+
+    z-index: 5000;
+
+    pointer-events: none;
+}
+
+
+/* ==============================
+   DRAG IMAGE
+============================== */
+
+#dragImage {
+
+    position: fixed;
+
+    width: 100px;
+
+    height: 100px;
+
+    object-fit: contain;
+
+    display: none;
+
+    pointer-events: none;
+
+    z-index: 6000;
+
+    transform:
+        translate(-50%, -50%);
+
+    filter:
+        drop-shadow(
+            0 5px 5px
+            rgba(0,0,0,0.25)
+        );
+}
+
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media (max-width: 768px) {
+
+    #game {
+
+        padding: 6px;
+    }
+
+
+    h1 {
+
+        font-size: 16px;
+
+        margin-bottom: 5px;
+    }
+
+
+    #startBtn,
+    #playAgainBtn {
+
+        font-size: 16px;
+
+        padding: 9px 18px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .board {
+
+        gap: 6px;
+
+        height:
+            calc(100dvh - 70px);
+    }
+
+
+    .column {
+
+        gap: 5px;
+    }
+
+
+    .card {
+
+        border-width: 2px;
+
+        border-radius: 13px;
+
+        padding: 4px;
+    }
+
+
+    #completeMessage {
+
+        font-size: 22px;
+    }
+
+
+    #feedback {
+
+        font-size: 65px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =================================
+     SPLASH SCREEN
+================================= -->
+
+<div id="splash">
+
+    <img
+        src="assets/innovine-logo.png"
+        alt="Innovine Solutions">
+
+</div>
+
+
+
+<!-- =================================
+     GAME
+================================= -->
+
+<div id="game">
+
+
+    <h1>
+        Touch an action, then touch the correct shadow
+    </h1>
+
+
+    <button
+        id="startBtn"
+        type="button">
+
+        Start Game
+
+    </button>
+
+
+
+    <!-- COMPLETE -->
+
+    <div id="completeArea">
+
+        <div id="completeMessage">
+
+            🎉 Great Job! 🎉
+
+        </div>
+
+
+        <button
+            id="playAgainBtn"
+            type="button">
+
+            Play Again
+
+        </button>
+
+    </div>
+
+
+
+    <!-- =================================
+         GAME BOARD
+    ================================= -->
+
+    <div class="board">
+
+
+        <!-- =================================
+             LEFT COLUMN - ACTIONS
+        ================================= -->
+
+        <div class="column">
+
+
+            <!-- SINGER -->
+
+            <div
+                class="card action"
+                data-id="singer1">
+
+                <img
+                    src="assets/singer1.png"
+                    alt="Singer">
+
+            </div>
+
+
+
+            <!-- SKIPPING -->
+
+            <div
+                class="card action"
+                data-id="skipping2">
+
+                <img
+                    src="assets/skipping2.png"
+                    alt="Skipping">
+
+            </div>
+
+
+
+            <!-- JUMPING -->
+
+            <div
+                class="card action"
+                data-id="jumping3">
+
+                <img
+                    src="assets/jumping3.png"
+                    alt="Jumping">
+
+            </div>
+
+
+
+            <!-- BOY -->
+
+            <div
+                class="card action"
+                data-id="boy4">
+
+                <img
+                    src="assets/boy4.png"
+                    alt="Jumping">
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================
+             RIGHT COLUMN - SHADOWS
+        ================================= -->
+
+        <div class="column">
+
+
+            <!-- SHADOW 4 -->
+
+            <div
+                class="card shadow"
+                data-match="boy4">
+
+                <img
+                    src="assets/shadow4.png"
+                    alt="">
+
+            </div>
+
+
+
+            <!-- SHADOW 3 -->
+
+            <div
+                class="card shadow"
+                data-match="jumping3">
+
+                <img
+                    src="assets/shadow3.png"
+                    alt="">
+
+            </div>
+
+
+
+            <!-- SHADOW 1 -->
+
+            <div
+                class="card shadow"
+                data-match="singer1">
+
+                <img
+                    src="assets/shadow1.png"
+                    alt="">
+
+            </div>
+
+
+
+            <!-- SHADOW 2 -->
+
+            <div
+                class="card shadow"
+                data-match="skipping2">
+
+                <img
+                    src="assets/shadow2.png"
+                    alt="">
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =================================
+     FEEDBACK
+================================= -->
+
+<div id="feedback"></div>
+
+
+
+<!-- =================================
+     DRAG IMAGE
+================================= -->
+
+<img
+    id="dragImage"
+    alt="">
+
+
+
+<!-- =================================
+     AUDIO
+================================= -->
+
+<audio
+    id="correctSound"
+    preload="auto">
+
+    <source
+        src="assets/correct (1).mp3"
+        type="audio/mpeg">
+
+</audio>
+
+
+<audio
+    id="wrongSound"
+    preload="auto">
+
+    <source
+        src="assets/wrong.mp3"
+        type="audio/mpeg">
+
+</audio>
+
+
+<audio
+    id="bgMusic"
+    loop
+    preload="auto">
+
+    <source
+        src="assets/background music.mp3"
+        type="audio/mpeg">
+
+</audio>
+
+
+
+<script>
+
+
+/* =================================
+   ELEMENTS
+================================= */
+
+const splash =
+    document.getElementById("splash");
+
+const game =
+    document.getElementById("game");
+
+const startBtn =
+    document.getElementById("startBtn");
+
+const playAgainBtn =
+    document.getElementById("playAgainBtn");
+
+const completeArea =
+    document.getElementById("completeArea");
+
+const feedback =
+    document.getElementById("feedback");
+
+const dragImage =
+    document.getElementById("dragImage");
+
+const correctSound =
+    document.getElementById("correctSound");
+
+const wrongSound =
+    document.getElementById("wrongSound");
+
+const bgMusic =
+    document.getElementById("bgMusic");
+
+const actions =
+    document.querySelectorAll(".action");
+
+const shadows =
+    document.querySelectorAll(".shadow");
+
+
+/* =================================
+   VARIABLES
+================================= */
+
+let selectedAction = null;
+
+let correctMatches = 0;
+
+let isDragging = false;
+
+let activePointerId = null;
+
+
+/* =================================
+   SPLASH SCREEN
+================================= */
+
+setTimeout(function() {
+
+    splash.style.display = "none";
+
+    game.style.display = "block";
+
+}, 1800);
+
+
+/* =================================
+   SPEECH
+================================= */
+
+function speak(text) {
+
+    if (!("speechSynthesis" in window)) {
+
+        return;
+
+    }
+
+    speechSynthesis.cancel();
+
+    const message =
+        new SpeechSynthesisUtterance(text);
+
+    message.rate = 0.9;
+
+    speechSynthesis.speak(message);
+
+}
+
+
+/* =================================
+   PLAY SOUND
+================================= */
+
+function playSound(audio) {
+
+    audio.currentTime = 0;
+
+    const result = audio.play();
+
+    if (result) {
+
+        result.catch(function() {});
+
+    }
+
+}
+
+
+/* =================================
+   FEEDBACK
+================================= */
+
+function showFeedback(symbol) {
+
+    feedback.innerHTML = symbol;
+
+    feedback.style.display = "block";
+
+    setTimeout(function() {
+
+        feedback.style.display = "none";
+
+    }, 700);
+
+}
+
+
+/* =================================
+   START GAME
+================================= */
+
+startBtn.addEventListener(
+    "click",
+    function() {
+
+        startBtn.style.display = "none";
+
+        bgMusic.volume = 0.2;
+
+        bgMusic.play().catch(
+            function() {}
+        );
+
+        speak(
+            "Touch an action, then touch the correct shadow."
+        );
+
+    }
+);
+
+
+/* =================================
+   SELECT ACTION
+================================= */
+
+function selectAction(action) {
+
+    if (
+        action.classList.contains("matched")
+    ) {
+
+        return;
+
+    }
+
+
+    actions.forEach(
+        function(item) {
+
+            item.classList.remove(
+                "selected"
+            );
+
+        }
+    );
+
+
+    action.classList.add("selected");
+
+    selectedAction = action;
+
+
+    shadows.forEach(
+        function(shadow) {
+
+            if (
+                !shadow.classList.contains(
+                    "correct"
+                )
+            ) {
+
+                shadow.classList.add(
+                    "target"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =================================
+   CHECK MATCH
+================================= */
+
+function checkMatch(shadow, action) {
+
+    if (!action) {
+
+        return;
+
+    }
+
+
+    if (
+        shadow.classList.contains("correct")
+    ) {
+
+        return;
+
+    }
+
+
+    const correctAnswer =
+        shadow.dataset.match;
+
+    const selectedAnswer =
+        action.dataset.id;
+
+
+
+    /* CORRECT */
+
+    if (
+        selectedAnswer === correctAnswer
+    ) {
+
+        shadow.classList.remove(
+            "target"
+        );
+
+        shadow.classList.add(
+            "correct"
+        );
+
+
+        const originalImage =
+            action.querySelector("img");
+
+
+        const newImage =
+            originalImage.cloneNode(true);
+
+
+        shadow.innerHTML = "";
+
+        shadow.appendChild(newImage);
+
+
+        action.classList.remove(
+            "selected"
+        );
+
+        action.classList.add(
+            "matched"
+        );
+
+
+        selectedAction = null;
+
+
+        correctMatches++;
+
+
+        playSound(correctSound);
+
+        showFeedback("👏");
+
+
+        /* GAME COMPLETE */
+
+        if (
+            correctMatches === actions.length
+        ) {
+
+            setTimeout(
+                function() {
+
+                    completeArea.style.display =
+                        "block";
+
+                    speak(
+                        "Great job! Play again."
+                    );
+
+                },
+                800
+            );
+
+        }
+
+    }
+
+
+    /* WRONG */
+
+    else {
+
+        shadow.classList.add(
+            "wrong"
+        );
+
+        playSound(wrongSound);
+
+        showFeedback("❌");
+
+
+        setTimeout(
+            function() {
+
+                shadow.classList.remove(
+                    "wrong"
+                );
+
+            },
+            350
+        );
+
+    }
+
+
+    /* REMOVE TARGET HIGHLIGHT */
+
+    if (!selectedAction) {
+
+        shadows.forEach(
+            function(item) {
+
+                item.classList.remove(
+                    "target"
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =================================
+   ANDROID TAP SUPPORT
+================================= */
+
+/*
+   On Android:
+
+   1. Touch an action.
+   2. The action becomes selected.
+   3. Touch the matching shadow.
+
+   This does not depend on
+   HTML5 drag-and-drop.
+*/
+
+
+actions.forEach(
+    function(action) {
+
+        action.addEventListener(
+            "click",
+            function() {
+
+                if (!isDragging) {
+
+                    selectAction(action);
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+shadows.forEach(
+    function(shadow) {
+
+        shadow.addEventListener(
+            "click",
+            function() {
+
+                if (!isDragging) {
+
+                    checkMatch(
+                        shadow,
+                        selectedAction
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =================================
+   TOUCH / MOUSE DRAG SUPPORT
+================================= */
+
+/*
+   Pointer Events work with:
+
+   ✓ Android touch
+   ✓ iPhone/iPad touch
+   ✓ Laptop mouse
+   ✓ Trackpad
+   ✓ Stylus
+*/
+
+
+actions.forEach(
+    function(action) {
+
+
+        /* POINTER DOWN */
+
+        action.addEventListener(
+            "pointerdown",
+            function(event) {
+
+
+                if (
+                    action.classList.contains(
+                        "matched"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                isDragging = true;
+
+                activePointerId =
+                    event.pointerId;
+
+
+                selectedAction = action;
+
+
+                actions.forEach(
+                    function(item) {
+
+                        item.classList.remove(
+                            "selected"
+                        );
+
+                    }
+                );
+
+
+                action.classList.add(
+                    "selected"
+                );
+
+
+                dragImage.src =
+                    action.querySelector(
+                        "img"
+                    ).src;
+
+
+                dragImage.style.display =
+                    "block";
+
+
+                moveDragImage(event);
+
+
+                if (
+                    action.setPointerCapture
+                ) {
+
+                    action.setPointerCapture(
+                        event.pointerId
+                    );
+
+                }
+
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+
+        /* POINTER MOVE */
+
+        action.addEventListener(
+            "pointermove",
+            function(event) {
+
+
+                if (
+                    !isDragging ||
+                    event.pointerId !==
+                        activePointerId
+                ) {
+
+                    return;
+
+                }
+
+
+                moveDragImage(event);
+
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+
+        /* POINTER UP */
+
+        action.addEventListener(
+            "pointerup",
+            function(event) {
+
+
+                if (
+                    !isDragging ||
+                    event.pointerId !==
+                        activePointerId
+                ) {
+
+                    return;
+
+                }
+
+
+                moveDragImage(event);
+
+
+                const element =
+                    document.elementFromPoint(
+                        event.clientX,
+                        event.clientY
+                    );
+
+
+                const shadow =
+                    element &&
+                    element.closest(".shadow");
+
+
+                isDragging = false;
+
+                activePointerId = null;
+
+
+                dragImage.style.display =
+                    "none";
+
+
+                if (shadow) {
+
+                    checkMatch(
+                        shadow,
+                        action
+                    );
+
+                }
+
+
+                else {
+
+                    selectAction(action);
+
+                }
+
+
+                if (
+                    action.releasePointerCapture
+                ) {
+
+                    try {
+
+                        action.releasePointerCapture(
+                            event.pointerId
+                        );
+
+                    }
+
+                    catch(error) {}
+
+                }
+
+
+                event.preventDefault();
+
+            },
+            {
+                passive: false
+            }
+        );
+
+
+
+        /* POINTER CANCEL */
+
+        action.addEventListener(
+            "pointercancel",
+            function() {
+
+                isDragging = false;
+
+                activePointerId = null;
+
+                dragImage.style.display =
+                    "none";
+
+            }
+        );
+
+    }
+);
+
+
+/* =================================
+   MOVE DRAG IMAGE
+================================= */
+
+function moveDragImage(event) {
+
+    dragImage.style.left =
+        event.clientX + "px";
+
+    dragImage.style.top =
+        event.clientY + "px";
+
+}
+
+
+/* =================================
+   PLAY AGAIN
+================================= */
+
+playAgainBtn.addEventListener(
+    "click",
+    resetGame
+);
+
+
+function resetGame() {
+
+
+    correctMatches = 0;
+
+    selectedAction = null;
+
+    isDragging = false;
+
+    activePointerId = null;
+
+
+    completeArea.style.display =
+        "none";
+
+
+    dragImage.style.display =
+        "none";
+
+
+    /* RESET ACTIONS */
+
+    actions.forEach(
+        function(action) {
+
+            action.classList.remove(
+                "selected",
+                "matched"
+            );
+
+        }
+    );
+
+
+    /* RESET SHADOWS */
+
+    shadows[0].innerHTML =
+        '<img src="assets/shadow4.png" alt="">';
+
+
+    shadows[1].innerHTML =
+        '<img src="assets/shadow3.png" alt="">';
+
+
+    shadows[2].innerHTML =
+        '<img src="assets/shadow1.png" alt="">';
+
+
+    shadows[3].innerHTML =
+        '<img src="assets/shadow2.png" alt="">';
+
+
+    shadows.forEach(
+        function(shadow) {
+
+            shadow.classList.remove(
+                "correct",
+                "target",
+                "wrong"
+            );
+
+        }
+    );
+
+
+    startBtn.style.display =
+        "block";
+
+}
+
+
+/* =================================
+   END
+================================= */
+
+</script>
+
+
+</body>
+
+</html>
