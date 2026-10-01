@@ -1,420 +1,1836 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Season Sorting Adventure</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: linear-gradient(180deg, #FFF7E6, #E8F6F3);
-    }
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    .screen {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
+<title>Season Sorting Adventure</title>
 
-    .hidden {
-      display: none;
-    }
+<style>
 
-    #logo {
-      width: 220px;
-      animation: fade 2s infinite;
-    }
+/* =========================================================
+   RESET
+========================================================= */
 
-    @keyframes fade {
-      0% { opacity: 0.3; }
-      50% { opacity: 1; }
-      100% { opacity: 0.3; }
-    }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
 
-    #topBar {
-      position: absolute;
-      top: 10px;
-      width: 100%;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      color: #6A1B9A;
-    }
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:linear-gradient(180deg,#FFF7E6,#E8F6F3);
+  overscroll-behavior:none;
+}
 
-    #scoreBox {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #1B5E20;
-    }
 
-    #itemBox {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -55%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+/* =========================================================
+   COMMON SCREEN
+========================================================= */
 
-    #itemImg {
-      width: 230px;
-      height: 230px;
-      object-fit: contain;
-    }
+.screen{
+  position:fixed;
+  inset:0;
 
-    #itemName {
-      font-size: 28px;
-      font-weight: bold;
-      color: #E67E22;
-      margin-top: 10px;
-    }
+  width:100%;
+  height:100vh;
+  height:100dvh;
 
-    #options {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      padding: 0 10px;
-    }
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 
-    .option {
-      text-align: center;
-      cursor: pointer;
-    }
+  overflow:hidden;
+}
 
-    .option img {
-      width: 160px;
-      height: 160px;
-      object-fit: contain;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
+.hidden{
+  display:none !important;
+}
 
-    .feedback {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 120px;
-      display: none;
-    }
 
-    #tick {
-      color: #2ECC71;
-    }
+/* =========================================================
+   INTRO
+========================================================= */
 
-    #cross {
-      color: #E74C3C;
-    }
+#intro{
+  background:white;
+  z-index:1000;
+}
 
-    #msg {
-      position: absolute;
-      top: 60%;
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-    }
+#logo{
+  width:min(58vw,380px);
+  max-height:60vh;
+  object-fit:contain;
 
-    #tryAgain {
-      display: none;
-      position: absolute;
-      top: 68%;
-      padding: 12px 25px;
-      border: none;
-      border-radius: 20px;
-      background: #F5B041;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-    }
+  animation:fade 2s infinite;
+}
 
-    #end {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-    }
+@keyframes fade{
 
-    #finalScore {
-      font-size: 28px;
-      font-weight: bold;
-      color: #1B5E20;
-      margin-top: 10px;
-    }
+  0%{
+    opacity:.3;
+  }
 
-    #stars {
-      font-size: 40px;
-      margin-top: 10px;
-    }
-  </style>
+  50%{
+    opacity:1;
+  }
+
+  100%{
+    opacity:.3;
+  }
+
+}
+
+
+/* =========================================================
+   GAME
+========================================================= */
+
+#game{
+  background:linear-gradient(180deg,#FFF7E6,#E8F6F3);
+
+  padding:
+  max(10px,env(safe-area-inset-top))
+  max(10px,env(safe-area-inset-right))
+  max(10px,env(safe-area-inset-bottom))
+  max(10px,env(safe-area-inset-left));
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+#topBar{
+  position:absolute;
+
+  top:max(10px,env(safe-area-inset-top));
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  width:70%;
+
+  text-align:center;
+
+  font-size:clamp(18px,2.6vw,28px);
+
+  line-height:1.15;
+
+  font-weight:bold;
+
+  color:#6A1B9A;
+}
+
+
+#scoreBox{
+  position:absolute;
+
+  top:max(10px,env(safe-area-inset-top));
+
+  right:max(15px,env(safe-area-inset-right));
+
+  font-size:clamp(17px,2.3vw,24px);
+
+  font-weight:bold;
+
+  color:#1B5E20;
+
+  background:rgba(255,255,255,.8);
+
+  padding:6px 12px;
+
+  border-radius:18px;
+}
+
+
+/* =========================================================
+   CURRENT ITEM
+========================================================= */
+
+#itemBox{
+  position:absolute;
+
+  top:43%;
+  left:50%;
+
+  transform:translate(-50%,-50%);
+
+  width:min(90vw,450px);
+
+  max-height:48vh;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  text-align:center;
+}
+
+
+#itemImg{
+  display:block;
+
+  width:min(34vw,250px);
+  height:min(34vw,250px);
+
+  max-width:250px;
+  max-height:250px;
+
+  min-width:120px;
+  min-height:120px;
+
+  object-fit:contain;
+
+  object-position:center;
+
+  user-select:none;
+  -webkit-user-drag:none;
+
+  flex-shrink:1;
+}
+
+
+#itemName{
+  font-size:clamp(20px,3vw,30px);
+
+  font-weight:bold;
+
+  color:#E67E22;
+
+  margin-top:5px;
+
+  line-height:1.1;
+}
+
+
+/* =========================================================
+   OPTIONS
+========================================================= */
+
+#options{
+  position:absolute;
+
+  bottom:max(12px,env(safe-area-inset-bottom));
+
+  left:0;
+
+  width:100%;
+
+  height:min(30vh,200px);
+
+  display:flex;
+
+  justify-content:space-evenly;
+
+  align-items:flex-end;
+
+  gap:8px;
+
+  padding:
+  0
+  max(8px,env(safe-area-inset-right))
+  0
+  max(8px,env(safe-area-inset-left));
+}
+
+
+.option{
+  flex:1 1 0;
+
+  max-width:210px;
+  height:100%;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  text-align:center;
+
+  cursor:pointer;
+
+  touch-action:manipulation;
+
+  border-radius:20px;
+}
+
+
+.option img{
+  display:block;
+
+  width:min(15vw,160px);
+  height:min(15vw,160px);
+
+  min-width:85px;
+  min-height:85px;
+
+  max-width:160px;
+  max-height:160px;
+
+  object-fit:contain;
+
+  user-select:none;
+  -webkit-user-drag:none;
+
+  pointer-events:none;
+}
+
+
+.option:active{
+  transform:scale(.96);
+}
+
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+.feedback{
+  position:absolute;
+
+  top:42%;
+  left:50%;
+
+  transform:translate(-50%,-50%);
+
+  font-size:clamp(70px,12vw,120px);
+
+  display:none;
+
+  z-index:20;
+
+  pointer-events:none;
+}
+
+
+#tick{
+  color:#2ECC71;
+}
+
+
+#cross{
+  color:#E74C3C;
+}
+
+
+#msg{
+  position:absolute;
+
+  top:57%;
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  width:90%;
+
+  font-size:clamp(18px,2.5vw,25px);
+
+  font-weight:bold;
+
+  text-align:center;
+
+  z-index:20;
+}
+
+
+#tryAgain{
+  display:none;
+
+  position:absolute;
+
+  top:64%;
+
+  left:50%;
+
+  transform:translateX(-50%);
+
+  padding:11px 24px;
+
+  border:none;
+
+  border-radius:22px;
+
+  background:#F5B041;
+
+  color:white;
+
+  font-size:clamp(16px,2vw,20px);
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  z-index:20;
+
+  touch-action:manipulation;
+}
+
+
+/* =========================================================
+   END SCREEN
+========================================================= */
+
+#end{
+  position:fixed;
+
+  inset:0;
+
+  width:100%;
+
+  height:100vh;
+  height:100dvh;
+
+  display:none;
+
+  justify-content:center;
+
+  align-items:center;
+
+  flex-direction:column;
+
+  text-align:center;
+
+  padding:20px;
+
+  background:linear-gradient(180deg,#FFF7E6,#E8F6F3);
+
+  z-index:900;
+}
+
+
+#end h1{
+  font-size:clamp(38px,7vw,70px);
+
+  color:#6A1B9A;
+
+  margin-bottom:12px;
+}
+
+
+#finalScore{
+  font-size:clamp(22px,3vw,32px);
+
+  font-weight:bold;
+
+  color:#1B5E20;
+
+  margin-top:10px;
+}
+
+
+#stars{
+  font-size:clamp(30px,5vw,48px);
+
+  margin-top:10px;
+}
+
+
+/* =========================================================
+   TABLETS
+========================================================= */
+
+@media(max-width:900px){
+
+  #topBar{
+    width:68%;
+
+    font-size:22px;
+  }
+
+  #itemBox{
+    top:42%;
+
+    max-height:46vh;
+  }
+
+  #itemImg{
+    width:min(32vw,220px);
+    height:min(32vw,220px);
+  }
+
+  #options{
+    height:min(29vh,180px);
+  }
+
+  .option img{
+    width:min(18vw,145px);
+    height:min(18vw,145px);
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE PORTRAIT
+========================================================= */
+
+@media(max-width:600px){
+
+  #topBar{
+    top:max(8px,env(safe-area-inset-top));
+
+    width:68%;
+
+    font-size:17px;
+
+    line-height:1.1;
+  }
+
+
+  #scoreBox{
+    top:max(7px,env(safe-area-inset-top));
+
+    right:max(7px,env(safe-area-inset-right));
+
+    font-size:15px;
+
+    padding:5px 8px;
+  }
+
+
+  #itemBox{
+    top:39%;
+
+    width:94%;
+
+    max-height:45vh;
+  }
+
+
+  #itemImg{
+    width:min(43vw,190px);
+
+    height:min(43vw,190px);
+
+    min-width:100px;
+    min-height:100px;
+  }
+
+
+  #itemName{
+    font-size:21px;
+
+    margin-top:3px;
+  }
+
+
+  #options{
+    bottom:max(5px,env(safe-area-inset-bottom));
+
+    height:27vh;
+
+    max-height:165px;
+
+    gap:4px;
+
+    padding-left:5px;
+
+    padding-right:5px;
+  }
+
+
+  .option{
+    max-width:none;
+  }
+
+
+  .option img{
+    width:min(27vw,125px);
+
+    height:min(27vw,125px);
+
+    min-width:72px;
+
+    min-height:72px;
+  }
+
+
+  .feedback{
+    top:40%;
+
+    font-size:75px;
+  }
+
+
+  #msg{
+    top:54%;
+
+    font-size:18px;
+  }
+
+
+  #tryAgain{
+    top:60%;
+
+    font-size:16px;
+
+    padding:9px 20px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media(max-width:390px){
+
+  #topBar{
+    width:64%;
+
+    font-size:15px;
+  }
+
+
+  #scoreBox{
+    font-size:14px;
+
+    padding:4px 7px;
+  }
+
+
+  #itemBox{
+    top:38%;
+  }
+
+
+  #itemImg{
+    width:min(40vw,155px);
+
+    height:min(40vw,155px);
+
+    min-width:95px;
+
+    min-height:95px;
+  }
+
+
+  #itemName{
+    font-size:18px;
+  }
+
+
+  #options{
+    height:25vh;
+
+    max-height:145px;
+  }
+
+
+  .option img{
+    width:min(26vw,105px);
+
+    height:min(26vw,105px);
+
+    min-width:65px;
+
+    min-height:65px;
+  }
+
+}
+
+
+/* =========================================================
+   SHORT SCREENS
+========================================================= */
+
+@media(max-height:650px){
+
+  #topBar{
+    top:6px;
+
+    font-size:17px;
+  }
+
+
+  #scoreBox{
+    top:5px;
+  }
+
+
+  #itemBox{
+    top:38%;
+
+    max-height:42vh;
+  }
+
+
+  #itemImg{
+    width:min(28vh,185px);
+
+    height:min(28vh,185px);
+
+    min-width:90px;
+
+    min-height:90px;
+  }
+
+
+  #itemName{
+    font-size:18px;
+
+    margin-top:1px;
+  }
+
+
+  #options{
+    height:27vh;
+
+    max-height:145px;
+  }
+
+
+  .option img{
+    width:min(23vh,115px);
+
+    height:min(23vh,115px);
+
+    min-width:60px;
+
+    min-height:60px;
+  }
+
+
+  #msg{
+    top:55%;
+  }
+
+
+  #tryAgain{
+    top:62%;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE LANDSCAPE
+========================================================= */
+
+@media(orientation:landscape) and (max-height:600px){
+
+  #topBar{
+    top:5px;
+
+    width:60%;
+
+    font-size:16px;
+  }
+
+
+  #scoreBox{
+    top:4px;
+
+    right:8px;
+
+    font-size:14px;
+
+    padding:4px 8px;
+  }
+
+
+  #itemBox{
+    top:43%;
+
+    left:50%;
+
+    width:38vw;
+
+    max-height:60vh;
+  }
+
+
+  #itemImg{
+    width:min(28vh,165px);
+
+    height:min(28vh,165px);
+
+    min-width:85px;
+
+    min-height:85px;
+  }
+
+
+  #itemName{
+    font-size:17px;
+
+    margin-top:0;
+  }
+
+
+  #options{
+    bottom:4px;
+
+    height:25vh;
+
+    max-height:120px;
+
+    align-items:center;
+  }
+
+
+  .option img{
+    width:min(20vh,100px);
+
+    height:min(20vh,100px);
+
+    min-width:58px;
+
+    min-height:58px;
+  }
+
+
+  .feedback{
+    top:42%;
+
+    font-size:65px;
+  }
+
+
+  #msg{
+    top:55%;
+
+    font-size:16px;
+  }
+
+
+  #tryAgain{
+    top:62%;
+
+    padding:7px 17px;
+
+    font-size:14px;
+  }
+
+}
+
+</style>
+
 </head>
+
+
 <body>
 
-  <!-- INTRO -->
-  <div id="intro" class="screen">
-    <img id="logo" src="assets/innovine-logo.png" alt="Logo" />
+
+<!-- =======================================================
+     INTRO
+======================================================= -->
+
+<div id="intro" class="screen">
+
+  <img
+  id="logo"
+  src="assets/innovine-logo.png"
+  alt="Logo">
+
+</div>
+
+
+
+<!-- =======================================================
+     GAME
+======================================================= -->
+
+<div id="game" class="screen hidden">
+
+
+  <div id="topBar">
+    Match the item with correct season
   </div>
 
-  <!-- GAME -->
-  <div id="game" class="screen hidden">
-    <div id="topBar">Match the item with correct season</div>
-    <div id="scoreBox">⭐ <span id="score">0</span></div>
 
-    <div id="itemBox">
-      <img id="itemImg" src="" alt="Item" />
-      <div id="itemName"></div>
+  <div id="scoreBox">
+    ⭐ <span id="score">0</span>
+  </div>
+
+
+
+  <div id="itemBox">
+
+    <img
+    id="itemImg"
+    src=""
+    alt="Item"
+    draggable="false">
+
+    <div id="itemName"></div>
+
+  </div>
+
+
+
+  <div id="tick" class="feedback">
+    ✅
+  </div>
+
+
+  <div id="cross" class="feedback">
+    ❌
+  </div>
+
+
+
+  <div id="msg"></div>
+
+
+  <button
+  id="tryAgain"
+  type="button">
+
+    Try Again
+
+  </button>
+
+
+
+  <div id="options">
+
+
+    <div
+    class="option"
+    data-season="summer">
+
+      <img
+      src="assets/summer.png"
+      alt="Summer"
+      draggable="false">
+
     </div>
 
-    <div id="tick" class="feedback">✅</div>
-    <div id="cross" class="feedback">❌</div>
 
-    <div id="msg"></div>
-    <button id="tryAgain">Try Again</button>
 
-    <div id="options">
-      <div class="option" data-season="summer">
-        <img src="assets/summer.png" alt="Summer" />
-      </div>
+    <div
+    class="option"
+    data-season="winter">
 
-      <div class="option" data-season="winter">
-        <img src="assets/winter.png" alt="Winter" />
-      </div>
+      <img
+      src="assets/winter.png"
+      alt="Winter"
+      draggable="false">
 
-      <div class="option" data-season="rainy">
-        <img src="assets/rainy.png" alt="Rainy" />
-      </div>
     </div>
+
+
+
+    <div
+    class="option"
+    data-season="rainy">
+
+      <img
+      src="assets/rainy.png"
+      alt="Rainy"
+      draggable="false">
+
+    </div>
+
+
   </div>
 
-  <!-- END -->
-  <div id="end">
-    <h1>🎉 Great Job!</h1>
-    <div id="finalScore"></div>
-    <div id="stars"></div>
-  </div>
 
-  <audio id="bgm" src="assets/backgroundmusic.mp3" loop></audio>
-  <audio id="correct" src="assets/correct.mp3"></audio>
-  <audio id="wrong" src="assets/wrong.mp3"></audio>
+</div>
 
-  <script>
-    const items = [
-      { name: "Cap", img: "assets/cap.png", season: "summer" },
-      { name: "Hat", img: "assets/hat.png", season: "summer" },
-      { name: "Slipper", img: "assets/slipper.png", season: "summer" },
 
-      { name: "Sweater", img: "assets/sweater.png", season: "winter" },
-      { name: "Woollen Cap", img: "assets/woollen-cap.png", season: "winter" },
-      { name: "Hand Gloves", img: "assets/hand-gloves.png", season: "winter" },
 
-      { name: "Umbrella", img: "assets/umbrella.png", season: "rainy" },
-      { name: "Gumboots", img: "assets/gumboots.png", season: "rainy" },
-      { name: "Raincoat", img: "assets/raincoat.png", season: "rainy" }
+<!-- =======================================================
+     END
+======================================================= -->
+
+<div id="end">
+
+
+  <h1>
+    🎉 Great Job!
+  </h1>
+
+
+  <div id="finalScore"></div>
+
+
+  <div id="stars"></div>
+
+
+</div>
+
+
+
+<!-- =======================================================
+     AUDIO
+======================================================= -->
+
+<audio
+id="bgm"
+src="assets/backgroundmusic.mp3"
+loop
+preload="auto">
+</audio>
+
+
+<audio
+id="correct"
+src="assets/correct.mp3"
+preload="auto">
+</audio>
+
+
+<audio
+id="wrong"
+src="assets/wrong.mp3"
+preload="auto">
+</audio>
+
+
+
+<script>
+
+
+/* =========================================================
+   ITEMS
+========================================================= */
+
+const items=[
+
+
+  {
+    name:"Cap",
+    img:"assets/cap.png",
+    season:"summer"
+  },
+
+
+  {
+    name:"Hat",
+    img:"assets/hat.png",
+    season:"summer"
+  },
+
+
+  {
+    name:"Slipper",
+    img:"assets/slipper.png",
+    season:"summer"
+  },
+
+
+  {
+    name:"Sweater",
+    img:"assets/sweater.png",
+    season:"winter"
+  },
+
+
+  {
+    name:"Woollen Cap",
+    img:"assets/woollen-cap.png",
+    season:"winter"
+  },
+
+
+  {
+    name:"Hand Gloves",
+    img:"assets/hand-gloves.png",
+    season:"winter"
+  },
+
+
+  {
+    name:"Umbrella",
+    img:"assets/umbrella.png",
+    season:"rainy"
+  },
+
+
+  {
+    name:"Gumboots",
+    img:"assets/gumboots.png",
+    season:"rainy"
+  },
+
+
+  {
+    name:"Raincoat",
+    img:"assets/raincoat.png",
+    season:"rainy"
+  }
+
+
+];
+
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let gameItems=[...items];
+
+let currentIndex=0;
+
+let score=0;
+
+let musicStarted=false;
+
+let gameLocked=false;
+
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const intro=
+document.getElementById("intro");
+
+
+const game=
+document.getElementById("game");
+
+
+const end=
+document.getElementById("end");
+
+
+const itemImg=
+document.getElementById("itemImg");
+
+
+const itemName=
+document.getElementById("itemName");
+
+
+const scoreText=
+document.getElementById("score");
+
+
+const tick=
+document.getElementById("tick");
+
+
+const cross=
+document.getElementById("cross");
+
+
+const msg=
+document.getElementById("msg");
+
+
+const tryAgain=
+document.getElementById("tryAgain");
+
+
+const finalScore=
+document.getElementById("finalScore");
+
+
+const stars=
+document.getElementById("stars");
+
+
+const bgm=
+document.getElementById("bgm");
+
+
+const correct=
+document.getElementById("correct");
+
+
+const wrong=
+document.getElementById("wrong");
+
+
+const options=
+document.querySelectorAll(".option");
+
+
+
+/* =========================================================
+   SHUFFLE
+========================================================= */
+
+function shuffleArray(array){
+
+  for(
+    let i=array.length-1;
+    i>0;
+    i--
+  ){
+
+    const j=
+    Math.floor(
+      Math.random()*(i+1)
+    );
+
+
+    [
+      array[i],
+      array[j]
+    ]=
+    [
+      array[j],
+      array[i]
     ];
 
-    let gameItems = [...items];
-    let currentIndex = 0;
-    let score = 0;
-    let musicStarted = false;
-    let gameLocked = false;
+  }
 
-    const intro = document.getElementById("intro");
-    const game = document.getElementById("game");
-    const end = document.getElementById("end");
-    const itemImg = document.getElementById("itemImg");
-    const itemName = document.getElementById("itemName");
-    const scoreText = document.getElementById("score");
-    const tick = document.getElementById("tick");
-    const cross = document.getElementById("cross");
-    const msg = document.getElementById("msg");
-    const tryAgain = document.getElementById("tryAgain");
-    const finalScore = document.getElementById("finalScore");
-    const stars = document.getElementById("stars");
-    const bgm = document.getElementById("bgm");
-    const correct = document.getElementById("correct");
-    const wrong = document.getElementById("wrong");
-    const options = document.querySelectorAll(".option");
+}
 
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
+
+shuffleArray(gameItems);
+
+
+
+/* =========================================================
+   MUSIC
+========================================================= */
+
+function startMusic(){
+
+  if(musicStarted){
+    return;
+  }
+
+
+  try{
+
+    bgm.volume=.3;
+
+
+    const musicPromise=
+    bgm.play();
+
+
+    if(
+      musicPromise &&
+      typeof musicPromise.catch==="function"
+    ){
+
+      musicPromise.catch(function(){});
+
     }
 
-    shuffleArray(gameItems);
 
-    function startMusic() {
-      if (!musicStarted) {
-        bgm.volume = 0.3;
-        bgm.play().catch(function () {});
-        musicStarted = true;
-      }
+    musicStarted=true;
+
+  }
+
+  catch(error){}
+
+}
+
+
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+function playAudio(audio){
+
+  try{
+
+    audio.pause();
+
+    audio.currentTime=0;
+
+
+    const audioPromise=
+    audio.play();
+
+
+    if(
+      audioPromise &&
+      typeof audioPromise.catch==="function"
+    ){
+
+      audioPromise.catch(function(){});
+
     }
 
-    function speak(text, callback) {
-      if (!("speechSynthesis" in window)) {
-        if (typeof callback === "function") {
-          callback();
-        }
-        return;
-      }
+  }
 
-      window.speechSynthesis.cancel();
+  catch(error){}
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.85;
-      utterance.onend = function () {
-        if (typeof callback === "function") {
-          callback();
-        }
-      };
+}
 
-      utterance.onerror = function () {
-        if (typeof callback === "function") {
-          callback();
-        }
-      };
 
-      window.speechSynthesis.speak(utterance);
+
+/* =========================================================
+   SPEECH
+========================================================= */
+
+function speak(text,callback){
+
+
+  if(!("speechSynthesis" in window)){
+
+    if(
+      typeof callback==="function"
+    ){
+
+      callback();
+
     }
 
-    function resetUI() {
-      tick.style.display = "none";
-      cross.style.display = "none";
-      msg.textContent = "";
-      tryAgain.style.display = "none";
+    return;
+
+  }
+
+
+  window.speechSynthesis.cancel();
+
+
+  const utterance=
+  new SpeechSynthesisUtterance(text);
+
+
+  utterance.rate=.85;
+
+
+  let callbackCalled=false;
+
+
+
+  function finishSpeech(){
+
+    if(callbackCalled){
+      return;
     }
 
-    function showItem() {
-      if (currentIndex >= gameItems.length) {
-        endGame();
-        return;
-      }
 
-      resetUI();
-      gameLocked = false;
+    callbackCalled=true;
 
-      const currentItem = gameItems[currentIndex];
-      itemName.textContent = currentItem.name;
 
-      itemImg.onload = function () {
-        console.log("Loaded:", currentItem.img);
-      };
+    if(
+      typeof callback==="function"
+    ){
 
-      itemImg.onerror = function () {
-        console.log("Missing image:", currentItem.img);
+      callback();
+
+    }
+
+  }
+
+
+
+  utterance.onend=
+  finishSpeech;
+
+
+  utterance.onerror=
+  finishSpeech;
+
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+
+
+  /*
+    Fallback:
+    some mobile browsers do not fire onend reliably.
+  */
+
+  if(
+    typeof callback==="function"
+  ){
+
+    setTimeout(
+      finishSpeech,
+      5000
+    );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   RESET FEEDBACK
+========================================================= */
+
+function resetUI(){
+
+
+  tick.style.display=
+  "none";
+
+
+  cross.style.display=
+  "none";
+
+
+  msg.textContent=
+  "";
+
+
+  tryAgain.style.display=
+  "none";
+
+
+}
+
+
+
+/* =========================================================
+   SHOW ITEM
+========================================================= */
+
+function showItem(){
+
+
+  if(
+    currentIndex>=gameItems.length
+  ){
+
+    endGame();
+
+    return;
+
+  }
+
+
+
+  resetUI();
+
+
+  gameLocked=false;
+
+
+
+  const currentItem=
+  gameItems[currentIndex];
+
+
+
+  itemName.textContent=
+  currentItem.name;
+
+
+
+  /*
+    Reset image first.
+    This helps browsers refresh correctly,
+    especially on mobile.
+  */
+
+  itemImg.removeAttribute("src");
+
+
+
+  itemImg.onload=function(){
+
+
+    itemImg.style.visibility=
+    "visible";
+
+
+  };
+
+
+
+  itemImg.onerror=function(){
+
+
+    console.log(
+      "Missing image:",
+      currentItem.img
+    );
+
+
+    /*
+      Do NOT skip the item automatically.
+      The name stays visible so a missing
+      asset can be identified.
+    */
+
+    itemImg.style.visibility=
+    "hidden";
+
+
+  };
+
+
+
+  requestAnimationFrame(
+    function(){
+
+      itemImg.src=
+      currentItem.img;
+
+    }
+  );
+
+
+}
+
+
+
+/* =========================================================
+   CHECK ANSWER
+========================================================= */
+
+function check(selectedSeason){
+
+
+  if(gameLocked){
+    return;
+  }
+
+
+  if(
+    currentIndex>=gameItems.length
+  ){
+    return;
+  }
+
+
+
+  const currentItem=
+  gameItems[currentIndex];
+
+
+  resetUI();
+
+
+
+  /* CORRECT */
+
+  if(
+    selectedSeason===
+    currentItem.season
+  ){
+
+
+    gameLocked=true;
+
+
+
+    playAudio(
+      correct
+    );
+
+
+
+    tick.style.display=
+    "block";
+
+
+    msg.textContent=
+    "Great Job!";
+
+
+    msg.style.color=
+    "#2ECC71";
+
+
+
+    score++;
+
+
+    scoreText.textContent=
+    score;
+
+
+
+    setTimeout(
+      function(){
+
+
         currentIndex++;
+
+
         showItem();
-      };
 
-      itemImg.src = currentItem.img;
-    }
 
-    function check(selectedSeason) {
-      if (gameLocked) return;
-      if (currentIndex >= gameItems.length) return;
+      },
+      1100
+    );
 
-      const currentItem = gameItems[currentIndex];
-      resetUI();
 
-      if (selectedSeason === currentItem.season) {
-        gameLocked = true;
+  }
 
-        correct.currentTime = 0;
-        correct.play().catch(function () {});
 
-        tick.style.display = "block";
-        msg.textContent = "Great Job!";
-        msg.style.color = "#2ECC71";
+  /* WRONG */
 
-        score++;
-        scoreText.textContent = score;
+  else{
 
-        setTimeout(function () {
-          currentIndex++;
-          showItem();
-        }, 1200);
-      } else {
-        wrong.currentTime = 0;
-        wrong.play().catch(function () {});
 
-        cross.style.display = "block";
-        msg.textContent = "Try Again";
-        msg.style.color = "#E74C3C";
+    playAudio(
+      wrong
+    );
 
-        tryAgain.style.display = "block";
-        speak("Try again");
-      }
-    }
 
-    tryAgain.addEventListener("click", function () {
-      cross.style.display = "none";
-      tryAgain.style.display = "none";
-      msg.textContent = "";
-    });
+    cross.style.display=
+    "block";
 
-    function endGame() {
-      game.classList.add("hidden");
-      end.style.display = "flex";
 
-      finalScore.textContent = score + " / " + gameItems.length;
+    msg.textContent=
+    "Try Again";
 
-      if (score >= 9) {
-        stars.textContent = "⭐⭐⭐⭐⭐";
-      } else if (score >= 7) {
-        stars.textContent = "⭐⭐⭐⭐";
-      } else if (score >= 5) {
-        stars.textContent = "⭐⭐⭐";
-      } else {
-        stars.textContent = "⭐⭐";
-      }
 
-      speak("Wonderful. You completed the game.");
-    }
+    msg.style.color=
+    "#E74C3C";
 
-    options.forEach(function (option) {
-      option.addEventListener("click", function () {
+
+    tryAgain.style.display=
+    "block";
+
+
+    speak(
+      "Try again"
+    );
+
+
+  }
+
+
+}
+
+
+
+/* =========================================================
+   TRY AGAIN
+========================================================= */
+
+tryAgain.addEventListener(
+  "click",
+  function(){
+
+
+    cross.style.display=
+    "none";
+
+
+    tryAgain.style.display=
+    "none";
+
+
+    msg.textContent=
+    "";
+
+
+  }
+);
+
+
+
+/* =========================================================
+   END GAME
+========================================================= */
+
+function endGame(){
+
+
+  game.classList.add(
+    "hidden"
+  );
+
+
+  end.style.display=
+  "flex";
+
+
+  finalScore.textContent=
+  score+
+  " / "+
+  gameItems.length;
+
+
+
+  if(score>=9){
+
+
+    stars.textContent=
+    "⭐⭐⭐⭐⭐";
+
+
+  }
+
+
+  else if(score>=7){
+
+
+    stars.textContent=
+    "⭐⭐⭐⭐";
+
+
+  }
+
+
+  else if(score>=5){
+
+
+    stars.textContent=
+    "⭐⭐⭐";
+
+
+  }
+
+
+  else{
+
+
+    stars.textContent=
+    "⭐⭐";
+
+
+  }
+
+
+
+  speak(
+    "Wonderful. You completed the game."
+  );
+
+
+}
+
+
+
+/* =========================================================
+   OPTION CLICKS
+========================================================= */
+
+options.forEach(
+  function(option){
+
+
+    option.addEventListener(
+      "click",
+      function(){
+
+
         startMusic();
-        const season = option.getAttribute("data-season");
-        check(season);
-      });
-    });
 
-    setTimeout(function () {
-      intro.classList.add("hidden");
-      game.classList.remove("hidden");
 
-      speak("Hello little friend. Match each item with the correct season.", function () {
-        showItem();
-      });
-    }, 5000);
+        const season=
+        option.getAttribute(
+          "data-season"
+        );
 
-    document.body.addEventListener("click", startMusic, { once: true });
-  </script>
+
+        check(
+          season
+        );
+
+
+      }
+    );
+
+
+  }
+);
+
+
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+setTimeout(
+  function(){
+
+
+    intro.classList.add(
+      "hidden"
+    );
+
+
+    game.classList.remove(
+      "hidden"
+    );
+
+
+    /*
+      Show first item immediately.
+
+      This is important for iOS because
+      speech synthesis may not always
+      complete without user interaction.
+    */
+
+    showItem();
+
+
+
+    speak(
+      "Hello little friend. Match each item with the correct season."
+    );
+
+
+  },
+  5000
+);
+
+
+
+/* =========================================================
+   START MUSIC AFTER USER INTERACTION
+========================================================= */
+
+document.body.addEventListener(
+  "click",
+  startMusic,
+  {
+    once:true
+  }
+);
+
+
+
+document.body.addEventListener(
+  "touchstart",
+  startMusic,
+  {
+    once:true,
+    passive:true
+  }
+);
+
+
+
+/* =========================================================
+   STOP IMAGE DRAGGING
+========================================================= */
+
+document.addEventListener(
+  "dragstart",
+  function(event){
+
+
+    if(
+      event.target.tagName==="IMG"
+    ){
+
+      event.preventDefault();
+
+    }
+
+
+  }
+);
+
+
+</script>
+
 </body>
 </html>
