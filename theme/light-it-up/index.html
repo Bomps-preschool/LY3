@@ -1,301 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
+<meta
+name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Light It Up</title>
 
 <style>
 
+/* ================================
+   BASIC SETTINGS
+================================ */
+
 *{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
+    margin:0;
+    padding:0;
 
-margin:0;
-padding:0;
+    width:100%;
+    height:100%;
 
-width:100%;
-height:100%;
+    overflow:hidden;
 
-overflow:hidden;
+    font-family:Arial, sans-serif;
 
-font-family:Arial, sans-serif;
-
-background:#eafaff;
-
+    background:#eafaff;
 }
 
 
-/* SPLASH */
+/* ================================
+   SPLASH
+================================ */
 
 #splash{
 
-position:fixed;
+    position:fixed;
 
-inset:0;
+    inset:0;
 
-display:flex;
+    display:flex;
 
-align-items:center;
+    align-items:center;
 
-justify-content:center;
+    justify-content:center;
 
-background:white;
+    background:white;
 
-z-index:1000;
-
+    z-index:1000;
 }
 
 
 #splash img{
 
-width:min(60vw,400px);
+    width:min(60vw,400px);
 
-animation:pulse 1.3s infinite;
+    max-height:70vh;
+
+    object-fit:contain;
+
+    animation:pulse 1.3s infinite;
 
 }
 
 
 @keyframes pulse{
 
-50%{
-transform:scale(1.08);
-}
+    0%,
+    100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.08);
+    }
 
 }
 
 
 
-/* GAME */
+/* ================================
+   GAME
+================================ */
 
 #game{
 
-display:none;
+    display:none;
 
-height:100vh;
+    width:100%;
 
-width:100%;
+    height:100vh;
+    height:100dvh;
 
-flex-direction:column;
+    flex-direction:column;
 
-background:
-linear-gradient(
-#c9f2ff,
-#ffffff,
-#e2f7d5
-);
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        #c9f2ff,
+        #ffffff,
+        #e2f7d5
+    );
 
 }
 
 
 
-/* HEADER */
+/* ================================
+   HEADER
+================================ */
 
 header{
 
-height:65px;
+    flex-shrink:0;
 
-background:white;
+    min-height:60px;
 
-display:flex;
+    background:white;
 
-align-items:center;
+    display:flex;
 
-justify-content:space-between;
+    align-items:center;
 
-padding:10px 20px;
+    justify-content:space-between;
 
-border-bottom:3px solid #65c7e5;
+    padding:8px 20px;
+
+    gap:10px;
+
+    border-bottom:3px solid #65c7e5;
 
 }
 
 
 .title{
 
-font-size:clamp(22px,3vw,36px);
+    font-size:clamp(20px,3vw,36px);
 
-font-weight:bold;
+    font-weight:bold;
 
-color:#13759b;
+    color:#13759b;
 
 }
-
 
 
 .score{
 
-background:#fff2a6;
+    flex-shrink:0;
 
-padding:8px 18px;
+    background:#fff2a6;
 
-border-radius:30px;
+    padding:8px 18px;
 
-font-weight:bold;
+    border-radius:30px;
+
+    font-weight:bold;
+
+    font-size:clamp(16px,2vw,22px);
 
 }
 
 
 
-/* QUESTION */
+/* ================================
+   QUESTION
+================================ */
 
 .question{
 
-text-align:center;
+    flex-shrink:0;
 
-padding:8px;
+    text-align:center;
+
+    padding:7px 10px;
 
 }
 
 
 .question h1{
 
-margin:0;
+    margin:0;
 
-font-size:clamp(24px,4vw,40px);
+    font-size:clamp(21px,3.5vw,40px);
 
-color:#163e58;
+    line-height:1.15;
+
+    color:#163e58;
 
 }
 
 
 
-/* CARDS */
-
+/* ================================
+   GAME AREA
+================================ */
 
 .area{
 
-flex:1;
+    flex:1;
 
-display:flex;
+    min-height:0;
 
-justify-content:center;
+    display:flex;
 
-align-items:center;
+    justify-content:center;
 
-padding:15px;
+    align-items:center;
+
+    padding:8px 15px;
 
 }
 
+
+
+/* ================================
+   GRID
+================================ */
 
 .grid{
 
-width:min(1100px,100%);
+    width:min(1100px,100%);
 
-height:100%;
+    height:100%;
 
-display:grid;
+    min-height:0;
 
-grid-template-columns:repeat(5,1fr);
+    display:grid;
 
-gap:15px;
+    grid-template-columns:repeat(5,1fr);
+
+    grid-template-rows:repeat(2,minmax(0,1fr));
+
+    gap:12px;
 
 }
 
 
+
+/* ================================
+   CARDS
+================================ */
 
 .card{
 
-background:white;
+    min-width:0;
 
-border:4px solid white;
+    min-height:0;
 
-border-radius:25px;
+    background:white;
 
-display:flex;
+    border:4px solid white;
 
-flex-direction:column;
+    border-radius:22px;
 
-justify-content:center;
+    display:flex;
 
-align-items:center;
+    flex-direction:column;
 
-cursor:pointer;
+    justify-content:center;
 
-overflow:hidden;
+    align-items:center;
 
-box-shadow:
-0 6px 15px rgba(0,0,0,.15);
+    cursor:pointer;
 
-position:relative;
+    overflow:hidden;
+
+    box-shadow:
+    0 6px 15px rgba(0,0,0,.15);
+
+    position:relative;
+
+    touch-action:manipulation;
 
 }
-
 
 
 .card img{
 
-width:90%;
+    width:88%;
 
-height:80%;
+    height:75%;
 
-object-fit:contain;
+    min-height:0;
+
+    object-fit:contain;
+
+    pointer-events:none;
 
 }
 
 
 .name{
 
-font-size:clamp(15px,2vw,24px);
+    flex-shrink:0;
 
-font-weight:bold;
+    font-size:clamp(14px,1.8vw,23px);
 
-color:#183c50;
+    font-weight:bold;
 
-padding:8px;
+    color:#183c50;
 
-text-align:center;
+    padding:4px;
+
+    text-align:center;
 
 }
 
 
 
-/* STATES */
+/* ================================
+   STATES
+================================ */
 
 .correct{
 
-border-color:#2ecc71;
+    border-color:#2ecc71;
 
-background:#e5ffe9;
+    background:#e5ffe9;
 
-animation:pop .5s;
+    animation:pop .5s;
 
 }
 
 
 .wrong{
 
-border-color:red;
+    border-color:red;
 
-animation:shake .4s;
+    animation:shake .4s;
 
 }
 
 
 .on{
 
-filter:
-drop-shadow(0 0 15px gold);
+    filter:
+    drop-shadow(0 0 10px gold)
+    drop-shadow(0 0 15px gold);
 
 }
 
 
-
 .symbol{
 
-position:absolute;
+    position:absolute;
 
-top:8px;
+    top:6px;
 
-right:8px;
+    right:7px;
 
-font-size:35px;
+    font-size:clamp(22px,3vw,35px);
 
 }
 
@@ -303,152 +367,415 @@ font-size:35px;
 
 @keyframes pop{
 
-50%{
-transform:scale(1.08);
-}
+    50%{
+        transform:scale(1.06);
+    }
 
 }
+
 
 
 @keyframes shake{
 
-25%{
-transform:translateX(-10px);
+    25%{
+        transform:translateX(-8px);
+    }
+
+    50%{
+        transform:translateX(8px);
+    }
+
+    75%{
+        transform:translateX(-5px);
+    }
+
 }
 
-50%{
-transform:translateX(10px);
-}
-
-75%{
-transform:translateX(-5px);
-}
-
-}
 
 
-
-/* FEEDBACK */
-
+/* ================================
+   FEEDBACK
+================================ */
 
 #feedback{
 
-height:45px;
+    flex-shrink:0;
 
-text-align:center;
+    height:35px;
 
-font-size:28px;
+    text-align:center;
 
-font-weight:bold;
+    font-size:clamp(18px,2.5vw,27px);
 
-color:#187344;
+    font-weight:bold;
+
+    color:#187344;
 
 }
 
 
 
-/* END */
-
+/* ================================
+   END SCREEN
+================================ */
 
 #end{
 
-display:none;
+    position:fixed;
 
-height:100%;
+    inset:0;
 
-align-items:center;
+    width:100%;
 
-justify-content:center;
+    height:100vh;
+    height:100dvh;
 
-flex-direction:column;
+    display:none;
 
-text-align:center;
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    text-align:center;
+
+    padding:20px;
+
+    background:
+    linear-gradient(
+        #c9f2ff,
+        #ffffff,
+        #e2f7d5
+    );
+
+    z-index:999;
 
 }
 
 
 #end h1{
 
-font-size:60px;
+    margin:0 0 10px;
 
-color:#1680a8;
+    font-size:clamp(42px,8vw,70px);
+
+    color:#1680a8;
 
 }
 
+
+#end h2{
+
+    margin:0 0 30px;
+
+    font-size:clamp(20px,4vw,32px);
+
+    color:#163e58;
+
+}
+
+
+
+/* ================================
+   BUTTON
+================================ */
 
 button{
 
-padding:15px 35px;
+    padding:15px 35px;
 
-border:none;
+    border:none;
 
-border-radius:30px;
+    border-radius:30px;
 
-background:#1ca6d1;
+    background:#1ca6d1;
 
-color:white;
+    color:white;
 
-font-size:22px;
+    font-size:22px;
 
-font-weight:bold;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    touch-action:manipulation;
 
 }
 
 
-/* TABLET */
+
+/* ================================
+   TABLET
+================================ */
 
 @media(max-width:900px){
 
-.grid{
+    .grid{
 
-grid-template-columns:repeat(3,1fr);
+        grid-template-columns:repeat(3,1fr);
+
+        grid-template-rows:repeat(3,minmax(0,1fr));
+
+        gap:9px;
+
+    }
 
 }
 
 
-}
 
-
-
-/* MOBILE */
+/* ================================
+   MOBILE
+================================ */
 
 @media(max-width:600px){
 
-header{
+    header{
 
-height:55px;
+        min-height:50px;
 
-padding:5px 10px;
+        padding:5px 8px;
+
+    }
+
+
+    .title{
+
+        font-size:19px;
+
+    }
+
+
+    .score{
+
+        padding:6px 10px;
+
+        font-size:15px;
+
+    }
+
+
+    .question{
+
+        padding:5px;
+
+    }
+
+
+    .question h1{
+
+        font-size:20px;
+
+    }
+
+
+    .area{
+
+        padding:5px 7px;
+
+    }
+
+
+    .grid{
+
+        grid-template-columns:repeat(3,1fr);
+
+        grid-template-rows:repeat(3,minmax(0,1fr));
+
+        gap:6px;
+
+    }
+
+
+    .card{
+
+        border-width:3px;
+
+        border-radius:14px;
+
+    }
+
+
+    .card img{
+
+        width:85%;
+
+        height:72%;
+
+    }
+
+
+    .name{
+
+        font-size:13px;
+
+        padding:2px;
+
+    }
+
+
+    .symbol{
+
+        font-size:20px;
+
+        top:3px;
+
+        right:4px;
+
+    }
+
+
+    #feedback{
+
+        height:27px;
+
+        font-size:17px;
+
+    }
 
 }
 
 
-.grid{
 
-grid-template-columns:repeat(2,1fr);
+/* ================================
+   VERY SMALL MOBILE
+================================ */
 
-gap:8px;
+@media(max-width:380px){
+
+    .title{
+
+        font-size:17px;
+
+    }
+
+
+    .score{
+
+        font-size:14px;
+
+    }
+
+
+    .question h1{
+
+        font-size:18px;
+
+    }
+
+
+    .name{
+
+        font-size:11px;
+
+    }
 
 }
 
 
-.card img{
 
-height:75%;
+/* ================================
+   MOBILE LANDSCAPE
+================================ */
+
+@media(
+orientation:landscape
+)
+and
+(max-height:600px){
+
+    header{
+
+        min-height:45px;
+
+        padding:3px 10px;
+
+    }
+
+
+    .title{
+
+        font-size:18px;
+
+    }
+
+
+    .score{
+
+        padding:4px 10px;
+
+        font-size:14px;
+
+    }
+
+
+    .question{
+
+        padding:2px;
+
+    }
+
+
+    .question h1{
+
+        font-size:18px;
+
+    }
+
+
+    .area{
+
+        padding:3px 8px;
+
+    }
+
+
+    .grid{
+
+        grid-template-columns:repeat(5,1fr);
+
+        grid-template-rows:repeat(2,minmax(0,1fr));
+
+        gap:6px;
+
+    }
+
+
+    .card{
+
+        border-radius:12px;
+
+        border-width:3px;
+
+    }
+
+
+    .card img{
+
+        height:68%;
+
+    }
+
+
+    .name{
+
+        font-size:12px;
+
+        padding:1px;
+
+    }
+
+
+    #feedback{
+
+        height:22px;
+
+        font-size:15px;
+
+    }
 
 }
-
-
-.name{
-
-font-size:15px;
-
-}
-
-
-}
-
-
 
 </style>
 
@@ -458,26 +785,34 @@ font-size:15px;
 <body>
 
 
-<!-- LOGO -->
+<!-- ================================
+     SPLASH
+================================ -->
 
 <div id="splash">
 
-<img src="assets/innovine-logo.png">
+<img
+src="assets/innovine-logo.png"
+alt="Innovine">
 
 </div>
 
 
 
-<!-- GAME -->
-
+<!-- ================================
+     GAME
+================================ -->
 
 <div id="game">
 
 
 <header>
 
+
 <div class="title">
+
 💡 Light It Up
+
 </div>
 
 
@@ -505,11 +840,13 @@ Tap the objects that work on electricity
 
 <div class="area">
 
-
-<div class="grid" id="grid"></div>
-
+<div
+class="grid"
+id="grid">
+</div>
 
 </div>
+
 
 
 <div id="feedback"></div>
@@ -519,22 +856,29 @@ Tap the objects that work on electricity
 
 
 
-<!-- END -->
-
+<!-- ================================
+     END SCREEN
+================================ -->
 
 <div id="end">
+
 
 <h1>
 🎉 Wonderful!
 </h1>
+
 
 <h2>
 You found all the electric objects!
 </h2>
 
 
-<button onclick="restart()">
+<button
+type="button"
+onclick="restart()">
+
 Play Again
+
 </button>
 
 
@@ -542,28 +886,38 @@ Play Again
 
 
 
-<!-- AUDIO -->
+<!-- ================================
+     AUDIO
+================================ -->
 
-
-<audio id="correct"
-src="assets/correct.mp3">
+<audio
+id="correctSound"
+src="assets/correct.mp3"
+preload="auto">
 </audio>
 
 
-<audio id="wrong"
-src="assets/wrong.mp3">
+<audio
+id="wrongSound"
+src="assets/wrong.mp3"
+preload="auto">
 </audio>
 
 
-<audio id="clap"
-src="assets/claps.mp3">
+<audio
+id="clapSound"
+src="assets/claps.mp3"
+preload="auto">
 </audio>
-
 
 
 
 <script>
 
+
+/* ================================
+   GAME OBJECTS
+================================ */
 
 const objects=[
 
@@ -637,176 +991,388 @@ electric:false
 
 let found=0;
 
+let gameFinished=false;
 
 
-const grid=document.getElementById("grid");
+
+const grid=
+document.getElementById("grid");
 
 
+const count=
+document.getElementById("count");
+
+
+const feedback=
+document.getElementById("feedback");
+
+
+const game=
+document.getElementById("game");
+
+
+const end=
+document.getElementById("end");
+
+
+const splash=
+document.getElementById("splash");
+
+
+const correctSound=
+document.getElementById("correctSound");
+
+
+const wrongSound=
+document.getElementById("wrongSound");
+
+
+const clapSound=
+document.getElementById("clapSound");
+
+
+
+/* ================================
+   SOUND
+================================ */
+
+function playAudio(audio){
+
+    try{
+
+        audio.pause();
+
+        audio.currentTime=0;
+
+        audio.play().catch(function(){});
+
+    }
+
+    catch(e){}
+
+}
+
+
+
+/* ================================
+   SHUFFLE
+================================ */
 
 function shuffle(arr){
 
-return arr.sort(()=>Math.random()-0.5);
+    const copy=[...arr];
+
+
+    for(
+        let i=copy.length-1;
+        i>0;
+        i--
+    ){
+
+        const j=
+        Math.floor(
+            Math.random()*(i+1)
+        );
+
+
+        const temp=copy[i];
+
+        copy[i]=copy[j];
+
+        copy[j]=temp;
+
+    }
+
+
+    return copy;
 
 }
 
 
 
+/* ================================
+   START GAME
+================================ */
 
 function start(){
 
-grid.innerHTML="";
 
-found=0;
-
-count.innerHTML=0;
+    grid.innerHTML="";
 
 
-shuffle(objects).forEach(obj=>{
+    found=0;
 
 
-let card=document.createElement("div");
-
-card.className="card";
+    gameFinished=false;
 
 
-card.innerHTML=
+    count.textContent="0";
 
-`
 
-<img src="${obj.img}">
+    feedback.textContent="";
 
-<div class="name">
-${obj.name}
-</div>
 
-<div class="symbol"></div>
-
-`;
+    const shuffledObjects=
+    shuffle(objects);
 
 
 
-card.onclick=()=>{
+    shuffledObjects.forEach(function(obj){
 
 
-if(obj.electric){
+        const card=
+        document.createElement("div");
 
 
-card.classList.add("correct");
-
-card.querySelector(".symbol").innerHTML="⚡";
-
-card.querySelector("img").classList.add("on");
-
-
-document.getElementById("correct").play();
-
-
-found++;
-
-count.innerHTML=found;
+        card.className="card";
 
 
 
-card.onclick=null;
+        card.innerHTML=
+
+        `
+
+        <img
+        src="${obj.img}"
+        alt="${obj.name}"
+        draggable="false">
+
+        <div class="name">
+        ${obj.name}
+        </div>
+
+        <div class="symbol"></div>
+
+        `;
 
 
 
-if(found===5){
+        let selected=false;
 
-setTimeout(finish,1000);
+
+
+        card.onclick=function(){
+
+
+            if(gameFinished){
+
+                return;
+
+            }
+
+
+            if(obj.electric){
+
+
+                if(selected){
+
+                    return;
+
+                }
+
+
+                selected=true;
+
+
+
+                card.classList.add(
+                    "correct"
+                );
+
+
+                card.querySelector(
+                    ".symbol"
+                ).textContent="⚡";
+
+
+                card.querySelector(
+                    "img"
+                ).classList.add(
+                    "on"
+                );
+
+
+                feedback.textContent=
+                "Good job!";
+
+
+                playAudio(
+                    correctSound
+                );
+
+
+
+                found++;
+
+
+                count.textContent=
+                found;
+
+
+
+                if(found===5){
+
+
+                    gameFinished=true;
+
+
+                    feedback.textContent=
+                    "Excellent!";
+
+
+                    setTimeout(
+                        finish,
+                        800
+                    );
+
+                }
+
+
+            }
+
+
+            else{
+
+
+                card.classList.remove(
+                    "wrong"
+                );
+
+
+                void card.offsetWidth;
+
+
+                card.classList.add(
+                    "wrong"
+                );
+
+
+                card.querySelector(
+                    ".symbol"
+                ).textContent="❌";
+
+
+                feedback.textContent=
+                "Try again!";
+
+
+                playAudio(
+                    wrongSound
+                );
+
+
+
+                setTimeout(
+                    function(){
+
+
+                        card.classList.remove(
+                            "wrong"
+                        );
+
+
+                        card.querySelector(
+                            ".symbol"
+                        ).textContent="";
+
+
+                        feedback.textContent="";
+
+
+                    },
+                    600
+                );
+
+
+            }
+
+
+        };
+
+
+
+        grid.appendChild(card);
+
+
+    });
+
 
 }
 
 
 
-}
-
-
-else{
-
-
-card.classList.add("wrong");
-
-card.querySelector(".symbol").innerHTML="❌";
-
-
-document.getElementById("wrong").play();
-
-
-
-setTimeout(()=>{
-
-card.classList.remove("wrong");
-
-card.querySelector(".symbol").innerHTML="";
-
-
-},600);
-
-
-
-}
-
-
-
-};
-
-
-grid.appendChild(card);
-
-
-
-});
-
-
-}
-
-
-
-
+/* ================================
+   FINISH GAME
+================================ */
 
 function finish(){
 
 
-document.getElementById("game").style.display="none";
+    game.style.display=
+    "none";
 
 
-document.getElementById("end").style.display="flex";
+    end.style.display=
+    "flex";
 
 
-document.getElementById("clap").play();
+    playAudio(
+        clapSound
+    );
 
 
 }
 
 
+
+/* ================================
+   PLAY AGAIN
+================================ */
 
 function restart(){
 
-document.getElementById("end").style.display="none";
 
-document.getElementById("game").style.display="flex";
+    end.style.display=
+    "none";
 
-start();
+
+    game.style.display=
+    "flex";
+
+
+    start();
+
 
 }
 
 
 
-setTimeout(()=>{
+/* ================================
+   SPLASH SCREEN
+================================ */
+
+setTimeout(
+function(){
 
 
-document.getElementById("splash").style.display="none";
+    splash.style.display=
+    "none";
 
 
-document.getElementById("game").style.display="flex";
+    end.style.display=
+    "none";
 
 
-start();
+    game.style.display=
+    "flex";
 
 
-},5000);
+    start();
 
+
+},
+5000
+);
 
 
 </script>
