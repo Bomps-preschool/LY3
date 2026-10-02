@@ -6,9 +6,9 @@
 
 <meta
 name="viewport"
-content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 
-<title>Animal and Their Food</title>
+<title>Animals and Their Food</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -63,9 +63,9 @@ max-width:80%;
 #game{
 display:none;
 width:100%;
-min-height:100dvh;
-overflow-x:hidden;
-overflow-y:auto;
+height:100dvh;
+min-height:0;
+overflow:hidden;
 }
 
 background:
@@ -100,42 +100,47 @@ box-shadow:
 }
 
 #progress{
-
 background:white;
-
 text-align:center;
-
-padding:8px;
-
-font-size:18px;
+padding:5px 10px;
+font-size:16px;
 font-weight:700;
-
+line-height:1.15;
 color:#666;
+min-height:40px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+gap:2px;
+}
 
+#score{
+font-size:14px;
+color:#777;
 }
 
 /* MAIN */
 
 #main{
-min-height:calc(100dvh - 100px);
-padding:12px;
-overflow:visible;
+height:calc(100dvh - 100px);
+min-height:0;
+padding:10px 12px;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .layout{
-
+width:100%;
 max-width:1200px;
-
+height:100%;
 margin:auto;
-
 display:flex;
-
 gap:20px;
-
-align-items:flex-start;
-
+align-items:center;
 justify-content:center;
-
+overflow:hidden;
 }
 
 /* WHEEL SIDE */
@@ -450,81 +455,165 @@ opacity:0;
 
 }
 
-/* MOBILE */
-
+/* MOBILE / TABLET - FIT ENTIRE GAME IN VIEWPORT */
 @media (max-width:900px){
 
+#titleBar{
+font-size:22px;
+padding:6px 10px;
+height:48px;
+min-height:48px;
+line-height:1;
+}
+
+#progress{
+font-size:14px;
+min-height:42px;
+padding:4px 8px;
+}
+
+#score{
+font-size:12px;
+}
+
+#main{
+height:calc(100dvh - 90px);
+min-height:0;
+padding:6px 8px;
+}
+
 .layout{
+height:100%;
+width:100%;
 flex-direction:column;
 align-items:center;
-gap:15px;
+justify-content:center;
+gap:6px;
+overflow:hidden;
+}
+
+#wheelArea{
+flex:0 0 auto;
+width:100%;
+min-height:0;
 }
 
 #wheelContainer{
-width:min(80vw,320px);
-height:min(80vw,320px);
+width:min(54vw, 235px, 34dvh);
+height:min(54vw, 235px, 34dvh);
+max-width:235px;
+max-height:235px;
+}
+
+#arrow{
+top:-25px;
+font-size:48px;
+}
+
+#spinBtn{
+width:62px;
+height:62px;
+font-size:20px;
+}
+
+#selectedAnimal{
+margin-top:4px;
+padding:4px 14px;
+min-height:36px;
+height:36px;
+font-size:18px;
+width:min(86vw,300px);
+max-width:300px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
 #answerArea{
-width:100%;
-max-width:500px;
+width:min(94vw,430px);
+max-width:430px;
+display:flex;
+flex-direction:column;
+gap:5px;
+margin:0 auto;
+flex:0 0 auto;
 }
 
 .answerBox{
 width:100%;
+min-height:48px;
+height:48px;
+padding:5px 10px;
+border-radius:14px;
+gap:10px;
+}
+
+.answerBox img{
+width:38px;
+height:38px;
 }
 
 .answerText{
-font-size:20px;
+font-size:17px;
+line-height:1;
 }
 
-#titleBar{
-font-size:22px;
-padding:10px;
-height:auto;
-min-height:60px;
+.answerBox:hover{
+transform:none;
 }
 
-#progress{
-font-size:16px;
-}
-
-#selectedAnimal{
-font-size:20px;
-width:100%;
-max-width:320px;
-text-align:center;
-}
-
-@supports(height:100dvh){
-
-body{
-min-height:100dvh;
-}
-
-#game{
-min-height:100dvh;
-}
-
-#main{
-min-height:calc(100dvh - 100px);
-}
+#completeScreen{
+padding:14px;
 }
 
 #completeScreen h1{
-font-size:42px;
+font-size:40px;
+margin-bottom:10px;
 }
 
 #completeScreen p{
-font-size:22px;
+font-size:20px;
+max-width:90vw;
 }
 
 #restartBtn{
-font-size:20px;
-padding:12px 28px;
+font-size:18px;
+padding:10px 24px;
+margin-top:15px;
 }
 }
 
+/* Very small phones */
+@media (max-height:650px){
+#titleBar{height:42px;min-height:42px;font-size:20px;}
+#progress{min-height:38px;font-size:12px;}
+#score{font-size:11px;}
+#main{height:calc(100dvh - 80px);}
+#wheelContainer{width:min(47vw,190px,30dvh);height:min(47vw,190px,30dvh);}
+#arrow{top:-21px;font-size:40px;}
+#spinBtn{width:54px;height:54px;font-size:18px;}
+#selectedAnimal{height:30px;min-height:30px;font-size:16px;padding:2px 10px;}
+#answerArea{gap:4px;}
+.answerBox{height:42px;min-height:42px;padding:3px 8px;}
+.answerBox img{width:32px;height:32px;}
+.answerText{font-size:15px;}
+}
+
+/* Landscape phones: preserve the same game elements while using horizontal space */
+@media (max-width:900px) and (orientation:landscape){
+#main{height:calc(100dvh - 90px);}
+.layout{flex-direction:row;gap:14px;}
+#wheelArea{width:auto;}
+#wheelContainer{width:min(48vh,240px);height:min(48vh,240px);}
+#answerArea{width:min(42vw,330px);}
+.answerBox{height:46px;min-height:46px;}
+}
+
+/* iOS safe-area support */
+@supports (padding: max(0px)){
+#titleBar{padding-top:max(6px, env(safe-area-inset-top));}
+#main{padding-bottom:max(6px, env(safe-area-inset-bottom));}
+}
 </style>
 
 </head>
@@ -547,13 +636,15 @@ alt="Innovine">
 
 <div id="titleBar">
 
-Animal and Their Food
+Animals and Their Food
 
 </div>
 
 <div id="progress">
 
-Completed: 0 / 6
+Spin the wheel and select the correct food group for the animal.
+
+<span id="score">Completed: 0 / 6</span>
 
 </div>
 
@@ -1010,12 +1101,9 @@ animal
 function updateProgress(){
 
 document.getElementById(
-"progress"
+"score"
 ).innerHTML =
-
-`Completed:
-${completedAnimals.length}
-/ 6`;
+`Completed: ${completedAnimals.length} / 6`;
 
 }/* =====================================
    SPIN WHEEL
@@ -1446,7 +1534,7 @@ updateProgress();
 
 speak(
 
-"Welcome to Animal and Their Food. Spin the wheel and choose the correct food category for each animal."
+"Welcome to Animals and Their Food. Spin the wheel and select the correct food group for the animal."
 
 );
 
